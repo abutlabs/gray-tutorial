@@ -1,0 +1,34 @@
+/* A snippet's label ("Add to src/x.ts") sits on its code block like a file tab. */
+.vp-doc p.snippet-label {
+  display: inline-block;
+  margin: 20px 0 0;
+  padding: 4px 12px;
+  border-radius: 8px 8px 0 0;
+  background: var(--vp-code-block-bg);
+  font-size: 13px;
+  line-height: 20px;
+}
+.vp-doc p.snippet-label strong { font-weight: 600; margin-right: 4px; }
+.vp-doc p.snippet-label code { background: none; padding: 0; color: var(--vp-c-text-1); }
+.vp-doc p.snippet-label + div[class*="language-"] {
+  margin-top: 0;
+  border-top-left-radius: 0;
+}
+.vp-doc p.snippet-label.new strong { color: var(--vp-c-green-1); }
+.vp-doc p.snippet-label.add strong,
+.vp-doc p.snippet-label.replace strong,
+.vp-doc p.snippet-label.rewrite strong { color: var(--vp-c-brand-1); }
+.vp-doc p.snippet-label.run strong { color: var(--vp-c-text-2); }
+.vp-doc p.snippet-label.fails strong { color: var(--vp-c-danger-1); }
+
+/* lasair's OCaml, folded under a snippet */
+.vp-doc details { margin: 16px 0; }
+.vp-doc details > summary { cursor: pointer; color: var(--vp-c-text-2); font-size: 14px; }
+
+/* Code-heavy pages: a wider column, so most snippets fit without scrolling sideways */
+@media (min-width: 1280px) {
+  .VPDoc.has-aside .content-container { max-width: 880px !important; }
+  .VPDoc .container { max-width: 1200px !important; }
+}
+
+:root { --vp-layout-max-width: 1680px; }

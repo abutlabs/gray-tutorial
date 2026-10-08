@@ -1,0 +1,23 @@
+{
+  "name": "gray-tutorial",
+  "private": true,
+  "type": "module",
+  "description": "Build a JAM client in TypeScript, one Gray Paper rule at a time.",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "site": "vitepress dev --open",
+    "site:build": "vitepress build",
+    "vectors": "node tools/vectors.ts",
+    "compare": "node tools/compare.ts",
+    "catch-up": "node tools/compare.ts --write",
+    "verify": "node tools/verify.ts",
+    "test": "node --test \"tools/*.test.ts\"",
+    "typecheck": "tsc -p tools",
+    "check": "npm run typecheck && npm test && npm run site:build"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.1",
+    "typescript": "7.0.2",
+    "vitepress": "1.6.4"
+  }
+}

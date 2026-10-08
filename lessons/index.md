@@ -1,0 +1,57 @@
+# Gray Tutorial
+
+Build a JAM client in TypeScript, one Gray Paper rule at a time.
+
+Each lesson explains a piece of the Gray Paper, gives you the code for it in small
+snippets, and has you run it. You assemble the snippets into your own client in
+`client/`, run the tests, and watch it grow, from an empty folder to a program that
+imports JAM blocks and agrees byte for byte with the official test vectors.
+
+Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
+
+## Lessons
+
+**[Part 0 · Start](./00-start/index.md)**
+
+- [0.1 What you will build](./00-start/01-what-you-will-build.md)
+- [0.2 Set up the project](./00-start/02-set-up-the-project.md)
+
+**[Part 1 · Bytes and numbers](./01-bytes-and-numbers/index.md)**
+
+- [1.1 Bytes and hex](./01-bytes-and-numbers/01-bytes-and-hex.md)
+- [1.2 Numbers](./01-bytes-and-numbers/02-numbers.md)
+
+**[Part 2 · The codec](./02-codec/index.md)**
+
+- [2.1 Fixed-width integers](./02-codec/01-fixed-width-integers.md)
+- [2.2 Compact naturals](./02-codec/02-compact-naturals.md)
+- [2.3 Writer and Reader](./02-codec/03-writer-and-reader.md)
+- [2.4 Codecs](./02-codec/04-codecs.md)
+- [2.5 Sequences, options and records](./02-codec/05-sequences-options-and-records.md)
+- [2.6 The first test vectors](./02-codec/06-the-first-test-vectors.md)
+
+## Still to be written
+
+The road from here to a full block importer, part by part. The parts are written in
+this order, and each one is checked end to end before it is published here.
+
+| Part | You build | Gray Paper |
+| --- | --- | --- |
+| 3 · Work and reports | work-packages, work-digests, work-reports | §11, §14, App. C |
+| 4 · Blocks | tiny and full configs, extrinsics, header, block | §5, App. C |
+| 5 · Hashing and signatures | Blake2b, Keccak, Ed25519 | §3 |
+| 6 · State and Merklization | σ, state keys, the trie, the state root | §4, App. D |
+| 7 · Time and shuffling | epochs, entropy, the Fisher-Yates shuffle | §4, App. E |
+| 8 · Safrole | Bandersnatch, tickets, sealing keys | §6, App. F |
+| 9 · Recent history | recent blocks, the accumulation-output belt | §7 |
+| 10 · Disputes | judgments, verdicts, culprits, faults | §10 |
+| 11 · Assurances | availability of work-reports | §11 |
+| 12 · Guarantees | reports on cores, guarantor assignment | §11 |
+| 13 · Authorization | authorizer pools and queues | §8 |
+| 14 · Services and preimages | accounts, storage, preimage requests | §9, §12 |
+| 15 · The PVM | decoding programs, every instruction, gas | App. A |
+| 16 · Host calls | the accumulate invocation and its host calls | App. B |
+| 17 · Accumulation | the ready queue, privileges, transfers | §12 |
+| 18 · Statistics | validator, core and service activity | §13 |
+| 19 · Block import | Υ: every piece in order, the block-import traces | §4, §5 |
+| 20 · Facing the fuzzer | the conformance fuzzer's protocol | |

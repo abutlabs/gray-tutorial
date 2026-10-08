@@ -1,0 +1,17 @@
+{
+  // Lessons open rendered. To edit one: right-click its tab, Reopen Editor With... > Text Editor.
+  "workbench.editorAssociations": {
+    "**/lessons/**/*.md": "vscode.markdown.preview.editor"
+  },
+  "files.exclude": {
+    "**/node_modules": true,
+    ".reference": true,
+    ".expected": true,
+    ".vitepress/cache": true,
+    ".vitepress/dist": true
+  },
+  "search.exclude": {
+    "vectors": true,
+    ".backup": true
+  }
+}
