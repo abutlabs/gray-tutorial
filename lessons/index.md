@@ -148,6 +148,10 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 - [16.8 Lookup](./16-host-calls/08-lookup.md)
 - [16.9 Asking for preimages](./16-host-calls/09-asking-for-preimages.md)
 
+**[Part 17 · Accumulation](./17-accumulation/index.md)**
+
+- [17.1 A block's accumulation](./17-accumulation/01-a-blocks-accumulation.md)
+
 ## Still to be written
 
 The road from here to a full block importer, part by part. The parts are written in
@@ -157,7 +161,7 @@ this order, and each one is checked end to end before it is published here.
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
 | 16 · Host calls (rest) | fetch, storage, the accumulation context and Ψ_A | App. B |
-| 17 · Accumulation | the ready queue, privileges, transfers | §12 |
+| 17 · Accumulation (rest) | waiting reports, the block's gas budget, privileges, transfers | §12 |
 | 18 · Statistics | validator, core and service activity | §13 |
 | 19 · Block import | Υ: every piece in order, the block-import traces | §4, §5 |
 | 20 · Facing the fuzzer | the conformance fuzzer's protocol | |

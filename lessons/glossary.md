@@ -221,6 +221,29 @@ the gas left, an input, a storage read. ([16.1](./16-host-calls/01-calling-the-h
 **Checkpoint.** A moment a service marks as "keep everything up to here": if it fails
 later, its changes roll back to the last checkpoint. ([16.6](./16-host-calls/06-checkpoints.md))
 
+## Accumulating a block
+
+**Always-accumulate service.** χ_Z. A service that accumulates in every block, on a
+fixed amount of free gas, whether or not work came in for it. *Example:* in the
+`always_accumulate` vectors, service 1729 runs with 100,000 free gas.
+([16.7](./16-host-calls/07-a-services-inputs.md))
+
+**Prerequisite.** A work-package that a report says must be accumulated before it.
+*Example:* if package B names package A, B's report waits until A's has been accumulated.
+([17.1](./17-accumulation/01-a-blocks-accumulation.md))
+
+**Round.** Several services accumulated side by side, all from the same starting state;
+none sees what the others do in that round. The GP's Δ\*.
+([17.1](./17-accumulation/01-a-blocks-accumulation.md))
+
+**Accumulation statistics.** S(s) = (N, T, G). For each service, per block: the digests
+it accumulated, the transfers it received, the gas it used. *Example:* (1, 0, 29,643).
+([17.1](./17-accumulation/01-a-blocks-accumulation.md))
+
+**Last-accumulation slot.** The slot in which a service last accumulated, kept in its
+account. *Example:* 43, after accumulating in slot 43.
+([17.1](./17-accumulation/01-a-blocks-accumulation.md))
+
 ## The PVM
 
 **PVM.** The Polkadot Virtual Machine: a small, made-up computer, based on RISC-V, that

@@ -1387,14 +1387,14 @@
    "id": 43,
    "type": "logs",
    "title": "Accumulate",
-   "description": "What bin/accumulate.ts ran: every service a test vector's block accumulates, its inputs, the gas it used next to the vector's, and the storage it left.",
+   "description": "What bin/accumulate.ts did: a test vector's block accumulated, each service's digests and gas next to the vector's, and the storage it left.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"accumulate\", run_id=~\"$run_id\"} | json | line_format \"service {{.s}}: {{.inputs}} input(s), used {{.used}} (vector: {{.expected}}), storage {{.storage}}\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"accumulate\", run_id=~\"$run_id\"} | json | line_format \"service {{.s}}: {{.count}} digest(s), used {{.used}} (vector: {{.expected}}), storage {{.storage}}\"",
      "refId": "A",
      "queryType": "range"
     }

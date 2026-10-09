@@ -433,3 +433,5 @@ with `unsigned_compare`; your `bigint`s just compare.
 
 Services that ask for data, check on it, and let it go, paying deposit for each request
 while it lasts. Thirteen official accumulate vectors passing.
+
+Next: [Part 17 · Accumulation](../17-accumulation/index.md)
