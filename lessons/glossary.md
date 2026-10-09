@@ -78,9 +78,29 @@ after it. ([0.4](./00-start/04-the-jam-clock.md))
 Ordinary numbers lose precision past about 9 quadrillion (2^53); JAM's 64-bit numbers
 need `bigint`. *Example:* `2n ** 64n - 1n`. ([1.2](./01-bytes-and-numbers/02-numbers.md))
 
+**Floating point.** How a JavaScript `number` is stored: about 16 significant digits and
+an exponent, so a huge whole number gets rounded. *Example:* `2 ** 64 - 70 === 2 ** 64`
+is `true`. ([1.2](./01-bytes-and-numbers/02-numbers.md))
+
+**Unsigned integer (u8, u16, u32, u64).** A whole number that is never negative, kept in
+a fixed number of bits. The GP writes a u32 as ℕ_{2^32}, a natural below 2^32.
+*Example:* a u32 goes from 0 to 4294967295. ([1.2](./01-bytes-and-numbers/02-numbers.md))
+
+**Bitwise operator.** An operator that works on a number's bits: `|`, `&`, `^` and the
+shifts `<<`, `>>`, `>>>`. In JavaScript they treat numbers as signed 32-bit integers.
+*Example:* `6 & 3` is 2. ([1.2](./01-bytes-and-numbers/02-numbers.md))
+
 **`Uint8Array`.** A row of bytes, the type this client uses for raw data.
 *Example:* `Uint8Array.of(1, 2, 3)` is three bytes.
 ([1.1](./01-bytes-and-numbers/01-bytes-and-hex.md))
+
+**Type alias.** A second name for a type you already have; it checks nothing extra, but
+says what a value is for. *Example:* `type Bytes = Uint8Array`.
+([1.1](./01-bytes-and-numbers/01-bytes-and-hex.md))
+
+**Stack trace.** When a program crashes, the list of function calls it was in the middle
+of, innermost first. Look for the first line in your own code. *Example:* `at fromHex
+(src/bytes.ts:13:21)`. ([1.1](./01-bytes-and-numbers/01-bytes-and-hex.md))
 
 **`Map`.** A lookup table from keys to values. *Example:* a service's storage maps each
 key to its value. ([16.5](./16-host-calls/05-storage.md))
@@ -91,8 +111,9 @@ Pushgateway (for numbers) behind it. *Example:* the *Chain* panel lists 100 bloc
 
 ## Bytes and encoding
 
-**Byte.** Eight bits: a number from 0 to 255. Everything JAM sends or stores is bytes.
-([1.1](./01-bytes-and-numbers/01-bytes-and-hex.md))
+**Byte (octet).** Eight bits: a number from 0 to 255. The GP says *octet*, and writes a
+row of them as 𝔹. Everything JAM sends or stores is bytes. *Example:* 255, the biggest
+byte, is `0xff` in hex. ([1.1](./01-bytes-and-numbers/01-bytes-and-hex.md))
 
 **Hex.** Writing bytes as pairs of the digits 0-9 and a-f, after `0x`. *Example:* `0xff`
 is the byte 255; `0x0102` is the bytes 1 and 2. ([1.1](./01-bytes-and-numbers/01-bytes-and-hex.md))

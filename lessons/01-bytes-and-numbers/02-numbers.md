@@ -4,12 +4,20 @@ JavaScript has a little secret about numbers, and JAM is exactly the kind of pro
 bites. This lesson says what the secret is, proves it with three tiny tests, and sets the
 one rule your client follows from here on.
 
-## What the Gray Paper says
+## New words
 
-JAM's numbers are naturals with a ceiling. The Gray Paper writes ℕ_{2^32} for a natural
-below 2^32 (timeslots, service ids, lengths) and ℕ_{2^64} for one below 2^64 (gas,
-balances). Section 4 translates for programmers: a timeslot is *"a natural less than 2^32
-(in compute parlance, a 32-bit unsigned integer)"*.
+- **Floating point.** How a JavaScript `number` is stored: about 16 significant digits
+  and an exponent, so a huge whole number gets rounded. *Example:* `2 ** 64 - 70` and
+  `2 ** 64` come out equal.
+- **`bigint`.** A JavaScript whole number with no size limit, written with an `n`.
+  *Example:* `2n ** 64n - 70n` is exactly 18446744073709551546n.
+- **Unsigned integer (u8, u16, u32, u64).** A whole number that is never negative, kept in
+  a fixed number of bits. *Example:* a u32 goes from 0 to 2^32 − 1, which is 4294967295.
+- **Bitwise operator.** One that works on a number's bits: `|` (or), `&` (and), `^`
+  (xor) and the shifts `<<`, `>>`, `>>>`. *Example:* `6 & 3` is 2 (binary 110 and 011
+  share only the 2s bit).
+
+All four are in the [glossary](../glossary.md).
 
 ## The secret
 
@@ -18,8 +26,19 @@ exactly up to 2^53 − 1 (that's `Number.MAX_SAFE_INTEGER`, about 9 quadrillion)
 that, it quietly rounds. So 2^64 − 70, a perfectly good JAM gas amount, comes out as
 2^64. No error, no warning, just a different number.
 
-A `bigint` (written with an `n`: `70n`) is exact at any size. Hence the rule for the
-whole client:
+A `bigint` is exact at any size. It's slower, and you can't mix it with plain numbers,
+but it never rounds.
+
+## What the Gray Paper says
+
+JAM's numbers are naturals (whole numbers from 0 up) with a ceiling. The Gray Paper
+writes ℕ_{2^32} for a natural below 2^32 (timeslots, service ids, lengths) and ℕ_{2^64}
+for one below 2^64 (gas, balances). Section 4 translates for programmers: a timeslot is
+*"a natural less than 2^32 (in compute parlance, a 32-bit unsigned integer)"*.
+
+## The rule
+
+So, for the whole client:
 
 - **u8, u16 and u32 values are `number`**: timeslots, service ids, indices, lengths.
   Exact, fast, easy.
