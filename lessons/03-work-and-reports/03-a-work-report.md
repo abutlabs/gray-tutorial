@@ -164,3 +164,5 @@ it. That's why you test both.
 
 Part 3's paperwork, complete: package in, digests out, and the report that binds them,
 all byte for byte with the official vectors at both sizes.
+
+Next: [Part 4 · Blocks](../04-blocks/index.md)

@@ -40,6 +40,10 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [3.2 Work digests](./03-work-and-reports/02-work-digests.md)
 - [3.3 A work-report](./03-work-and-reports/03-a-work-report.md)
 
+**[Part 4 · Blocks](./04-blocks/index.md)**
+
+- [4.1 Tickets and preimages](./04-blocks/01-tickets-and-preimages.md)
+
 ## Still to be written
 
 The road from here to a full block importer, part by part. The parts are written in
@@ -47,7 +51,7 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 4 · Blocks | tiny and full configs, extrinsics, header, block | §5, App. C |
+| 4 · Blocks (rest) | tiny and full, assurances, guarantees, disputes, header, block | §5, App. C |
 | 5 · Hashing and signatures | Blake2b, Keccak, Ed25519 | §3 |
 | 6 · State and Merklization | σ, state keys, the trie, the state root | §4, App. D |
 | 7 · Time and shuffling | epochs, entropy, the Fisher-Yates shuffle | §4, App. E |
