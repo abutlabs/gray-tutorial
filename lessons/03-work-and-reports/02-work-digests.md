@@ -221,5 +221,6 @@ one where yours count along the `ERRORS` list.
 ## What you have
 
 The summary card a core sends back for every work item, including the first value in
-your client that can be one thing *or* another. Next up: the report that carries these
-cards. (That lesson is still being written.)
+your client that can be one thing *or* another.
+
+Next: [3.3 A work-report](./03-a-work-report.md)

@@ -38,6 +38,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
 - [3.1 A work-package](./03-work-and-reports/01-a-work-package.md)
 - [3.2 Work digests](./03-work-and-reports/02-work-digests.md)
+- [3.3 A work-report](./03-work-and-reports/03-a-work-report.md)
 
 ## Still to be written
 
@@ -46,7 +47,6 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 3 · Work and reports (rest) | availability specs, work-reports | §11, App. C |
 | 4 · Blocks | tiny and full configs, extrinsics, header, block | §5, App. C |
 | 5 · Hashing and signatures | Blake2b, Keccak, Ed25519 | §3 |
 | 6 · State and Merklization | σ, state keys, the trie, the state root | §4, App. D |
