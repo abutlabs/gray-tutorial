@@ -315,6 +315,18 @@ entropy, every service's account, and more, each part a *component* with a Greek
 ready; steps in one wave don't need each other. *Example:* wave 1 is τ′, β_H†, η′, κ′, λ′,
 ψ′ and ρ†. ([19.1](./19-block-import/01-the-order-of-things.md))
 
+**Trie, leaf and branch.** A trie files entries by the bits of their keys, 0 left, 1
+right; a leaf holds one entry, a branch the hashes of its two subtries. *Example:* every
+node is 64 bytes. ([6.1](./06-state-and-merklization/01-the-state-trie.md))
+
+**Merklization.** Hashing a whole trie down to one root, so any one entry can later be
+proven with a few hashes. The GP writes the root as M. *Example:* a state, down to 32
+bytes. ([6.1](./06-state-and-merklization/01-the-state-trie.md))
+
+**State key and state component.** The state is 16 components, C(1) to C(16), each a Greek
+letter, filed under 31-byte keys; services' data have keys of their own. *Example:* C(11)
+is τ, the time. ([6.2](./06-state-and-merklization/02-state-keys.md))
+
 **State root.** One 32-byte hash that fingerprints the whole state, through a tree of
 hashes (a *trie*). Two clients agree on the state exactly when they agree on the root.
 ([6.1](./06-state-and-merklization/01-the-state-trie.md))
@@ -331,6 +343,17 @@ the test vectors. *Example:* the tiny `fallback` trace has 100 blocks.
 preimages by hash, and blocks provide them. ([14.1](./14-services/01-providing-preimages.md))
 
 ## Validators and making blocks
+
+**Validator key.** The 336 bytes the chain keeps for one validator: a Bandersnatch key
+(32), an Ed25519 key (32), a BLS key (144) and metadata (128). *Example:* κ is a list of
+them. ([6.3](./06-state-and-merklization/03-reading-the-state.md))
+
+**Bandersnatch key.** A validator's key for the ticket lottery and for sealing blocks.
+*Example:* the first 32 bytes of a validator key.
+([6.3](./06-state-and-merklization/03-reading-the-state.md))
+
+**BLS key.** A 144-byte key for signatures that can be combined. *Example:* bytes 64 to 207
+of a validator key. ([6.3](./06-state-and-merklization/03-reading-the-state.md))
 
 **Validator.** One of the V machines (1,023 on full, 6 on tiny) that run JAM: they make
 blocks, check work and vote. ([4.2](./04-blocks/02-tiny-and-full.md))

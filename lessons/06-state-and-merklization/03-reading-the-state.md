@@ -5,6 +5,17 @@ value in the state is an *encoding*, so the codecs you built in Part 2 can read 
 lesson reads three components, the time, the entropy and the validators, and checks each
 one against something completely independent: the blocks themselves.
 
+
+## New words
+
+- **Validator key.** Everything the chain knows about one validator: four keys for four
+  jobs, 336 bytes in all. *Example:* its Ed25519 key signs assurances.
+- **Bandersnatch key.** The key a validator uses for the ticket lottery and to seal
+  blocks (Part 8). *Example:* the first 32 of the 336 bytes.
+- **BLS key.** A 144-byte key for signatures that can be combined into one. *Example:*
+  bytes 64 to 207 of a validator key.
+
+All three are in the [glossary](../glossary.md).
 ## What the Gray Paper says
 
 Appendix D's T says what each key's value is. Three of them:
