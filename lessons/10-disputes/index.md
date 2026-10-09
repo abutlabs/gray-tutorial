@@ -8,3 +8,4 @@ This part makes your client the court.
 - [10.1 Votes and verdicts](./01-votes-and-verdicts.md)
 - [10.2 Culprits and faults](./02-culprits-and-faults.md)
 - [10.3 Clearing the cores](./03-clearing-the-cores.md)
+- [10.4 Bad verdicts](./04-bad-verdicts.md)

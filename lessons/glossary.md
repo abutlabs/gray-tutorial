@@ -379,6 +379,18 @@ runs out when it's spent. ([15.9](./15-the-pvm/09-what-instructions-cost.md))
 (judgements); enough of them together make a verdict: good, bad, or *wonky* (split).
 ([10.1](./10-disputes/01-votes-and-verdicts.md))
 
+**Judges.** K. The validators whose votes a verdict carries: κ if the verdict's age is this
+epoch, λ if it's the last. *Example:* on tiny, 6 judges, so a verdict needs 5 votes.
+([10.4](./10-disputes/04-bad-verdicts.md))
+
+**Verdict age.** The epoch a verdict's votes were cast in; only this epoch or the last will
+do. *Example:* in epoch 3, ages 3 and 2 are fine, 1 isn't.
+([10.4](./10-disputes/04-bad-verdicts.md))
+
+**Vote split.** How many of a verdict's votes say "valid": all (good), none (bad) or a
+third of the judges (wonky); any other split rejects the block. *Example:* on tiny, 5, 0
+or 2. ([10.4](./10-disputes/04-bad-verdicts.md))
+
 **Culprit, fault and offender.** A culprit guaranteed a report that turned out bad; a
 fault voted against the verdict. Both become *offenders*, and lose their part in the
 validator sets. ([10.2](./10-disputes/02-culprits-and-faults.md))

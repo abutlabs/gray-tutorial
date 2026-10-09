@@ -239,4 +239,4 @@ Part 10, done: your client holds the whole trial. It checks every vote, files th
 verdicts, names the offenders with real evidence, announces them in the header, and
 clears the condemned reports off the cores.
 
-Next: [Part 11 · Assurances](../11-assurances/index.md)
+Next: [10.4 Bad verdicts](./04-bad-verdicts.md)

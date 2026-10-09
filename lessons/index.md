@@ -101,6 +101,7 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 - [10.1 Votes and verdicts](./10-disputes/01-votes-and-verdicts.md)
 - [10.2 Culprits and faults](./10-disputes/02-culprits-and-faults.md)
 - [10.3 Clearing the cores](./10-disputes/03-clearing-the-cores.md)
+- [10.4 Bad verdicts](./10-disputes/04-bad-verdicts.md)
 
 **[Part 11 · Assurances](./11-assurances/index.md)**
 
