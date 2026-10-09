@@ -272,3 +272,5 @@ key; with a handful of offenders, that's just as quick as your `Set`.
 ## What you have
 
 Validator sets that change hands at every epoch, with cheaters left at the door.
+
+Next: [8.3 The fallback sealers](./03-the-fallback-sealers.md)

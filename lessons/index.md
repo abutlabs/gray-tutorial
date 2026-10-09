@@ -71,6 +71,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
 - [8.1 Stirring the entropy](./08-safrole/01-stirring-the-entropy.md)
 - [8.2 Rotating the validators](./08-safrole/02-rotating-the-validators.md)
+- [8.3 The fallback sealers](./08-safrole/03-the-fallback-sealers.md)
 
 ## Still to be written
 

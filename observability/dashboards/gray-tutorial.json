@@ -542,6 +542,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 15,
+   "type": "logs",
+   "title": "Sealers",
+   "description": "What bin/sealers.ts computed: for each slot of the new epoch, the fallback sealer's key and which validator of κ′ it belongs to, then whether all of them match the vector.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"sealers\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"sealer\\\"}}slot {{.phase}}: validator {{.validator}}  {{.key}}{{else}}the sealers match the vector: {{.matches}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 114,
+    "w": 24,
+    "h": 10
+   }
   }
  ]
 }

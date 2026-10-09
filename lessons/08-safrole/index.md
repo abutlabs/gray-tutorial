@@ -7,3 +7,4 @@ that makes the lottery fair.
 
 - [8.1 Stirring the entropy](./01-stirring-the-entropy.md)
 - [8.2 Rotating the validators](./02-rotating-the-validators.md)
+- [8.3 The fallback sealers](./03-the-fallback-sealers.md)

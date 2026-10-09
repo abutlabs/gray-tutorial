@@ -1,0 +1,196 @@
+# The fallback sealers
+
+Every slot of an epoch needs a **sealer**: the one validator allowed to make that slot's
+block. Normally a lottery decides, with secret tickets (lesson 8.4). But lotteries can
+fizzle: too few tickets get entered, or no blocks arrive in the epoch's closing slots
+when the lottery would close, or the chain skips whole epochs. JAM never
+lets a slot go unclaimed, so there's a Plan B: pick the sealers straight from the
+validators, by hash. Everyone can work it out, so it isn't secret, but nobody could have
+steered it. This lesson builds Plan B.
+
+## What the Gray Paper says
+
+§6 (*The Slot-Sealer Sequence*). γ_S holds the sealers of the current epoch, one per
+slot, and changes only when a new epoch begins. Then it becomes either the lottery's
+tickets (8.4) or, otherwise, the **fallback** sequence F(η′₂, κ′):
+
+> slot i's sealer is the Bandersnatch key of validator ℰ₄⁻¹(H(η′₂ ⌢ ℰ₄(i))₀…₄) of κ′,
+> counted round κ′
+
+In words: for each slot number i, hash η′₂ with i, read the first four bytes as a number,
+and take that validator of the *new* active set, wrapping round with `mod`. Two inputs,
+both fixed before the epoch begins: η′₂, randomness from two epochs back (lesson 8.1),
+and κ′, the validators who'll be active (lesson 8.2).
+
+## The tests
+
+The test needs γ_S from the vectors, so the state type grows a field:
+
+**Replace in** `test/safrole.test.ts`
+
+```ts
+/** The parts of a safrole vector's state the lessons use so far. */
+type SafroleState = {
+  tau: number;
+  eta: string[];
+  iota: unknown[];
+  gamma_k: unknown[];
+  kappa: unknown[];
+  lambda: unknown[];
+  post_offenders: string[];
+  gamma_s: { keys?: string[] }; // γ_S: the sealers, as fallback keys (or tickets: lesson 8.4)
+};
+```
+
+**Add to** `test/safrole.test.ts`
+
+```ts
+import { fallbackKeys } from "../src/safrole.ts";
+
+test("F: an epoch without a full lottery is sealed by keys picked from κ′ by hash", () => {
+  let fallbacks = 0;
+  for (const { config, name, vector, newEpoch } of acceptedVectors()) {
+    const { input, pre_state, post_state } = vector;
+    if (!newEpoch || !post_state.gamma_s.keys) continue; // not a fallback epoch
+    const eta = nextEntropy(pre_state.eta.map(fromHex), fromHex(input.entropy), newEpoch);
+    const offenders = pre_state.post_offenders.map(fromHex);
+    const { active } = rotateValidators(validatorSets(pre_state), offenders); // κ′
+    const sealers = fallbackKeys(config, eta[2], active); // F(η′₂, κ′)
+    assert.deepEqual(sealers.map(toHex), post_state.gamma_s.keys, name);
+    fallbacks++;
+  }
+  assert.equal(fallbacks, 12); // 5 tiny, 7 full
+});
+```
+
+*Which* new epochs fall back is the next lesson's question. This test checks every vector
+where the fallback happened: post_state's γ_S holds `keys` instead of `tickets`. It works
+out η′ and κ′ with lessons 8.1 and 8.2's own functions, so your whole Safrole so far is on
+trial, not just F.
+
+**Run, expect it to fail**
+
+```sh
+npm test
+# fails with: does not provide an export named
+```
+
+## The code
+
+**Add to** `src/safrole.ts`
+
+```ts
+import type { Config } from "./config.ts";
+import { decodeFixed, encodeFixed } from "./codec/numbers.ts";
+
+/**
+ * F: the fallback sealers, one Bandersnatch key per slot of an epoch. Slot i goes to the
+ * validator at ℰ₄⁻¹(the first four bytes of H(r ⌢ ℰ₄(i))), counted round the set.
+ */
+export function fallbackKeys(config: Config, r: Bytes, validators: ValidatorKey[]): Bytes[] {
+  const keys: Bytes[] = [];
+  for (let i = 0; i < config.epoch_length; i++) {
+    const hash = blake2b256(concatBytes(r, encodeFixed(BigInt(i), 4)));
+    const index = Number(decodeFixed(hash.subarray(0, 4))) % validators.length;
+    keys.push(validators[index].bandersnatch);
+  }
+  return keys;
+}
+```
+
+It's the same trick as lesson 7.2's numbers from a hash, with one hash per slot instead of
+eight numbers per hash.
+
+**Run**
+
+```sh
+npm test
+# prints: F: an epoch without a full lottery is sealed by keys picked from κ′ by hash
+# prints: fail 0
+# prints: reported
+npm run typecheck
+```
+
+12 fallback epochs, every sealer of every slot right: 5 on tiny, 7 on full, where each
+epoch is 600 slots.
+
+## Watch it
+
+**New file** `bin/sealers.ts`
+
+```ts
+// Shows who seals each slot of the new epoch when a safrole test vector falls back to F:
+// every slot's key, and which validator of κ′ it belongs to.
+// Usage: node bin/sealers.ts <vector.json>, e.g.
+//        node bin/sealers.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+
+import { readFileSync } from "node:fs";
+import { fromHex, toHex } from "../src/bytes.ts";
+import { FULL, TINY } from "../src/config.ts";
+import { Run } from "../src/obs.ts";
+import { fallbackKeys } from "../src/safrole.ts";
+import { ValidatorKey } from "../src/state.ts";
+
+const [file] = process.argv.slice(2);
+const config = file.includes("/full/") ? FULL : TINY;
+const { pre_state, post_state } = JSON.parse(readFileSync(file, "utf8"));
+// at a new epoch, κ′ is the old pending set γ_P, and η′₂ is the old η₁
+const active = pre_state.gamma_k.map((key: unknown) => ValidatorKey.fromJson(key));
+const sealers = fallbackKeys(config, fromHex(pre_state.eta[1]), active);
+const run = new Run("sealers");
+const owners = active.map((v: ValidatorKey) => toHex(v.bandersnatch));
+sealers.forEach((key, phase) => {
+  const validator = owners.indexOf(toHex(key));
+  console.log(`slot ${String(phase).padStart(3)} of the epoch: validator ${validator}`);
+  run.event("sealer", { phase, validator, key });
+});
+const matches = sealers.every((key, phase) => toHex(key) === post_state.gamma_s.keys?.[phase]);
+console.log(`the sealers match the vector: ${matches}`);
+run.event("result", { matches });
+const link = await run.report();
+if (link) console.log(`reported to Grafana: ${link}`);
+```
+
+**Run**
+
+```sh
+node bin/sealers.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+# prints: slot   0 of the epoch: validator 2
+# prints: the sealers match the vector: true
+# prints: reported to Grafana
+```
+
+Count them up: validator 1 seals 5 of the 12 slots, validators 2, 3 and 4 just one each.
+That's what picking by hash does: every slot is a fresh draw, so some validators get
+lucky, and nobody is guaranteed a turn. The *Sealers* panel has the whole epoch.
+
+<details>
+<summary>lasair: F, in <code>conformance/stf_transitions.ml</code></summary>
+
+```ocaml
+          (* GP eq. fallbackkeysequence: F(eta_2', kappa') samples the
+             POSTERIOR ACTIVE set kappa' (= the pre-state gamma_k), not
+             the announced pending set in the epoch mark. Identical sets
+             in the curated corpus hid the difference. *)
+          (* F(eta_2', kappa') with kappa' = old gamma_k: index modulo |kappa'| *)
+          let v_count = max 1 (Stf_config.vset_count old_gamma_k) in
+          let gamma_s = Bytes.create (gamma_s_size_fallback ()) in
+          for s = 0 to (epoch_length ()) - 1 do
+            let input = Bytes.cat epoch_mark.tickets_entropy (encode_u32_le s) in
+            let h = Lasair.Merklization.blake2b256 input in
+            let idx = decode_u32_le h 0 mod v_count in
+```
+
+Read that first comment: a bug story. lasair once picked from the wrong set, the one the
+epoch mark announces for *later*. In the test data it had at the time, every set held the
+same validators, so the wrong set gave the right answer, until data with different sets
+arrived. That's why lesson 8.2's vectors, with their shuffled sets, matter. (And
+`epoch_mark.tickets_entropy` is η′₂ under another name: lesson 6.3 showed the epoch mark
+carries the old η₁.)
+
+</details>
+
+## What you have
+
+A Plan B for every epoch: sealers chosen by hash from the new validators, the same on
+every node.
