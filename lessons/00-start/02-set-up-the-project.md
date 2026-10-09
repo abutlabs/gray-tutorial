@@ -1,41 +1,43 @@
 # Set up the project
 
-You need git, VS Code (or any editor), Docker Desktop, and Node.js 26.
+Four things to set up, then you never think about them again: Node, the tutorial's own
+tools, the observability stack, and an empty client. Ten minutes, tops. You need git,
+VS Code (or any editor) and Docker Desktop.
 
 ## Node 26
 
-The repo's `.nvmrc` file says `26`. With [nvm](https://github.com/nvm-sh/nvm), at the
-repo root:
+The repo's `.nvmrc` says `26`. With [nvm](https://github.com/nvm-sh/nvm), at the repo
+root:
 
 ```sh
 nvm install      # once
-nvm use          # in each new terminal
+nvm use          # in every new terminal
 node --version   # v26.something
 ```
 
-Why Node 26: it runs TypeScript files directly. It strips the type annotations and runs
-what is left, so there is no build step. The code you type is the code that runs. The
-types are still checked, separately, by the TypeScript compiler `tsc`. It also has the
-newest JavaScript built-ins, such as turning bytes into hex and back, which lesson 1.1
-uses.
+Why Node 26? It runs TypeScript files directly: it strips off the type annotations and
+runs what's left. No build step, so the code you type is the code that runs. (The types
+still get checked, by the TypeScript compiler `tsc`, whenever you ask.) Node 26 also has
+the newest JavaScript built-ins, like turning bytes into hex, which you'll meet in lesson
+1.1.
 
-## The repo's own tools
+## The tutorial's tools
 
-Also at the repo root, once:
+Still at the repo root, once:
 
 ```sh
 npm install       # the website and the lesson tools
-npm run vectors   # the official test vectors, about 1.4 GB, into vectors/
+npm run vectors   # the official test vectors: about 1.4 GB, into vectors/
 ```
 
 ## The observability stack
 
-From the next lesson on, your client reports everything it does to an observability
-stack: Grafana to look at, Prometheus for numbers, Loki for events. It is the same stack
-lasair reports into, and it runs in Docker, so start Docker Desktop first.
+From the next lesson on, your client tells this stack everything it does. Grafana to
+look at, Prometheus for numbers, Loki for events: the same stack lasair reports into.
+It runs in Docker, so start Docker Desktop first.
 
 The stack is its own repo, [abutlabs/observability](https://github.com/abutlabs/observability).
-Clone it next to this one, so the two folders sit side by side, and start it:
+Clone it next door, so the two folders sit side by side, and start it:
 
 ```sh
 cd ..                     # the folder that holds gray-tutorial/
@@ -45,15 +47,15 @@ cd observability
 cd ../gray-tutorial
 ```
 
-`./obs up` prints the addresses it serves. Open Grafana at http://localhost:3300 and go to
-*Dashboards*: there is a folder **gray-tutorial** with the dashboard **Gray Tutorial: your
-client**. The stack found it in this repo's `observability/dashboards/`, because the
-checkouts sit side by side (if yours don't, start it with
-`OBS_PROJECT_DIRS=/path/to/gray-tutorial ./obs up`). The dashboard is empty: nothing has
-reported yet.
+Now open Grafana at http://localhost:3300 and go to *Dashboards*. There's a folder
+**gray-tutorial** holding **Gray Tutorial: your client**. (The stack found it in this
+repo's `observability/dashboards/` because the folders are neighbours. If yours aren't,
+start it with `OBS_PROJECT_DIRS=/path/to/gray-tutorial ./obs up`.)
 
-Leave the stack running while you work. `./obs down` stops it, and your data stays for
-the next `./obs up`. To learn the stack itself, there is a whole course,
+The dashboard is empty. Nothing has said anything yet. Lesson 0.3 fixes that.
+
+Leave the stack running while you work. `./obs down` stops it and keeps your data for the
+next `./obs up`. Curious how it all works? There's a whole course:
 [Learning Observability](https://abutlabs.github.io/jam-learning/observability/).
 
 ## Your client
@@ -82,12 +84,12 @@ cd client
 }
 ```
 
-- `"type": "module"`: every file is an ES module, so files share code with `import` and
+- `"type": "module"` makes every file a module, so files share code with `import` and
   `export`.
-- `npm test` runs Node's built-in test runner on every file in `test/` whose name ends in
-  `.test.ts`. The pattern matters: without it, Node runs every file in a `test/` folder,
-  helpers included.
-- `npm run typecheck` runs `tsc`, which checks the types and writes nothing.
+- `npm test` runs Node's built-in test runner on every `.test.ts` file in `test/`.
+  (Spell the pattern out: without it, Node runs *every* file in a `test/` folder, helpers
+  and all.)
+- `npm run typecheck` asks `tsc` to check the types. It writes nothing.
 - The versions are exact, so your client and the tutorial's behave the same.
 
 **New file** `tsconfig.json`
@@ -111,20 +113,15 @@ cd client
 }
 ```
 
-The options that matter:
+Two settings to know: `strict` turns on every check (no forgotten `null`s, no untyped
+parameters), and `noEmit` means `tsc` only checks, because Node runs the `.ts` files
+itself. The rest make sure Node and `tsc` agree on what your files mean: imports name the
+real file (`./bytes.ts`), type-only imports say `import type`, and no TypeScript feature
+needs translating (so no `enum`), because Node can only strip types away, not rewrite
+code.
 
-- `lib`: `esnext`, the newest JavaScript built-ins (such as `Uint8Array.fromHex`), which
-  Node 26 has.
-- `strict`: every check on. `null` must be handled, every parameter has a type.
-- `noEmit`: `tsc` only checks. Node runs the `.ts` files itself.
-- `allowImportingTsExtensions`: imports name the real file, `./bytes.ts`, as Node needs.
-- `verbatimModuleSyntax`: an import of types only must say `import type`. Node removes
-  those lines, and this rule makes sure it removes exactly the right ones.
-- `erasableSyntaxOnly`: no TypeScript features that generate code (`enum`, `namespace`).
-  Node can only strip types, not translate features, so `tsc` refuses them.
-
-The code lives in three folders: `src/` for the client, `test/` for its tests and `bin/`
-for small programs you run.
+Your code will live in three folders: `src/` for the client, `test/` for its tests, and
+`bin/` for little programs you run.
 
 **Run**
 
@@ -134,7 +131,7 @@ npm install
 
 ## What you have
 
-Node 26, the official test vectors, the observability stack running, and an empty client
-project that knows how to test and type-check itself.
+Node 26, the official test vectors, an observability stack waiting for its first word,
+and an empty client that knows how to test and type-check itself.
 
 Next: [0.3 Watch your client](./03-watch-your-client.md)
