@@ -48,6 +48,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [4.4 Disputes](./04-blocks/04-disputes.md)
 - [4.5 Maybe, and exactly n](./04-blocks/05-maybe-and-exactly-n.md)
 - [4.6 The header](./04-blocks/06-the-header.md)
+- [4.7 The block](./04-blocks/07-the-block.md)
 
 ## Still to be written
 
@@ -56,7 +57,6 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 4 · Blocks (rest) | the block | §5, App. C |
 | 5 · Hashing and signatures | Blake2b, Keccak, Ed25519 | §3 |
 | 6 · State and Merklization | σ, state keys, the trie, the state root | §4, App. D |
 | 7 · Time and shuffling | epochs, entropy, the Fisher-Yates shuffle | §4, App. E |

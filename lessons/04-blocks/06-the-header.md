@@ -211,5 +211,6 @@ encoder, the decoder and the JSON reader at once.
 
 ## What you have
 
-A client that can read the cover page of any JAM block, at either size. Next, the whole
-block.
+A client that can read the cover page of any JAM block, at either size.
+
+Next: [4.7 The block](./07-the-block.md)
