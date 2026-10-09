@@ -125,6 +125,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [16.1 Calling the host](./16-host-calls/01-calling-the-host.md)
 - [16.2 Fetch](./16-host-calls/02-fetch.md)
 - [16.3 Growing the heap](./16-host-calls/03-growing-the-heap.md)
+- [16.4 Info](./16-host-calls/04-info.md)
 
 ## Still to be written
 

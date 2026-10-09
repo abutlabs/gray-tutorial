@@ -1,0 +1,306 @@
+# Info
+
+The survey is in: run every service in the accumulate test vectors through your host, and
+the first question it can't answer yet is one of three: `info`, `read` or `write`. All
+three are about service *accounts*, the records and storage lesson 14.2 read out of the
+state. So the host needs to know the accounts, and the gentlest of the three goes first.
+`info` just looks.
+
+## What the Gray Paper says
+
+**`info`** (host call 6, App. B.5, Ω_I) hands a service an account's record. ω₇ says
+whose: a service id, or 2^64 − 1 for the service itself. The record goes out as 96 bytes:
+
+| Bytes | What |
+| --- | --- |
+| 32 | c, the code hash |
+| 8 | b, the balance |
+| 8 | a_t, the minimum balance (lesson 14.2) |
+| 8 | g, the least gas for each work-item |
+| 8 | m, the least gas for each transfer's memo |
+| 8 | o, the bytes it keeps |
+| 4 | i, the items it keeps |
+| 8 | f, the gratis storage |
+| 4 each | r, the slot it was created; a, the slot it last accumulated; p, its parent |
+
+It costs 703, and then it works exactly like `fetch`, only one register along: ω₈ is the
+address, ω₉ the first byte wanted, ω₁₀ how many. No such service: NONE.
+
+Accumulation's F hands `info` two things: X's service id, and the accounts as the context X
+holds them. So accumulation needs a little bundle of its own: which service is running,
+the accounts, the code, the entropy and the inputs.
+
+## The tests
+
+The 16.2 and 16.3 helpers now build that bundle:
+
+**Replace in** `test/host.test.ts`
+
+```ts
+/** Accumulation's host, for service 0 with a tiny program, an entropy of sevens, no inputs. */
+const accumulating = accumulateHost(TINY, {
+  id: 0,
+  accounts: new Map([[0, { info: tinyInfo() }]]),
+  code: tinyCode(),
+  entropy: new Uint8Array(32).fill(7),
+  inputs: [],
+});
+
+/** Service 1729's accumulation, set up as always_accumulate-1 has it: machine and host. */
+function vectorService() {
+  const vector = vectorJson("stf/accumulate/tiny/always_accumulate-1.json") as AccumulateVector;
+  const { id, data } = vector.pre_state.accounts[0];
+  const preimage = data.preimage_blobs.find((p) => p.hash === data.service.code_hash)!;
+  const code = unpackCode(fromHex(preimage.blob));
+  const [t, s] = [BigInt(vector.input.slot), BigInt(id)]; // the slot, the service, no inputs
+  const args = Uint8Array.from([...encodeNatural(t), ...encodeNatural(s), ...encodeNatural(0n)]);
+  const { memory, registers } = standardProgram(code, args);
+  const machine = newMachine(deblob(code.program), registers, memory, 100_000n);
+  machine.pc = 5; // accumulation
+  const accounts = new Map(
+    vector.pre_state.accounts.map((a) => [a.id, { info: ServiceInfo.fromJson(a.data.service) }]),
+  );
+  const entropy = fromHex(vector.pre_state.entropy);
+  const host = accumulateHost(TINY, { id, accounts, code, entropy, inputs: [] });
+  const expected = BigInt(vector.post_state.statistics[0].record.accumulate_gas_used);
+  return { machine, host, expected };
+}
+```
+
+**Add to** `test/host.test.ts`
+
+```ts
+import { info } from "../src/host.ts";
+import { ServiceInfo } from "../src/services.ts";
+
+/** A service's record, made up: a balance of 1,000, 2 items in 50 bytes, created at slot 5. */
+function tinyInfo(): ServiceInfo {
+  return {
+    version: 0,
+    code_hash: new Uint8Array(32).fill(9),
+    balance: 1000n,
+    min_item_gas: 10n,
+    min_memo_gas: 20n,
+    bytes: 50n,
+    deposit_offset: 0n,
+    items: 2,
+    creation_slot: 5,
+    last_accumulation_slot: 0,
+    parent_service: 0,
+  };
+}
+
+/** A machine about to ask info about service `who`, with a writable page at 0x20000. */
+function asking(who: bigint) {
+  const memory = new Map();
+  addPages(memory, 0x20000, 4096, "W");
+  const registers = [0n, 0n, 0n, 0n, 0n, 0n, 0n, who, 0x20000n, 0n, 96n];
+  return newMachine(assemble([[0]]), registers, memory, 10_000n);
+}
+
+test("info: a service's record, 96 bytes, starting with its code hash", () => {
+  const machine = asking(2n ** 64n - 1n); // 2^64 − 1: itself
+  assert.equal(info(machine, new Map([[0, { info: tinyInfo() }]]), 0), "continue");
+  assert.equal(machine.registers[7], 96n);
+  const start = readMemory(machine.memory, 0x20000n, 33);
+  assert.deepEqual(start, Uint8Array.of(...Array(32).fill(9), 232)); // then 1,000's low byte
+  assert.equal(machine.gas, 10_000n - 703n);
+});
+
+test("its minimum balance comes worked out: 100 + 10 per item + 1 per byte = 170", () => {
+  const machine = asking(0n); // service 0, by number this time
+  info(machine, new Map([[0, { info: tinyInfo() }]]), 0);
+  assert.deepEqual(readMemory(machine.memory, 0x20000n + 40n, 2), Uint8Array.of(170, 0));
+});
+
+test("info about a service that isn't there: NONE", () => {
+  const machine = asking(42n);
+  info(machine, new Map([[0, { info: tinyInfo() }]]), 0);
+  assert.equal(machine.registers[7], NONE);
+});
+```
+
+The made-up record makes the minimum balance easy to check: 100 to exist, 10 for each of
+its 2 items and 1 for each of its 50 bytes, 170.
+
+**Run, expect it to fail**
+
+```sh
+npm test
+# fails with: does not provide an export named
+```
+
+## The code
+
+An account, as accumulation sees it, is just its record so far. It will grow:
+
+**Add to** `src/services.ts`
+
+```ts
+/** A service account (GP §9) as accumulation sees it. So far: its record. */
+export type Account = { info: ServiceInfo };
+```
+
+`info` copies out exactly as `fetch` does, and `read` and `lookup` will too, so the copying
+moves out of `fetch` into a function of its own:
+
+**Replace in** `src/host.ts`
+
+```ts
+/**
+ * fetch (GP App. B.5, Ω_Y): copies item ω₁₀ (with index ω₁₁) to memory at ω₇: up to ω₉
+ * bytes of it, from byte ω₈ on. ω₇ becomes the item's whole length, or NONE if there's no
+ * such item. `find` says what each item is, so each invocation offers its own.
+ */
+export function fetch(m: Machine, find: Items): HostExit {
+  const [o, from, length, kind, index] = m.registers.slice(7, 12);
+  const [base, rate] = FETCH_GAS[kind < 16n ? Number(kind) : 16];
+  if (!charge(m, BigInt(base) + memoryGas(rate, length))) return "oog";
+  return copyOut(m, kind < 16n ? find(Number(kind), index) : undefined, o, from, length);
+}
+```
+
+**Add to** `src/host.ts`
+
+```ts
+import type { Account } from "./services.ts";
+import { minimumBalance } from "./services.ts";
+
+/**
+ * How fetch, info, read and lookup answer (GP App. B.5): `length` bytes of v at most, from
+ * byte `from`, go to memory at o, and ω₇ = |v|. No v: NONE. Nowhere to write it: panic.
+ */
+function copyOut(m: Machine, v: Bytes | undefined, o: bigint, from: bigint, length: bigint) {
+  if (v === undefined) {
+    m.registers[7] = NONE;
+    return "continue";
+  }
+  const f = from < BigInt(v.length) ? Number(from) : v.length;
+  const l = length < BigInt(v.length - f) ? Number(length) : v.length - f;
+  if (writeMemory(m.memory, o, v.subarray(f, f + l))) return "panic"; // not writable
+  m.registers[7] = BigInt(v.length);
+  return "continue";
+}
+
+/** info (GP App. B.5, Ω_I): service ω₇'s record (its own if ω₇ = 2^64 − 1), 96 bytes. */
+export function info(m: Machine, accounts: Map<number, Account>, s: number): HostExit {
+  if (!charge(m, 703)) return "oog";
+  const [who, o, from, length] = m.registers.slice(7, 11);
+  const a = accounts.get(who === 2n ** 64n - 1n ? s : Number(who))?.info;
+  const v = a && concatBytes(
+    a.code_hash,
+    ...[a.balance, minimumBalance(a), a.min_item_gas, a.min_memo_gas, a.bytes].map((x) =>
+      encodeFixed(x, 8),
+    ),
+    encodeFixed(BigInt(a.items), 4),
+    encodeFixed(a.deposit_offset, 8),
+    ...[a.creation_slot, a.last_accumulation_slot, a.parent_service].map((x) =>
+      encodeFixed(BigInt(x), 4),
+    ),
+  );
+  return copyOut(m, v, o, from, length);
+}
+
+/**
+ * What a service's accumulation runs with (GP App. B.4): which service it is, the accounts
+ * as its context sees them, its code, the entropy η′₀, and its inputs, each one encoded.
+ */
+export type Accumulation = {
+  id: number;
+  accounts: Map<number, Account>;
+  code: ServiceCode;
+  entropy: Bytes;
+  inputs: Bytes[];
+};
+```
+
+`info` builds the 96 bytes in the Gray Paper's order: the five 8-byte numbers and the
+three 4-byte ones in one `map` each, and the minimum balance worked out by lesson 14.2's
+`minimumBalance`, since the record doesn't store it.
+
+**Replace in** `src/host.ts`
+
+```ts
+/**
+ * F (GP App. B.4): the host for a service's accumulation. So far it answers gas, grow_heap,
+ * fetch (whose items are the constants, 0; the entropy, 1; and the inputs, all of them, 14,
+ * or one, 15) and info. Anything else: WHAT.
+ */
+export function accumulateHost(config: Config, a: Accumulation): Host {
+  const items: Items = (kind, index) => {
+    if (kind === 0) return protocolConstants(config);
+    if (kind === 1) return a.entropy;
+    if (kind === 14) return concatBytes(encodeNatural(BigInt(a.inputs.length)), ...a.inputs);
+    if (kind === 15 && index < BigInt(a.inputs.length)) return a.inputs[Number(index)];
+    return undefined;
+  };
+  return (call, m) => {
+    switch (HOST_CALLS[call]) {
+      case "gas":
+        return gas(m);
+      case "grow_heap":
+        return growHeap(m, a.code);
+      case "fetch":
+        return fetch(m, items);
+      case "info":
+        return info(m, a.accounts, a.id);
+      default:
+        return unknown(m);
+    }
+  };
+}
+```
+
+The bin hands over the bundle too:
+
+**Replace in** `bin/host.ts`
+
+```ts
+import { ServiceInfo } from "../src/services.ts";
+
+const answer = accumulateHost(TINY, {
+  id: account.id,
+  accounts: new Map([[account.id, { info: ServiceInfo.fromJson(account.data.service) }]]),
+  code,
+  entropy: fromHex(vector.pre_state.entropy),
+  inputs: [],
+});
+```
+
+**Run**
+
+```sh
+npm test
+# prints: info: a service's record, 96 bytes, starting with its code hash
+# prints: service 1729 accumulates on exactly the 16,417 gas the test vector says
+# prints: fail 0
+# prints: reported
+npm run typecheck
+```
+
+Service 1729 still matches, to the gas: its accumulation never asks `info`, so nothing
+it does has changed. The forty services that start with `info` get further now, and the
+next thing they ask for is `read`.
+
+<details>
+<summary>lasair: the minimum balance, in <code>lib/pvm_host.ml</code></summary>
+
+```ocaml
+    let threshold = service_threshold svc in
+    for i = 0 to 7 do
+      Bytes.set_uint8 info_data (40 + i)
+        (Int64.to_int (Int64.shift_right_logical threshold (i * 8)) land 0xFF)
+    done;
+```
+
+lasair writes the 96 bytes one field at a time, eight bytes of each number in a loop. The
+field worth a second look is a_t. lasair's accounts carry a cached copy of it, and the
+comment above these lines says why `info` mustn't use it: once `write` changes a service's
+items and bytes in the middle of an accumulation, the cached value is out of date. Worked
+out on the spot, as both clients do here, it can't go stale.
+
+</details>
+
+## What you have
+
+A host that knows the accounts, and can tell a service about any of them.

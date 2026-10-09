@@ -100,7 +100,8 @@ type AccumulateVector = {
   post_state: { statistics: { record: { accumulate_gas_used: number } }[] };
 };
 
-test("service 1729 accumulates on exactly the 16,417 gas the test vector says", () => {
+/** Service 1729's accumulation, set up as always_accumulate-1 has it: machine and host. */
+function vectorService() {
   const vector = vectorJson("stf/accumulate/tiny/always_accumulate-1.json") as AccumulateVector;
   const { id, data } = vector.pre_state.accounts[0];
   const preimage = data.preimage_blobs.find((p) => p.hash === data.service.code_hash)!;
@@ -111,17 +112,23 @@ test("service 1729 accumulates on exactly the 16,417 gas the test vector says", 
   const machine = newMachine(deblob(code.program), registers, memory, 100_000n);
   machine.pc = 5; // accumulation
   const host = accumulateHost(TINY, code, fromHex(vector.pre_state.entropy), []);
+  const expected = BigInt(vector.post_state.statistics[0].record.accumulate_gas_used);
+  return { machine, host, expected };
+}
+
+test("service 1729 accumulates on exactly the 16,417 gas the test vector says", () => {
+  const { machine, host, expected } = vectorService();
   assert.equal(runWithHost(machine, host), "halt");
-  const expected = vector.post_state.statistics[0].record.accumulate_gas_used;
-  assert.equal(100_000n - machine.gas, BigInt(expected));
+  assert.equal(100_000n - machine.gas, expected);
 });
 ```
 
 tinyCode's layout is easy to work out by hand. o is 3 bytes, so Q(|o|) is one zone, and a
 is (2 · 65,536 + 65,536) / 4,096 = 48. w takes page 48 and the heap page 49, so h is 50.
 
-The last test is the big one. It sets up service 1729 exactly as the vector does, runs its
-accumulation through your host, and compares the gas used with the vector's own record.
+The last test is the big one. `vectorService` sets up service 1729 exactly as the vector
+does, and the test runs its accumulation through your host and compares the gas used with
+the vector's own record.
 
 **Run, expect it to fail**
 
@@ -281,3 +288,5 @@ pages. Same answer, more detective work. Your `accumulateHost` simply hands
 
 A host that answers gas, fetch and grow_heap, and a real service's accumulation that
 matches the test vector to the last unit of gas. Next: the host calls that change things.
+
+Next: [16.4 Info](./04-info.md)
