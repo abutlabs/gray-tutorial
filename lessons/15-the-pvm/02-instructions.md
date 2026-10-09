@@ -362,13 +362,12 @@ npm run typecheck
 //        node bin/disassemble.ts ../vectors/traces/fallback/00000001.json 80282
 
 import { readFileSync } from "node:fs";
-import { fromHex, toHex } from "../src/bytes.ts";
-import { blake2b256 } from "../src/hash.ts";
+import { fromHex } from "../src/bytes.ts";
 import { Run } from "../src/obs.ts";
 import type { Instruction } from "../src/pvm/instructions.ts";
 import { decodeInstruction } from "../src/pvm/instructions.ts";
 import { deblob, unpackCode } from "../src/pvm/program.ts";
-import { readService } from "../src/services.ts";
+import { serviceCode } from "../src/services.ts";
 import type { KeyValue } from "../src/trie.ts";
 
 const [file, from, count] = process.argv.slice(2);
@@ -377,10 +376,9 @@ const entries: KeyValue[] = trace.pre_state.keyvals.map((e: { key: string; value
   key: fromHex(e.key),
   value: fromHex(e.value),
 }));
-const { code_hash } = readService(entries, 0);
-const preimage = entries.find((e) => toHex(blake2b256(e.value)) === toHex(code_hash));
+const preimage = serviceCode(entries, 0);
 if (!preimage) throw new Error("service 0's code isn't in this state");
-const program = deblob(unpackCode(preimage.value).program);
+const program = deblob(unpackCode(preimage).program);
 
 /** An immediate as a person would write it: negative if its top bit is set. */
 const show = (x: bigint) => String(x >= 2n ** 63n ? x - 2n ** 64n : x);

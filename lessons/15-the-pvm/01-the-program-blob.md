@@ -40,16 +40,12 @@ it, next to the other vector readers:
 **Add to** `test/vectors.ts`
 
 ```ts
-import { toHex } from "../src/bytes.ts";
-import { blake2b256 } from "../src/hash.ts";
-import { readService } from "../src/services.ts";
+import { serviceCode } from "../src/services.ts";
 
 /** The code of service 0, from the state before the first block of the fallback trace. */
 export function bootstrapCode(): Uint8Array {
   const { entries } = traceState("fallback", 1);
-  const { code_hash } = readService(entries, 0);
-  const preimage = entries.find((e) => toHex(blake2b256(e.value)) === toHex(code_hash));
-  return (preimage as { value: Uint8Array }).value;
+  return serviceCode(entries, 0)!;
 }
 ```
 
@@ -188,11 +184,10 @@ npm run typecheck
 //        node bin/program.ts ../vectors/traces/fallback/00000001.json
 
 import { readFileSync } from "node:fs";
-import { fromHex, toHex } from "../src/bytes.ts";
-import { blake2b256 } from "../src/hash.ts";
+import { fromHex } from "../src/bytes.ts";
 import { Run } from "../src/obs.ts";
 import { deblob, startsInstruction, unpackCode } from "../src/pvm/program.ts";
-import { readService } from "../src/services.ts";
+import { serviceCode } from "../src/services.ts";
 import type { KeyValue } from "../src/trie.ts";
 
 const [file, id] = process.argv.slice(2);
@@ -201,10 +196,9 @@ const entries: KeyValue[] = trace.pre_state.keyvals.map((e: { key: string; value
   key: fromHex(e.key),
   value: fromHex(e.value),
 }));
-const { code_hash } = readService(entries, Number(id ?? 0));
-const preimage = entries.find((e) => toHex(blake2b256(e.value)) === toHex(code_hash));
+const preimage = serviceCode(entries, Number(id ?? 0));
 if (!preimage) throw new Error("the service's code isn't in this state");
-const code = unpackCode(preimage.value);
+const code = unpackCode(preimage);
 const program = deblob(code.program);
 const opcodes = new Map<number, number>(); // how often each opcode starts an instruction
 for (let i = 0; i < program.code.length; i++) {
@@ -216,7 +210,7 @@ const instructions = [...opcodes.values()].reduce((a, b) => a + b, 0);
 const common = [...opcodes.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
 const run = new Run("program");
 const lines = [
-  `the code preimage: ${preimage.value.length} bytes`,
+  `the code preimage: ${preimage.length} bytes`,
   `  metadata: ${code.metadata.length} bytes`,
   `  read-only data ${code.readOnly.length}, read-write ${code.readWrite.length}, ` +
     `heap pages ${code.heapPages}, stack ${code.stackSize}`,

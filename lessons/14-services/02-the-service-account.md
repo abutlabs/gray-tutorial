@@ -35,13 +35,12 @@ each one, on top of the data itself.)
 **Add to** `test/services.test.ts`
 
 ```ts
-import { footprint, minimumBalance, readService, ServiceInfo } from "../src/services.ts";
+import { footprint, minimumBalance, readService, ServiceInfo, serviceCode } from "../src/services.ts";
 
 test("service 0 in real state: its code beside it, and its footprint adding up", () => {
   const { entries } = traceState("fallback", 1);
   const service = readService(entries, 0);
-  const code = entries.find((e) => toHex(blake2b256(e.value)) === toHex(service.code_hash));
-  assert.equal(code?.value.length, 159322); // its code: a preimage it keeps, lesson 6.1's giant
+  assert.equal(serviceCode(entries, 0)?.length, 159322); // its code: lesson 6.1's giant
   const preimages = entries.filter((e) => toHex(e.key) === toHex(preimageKey(0, e.value)));
   const requests = preimages.map((p) => ({ length: p.value.length })); // all provided
   assert.deepEqual(footprint([], requests), { items: service.items, bytes: service.bytes });
@@ -126,6 +125,12 @@ export function readService(entries: KeyValue[], s: number): ServiceInfo {
   return decode(ServiceInfo, entry.value);
 }
 
+/** A service's code (GP §9): the preimage of its code hash, which it keeps in the state. */
+export function serviceCode(entries: KeyValue[], s: number): Bytes | undefined {
+  const { code_hash } = readService(entries, s);
+  return entries.find((e) => toHex(blake2b256(e.value)) === toHex(code_hash))?.value;
+}
+
 /**
  * The footprint (GP §9): items is 2 per request and 1 per storage entry; bytes is 81 plus
  * the length per request, and 34 plus key and value lengths per storage entry.
@@ -154,6 +159,9 @@ Gray Paper's letters are in the comments. The 8-byte fields are `u64`, so they'r
 `bigint`s, and so the footprint's `bytes` is a `bigint` too (lesson 1.2: a `number` would
 lose precision past 2^53).
 
+`serviceCode` finds a service's code the simplest way there is: the state value whose
+hash is the account's code hash. Lessons to come run that code, and they all start here.
+
 **Run**
 
 ```sh
@@ -177,9 +185,8 @@ npm run typecheck
 
 import { readFileSync } from "node:fs";
 import { fromHex, toHex } from "../src/bytes.ts";
-import { blake2b256 } from "../src/hash.ts";
 import { Run } from "../src/obs.ts";
-import { minimumBalance, readService } from "../src/services.ts";
+import { minimumBalance, readService, serviceCode } from "../src/services.ts";
 import type { KeyValue } from "../src/trie.ts";
 
 const [file, id] = process.argv.slice(2);
@@ -190,11 +197,11 @@ const entries: KeyValue[] = trace.pre_state.keyvals.map((e: { key: string; value
   value: fromHex(e.value),
 }));
 const service = readService(entries, s);
-const code = entries.find((e) => toHex(blake2b256(e.value)) === toHex(service.code_hash));
+const code = serviceCode(entries, s);
 const run = new Run("service");
 const lines = [
   `service ${s}, created at slot ${service.creation_slot} by service ${service.parent_service}`,
-  `code hash ${toHex(service.code_hash).slice(0, 18)}…: ${code?.value.length} bytes of code`,
+  `code hash ${toHex(service.code_hash).slice(0, 18)}…: ${code?.length} bytes of code`,
   `keeps ${service.items} items in ${service.bytes} bytes`,
   `balance ${service.balance}, of which it must keep ${minimumBalance(service)}`,
   `last accumulated at slot ${service.last_accumulation_slot}`,

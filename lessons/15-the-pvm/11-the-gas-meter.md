@@ -159,14 +159,13 @@ npm run typecheck
 // Usage: node bin/gas.ts
 
 import { readFileSync } from "node:fs";
-import { fromHex, toHex } from "../src/bytes.ts";
-import { blake2b256 } from "../src/hash.ts";
+import { fromHex } from "../src/bytes.ts";
 import { Run } from "../src/obs.ts";
 import { stepWithGas } from "../src/pvm/gas.ts";
 import { newMachine } from "../src/pvm/machine.ts";
 import { deblob, unpackCode } from "../src/pvm/program.ts";
 import { standardProgram } from "../src/pvm/standard.ts";
-import { readService } from "../src/services.ts";
+import { serviceCode } from "../src/services.ts";
 import type { KeyValue } from "../src/trie.ts";
 
 const trace = JSON.parse(readFileSync("../vectors/traces/fallback/00000001.json", "utf8"));
@@ -174,9 +173,7 @@ const entries: KeyValue[] = trace.pre_state.keyvals.map((e: { key: string; value
   key: fromHex(e.key),
   value: fromHex(e.value),
 }));
-const service = readService(entries, 0);
-const preimage = entries.find((e) => toHex(blake2b256(e.value)) === toHex(service.code_hash))!;
-const code = unpackCode(preimage.value);
+const code = unpackCode(serviceCode(entries, 0)!);
 
 const run = new Run("gas");
 for (const budget of [1000n, 100n]) {
