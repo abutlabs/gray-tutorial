@@ -9,3 +9,4 @@ sent and then delivered. Privileges and the block's gas budget come later.
 - [17.1 A block's accumulation](./01-a-blocks-accumulation.md)
 - [17.2 Waiting reports](./02-waiting-reports.md)
 - [17.3 Sending a transfer](./03-sending-a-transfer.md)
+- [17.4 Rounds](./04-rounds.md)

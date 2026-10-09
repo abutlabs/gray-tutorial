@@ -342,6 +342,19 @@ read. *Example:* the bytes of "gift", then 124 zeros.
 the ones its last checkpoint kept. *Example:* two sent, one before the checkpoint.
 ([17.3](./17-accumulation/03-sending-a-transfer.md))
 
+**Δ+ (accumulating in rounds).** The loop over a block's rounds: one round, then another
+for the transfers it sent, until a round sends none. *Example:* a block with one transfer
+takes two rounds. ([17.4](./17-accumulation/04-rounds.md))
+
+**Delivery.** A transfer arriving, in the round after it was sent: its money goes into the
+receiver's balance before its code runs, and the transfer becomes one of its inputs.
+*Example:* service 1's balance grows by 100, then it reads "gift".
+([17.4](./17-accumulation/04-rounds.md))
+
+**Transfer input.** An accumulation input that starts with a 1, then one transfer; an
+operand starts with a 0. *Example:* service 1's only input in round 2.
+([17.4](./17-accumulation/04-rounds.md))
+
 **Accumulation statistics.** S(s) = (N, T, G). For each service, per block: the digests
 it accumulated, the transfers it received, the gas it used. *Example:* (1, 0, 29,643).
 ([17.1](./17-accumulation/01-a-blocks-accumulation.md))
