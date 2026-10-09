@@ -75,7 +75,10 @@ next `./obs up`. Curious how it all works? There's a whole course:
 
 ## Your client
 
-Everything from here on happens in `client/`, which is empty. Open a terminal there:
+Everything from here on happens in `client/`, which is empty. It's also git-ignored: your
+code never lands in the tutorial's history, and `git pull` brings new lessons without
+touching it. Want a history of your own? Run `git init` inside `client/`, and it becomes
+your own repository. Open a terminal there:
 
 ```sh
 cd client

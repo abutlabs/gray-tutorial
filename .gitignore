@@ -7,3 +7,6 @@ reference/
 .vitepress/cache/
 .vitepress/dist/
 .DS_Store
+# your own client: yours alone, never part of the tutorial (keep the empty folder)
+client/*
+!client/.gitkeep

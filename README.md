@@ -31,7 +31,8 @@ Then read [lessons/index.md](lessons/index.md), in either of two ways:
 
 ```
 lessons/         the tutorial: one folder per part, plain Markdown
-client/          your JAM client, built lesson by lesson (empty at the start)
+client/          your JAM client, built lesson by lesson: empty at the start, and
+                 git-ignored, so it stays yours (`git init` inside it for a history)
 observability/   the client's Grafana dashboard (the stack finds it by itself)
 vectors/         the official test vectors, v0.8.0 of davxy/jam-test-vectors (npm run vectors)
 tools/           how the lessons are checked
