@@ -8,3 +8,4 @@ until your client can read a whole block, checked against the official vectors.
 - [4.1 Tickets and preimages](./01-tickets-and-preimages.md)
 - [4.2 Tiny and full](./02-tiny-and-full.md)
 - [4.3 Guarantees](./03-guarantees.md)
+- [4.4 Disputes](./04-disputes.md)

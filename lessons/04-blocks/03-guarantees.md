@@ -140,3 +140,5 @@ record.
 ## What you have
 
 Four of the five extrinsic parts. One left, and it's the dramatic one: disputes.
+
+Next: [4.4 Disputes](./04-disputes.md)
