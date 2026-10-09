@@ -5,3 +5,4 @@ storage. This part opens those accounts up, starting with how a service gets dat
 asked for: preimages.
 
 - [14.1 Providing preimages](./01-providing-preimages.md)
+- [14.2 The service account](./02-the-service-account.md)

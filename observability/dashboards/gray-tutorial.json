@@ -992,6 +992,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 30,
+   "type": "logs",
+   "title": "Service",
+   "description": "What bin/service.ts read about a service from a real state: who created it, its code, its footprint, its balance and the minimum it must keep.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"service\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 242,
+    "w": 24,
+    "h": 6
+   }
   }
  ]
 }

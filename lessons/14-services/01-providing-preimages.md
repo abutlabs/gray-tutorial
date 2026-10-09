@@ -281,3 +281,5 @@ against the state keeps it short.
 
 Your client can hand services the data they asked for: checked by its hash, stored under
 its key, and the request marked done, the same way the real chain did, 67 times over.
+
+Next: [14.2 The service account](./02-the-service-account.md)
