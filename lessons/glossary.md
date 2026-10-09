@@ -468,6 +468,18 @@ fixed amount of free gas, whether or not work came in for it. *Example:* in the
 `always_accumulate` vectors, service 1729 runs with 100,000 free gas.
 ([16.7](./16-host-calls/07-a-services-inputs.md))
 
+**Report anchor.** The recent block a report was built against: its hash, slot, state root
+and belt root, in the report's context; it must match a block the chain remembers.
+*Example:* refused as `anchor_not_recent` if it doesn't. ([12.5](./12-guarantees/05-bad-reports.md))
+
+**Segment-root lookup.** A report's list of the packages whose exported segments it
+imported, each with those segments' root. *Example:* "package A, segments root R".
+([12.5](./12-guarantees/05-bad-reports.md))
+
+**Pipeline.** Every package the chain is already dealing with: recently accumulated,
+waiting, or pending on a core; none may be reported again. *Example:* the vectors'
+`known_packages`. ([12.5](./12-guarantees/05-bad-reports.md))
+
 **Prerequisite.** A work-package that a report says must be accumulated before it.
 *Example:* if package B names package A, B's report waits until A's has been accumulated.
 ([17.1](./17-accumulation/01-a-blocks-accumulation.md))

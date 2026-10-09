@@ -1567,14 +1567,14 @@
    "id": 49,
    "type": "logs",
    "title": "Guarantee checks",
-   "description": "What bin/check-guarantees.ts did: the guarantees of every reports test vector of one size, checked against the rules of GP §11 (the first rule broken, or 'guarantees pass'), next to the vector's own verdict on the whole block.",
+   "description": "What bin/check-guarantees.ts did: the guarantees and reports of every reports test vector of one size, checked against the rules of GP §11 (the guarantees', then the reports'): accepted, or the first rule broken, and the vector's own verdict if it differs.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"guarantee-check\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}: {{.ours}} (the vector: {{.theirs}})\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"guarantee-check\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}: {{.ours}}{{if eq .agree \\\"false\\\"}} (the vector says {{.theirs}}){{end}}\"",
      "refId": "A",
      "queryType": "range"
     }

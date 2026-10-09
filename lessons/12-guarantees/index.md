@@ -8,3 +8,4 @@ assignments, checks the guarantees' signatures, and puts new reports on free cor
 - [12.2 Signed and counted](./02-signed-and-counted.md)
 - [12.3 Onto the cores](./03-onto-the-cores.md)
 - [12.4 Bad guarantees](./04-bad-guarantees.md)
+- [12.5 Bad reports](./05-bad-reports.md)

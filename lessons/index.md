@@ -116,6 +116,7 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 - [12.2 Signed and counted](./12-guarantees/02-signed-and-counted.md)
 - [12.3 Onto the cores](./12-guarantees/03-onto-the-cores.md)
 - [12.4 Bad guarantees](./12-guarantees/04-bad-guarantees.md)
+- [12.5 Bad reports](./12-guarantees/05-bad-reports.md)
 
 **[Part 13 · Authorization](./13-authorization/index.md)**
 

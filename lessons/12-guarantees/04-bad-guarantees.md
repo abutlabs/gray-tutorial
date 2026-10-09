@@ -295,4 +295,4 @@ each signer's key up in the offenders list, where your client spots the blank th
 Guarantees that are checked, not trusted: thirteen rules, and every reports vector's
 guarantees, tiny and full, passed or refused as they should be.
 
-Next: [Part 13 · Authorization](../13-authorization/index.md)
+Next: [12.5 Bad reports](./05-bad-reports.md)
