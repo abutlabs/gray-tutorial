@@ -1,19 +1,25 @@
 # The JAM clock
 
-Your first piece of JAM, and the first thing your client reports about the world.
+Your first piece of real JAM. It's tiny, and it is everywhere: every block in JAM says
+*when* it belongs, and that "when" comes from this clock.
 
 ## What the Gray Paper says
 
-JAM keeps time in six-second **timeslots**. The Gray Paper (§4, *Time*) counts time from
-the **JAM Common Era**, 12:00 UTC on 1 January 2025, which is 1,735,732,800 seconds after
-the Unix epoch. A timeslot lasts P = 6 seconds (§4, *Epochs and Slots*), so slot 0 is the
-first six seconds of the era and slot 600 begins an hour later. Every block header names
-its slot, and a block from a future slot is invalid (§5: a header's slot times P may not
-be later than the current time).
+JAM keeps time in six-second **timeslots**, counted from the **JAM Common Era**: 12:00
+UTC on 1 January 2025 (GP §4, *Time*), which is 1,735,732,800 seconds after the Unix
+epoch. One slot lasts P = 6 seconds (§4, *Epochs and Slots*). So slot 0 is the first six
+seconds of the era, slot 1 the next six, and slot 600 starts exactly one hour in.
 
-## The code
+Every block header names its slot, and a block may not come from the future: its slot
+times P can't be later than the current time (§5). Why midday? So that all the major
+time zones share the same date at every whole day of the era. The Gray Paper thinks of
+everything.
 
-Write the test first. It says what `slotAt` must do before `slotAt` exists:
+## The test comes first
+
+You are about to write a test for a function that doesn't exist yet. That's the plan,
+not a typo: the test says what `slotAt` must do, and then you write `slotAt` to make it
+true.
 
 **New file** `test/time.test.ts`
 
@@ -33,14 +39,10 @@ test("slot 0 is the first six seconds of the JAM Common Era", () => {
 test("an hour is 600 slots", () => {
   assert.equal(at("2025-01-01T13:00:00Z"), 600);
 });
-
-test("there are no slots before the era", () => {
-  assert.throws(() => at("2025-01-01T11:59:59Z"), RangeError);
-});
 ```
 
-`node:test` gives you `test(name, fn)`, and `node:assert/strict` gives you assertions
-that compare exactly (`assert.equal(1, "1")` fails).
+`node:test` gives you `test(name, fn)`. `node:assert/strict` gives you assertions that
+compare exactly, so `assert.equal(1, "1")` fails, as it should.
 
 **Run, expect it to fail**
 
@@ -49,11 +51,17 @@ npm test
 # fails with: Cannot find module
 ```
 
-The `# fails with:` line says what to look for in the output: Node can't find
-`src/time.ts`, because there isn't one yet: you write it next. (A `#` line is a comment, so the shell skips
-it; `# prints:` lines work the same way.) The failed run is reported too: on the
-dashboard, *Tests failed* is no longer 0, and *Test results* says which test failed and
-why.
+Red! Node can't find `src/time.ts`, because there isn't one. Good: now you know the test
+really runs, and really fails without the code.
+
+Two small conventions you'll see in every lesson: a line starting with `#` in a **Run**
+block is a comment (the shell skips it), and `# fails with:` or `# prints:` tells you
+what to look for in the output. The tutorial's own checks look for exactly that text.
+
+Over in Grafana, this failed run is already there: *Tests failed* is no longer 0, and
+*Test results* says which test failed and why.
+
+## The code
 
 **New file** `src/time.ts`
 
@@ -69,10 +77,12 @@ export const SLOT_SECONDS = 6;
 /** The timeslot a moment falls in: whole slots since the JAM Common Era. */
 export function slotAt(date: Date): number {
   const ms = date.getTime() - JAM_COMMON_ERA * 1000;
-  if (ms < 0) throw new RangeError(`${date.toISOString()} is before the JAM Common Era`);
   return Math.floor(ms / (SLOT_SECONDS * 1000));
 }
 ```
+
+Milliseconds since the era, divided by the milliseconds in a slot, rounded down. That's
+the whole JAM clock.
 
 **Run**
 
@@ -83,11 +93,13 @@ npm test
 npm run typecheck
 ```
 
-Both pass. They check different things. Node strips the types and runs the code
-without looking at them, so a type error would not fail `npm test`. `npm run typecheck`
-is what catches it. Run both after every change.
+Green, and on the dashboard *Tests passed* jumps from 0 to 2.
 
-## A program that reports
+Why two commands? Node strips the types and runs the code without ever looking at them,
+so a type error would sail straight through `npm test`. `npm run typecheck` is the one
+that catches it. Run both after every change.
+
+## What time is it in JAM?
 
 **New file** `bin/now.ts`
 
@@ -106,9 +118,6 @@ const link = await run.report();
 if (link) console.log(`reported to Grafana: ${link}`);
 ```
 
-The file is a module, so it can `await` at the top level: Node waits for the report
-before it exits.
-
 **Run**
 
 ```sh
@@ -117,10 +126,9 @@ node bin/now.ts
 # prints: reported to Grafana
 ```
 
-It prints a slot in the millions: the number of six-second slots since the start of
-2025. On the dashboard, *JAM timeslot* shows the same number, and the run's event is in
-*Everything your client reported*. Run it again six seconds later and the number has
-gone up by one.
+A number in the millions: every six-second slot since the start of 2025. On the
+dashboard, *JAM timeslot* shows the same number. Run it again after six seconds and
+watch it tick up by one. That's JAM's heartbeat.
 
 <details>
 <summary>lasair: the same clock, in <code>lib/overview.ml</code></summary>
@@ -137,12 +145,13 @@ let timeslot_of_unix (unix_ts : int64) : timeslot option =
   else Some (Int32.of_int (to_int (div diff (of_int Constants.c_slot_seconds))))
 ```
 
-Where your `slotAt` throws before the era, lasair returns `None`: OCaml's `option` type
-says "maybe no value", and the caller must handle both cases. `let open Int64 in` lets
-the function write `sub` and `div` for `Int64.sub` and `Int64.div`.
+The same division. lasair also refuses moments before the era: it returns `None`, OCaml's
+"no value here", and the caller must deal with it. (Your clock will learn that in the
+hardening pass; nobody is importing blocks from 2024.) `let open Int64 in` lets the
+function write `sub` and `div` for `Int64.sub` and `Int64.div`.
 
-JAM time is this simple on purpose: every node computes the same slot from its own
-clock, with no messages.
+JAM time is this simple on purpose: every node works out the same slot from its own
+clock, without sending a single message.
 
 </details>
 
