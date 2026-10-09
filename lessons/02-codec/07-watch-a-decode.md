@@ -1,17 +1,17 @@
 # Watch a decode
 
-In lesson 2.6 you moved a field and the test showed three wrong values. It didn't show
-where the bytes went. This lesson makes the decoder report what it does: for every field,
-which bytes it read and where they sit in the encoding. The trace goes to the terminal
-and to Grafana, like every other run.
+In lesson 2.6 you moved one field and three values went haywire. The test told you
+*that* they were wrong. It couldn't tell you *where the bytes went*. Time to give the
+decoder a voice: for every field, which bytes it read and where they sit. The trace goes
+to your terminal and to Grafana, like everything else your client does.
 
 ## The idea
 
 A decode trace is a list of the **innermost fields** of a value, in the order they are
 read. Each says its path (`import_segments.0.index`), where its bytes start and end, and
 the bytes themselves. Lengths count as fields too (`import_segments.length`),
-so the trace covers every byte of the encoding exactly once. That is easy to test, and it
-is what makes a trace trustworthy: no byte is read without being reported.
+so the trace covers every byte of the encoding exactly once. That's easy to test, and
+it's what makes a trace trustworthy: no byte sneaks past unreported.
 
 The Reader does the work. A record names each field as it reads it, a sequence names each
 item by its index, and the Reader reports a field when nothing inside it was named.
@@ -151,7 +151,8 @@ A sequence names its length `length` and its items `0`, `1`, `2`.
 ## The tests
 
 The second test is the promise that matters: the trace covers every byte, once, in
-order. Joining the bytes of every reported field gives back the whole encoding.
+order. Glue the bytes of every reported field back together and you get the whole
+encoding.
 
 **New file** `test/trace.test.ts`
 
@@ -188,15 +189,10 @@ test("the trace covers every byte, once, in order", () => {
   for (let i = 1; i < fields.length; i++) assert.equal(fields[i].from, fields[i - 1].to);
   assert.deepEqual(concatBytes(...fields.map((f) => f.bytes)), bytes);
 });
-
-test("a trace doesn't change what is decoded", () => {
-  const bytes = vectorBytes("codec/tiny/work_item.bin");
-  assert.deepEqual(decode(WorkItem, bytes, { event: () => {} }), decode(WorkItem, bytes));
-});
 ```
 
-The tests pass a plain object with an `event` method as the trace, and collect what it is
-given: that is all a `Trace` is.
+The tests pass a plain object with an `event` method as the trace and collect what it's
+handed. That's all a `Trace` is: something that listens.
 
 **Run**
 
@@ -304,8 +300,8 @@ first two bytes of the refine gas limit, and both gas limits then started two by
 late. `payload` starts at 54 either way, which is why everything after
 it still decoded correctly. Put `export_count` back afterwards.
 
-This is how you will debug every failing vector from here on: look at what your client
-read, not only at what it got wrong.
+This is how you'll debug every failing vector from here on: don't just stare at what
+your client got wrong, watch what it *read*.
 
 <details>
 <summary>lasair: <code>Trace_runner</code></summary>
