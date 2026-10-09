@@ -572,6 +572,36 @@
     "w": 24,
     "h": 10
    }
+  },
+  {
+   "id": 16,
+   "type": "logs",
+   "title": "Lottery",
+   "description": "What bin/lottery.ts found: whether the block closes a full ticket lottery, and if so the slot of the next epoch each winning ticket will seal (rank 0 is the best ticket).",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"lottery\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"seat\\\"}}slot {{.phase}}: ticket {{.rank}}  {{.id}}{{else}}slot {{.before}} → {{.after}}, tickets mark: {{.mark}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 124,
+    "w": 24,
+    "h": 10
+   }
   }
  ]
 }

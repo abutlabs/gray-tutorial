@@ -194,3 +194,5 @@ carries the old η₁.)
 
 A Plan B for every epoch: sealers chosen by hash from the new validators, the same on
 every node.
+
+Next: [8.4 The lottery's winners](./04-the-lotterys-winners.md)
