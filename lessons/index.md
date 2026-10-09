@@ -128,6 +128,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [16.4 Info](./16-host-calls/04-info.md)
 - [16.5 Storage](./16-host-calls/05-storage.md)
 - [16.6 Checkpoints](./16-host-calls/06-checkpoints.md)
+- [16.7 A service's inputs](./16-host-calls/07-a-services-inputs.md)
 
 ## Still to be written
 

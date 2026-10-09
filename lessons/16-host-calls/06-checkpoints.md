@@ -348,3 +348,5 @@ holds so far. It will hold more.
 
 A whole accumulation, Ψ_A, that keeps what a service does when it succeeds, and falls
 back to its last checkpoint when it doesn't.
+
+Next: [16.7 A service's inputs](./07-a-services-inputs.md)
