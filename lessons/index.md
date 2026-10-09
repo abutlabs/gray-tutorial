@@ -161,6 +161,7 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 - [17.4 Rounds](./17-accumulation/04-rounds.md)
 - [17.5 Privileges](./17-accumulation/05-privileges.md)
 - [17.6 Who wins](./17-accumulation/06-who-wins.md)
+- [17.7 Ejecting a service](./17-accumulation/07-ejecting-a-service.md)
 
 **[Part 18 · Statistics](./18-statistics/index.md)**
 
@@ -179,7 +180,7 @@ this order, and each one is checked end to end before it is published here.
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 16 · Host calls (rest) | new, eject, upgrade, yield, provide, bless, designate, the inner machine | App. B |
+| 16 · Host calls (rest) | new, upgrade, yield, provide, bless, designate, the inner machine | App. B |
 | 17 · Accumulation (rest) | new and ejected services, the other privileged calls, the block's gas budget | §12 |
 | 19 · Block import (rest) | real blocks through every step, the block-import traces (needs Part 8's Bandersnatch for η′) | §4, §5 |
 | 20 · Facing the fuzzer | the conformance fuzzer's protocol | |

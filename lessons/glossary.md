@@ -480,6 +480,14 @@ minimums, and counts of what it keeps. ([14.2](./14-services/02-the-service-acco
 **Storage.** A service's own key-value store in the state. *Example:* a service writes the
 key "last" with some bytes, and reads it back next time. ([16.5](./16-host-calls/05-storage.md))
 
+**Eject, ejector.** Removing a finished service for good; its ejector is the service it
+named to do it, by setting its code hash to the ejector's id in 32 bytes. *Example:* a code
+hash of 32 zero bytes names service 0. ([17.7](./17-accumulation/07-ejecting-a-service.md))
+
+**Expunge period.** D. How many slots a forgotten preimage must wait before it may go: 32
+on tiny, 19,200 on full. *Example:* forgotten at slot 10, gone from slot 43 on tiny.
+([17.7](./17-accumulation/07-ejecting-a-service.md))
+
 **Request.** A service asking for a preimage by hash and length. Its history is a short
 list of slots: asked for, provided, forgotten. ([16.9](./16-host-calls/09-asking-for-preimages.md))
 

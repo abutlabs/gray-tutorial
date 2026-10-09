@@ -459,4 +459,4 @@ R listens to.
 Privileges that survive the round they're changed in, settled the Gray Paper's way: the
 manager first, then the holder. Forty official vectors match as whole blocks.
 
-Next: [Part 18 · Statistics](../18-statistics/index.md)
+Next: [17.7 Ejecting a service](./07-ejecting-a-service.md)
