@@ -252,3 +252,5 @@ when debugging, it can print the message before saying WHAT.
 
 A machine that can ask, and a host that answers. One question so far: how much gas is
 left?
+
+Next: [16.2 Fetch](./02-fetch.md)

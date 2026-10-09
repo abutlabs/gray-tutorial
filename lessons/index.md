@@ -123,6 +123,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 **[Part 16 · Host calls](./16-host-calls/index.md)**
 
 - [16.1 Calling the host](./16-host-calls/01-calling-the-host.md)
+- [16.2 Fetch](./16-host-calls/02-fetch.md)
 
 ## Still to be written
 

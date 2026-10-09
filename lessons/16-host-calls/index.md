@@ -7,3 +7,4 @@ calls an accumulating service needs, a few at a time, until a real accumulation 
 the test vectors down to the last unit of gas.
 
 - [16.1 Calling the host](./01-calling-the-host.md)
+- [16.2 Fetch](./02-fetch.md)
