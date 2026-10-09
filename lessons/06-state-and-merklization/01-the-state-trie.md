@@ -54,6 +54,29 @@ And then real states, from the four traces of lesson 5.2: each trace step carrie
 state *before* its block, as key-value entries, and each block's header promises that
 state's root.
 
+First, a helper that reads a trace's state, next to the other vector readers. Each
+entry's key and value become bytes, and the header's promise comes along.
+
+**Add to** `test/vectors.ts`
+
+```ts
+import { fromHex } from "../src/bytes.ts";
+
+/** The state before block n of a tiny trace, and the state root its header promises. */
+export function traceState(family: string, n: number) {
+  const name = `traces/${family}/${String(n).padStart(8, "0")}.json`;
+  const trace = vectorJson(name) as {
+    pre_state: { keyvals: { key: string; value: string }[] };
+    block: { header: { parent_state_root: string } };
+  };
+  const entries = trace.pre_state.keyvals.map((e) => ({
+    key: fromHex(e.key),
+    value: fromHex(e.value),
+  }));
+  return { entries, promised: trace.block.header.parent_state_root };
+}
+```
+
 **New file** `test/trie.test.ts`
 
 ```ts
@@ -61,7 +84,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fromHex, toHex } from "../src/bytes.ts";
 import { stateRoot } from "../src/trie.ts";
-import { vectorJson } from "./vectors.ts";
+import { traceState, vectorJson } from "./vectors.ts";
 
 test("the trie vectors: from no entries at all to ten", () => {
   const vectors = vectorJson("trie/trie.json") as {
@@ -76,20 +99,6 @@ test("the trie vectors: from no entries at all to ten", () => {
     assert.equal(toHex(stateRoot(entries)), `0x${output}`);
   }
 });
-
-/** The state before block n of a tiny trace, and the state root its header promises. */
-function traceState(family: string, n: number) {
-  const name = `traces/${family}/${String(n).padStart(8, "0")}.json`;
-  const trace = vectorJson(name) as {
-    pre_state: { keyvals: { key: string; value: string }[] };
-    block: { header: { parent_state_root: string } };
-  };
-  const entries = trace.pre_state.keyvals.map((e) => ({
-    key: fromHex(e.key),
-    value: fromHex(e.value),
-  }));
-  return { entries, promised: trace.block.header.parent_state_root };
-}
 
 test("each header promises the state before its block, by its root: 400 real states", () => {
   for (const family of ["fallback", "safrole", "preimages", "storage"]) {
@@ -300,3 +309,5 @@ three cases off like the Gray Paper's own definition.
 
 The function every JAM node runs after every block: the state root. Your client can now
 check that a header's `parent_state_root` really is the state it came from.
+
+Next: [6.2 State keys](./02-state-keys.md)

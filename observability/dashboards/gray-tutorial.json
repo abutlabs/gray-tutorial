@@ -362,14 +362,14 @@
    "id": 9,
    "type": "logs",
    "title": "State trie",
-   "description": "What bin/state.ts built: each state entry's leaf (how deep in the trie, its key, its value's size), then the state root and whether the block's header promises the same.",
+   "description": "What bin/state.ts built: each state entry's leaf (how deep in the trie, its value's size, and what it is, or its key), then the state root and whether the block's header promises the same.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"state\", run_id=~\"$run_id\"} | json | step=\"leaf\" | line_format \"depth {{.depth}}  {{.key}}  {{.size}}-byte value\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"state\", run_id=~\"$run_id\"} | json | step=\"leaf\" | line_format \"depth {{.depth}}  {{.size}}-byte value  {{if .name}}{{.name}}{{else}}{{.key}}{{end}}\"",
      "refId": "A",
      "queryType": "range"
     },

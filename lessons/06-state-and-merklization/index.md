@@ -6,3 +6,4 @@ committed to by one 32-byte root in every header. This part computes that root, 
 learns to read the state it stands for.
 
 - [6.1 The state trie](./01-the-state-trie.md)
+- [6.2 State keys](./02-state-keys.md)
