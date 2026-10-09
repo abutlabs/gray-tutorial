@@ -127,6 +127,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [16.3 Growing the heap](./16-host-calls/03-growing-the-heap.md)
 - [16.4 Info](./16-host-calls/04-info.md)
 - [16.5 Storage](./16-host-calls/05-storage.md)
+- [16.6 Checkpoints](./16-host-calls/06-checkpoints.md)
 
 ## Still to be written
 

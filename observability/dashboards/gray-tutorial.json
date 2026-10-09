@@ -1364,7 +1364,7 @@
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"host\", run_id=~\"$run_id\"} | json | line_format \"{{if .name}}host call {{.call}} ({{.name}}): {{.said}}, {{.gas}} gas left{{else}}stops {{.exit}} with {{.gas}} gas left{{end}}\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"host\", run_id=~\"$run_id\"} | json | line_format \"{{if .name}}host call {{.call}} ({{.name}}): {{.said}}, {{.gas}} gas left{{else}}stops {{.exit}}, using {{.used}} gas{{end}}\"",
      "refId": "A",
      "queryType": "range"
     }

@@ -252,3 +252,5 @@ every branch too, since it compares the account as it would be, whatever the wri
 ## What you have
 
 Services that can remember things between accumulations, and pay for what they keep.
+
+Next: [16.6 Checkpoints](./06-checkpoints.md)
