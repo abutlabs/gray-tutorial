@@ -1,9 +1,10 @@
 # The first test vectors
 
-Your codec meets the official test vectors. The `codec/` folder of the vectors holds JAM
-structures twice over: as JSON, and as the exact bytes ℰ produces. If your client decodes
-the bytes to the JSON's values, and encodes those values back to the same bytes, its
-codec agrees with every other client's for that structure.
+Exam day. Your codec meets the official test vectors, the same ones every JAM team
+checks against. Their `codec/` folder holds JAM structures twice over: as JSON, and as
+the exact bytes ℰ produces. Decode the bytes into the JSON's values, encode those values
+back into the very same bytes, and your codec agrees with every other client's. No
+partial credit.
 
 ## Look at one
 
@@ -55,7 +56,7 @@ ones differ.
 // The official test vectors, in vectors/ at the repo root (npm run vectors there).
 
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { Bytes } from "../src/bytes.ts";
 import type { Codec } from "../src/codec/codec.ts";
@@ -63,20 +64,14 @@ import { decode, encode } from "../src/codec/codec.ts";
 
 const VECTORS = fileURLToPath(new URL("../../vectors/", import.meta.url));
 
-/** The full path of a vector file, such as "codec/tiny/work_item.json". */
-export function vectorPath(name: string): string {
-  if (!existsSync(VECTORS)) {
-    throw new Error("no vectors/ at the repo root: run `npm run vectors` there");
-  }
-  return VECTORS + name;
-}
-
+/** A vector file's JSON, by its name in vectors/, such as "codec/tiny/work_item.json". */
 export function vectorJson(name: string): unknown {
-  return JSON.parse(readFileSync(vectorPath(name), "utf8"));
+  return JSON.parse(readFileSync(VECTORS + name, "utf8"));
 }
 
+/** A vector file's bytes. */
 export function vectorBytes(name: string): Bytes {
-  return new Uint8Array(readFileSync(vectorPath(name)));
+  return new Uint8Array(readFileSync(VECTORS + name));
 }
 
 /** A codec vector: the .bin decodes to the .json's value, which encodes back to the .bin. */
@@ -88,18 +83,22 @@ export function checkCodecVector<T>(codec: Codec<T>, name: string): void {
 }
 ```
 
-`new URL("../../vectors/", import.meta.url)` finds the folder relative to this file, not
-to wherever you run the tests from. `readFileSync` returns a Node `Buffer`, and
-`new Uint8Array(...)` copies it into a plain `Uint8Array`, which is what `deepEqual`
-expects to compare with (lesson 1.1).
+`new URL("../../vectors/", import.meta.url)` finds the folder relative to *this file*,
+so the tests work from wherever you run them. `readFileSync` hands back a Node `Buffer`;
+`new Uint8Array(...)` turns it into a plain `Uint8Array`, because `deepEqual` insists the
+two things it compares are the same kind of thing.
+
+`checkCodecVector` is the exam itself: the bytes must decode to the JSON's value, and
+that value must encode back to the very same bytes.
 
 Its name doesn't end in `.test.ts`, so `npm test`'s pattern leaves it out: it is a
 helper the tests import, like `test/grafana.ts`.
 
 ## The structures
 
-Two structures from the Gray Paper, both about work: what a service asks a core to
-compute. You will meet them properly in Part 3. For now they are shapes to encode.
+Two structures from the Gray Paper, both about *work*: what a service asks a core to
+compute. You'll get to know them properly in Part 3. Today they're just shapes to
+encode.
 
 **The refinement context** (§11, *Refinement Context*) describes the chain as a
 work-package saw it: an *anchor*, a recent block with its slot, state root and
@@ -161,11 +160,7 @@ export const RefineContext = record({
 });
 export type RefineContext = Value<typeof RefineContext>;
 
-/**
- * A segment to import: segment `index` of the segments whose Merkle root is `tree_root`.
- * An index of 2^15 or more means tree_root is the hash of the exporting work-package
- * instead, and the segment is index − 2^15 (GP Appendix C, I).
- */
+/** A data segment to import: which set of segments (by its root), and which one in it. */
 export const ImportSpec = record({
   tree_root: hash,
   index: u16,
@@ -193,8 +188,8 @@ export const WorkItem = record({
 export type WorkItem = Value<typeof WorkItem>;
 ```
 
-Hover over `RefineContext` in VS Code: its type is spelled out field by field, derived
-from the codec.
+Hover over `RefineContext` in VS Code: its type is spelled out field by field, and you
+never wrote it. The codec did.
 
 **Run**
 
@@ -208,7 +203,8 @@ npm run typecheck
 ```
 
 All four pass: tiny and full, both structures. Your codec reproduces the official
-encoding byte for byte.
+encoding, byte for byte. That's a real JAM milestone, however small: a client written
+from the Gray Paper alone agreeing with the reference. Enjoy it.
 
 ## Break it on purpose
 
