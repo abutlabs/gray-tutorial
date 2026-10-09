@@ -245,6 +245,17 @@ entropy, every service's account, and more, each part a *component* with a Greek
 *Example:* τ is the time, η the entropy.
 ([6.3](./06-state-and-merklization/03-reading-the-state.md))
 
+**Intermediate value.** A value halfway through a block, marked with a dagger. *Example:*
+ρ† is the cores after the judgments, ρ‡ after the assurances, ρ′ after the whole block.
+([19.1](./19-block-import/01-the-order-of-things.md))
+
+**Dependency graph.** ≺. What each new piece of state is made from (GP §4.2). *Example:*
+ρ‡ ≺ (E_A, ρ†). ([19.1](./19-block-import/01-the-order-of-things.md))
+
+**Wave.** This client's name for a group of block-import steps whose ingredients are all
+ready; steps in one wave don't need each other. *Example:* wave 1 is τ′, β_H†, η′, κ′, λ′,
+ψ′ and ρ†. ([19.1](./19-block-import/01-the-order-of-things.md))
+
 **State root.** One 32-byte hash that fingerprints the whole state, through a tree of
 hashes (a *trie*). Two clients agree on the state exactly when they agree on the root.
 ([6.1](./06-state-and-merklization/01-the-state-trie.md))

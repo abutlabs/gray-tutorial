@@ -1472,6 +1472,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 46,
+   "type": "logs",
+   "title": "Block import plan",
+   "description": "What bin/plan.ts printed: the Gray Paper's block-import steps (§4.2) in waves, each with what it's made from and the lesson that builds it. Steps in one wave don't need each other.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"plan\", run_id=~\"$run_id\"} | json | line_format \"wave {{.wave}}: {{.makes}} ← {{.from}} (lesson {{.lesson}})\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 375,
+    "w": 24,
+    "h": 10
+   }
   }
  ]
 }

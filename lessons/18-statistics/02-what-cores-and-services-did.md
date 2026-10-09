@@ -407,3 +407,5 @@ only have integers. Try it: 3 segments, (195 + 63) / 64 = 4.
 
 All three scorecards: each validator's for the epoch (18.1), and each core's and each
 service's for the block, matching every reports and preimages vector. Part 18 is done.
+
+Next: [Part 19 · Block import](../19-block-import/index.md)

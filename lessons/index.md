@@ -162,6 +162,10 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 - [18.1 Who did what](./18-statistics/01-who-did-what.md)
 - [18.2 What cores and services did](./18-statistics/02-what-cores-and-services-did.md)
 
+**[Part 19 · Block import](./19-block-import/index.md)**
+
+- [19.1 The order of things](./19-block-import/01-the-order-of-things.md)
+
 ## Still to be written
 
 The road from here to a full block importer, part by part. The parts are written in
@@ -170,7 +174,7 @@ this order, and each one is checked end to end before it is published here.
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 16 · Host calls (rest) | fetch, storage, the accumulation context and Ψ_A | App. B |
+| 16 · Host calls (rest) | new, eject, upgrade, yield, provide, bless, designate, the inner machine | App. B |
 | 17 · Accumulation (rest) | new and ejected services, the other privileged calls, the block's gas budget | §12 |
-| 19 · Block import | Υ: every piece in order, the block-import traces | §4, §5 |
+| 19 · Block import (rest) | real blocks through every step, the block-import traces (needs Part 8's Bandersnatch for η′) | §4, §5 |
 | 20 · Facing the fuzzer | the conformance fuzzer's protocol | |
