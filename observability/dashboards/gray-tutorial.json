@@ -1412,6 +1412,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 44,
+   "type": "logs",
+   "title": "Validator statistics",
+   "description": "What bin/statistics.ts did: each validator's tally (blocks, tickets, preimages, preimage bytes, guarantees, assurances) before and after one block.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"statistics\", run_id=~\"$run_id\"} | json | line_format \"validator {{.i}}: {{.before}} -> {{.after}}{{if eq .epoch_turned \\\"true\\\"}} (new epoch){{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 359,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

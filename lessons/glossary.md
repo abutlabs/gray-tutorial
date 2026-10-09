@@ -305,6 +305,20 @@ it accumulated, the transfers it received, the gas it used. *Example:* (1, 0, 29
 account. *Example:* 43, after accumulating in slot 43.
 ([17.1](./17-accumulation/01-a-blocks-accumulation.md))
 
+## Statistics
+
+**Validator statistics.** π_V and π_L. A tally of each validator's work, for the epoch in
+progress and the one before: blocks, tickets, preimages and their bytes, guarantees,
+assurances. *Example:* 1 block, 2 tickets, 3 preimages of 51 bytes.
+([18.1](./18-statistics/01-who-did-what.md))
+
+**Author.** H_I. The validator that made a block, named in its header by index.
+*Example:* `author_index: 1`. ([18.1](./18-statistics/01-who-did-what.md))
+
+**Reporters.** 𝐆. Every validator who signed a guarantee in a block, counted once.
+*Example:* guarantees signed by 0 and 1, and by 2 and 3: four reporters.
+([12.2](./12-guarantees/02-signed-and-counted.md))
+
 ## The PVM
 
 **PVM.** The Polkadot Virtual Machine: a small, made-up computer, based on RISC-V, that
