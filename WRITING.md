@@ -35,8 +35,16 @@ lesson. `npm test` checks those links, and that each lesson ends with a link to 
    source (say when comments are trimmed), with a sentence on reading it.
 5. A link to the next lesson.
 
-Plain words, short sentences, no em-dashes. Explain why, not only what. Every claim about
-lasair, the vectors or the Gray Paper is checked against the source before it is written.
+**The first pass teaches the base rule.** A lesson shows the rule working in its simplest
+form; edge cases, hostile input and fuzzer-level defences wait for the hardening pass,
+listed in `HARDENING.md` (what, where, why, which case needs it). Don't confuse a learner
+for the sake of 100% fuzz compatibility.
+
+**Fun.** Friendly, playful, curious: short sentences, vivid analogies, the odd joke, a
+little drama when a test goes red. Never at the cost of accuracy, never padding.
+
+Plain words, no em-dashes. Explain why, not only what. Every claim about lasair, the
+vectors or the Gray Paper is checked against the source before it is written.
 
 ## Labels
 
