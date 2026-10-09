@@ -15,8 +15,13 @@
 Every step a lesson builds also reports what it did: test runs through
 `test/grafana.ts`, programs through `Run`, codec and later STF steps through a `Trace`.
 A **Run** block that reports says so (`# prints: reported`), so verify checks the run
-reached the stack. When a step needs a new panel, it goes into
-`observability/dashboards/gray-tutorial.json` in the same change.
+reached the stack. When a step needs a new panel, it goes in the same change onto the
+theme dashboard for its Part (`observability/dashboards/gray-tutorial-*.json`; the title
+names its Parts), in that Part's row, in lesson order. Test results and everything
+reported stay on the overview, `gray-tutorial.json`, where the run links land. A new Part
+joins a theme by widening that theme's title. `tools/dashboards.test.ts` checks that
+every panel a lesson names is on its Part's dashboard, and that all of them share one
+link bar and one pair of menus.
 
 ## Where
 

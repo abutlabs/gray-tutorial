@@ -1,0 +1,514 @@
+{
+ "uid": "gray-tutorial-pvm",
+ "title": "6 · The PVM (Part 15)",
+ "description": "The PVM, from unpacking a program to running a real one with gas.",
+ "tags": [
+  "gray-tutorial"
+ ],
+ "timezone": "browser",
+ "refresh": "10s",
+ "time": {
+  "from": "now-6h",
+  "to": "now"
+ },
+ "editable": true,
+ "graphTooltip": 1,
+ "schemaVersion": 39,
+ "version": 1,
+ "annotations": {
+  "list": []
+ },
+ "links": [
+  {
+   "type": "link",
+   "title": "0 · Your client",
+   "url": "/d/gray-tutorial",
+   "tooltip": "0 · Your client",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "1 · Basics",
+   "url": "/d/gray-tutorial-basics",
+   "tooltip": "1 · Basics (Parts 0-2)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "2 · Blocks and state",
+   "url": "/d/gray-tutorial-blocks",
+   "tooltip": "2 · Blocks and state (Parts 3-6)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "3 · Consensus",
+   "url": "/d/gray-tutorial-consensus",
+   "tooltip": "3 · Consensus (Parts 7-9)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "4 · Checks",
+   "url": "/d/gray-tutorial-checks",
+   "tooltip": "4 · Checks (Parts 10-12)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "5 · Services",
+   "url": "/d/gray-tutorial-services",
+   "tooltip": "5 · Services (Parts 13-14)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "6 · The PVM",
+   "url": "/d/gray-tutorial-pvm",
+   "tooltip": "6 · The PVM (Part 15)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "7 · Accumulation and import",
+   "url": "/d/gray-tutorial-accumulation",
+   "tooltip": "7 · Accumulation and import (Parts 16-19)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  }
+ ],
+ "templating": {
+  "list": [
+   {
+    "name": "client",
+    "label": "client",
+    "type": "query",
+    "datasource": {
+     "type": "loki",
+     "uid": "loki"
+    },
+    "query": "label_values({job=\"gray_tutorial\"}, client)",
+    "definition": "label_values({job=\"gray_tutorial\"}, client)",
+    "refresh": 2,
+    "sort": 1,
+    "includeAll": false,
+    "multi": false,
+    "current": {
+     "text": "you",
+     "value": "you"
+    },
+    "options": [],
+    "hide": 0
+   },
+   {
+    "name": "run_id",
+    "label": "run",
+    "type": "query",
+    "datasource": {
+     "type": "loki",
+     "uid": "loki"
+    },
+    "query": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
+    "definition": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
+    "refresh": 2,
+    "sort": 2,
+    "includeAll": true,
+    "allValue": ".+",
+    "multi": false,
+    "current": {
+     "text": "All",
+     "value": "$__all"
+    },
+    "options": [],
+    "hide": 0
+   }
+  ]
+ },
+ "panels": [
+  {
+   "id": 100,
+   "type": "text",
+   "title": "",
+   "transparent": true,
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 2
+   },
+   "options": {
+    "mode": "markdown",
+    "content": "The PVM, from unpacking a program to running a real one with gas. One row per Part, its panels in lesson order; a panel's ⓘ says which program fills it."
+   }
+  },
+  {
+   "id": 31,
+   "type": "logs",
+   "title": "Program",
+   "description": "What bin/program.ts unpacked from a service's code: the preimage's layers (metadata, standard program, PVM blob) and the blob's jump table, code and bitmask.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"program\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 2,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
+   "id": 32,
+   "type": "logs",
+   "title": "Disassembly",
+   "description": "What bin/disassemble.ts decoded: each instruction's place in the code, its name, registers, immediates and jump target.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"disassemble\", run_id=~\"$run_id\"} | json | line_format \"{{.at}}  {{.text}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 10,
+    "w": 24,
+    "h": 10
+   }
+  },
+  {
+   "id": 33,
+   "type": "logs",
+   "title": "PVM run",
+   "description": "What bin/run.ts executed: each step's number, the instruction counter, the instruction, the registers it changed, and how the step ended.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"run\", run_id=~\"$run_id\"} | json | line_format \"step {{.n}} at {{.at}}: {{.name}}  {{.changed}}  ({{.exit}})\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 20,
+    "w": 24,
+    "h": 10
+   }
+  },
+  {
+   "id": 34,
+   "type": "logs",
+   "title": "Memory",
+   "description": "What bin/memory.ts did: a page's bytes before and after a store, the values loaded back, and a fault on a page that isn't there.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"memory\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 30,
+    "w": 24,
+    "h": 7
+   }
+  },
+  {
+   "id": 35,
+   "type": "logs",
+   "title": "ALU",
+   "description": "What bin/alu.ts computed: the arithmetic edge cases the Gray Paper spells out, each instruction with its answer in hex and as a signed number.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"alu\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}  {{.what}}  {{.answer}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 37,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
+   "id": 36,
+   "type": "logs",
+   "title": "Branches",
+   "description": "What bin/branches.ts ran: every branch with r0 = −1 against 1, and whether it jumped. Unsigned, −1 is the biggest number there is; signed, it's less than 1.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"branches\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}  taken: {{.taken}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 45,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
+   "id": 37,
+   "type": "logs",
+   "title": "Bits",
+   "description": "What bin/bits.ts ran: the ten bit-and-byte instructions on one number, each answer in hex and as a signed number.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"bits\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}({{.x}})  {{.answer}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 53,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
+   "id": 38,
+   "type": "logs",
+   "title": "A real program starts",
+   "description": "What bin/start.ts did: the bootstrap service's memory as Y lays it out, its starting registers, every step from accumulation's entry point, and the host call it stops at.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"start\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 61,
+    "w": 24,
+    "h": 12
+   }
+  },
+  {
+   "id": 39,
+   "type": "logs",
+   "title": "Costs",
+   "description": "What bin/costs.ts listed: each instruction of a real basic block with its row from the Gray Paper's cost table: cycles, decode slots and execution units.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"costs\", run_id=~\"$run_id\"} | json | line_format \"{{.at}}  {{.name}}  cycles {{.cycles}}  slots {{.slots}}  {{.units}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 73,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
+   "id": 40,
+   "type": "logs",
+   "title": "Pipeline",
+   "description": "What bin/pipeline.ts drew: a real basic block's reorder buffer, cycle by cycle (W waiting, E executing, F finished, . retired), and the gas the block costs.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"pipeline\", run_id=~\"$run_id\"} | json | line_format \"{{if .row}}cycle {{.cycle}}  {{.row}}{{else}}block {{.block}} costs {{.cost}} gas{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 81,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
+   "id": 41,
+   "type": "logs",
+   "title": "Gas",
+   "description": "What bin/gas.ts ran: the bootstrap service with a gas budget, each basic block it paid for on the way in, and where it stopped: at its first host call, or out of gas.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"gas\", run_id=~\"$run_id\"} | json | line_format \"budget {{.budget}}: {{if .exit}}stops {{.exit}} having spent {{.spent}}{{else}}block at {{.at}} costs {{.paid}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 89,
+    "w": 24,
+    "h": 8
+   }
+  }
+ ]
+}

@@ -152,8 +152,9 @@ your own code. *Example:* the published Blake2b-256 of nothing at all.
 **`Map`.** A lookup table from keys to values. *Example:* a service's storage maps each
 key to its value. ([16.5](./16-host-calls/05-storage.md))
 
-**Grafana.** The dashboard where your client's runs show up, with Loki (for events) and a
-Pushgateway (for numbers) behind it. *Example:* the *Chain* panel lists 100 blocks.
+**Grafana.** The dashboards where your client's runs show up, with Loki (for events) and a
+Pushgateway (for numbers) behind them. *Example:* the *Chain* panel, on *2 · Blocks and
+state*, lists 100 blocks.
 ([0.3](./00-start/03-watch-your-client.md))
 
 ## Bytes and encoding

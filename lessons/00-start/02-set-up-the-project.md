@@ -63,11 +63,13 @@ cd ../gray-tutorial
 ```
 
 Now open Grafana at http://localhost:3300 and go to *Dashboards*. There's a folder
-**gray-tutorial** holding **Gray Tutorial: your client**. (The stack found it in this
-repo's `observability/dashboards/` because the folders are neighbours. If yours aren't,
+**gray-tutorial** holding the tutorial's dashboards: **0 · Your client**, where every run
+lands, and one per theme, from **1 · Basics** to **7 · Accumulation and import**. A bar at
+the top of each links them all. (The stack found them in this repo's
+`observability/dashboards/` because the folders are neighbours. If yours aren't,
 start it with `OBS_PROJECT_DIRS=/path/to/gray-tutorial ./obs up`.)
 
-The dashboard is empty. Nothing has said anything yet. Lesson 0.3 fixes that.
+They're empty. Nothing has said anything yet. Lesson 0.3 fixes that.
 
 Leave the stack running while you work. `./obs down` stops it and keeps your data for the
 next `./obs up`. Curious how it all works? There's a whole course:

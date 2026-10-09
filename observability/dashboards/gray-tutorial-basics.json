@@ -1,0 +1,317 @@
+{
+ "uid": "gray-tutorial-basics",
+ "title": "1 · Basics (Parts 0-2)",
+ "description": "Your client's first runs, the JAM clock, and a decode traced byte by byte.",
+ "tags": [
+  "gray-tutorial"
+ ],
+ "timezone": "browser",
+ "refresh": "10s",
+ "time": {
+  "from": "now-6h",
+  "to": "now"
+ },
+ "editable": true,
+ "graphTooltip": 1,
+ "schemaVersion": 39,
+ "version": 1,
+ "annotations": {
+  "list": []
+ },
+ "links": [
+  {
+   "type": "link",
+   "title": "0 · Your client",
+   "url": "/d/gray-tutorial",
+   "tooltip": "0 · Your client",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "1 · Basics",
+   "url": "/d/gray-tutorial-basics",
+   "tooltip": "1 · Basics (Parts 0-2)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "2 · Blocks and state",
+   "url": "/d/gray-tutorial-blocks",
+   "tooltip": "2 · Blocks and state (Parts 3-6)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "3 · Consensus",
+   "url": "/d/gray-tutorial-consensus",
+   "tooltip": "3 · Consensus (Parts 7-9)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "4 · Checks",
+   "url": "/d/gray-tutorial-checks",
+   "tooltip": "4 · Checks (Parts 10-12)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "5 · Services",
+   "url": "/d/gray-tutorial-services",
+   "tooltip": "5 · Services (Parts 13-14)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "6 · The PVM",
+   "url": "/d/gray-tutorial-pvm",
+   "tooltip": "6 · The PVM (Part 15)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  },
+  {
+   "type": "link",
+   "title": "7 · Accumulation and import",
+   "url": "/d/gray-tutorial-accumulation",
+   "tooltip": "7 · Accumulation and import (Parts 16-19)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
+  }
+ ],
+ "templating": {
+  "list": [
+   {
+    "name": "client",
+    "label": "client",
+    "type": "query",
+    "datasource": {
+     "type": "loki",
+     "uid": "loki"
+    },
+    "query": "label_values({job=\"gray_tutorial\"}, client)",
+    "definition": "label_values({job=\"gray_tutorial\"}, client)",
+    "refresh": 2,
+    "sort": 1,
+    "includeAll": false,
+    "multi": false,
+    "current": {
+     "text": "you",
+     "value": "you"
+    },
+    "options": [],
+    "hide": 0
+   },
+   {
+    "name": "run_id",
+    "label": "run",
+    "type": "query",
+    "datasource": {
+     "type": "loki",
+     "uid": "loki"
+    },
+    "query": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
+    "definition": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
+    "refresh": 2,
+    "sort": 2,
+    "includeAll": true,
+    "allValue": ".+",
+    "multi": false,
+    "current": {
+     "text": "All",
+     "value": "$__all"
+    },
+    "options": [],
+    "hide": 0
+   }
+  ]
+ },
+ "panels": [
+  {
+   "id": 100,
+   "type": "text",
+   "title": "",
+   "transparent": true,
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 2
+   },
+   "options": {
+    "mode": "markdown",
+    "content": "Your client's first runs, the JAM clock, and a decode traced byte by byte. One row per Part, its panels in lesson order; a panel's ⓘ says which program fills it."
+   }
+  },
+  {
+   "id": 101,
+   "type": "row",
+   "collapsed": false,
+   "panels": [],
+   "title": "Part 0 · Start",
+   "gridPos": {
+    "x": 0,
+    "y": 2,
+    "w": 24,
+    "h": 1
+   }
+  },
+  {
+   "id": 5,
+   "type": "logs",
+   "title": "Everything your client reported",
+   "description": "Every event, as the JSON line your client sent: the step, then its values.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", run_id=~\"$run_id\"}",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": true,
+    "wrapLogMessage": true,
+    "sortOrder": "Descending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 3,
+    "w": 24,
+    "h": 12
+   }
+  },
+  {
+   "id": 3,
+   "type": "stat",
+   "title": "JAM timeslot (last reported)",
+   "description": "The timeslot bin/now.ts reported last: six-second slots since the JAM Common Era.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "expr": "gray_tutorial_slot{client=\"$client\"}",
+     "refId": "A",
+     "instant": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "decimals": 0,
+     "noValue": "nothing yet",
+     "color": {
+      "mode": "fixed",
+      "fixedColor": "text"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "graphMode": "none",
+    "colorMode": "value",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 15,
+    "w": 24,
+    "h": 4
+   }
+  },
+  {
+   "id": 102,
+   "type": "row",
+   "collapsed": false,
+   "panels": [],
+   "title": "Part 2 · The codec",
+   "gridPos": {
+    "x": 0,
+    "y": 19,
+    "w": 24,
+    "h": 1
+   }
+  },
+  {
+   "id": 6,
+   "type": "logs",
+   "title": "Decode trace",
+   "description": "What bin/decode.ts read, field by field: where each field's bytes start and end, and the bytes. Pick a decode run above.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"decode\", run_id=~\"$run_id\"} | json | step=\"decode\" | line_format \"{{.from}}..{{.to}}  {{.field}}  {{.bytes}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 20,
+    "w": 24,
+    "h": 10
+   }
+  }
+ ]
+}

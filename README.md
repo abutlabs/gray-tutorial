@@ -1,31 +1,97 @@
 # Gray Tutorial
 
-Build a JAM client in TypeScript, one Gray Paper rule at a time.
+How to use this project - Fork this repo and Build a JAM client in TypeScript.
 
 The lessons explain the [Gray Paper](https://graypaper.com) (version 0.8.0) and give the
 code in snippets. You assemble them into your own client in `client/`, run the tests at
 every step, and finish with a block importer that agrees byte for byte with the
 official test vectors.
 
-## Start
+
+## What you need
+
+| What | Why | Check it with |
+| --- | --- | --- |
+| git | to clone the two repositories | `git --version` |
+| [nvm](https://github.com/nvm-sh/nvm) | to install and switch to Node 26 | `nvm --version` |
+| Docker with Compose v2 (Docker Desktop on a Mac) | runs the observability stack | `docker compose version` |
+| Python 3.8 or newer | the stack's `obs` command | `python3 --version` |
+| About 4 GB of free disk | the test vectors (1.4 GB) and the stack's images (2 GB) | |
+| VS Code (optional) | to read a lesson beside your code | |
+| A GitHub account (optional) | to keep your client in a repository of its own | |
+
+Written and checked on macOS. Linux should work the same way; on Windows, use WSL 2
+(untested).
+
+## Where things go
+
+The tutorial expects the observability stack in a folder beside it. Clone both into
+any folder of your own:
 
 ```sh
-nvm use               # Node 26, from .nvmrc
-npm install           # the website and the tools
-npm run vectors       # the official test vectors, about 1.4 GB, into vectors/
-../observability/obs up   # the observability stack (abutlabs/observability, checked out beside this repo)
+mkdir jam && cd jam
+git clone https://github.com/abutlabs/observability.git
+git clone git@github.com:YOUR-NAME/gray-tutorial.git    # your fork of this repository
+cd gray-tutorial
 ```
 
-Your client reports every run to that stack from lesson 0.3 on: open Grafana at
-http://localhost:3300, folder *gray-tutorial*, dashboard *Gray Tutorial: your client*.
+You end up with:
 
-Then read [lessons/index.md](lessons/index.md), in either of two ways:
+```
+jam/
+├── observability/      the Grafana stack: ../observability/obs up, from the tutorial
+└── gray-tutorial/      this repository
+    ├── lessons/        what you read
+    ├── client/         what you build (a repository of its own, if you like: see below)
+    └── vectors/        the official test vectors, after npm run vectors
+```
 
+## Start
+
+In the `gray-tutorial` folder:
+
+```sh
+nvm install           # Node 26, from .nvmrc: installs it the first time, then switches to it
+node --version        # must say v26; if not, nothing below works
+npm install           # the website and the tools
+../observability/obs up   # the observability stack, from the folder beside this one
+npm run vectors       # the official test vectors, about 1.4 GB, into vectors/
+```
+
+nvm switches Node in one terminal only. Every new terminal starts on your default Node
+again. Three ways to live with that:
+
+- **Let your shell switch for you.** nvm's README has a short snippet for your shell's
+  startup file ([Calling `nvm use` automatically in a directory with a `.nvmrc`
+  file](https://github.com/nvm-sh/nvm#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file)):
+  every terminal in this folder, `client/` included, is on Node 26 by itself, and other
+  folders keep your default.
+- **Make 26 your default:** `nvm alias default 26`, once.
+- **Type `nvm use`** in each new terminal.
+
+On an older Node, the tutorial's commands stop and say so:
+`The Gray Tutorial needs Node 26, and this terminal has v20.15.0.`
+
+Your client reports every run to that stack from lesson 0.3 on. Its dashboards are in
+Grafana's *gray-tutorial* folder: start at *0 · Your client*
+(http://localhost:3300/d/gray-tutorial), which links one dashboard per theme of the
+tutorial, from *1 · Basics* to *7 · Accumulation and import*. Grafana's own Home page
+belongs to the stack and shows its networks, not your client.
+
+Then start the website, in a new terminal of its own (it keeps running until Ctrl-C):
+
+```sh
+nvm use               # a new terminal: Node 26 again
+npm run site          # the lessons at http://localhost:5173; your browser opens there
+```
+
+Start at its first page, or at [lessons/index.md](lessons/index.md). There are two ways to
+read the lessons:
+
+- **In a browser.** The website above: search, copy buttons and dark mode.
 - **In VS Code, on one screen.** Open this folder. Lessons open rendered (this repo's
   `.vscode/settings.json` does that). Press <kbd>⌘K</kbd> <kbd>V</kbd> on a lesson to keep it beside your
   code, and work in a terminal in `client/`.
-- **In a browser.** `npm run site` serves the same lessons at http://localhost:5173, with
-  search, copy buttons and dark mode.
 
 ## The repo
 
@@ -60,7 +126,7 @@ first push goes in cleanly), for example `my-jam-client`, private if you like, a
 it up:
 
 ```sh
-git remote add origin git@github.com:YOUR-NAME/my-jam-client.git
+git remote add origin git@github.com:YOUR-NAME/my-jam-client.git  #ie. git remote add origin git@github.com:abutlabs/my-jam-client.git
 git branch -M main
 git push -u origin main
 ```

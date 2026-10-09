@@ -5,15 +5,15 @@
   "description": "Build a JAM client in TypeScript, one Gray Paper rule at a time.",
   "engines": { "node": ">=26" },
   "scripts": {
-    "site": "vitepress dev --open",
-    "site:build": "vitepress build",
-    "vectors": "node tools/vectors.ts",
-    "compare": "node tools/compare.ts",
-    "catch-up": "node tools/compare.ts --write",
-    "verify": "node tools/verify.ts",
-    "test": "node --test \"tools/*.test.ts\"",
+    "site": "node tools/need-node.mjs && vitepress dev --open",
+    "site:build": "node tools/need-node.mjs && vitepress build",
+    "vectors": "node tools/need-node.mjs && node tools/vectors.ts",
+    "compare": "node tools/need-node.mjs && node tools/compare.ts",
+    "catch-up": "node tools/need-node.mjs && node tools/compare.ts --write",
+    "verify": "node tools/need-node.mjs && node tools/verify.ts",
+    "test": "node tools/need-node.mjs && node --test \"tools/*.test.ts\"",
     "typecheck": "tsc -p tools",
-    "check": "npm run typecheck && npm test && npm run site:build"
+    "check": "node tools/need-node.mjs && npm run typecheck && npm test && npm run site:build"
   },
   "devDependencies": {
     "@types/node": "26.6.4",
