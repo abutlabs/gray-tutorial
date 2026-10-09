@@ -323,3 +323,5 @@ one field at a time.
 
 A service's inputs, built from a block's reports, and the first eight official accumulate
 vectors passing end to end.
+
+Next: [16.8 Lookup](./08-lookup.md)

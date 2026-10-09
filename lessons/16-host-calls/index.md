@@ -13,3 +13,4 @@ the test vectors down to the last unit of gas.
 - [16.5 Storage](./05-storage.md)
 - [16.6 Checkpoints](./06-checkpoints.md)
 - [16.7 A service's inputs](./07-a-services-inputs.md)
+- [16.8 Lookup](./08-lookup.md)
