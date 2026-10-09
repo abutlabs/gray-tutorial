@@ -155,6 +155,7 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 - [17.3 Sending a transfer](./17-accumulation/03-sending-a-transfer.md)
 - [17.4 Rounds](./17-accumulation/04-rounds.md)
 - [17.5 Privileges](./17-accumulation/05-privileges.md)
+- [17.6 Who wins](./17-accumulation/06-who-wins.md)
 
 **[Part 18 · Statistics](./18-statistics/index.md)**
 
@@ -170,6 +171,6 @@ this order, and each one is checked end to end before it is published here.
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
 | 16 · Host calls (rest) | fetch, storage, the accumulation context and Ψ_A | App. B |
-| 17 · Accumulation (rest) | who wins a privilege, new and ejected services, the block's gas budget | §12 |
+| 17 · Accumulation (rest) | new and ejected services, the other privileged calls, the block's gas budget | §12 |
 | 19 · Block import | Υ: every piece in order, the block-import traces | §4, §5 |
 | 20 · Facing the fuzzer | the conformance fuzzer's protocol | |

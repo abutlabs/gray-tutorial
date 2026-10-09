@@ -406,6 +406,17 @@ right on. *Example:* service 0 hands core 0 to service 1 with `assign`.
 every slot. *Example:* the 80 hashes `assign` hands over with a core.
 ([13.1](./13-authorization/01-the-authorizer-pools.md))
 
+**Holder.** The service holding a privilege when a round starts. *Example:* service 1
+holds core 0's assignment. ([17.6](./17-accumulation/06-who-wins.md))
+
+**Merge (of privileges).** Turning every run's version of the privileges into one after a
+round. *Example:* two runs left different assigners for core 0; the merge picks one.
+([17.6](./17-accumulation/06-who-wins.md))
+
+**R (replace if changed).** R(o, a, b): the manager's change a wins; if the manager left
+it as o, the holder's own change b. *Example:* R(1, 5, 7) = 5, R(1, 1, 7) = 7.
+([17.6](./17-accumulation/06-who-wins.md))
+
 **Accumulation statistics.** S(s) = (N, T, G). For each service, per block: the digests
 it accumulated, the transfers it received, the gas it used. *Example:* (1, 0, 29,643).
 ([17.1](./17-accumulation/01-a-blocks-accumulation.md))

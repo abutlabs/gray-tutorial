@@ -1387,14 +1387,14 @@
    "id": 43,
    "type": "logs",
    "title": "Accumulate",
-   "description": "What bin/accumulate.ts did: a test vector's block accumulated, which packages went and how many reports still wait, then each service's digests, transfers received and gas next to the vector's.",
+   "description": "What bin/accumulate.ts did: a test vector's block accumulated, which packages went and how many reports still wait, the cores' assigners before and after, then each service's digests, transfers received and gas next to the vector's.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"accumulate\", run_id=~\"$run_id\"} | json | line_format \"{{if .slot}}slot {{.slot}}: accumulated {{.went}}; {{.waiting}} still waiting{{else}}service {{.s}}: {{.count}} digest(s), {{.transfers}} transfer(s), used {{.used}} (vector: {{.expected}}){{end}}\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"accumulate\", run_id=~\"$run_id\"} | json | line_format \"{{if .slot}}slot {{.slot}}: accumulated {{.went}}; {{.waiting}} still waiting; assigners {{.assigners}}{{else}}service {{.s}}: {{.count}} digest(s), {{.transfers}} transfer(s), used {{.used}} (vector: {{.expected}}){{end}}\"",
      "refId": "A",
      "queryType": "range"
     }

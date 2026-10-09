@@ -226,6 +226,11 @@ export type Privileges = {
 /** No service has this id: the holder of a privilege nobody has been given. */
 const NOBODY = 2 ** 32;
 
+/** The privileges when nobody holds any: no manager, no assigners, and so on. */
+export const NO_PRIVILEGES: Privileges = {
+  bless: NOBODY, assign: [], designate: NOBODY, register: NOBODY,
+};
+
 /**
  * What a run's privileged calls change (part of the GP's ψ): the privileges, and the new
  * authorizer queue (80 hashes) of each core this run has set one for.
@@ -244,9 +249,7 @@ export function copyPrivileged(p: Privileged): Privileged {
 }
 
 /** A run's powers as it starts: the privileges it was given, and no new queues yet. */
-export function startPowers(
-  privileges: Privileges = { bless: NOBODY, assign: [], designate: NOBODY, register: NOBODY },
-): Powers {
+export function startPowers(privileges = NO_PRIVILEGES): Powers {
   const start = { privileges, queues: new Map<number, Bytes[]>() };
   return { now: copyPrivileged(start), kept: copyPrivileged(start) };
 }
@@ -279,9 +282,9 @@ export function assign(m: Machine, s: number, powers: Powers, cores: number): Ho
 }
 ```
 
-`startPowers` gives a run that wasn't handed any privileges a world where nobody holds
-one: `NOBODY` is 2^32, an id no service can have, and no core has an assigner. Every
-earlier test that builds a run without privileges keeps working.
+`startPowers` gives a run that wasn't handed any privileges `NO_PRIVILEGES`, a world
+where nobody holds one: `NOBODY` is 2^32, an id no service can have, and no core has an
+assigner. Every earlier test that builds a run without privileges keeps working.
 
 Then the same small changes as in lesson 17.3, so the powers go where they should. A run
 may be given privileges:
@@ -556,4 +559,4 @@ A record of who holds which privilege, and the first privileged call: a core's a
 can hand it on, with a new queue, and a failure takes it back. Three more official
 service runs match.
 
-Next: [Part 18 · Statistics](../18-statistics/index.md)
+Next: [17.6 Who wins](./06-who-wins.md)

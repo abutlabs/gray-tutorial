@@ -12,3 +12,4 @@ budget comes later.
 - [17.3 Sending a transfer](./03-sending-a-transfer.md)
 - [17.4 Rounds](./04-rounds.md)
 - [17.5 Privileges](./05-privileges.md)
+- [17.6 Who wins](./06-who-wins.md)
