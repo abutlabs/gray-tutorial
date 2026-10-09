@@ -7,6 +7,15 @@ without a second look: `extrinsic_hash`, 32 bytes that promise the whole content
 one ticket, drop one signature, and the promise is broken. This lesson computes the
 promise, then checks it in 400 real blocks.
 
+## New words
+
+- **Extrinsic hash.** The header's 32-byte promise of exactly which extrinsic belongs to
+  it. *Example:* swap one ticket, and the promise is broken.
+- **Merkle commitment.** A hash of hashes, built so that one piece can be proven to be
+  inside without showing the rest. *Example:* one report, and the other parts' hashes.
+
+Both are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §5 (*The Header*), in three steps:

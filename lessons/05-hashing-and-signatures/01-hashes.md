@@ -6,6 +6,17 @@ Change one bit of an old block and its fingerprint changes, which breaks the nex
 grip, and the next, all the way up. This lesson gives your client JAM's hash function,
 and then checks a real chain of a hundred blocks, link by link.
 
+## New words
+
+- **Blake2b.** The hash function JAM uses. It can make fingerprints of any size up to 64
+  bytes; JAM asks for 32. *Example:* the hash of no bytes at all starts `0e5751c0`.
+- **Library (dependency).** Code someone else wrote and published, which your project
+  installs and uses. *Example:* `@noble/hashes`, from `npm install`.
+- **Known-answer test.** A test whose expected value comes from somewhere you trust, not
+  from your own code. *Example:* the published Blake2b-256 of nothing at all.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §3 (*Notational Conventions*): H(m) is **Blake2b** with a 256-bit (32-byte) output, as
@@ -108,11 +119,9 @@ import type { Bytes } from "./bytes.ts";
 
 /** H(x): Blake2b with a 32-byte output. */
 export function blake2b256(data: Bytes): Bytes {
-  return blake2b(data, { dkLen: 32 });
+  return blake2b(data);
 }
 ```
-
-Blake2b can make fingerprints of any size up to 64 bytes. `dkLen: 32` asks for JAM's 32.
 
 **Add to** `src/block.ts`
 
@@ -129,6 +138,43 @@ export function headerHash(config: Config, header: Header): Bytes {
 
 Encode, then hash. Every hash in JAM works this way, which is why Part 2 had to be byte
 perfect: one wrong byte in the encoding, and the hash is a stranger.
+
+**Run, expect it to fail**
+
+```sh
+npm test
+# fails with: 0x786a02f742015903
+```
+
+## Bug hunt
+
+Red, and both new tests with it. (Your fifth planted bug.) The trail:
+
+1. **The test output.** *Blake2b-256 of nothing at all* failed with two hashes side by
+   side, yours first. Don't read them, *measure* them: the expected one is 64 hex digits
+   after the `0x`, yours is 128. Your hash is twice too long. The chain test failed too,
+   on the very first link.
+2. **The dashboard.** *Tests failed* says 2, and *Test results* has both `FAIL` lines. One
+   cause, two symptoms: every hash is wrong, so every link is.
+3. **The reasoning.** 128 hex digits is 64 bytes. Your code calls `blake2b(data)`, and
+   Blake2b can make fingerprints of any size up to 64 bytes. Ask for nothing, and the
+   library picks its own default: the biggest. JAM's H is Blake2b with a *32-byte* output,
+   and a library can't know that. You have to say so.
+
+This is what a known-answer test is for. Without the hash of nothing pinned to a published
+value, the chain test alone would only tell you "every link is broken", and the hunt
+would start in the encoding. The fix is one argument:
+
+**Replace in** `src/hash.ts`
+
+```ts
+/** H(x): Blake2b with a 32-byte output. */
+export function blake2b256(data: Bytes): Bytes {
+  return blake2b(data, { dkLen: 32 });
+}
+```
+
+`dkLen: 32` asks for JAM's 32 bytes.
 
 **Run**
 

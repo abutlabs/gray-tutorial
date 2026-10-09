@@ -6,6 +6,18 @@ anyone with the matching public key can check it. JAM validators sign all day lo
 assurance, every guarantee, every vote in a dispute. This lesson checks real validator
 signatures, a thousand of them, and then catches a forgery red-handed.
 
+## New words
+
+- **Secret key and public key.** A pair: the secret one signs, the public one checks. Only
+  the holder knows the secret one; everyone may know the public one. *Example:* a
+  validator's 32-byte Ed25519 public key.
+- **Ed25519.** The signature scheme JAM uses for its everyday signatures (RFC 8032).
+  *Example:* a 64-byte signature.
+- **Domain prefix.** A few ASCII bytes in front of a signed message, so a signature for
+  one job can't pass for another. *Example:* `jam_available`, `jam_guarantee`.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §3 (*Notational Conventions*): JAM's everyday signatures are **Ed25519**, as RFC 8032
@@ -19,8 +31,8 @@ validator it names, with that validator's Ed25519 key, and the message signed is
 Three details, and each one matters:
 
 - **The `$`.** §3 uses `$` to mark ASCII strings (𝔹_$ is the set of them): it's
-  notation, not a byte. What's signed starts with the 13 ASCII bytes of `jam_available`. (Trust the bytes: put the `$`
-  in, and not one signature in the vectors checks.)
+  notation, not a byte. What's signed starts with the 13 ASCII bytes of `jam_available`.
+  (Trust the bytes: put the `$` in, and not one signature in the vectors checks.)
 - **Why a prefix at all?** So a signature made for one job can't be passed off as
   another. A guarantee's message starts with `jam_guarantee`, a dispute vote's with
   `jam_valid` or `jam_invalid`. Different first bytes, different messages: a validator's

@@ -141,6 +141,14 @@ tells which. *Example:* `{ ok: Bytes } | { error: WorkError }`.
 work result, 0 is "the output follows", 2 is "it panicked".
 ([3.2](./03-work-and-reports/02-work-digests.md))
 
+**Library (dependency).** Code someone else wrote and published, which your project
+installs and uses. *Example:* `@noble/hashes`, from `npm install`.
+([5.1](./05-hashing-and-signatures/01-hashes.md))
+
+**Known-answer test.** A test whose expected value comes from a source you trust, not from
+your own code. *Example:* the published Blake2b-256 of nothing at all.
+([5.1](./05-hashing-and-signatures/01-hashes.md))
+
 **`Map`.** A lookup table from keys to values. *Example:* a service's storage maps each
 key to its value. ([16.5](./16-host-calls/05-storage.md))
 
@@ -262,6 +270,30 @@ what makes the blocks a chain. ([5.1](./05-hashing-and-signatures/01-hashes.md))
 **Hash.** H(x). A 32-byte fingerprint of some data (JAM uses Blake2b-256). Change one bit
 of the data and the fingerprint changes completely. *Example:* the hash of no bytes at
 all starts `0x0e5751c0`. ([5.1](./05-hashing-and-signatures/01-hashes.md))
+
+**Blake2b.** The hash function JAM uses: fingerprints of any size up to 64 bytes, of which
+JAM asks for 32. *Example:* the hash of no bytes at all starts `0e5751c0`.
+([5.1](./05-hashing-and-signatures/01-hashes.md))
+
+**Extrinsic hash.** A header's 32-byte promise of exactly which extrinsic belongs to it: a
+hash of the five parts' hashes. *Example:* swap one ticket, and it no longer matches.
+([5.2](./05-hashing-and-signatures/02-the-extrinsic-hash.md))
+
+**Merkle commitment.** A hash of hashes, built so that one piece can be proven to be inside
+without showing the rest. *Example:* one report, plus the other parts' hashes.
+([5.2](./05-hashing-and-signatures/02-the-extrinsic-hash.md))
+
+**Secret key and public key.** A pair: the secret key signs, the public key checks. Only
+the holder knows the secret one. *Example:* a validator's 32-byte Ed25519 public key.
+([5.3](./05-hashing-and-signatures/03-signatures.md))
+
+**Ed25519.** The signature scheme for JAM's everyday signatures (RFC 8032): 32-byte public
+keys, 64-byte signatures. *Example:* every assurance's signature.
+([5.3](./05-hashing-and-signatures/03-signatures.md))
+
+**Domain prefix.** A few ASCII bytes put in front of a signed message, so a signature for
+one job can't pass for another. *Example:* `jam_available`, `jam_guarantee`.
+([5.3](./05-hashing-and-signatures/03-signatures.md))
 
 **Signature.** Proof that the holder of a secret key approved some bytes; anyone with the
 matching public key can check it. JAM's everyday kind is Ed25519.
