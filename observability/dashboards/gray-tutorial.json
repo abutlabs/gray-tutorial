@@ -872,6 +872,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 26,
+   "type": "logs",
+   "title": "Reporters",
+   "description": "What bin/reporters.ts checked: each guarantee's signers (short keys) and whether every signature is real, then how many distinct reporters signed.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"reporters\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"guarantee\\\"}}core {{.core}}: signed by {{.signers}}, all real: {{.signed}}{{else}}reporters: {{.count}} keys from {{.signatures}} signatures{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 210,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

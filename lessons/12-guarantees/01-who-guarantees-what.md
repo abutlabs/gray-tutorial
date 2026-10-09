@@ -326,3 +326,5 @@ guarantees and a client that makes them had better deal the same hand.
 
 The guarantor deal: who may vouch for which core, this rotation and the last, checked
 against every guarantee in the vectors.
+
+Next: [12.2 Signed and counted](./02-signed-and-counted.md)
