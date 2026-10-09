@@ -54,6 +54,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
 - [5.1 Hashes](./05-hashing-and-signatures/01-hashes.md)
 - [5.2 The extrinsic hash](./05-hashing-and-signatures/02-the-extrinsic-hash.md)
+- [5.3 Signatures](./05-hashing-and-signatures/03-signatures.md)
 
 ## Still to be written
 
@@ -62,7 +63,6 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 5 · Hashing and signatures (rest) | Ed25519 signatures | §3, §11 |
 | 6 · State and Merklization | σ, state keys, the trie, the state root | §4, App. D |
 | 7 · Time and shuffling | epochs, entropy, the Fisher-Yates shuffle | §4, App. E |
 | 8 · Safrole | Bandersnatch, tickets, sealing keys | §6, App. F |

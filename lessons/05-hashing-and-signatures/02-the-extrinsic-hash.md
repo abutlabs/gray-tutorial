@@ -251,3 +251,5 @@ Your version reuses the codecs you already trust, so it has one less place to be
 A client that checks two promises in every block: the link to its parent, and the
 contents of its extrinsic. One kind of promise is left in Part 5: signatures, a
 validator's word that *it* made something.
+
+Next: [5.3 Signatures](./03-signatures.md)

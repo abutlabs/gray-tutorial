@@ -7,3 +7,4 @@ that do it well, put to work on real JAM blocks.
 
 - [5.1 Hashes](./01-hashes.md)
 - [5.2 The extrinsic hash](./02-the-extrinsic-hash.md)
+- [5.3 Signatures](./03-signatures.md)

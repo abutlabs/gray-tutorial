@@ -1,0 +1,258 @@
+# Signatures
+
+A hash says "these bytes haven't changed". It can't say *who*: anyone can hash anything.
+For "who", you need a **signature**. Only the holder of a secret key can make one, and
+anyone with the matching public key can check it. JAM validators sign all day long: every
+assurance, every guarantee, every vote in a dispute. This lesson checks real validator
+signatures, a thousand of them, and then catches a forgery red-handed.
+
+## What the Gray Paper says
+
+§3 (*Notational Conventions*): JAM's everyday signatures are **Ed25519**, as RFC 8032
+defines them. A public key is 32 bytes, a signature is 64.
+
+§11 (*Reporting and Assurance*): an assurance (lesson 4.2) must be signed by the
+validator it names, with that validator's Ed25519 key, and the message signed is
+
+> X_A, then H(ℰ(parent, bitfield)), where X_A = `$jam_available`
+
+Three details, and each one matters:
+
+- **The `$`.** §3 uses `$` to mark ASCII strings (𝔹_$ is the set of them): it's
+  notation, not a byte. What's signed starts with the 13 ASCII bytes of `jam_available`. (Trust the bytes: put the `$`
+  in, and not one signature in the vectors checks.)
+- **Why a prefix at all?** So a signature made for one job can't be passed off as
+  another. A guarantee's message starts with `jam_guarantee`, a dispute vote's with
+  `jam_valid` or `jam_invalid`. Different first bytes, different messages: a validator's
+  "I hold my piece" can never be replayed as "this report is good".
+- **ℰ(parent, bitfield)** is just the two side by side: a hash and a fixed-size bitfield
+  encode as themselves. The parent is the block's parent hash, and an assurance's
+  `anchor` must be exactly that (§11 again), so your code signs the anchor.
+
+## Another library
+
+Ed25519 is another job for a specialist. `@noble/curves` comes from the same author as
+`@noble/hashes`, and is built on it.
+
+**Rewrite** `package.json`
+
+```json
+{
+  "name": "jam-client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./test/grafana.ts --test-reporter-destination=stdout \"test/**/*.test.ts\"",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@noble/curves": "2.4.0",
+    "@noble/hashes": "2.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.4",
+    "typescript": "7.0.2"
+  }
+}
+```
+
+**Run**
+
+```sh
+npm install
+```
+
+## The tests
+
+Three tests, from small to dramatic. First a known answer: RFC 8032's own first example,
+a signature of no bytes at all. Then real validators, from the `stf/assurances` test
+vectors. Those vectors test a whole state transition, which comes much later; today you
+borrow just two things from them: the validators' keys (`pre_state.curr_validators`)
+and the assurances (`input.assurances`). In `some_assurances-1`, every signature is
+genuine. In `assurances_with_bad_signature-1`, one isn't.
+
+**New file** `test/signature.test.ts`
+
+```ts
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { Assurance, assuranceSigned } from "../src/block.ts";
+import { fromHex } from "../src/bytes.ts";
+import type { Config } from "../src/config.ts";
+import { FULL, TINY } from "../src/config.ts";
+import { verifyEd25519 } from "../src/signature.ts";
+import { vectorJson } from "./vectors.ts";
+
+test("Ed25519: RFC 8032's first example, a signature of no bytes at all", () => {
+  const key = fromHex("0xd75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a");
+  const signature = fromHex(
+    "0xe5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e06522490155" +
+      "5fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b",
+  );
+  assert.equal(verifyEd25519(key, new Uint8Array(0), signature), true);
+  assert.equal(verifyEd25519(key, fromHex("0x00"), signature), false); // another message
+});
+
+/** For each assurance in an assurances test vector: is it signed by the validator it names? */
+function signedAssurances(config: Config, name: string): boolean[] {
+  const vector = vectorJson(`stf/assurances/${config.name}/${name}.json`) as {
+    input: { assurances: unknown[] };
+    pre_state: { curr_validators: { ed25519: string }[] };
+  };
+  const keys = vector.pre_state.curr_validators.map((v) => fromHex(v.ed25519));
+  return vector.input.assurances.map((a) => assuranceSigned(keys, Assurance(config).fromJson(a)));
+}
+
+test("every assurance is signed by the validator it names: 6 on tiny, 1023 on full", () => {
+  assert.deepEqual(signedAssurances(TINY, "some_assurances-1"), Array(6).fill(true));
+  assert.deepEqual(signedAssurances(FULL, "some_assurances-1"), Array(1023).fill(true));
+});
+
+test("a forged signature is caught", () => {
+  const signed = signedAssurances(TINY, "assurances_with_bad_signature-1");
+  assert.deepEqual(signed, [true, false, true, true, true, true]);
+});
+```
+
+Look at the first test's second check. The same signature, on a message one byte
+different, is worthless. That's the whole point of a signature.
+
+**Run, expect it to fail**
+
+```sh
+npm test
+# fails with: Cannot find module
+```
+
+## The code
+
+**New file** `src/signature.ts`
+
+```ts
+// Signatures (GP §3): Ed25519, as RFC 8032 defines it. Validators sign most of what they
+// say with it; blocks and tickets use Bandersnatch instead.
+
+import { ed25519 } from "@noble/curves/ed25519.js";
+import type { Bytes } from "./bytes.ts";
+
+/** Is `signature` a valid Ed25519 signature of `message`, by the holder of `key`? */
+export function verifyEd25519(key: Bytes, message: Bytes, signature: Bytes): boolean {
+  return ed25519.verify(signature, message, key);
+}
+```
+
+A thin wrapper, with the arguments in the order you'd say them: *who* signed *what*, and
+the signature. (The library wants them the other way round; now only one line of your
+client has to remember that.)
+
+Blocks and tickets are signed with a different kind of key, Bandersnatch. That one
+arrives with the ticket lottery.
+
+**Add to** `src/block.ts`
+
+```ts
+import { verifyEd25519 } from "./signature.ts";
+
+/** X_A (GP §11): an assurance's message starts with these bytes, "$jam_available" in the GP. */
+const AVAILABLE = new TextEncoder().encode("jam_available");
+
+/** What an assurance's validator signs (GP §11): X_A, then the hash of anchor and bitfield. */
+export function assuranceMessage(assurance: Assurance): Bytes {
+  return concatBytes(AVAILABLE, blake2b256(concatBytes(assurance.anchor, assurance.bitfield)));
+}
+
+/** Is an assurance signed by the validator it names? `keys`: the validators' Ed25519 keys. */
+export function assuranceSigned(keys: Bytes[], assurance: Assurance): boolean {
+  const key = keys[assurance.validator_index];
+  return verifyEd25519(key, assuranceMessage(assurance), assurance.signature);
+}
+```
+
+`TextEncoder` turns a string into its UTF-8 bytes, and for plain ASCII text like this
+that's one byte per letter.
+
+**Run**
+
+```sh
+npm test
+# prints: a forged signature is caught
+# prints: fail 0
+# prints: reported
+npm run typecheck
+```
+
+Over a thousand genuine signatures checked, and one forgery caught. The full-size check
+takes about a second: 1,023 signatures is real work, even for a fast library.
+
+## Watch it
+
+**New file** `bin/assurances.ts`
+
+```ts
+// Checks the signature on every assurance in an assurances test vector, with the Ed25519
+// keys of the validators in the vector's state.
+// Usage: node bin/assurances.ts <vector.json>, e.g.
+//        node bin/assurances.ts ../vectors/stf/assurances/tiny/some_assurances-1.json
+
+import { readFileSync } from "node:fs";
+import { Assurance, assuranceSigned } from "../src/block.ts";
+import { fromHex } from "../src/bytes.ts";
+import { FULL, TINY } from "../src/config.ts";
+import { Run } from "../src/obs.ts";
+
+const [file] = process.argv.slice(2);
+const config = file.includes("/full/") ? FULL : TINY;
+const vector = JSON.parse(readFileSync(file, "utf8"));
+const keys = vector.pre_state.curr_validators.map((v: { ed25519: string }) => fromHex(v.ed25519));
+const run = new Run("assurances");
+let valid = 0;
+for (const json of vector.input.assurances) {
+  const assurance = Assurance(config).fromJson(json);
+  const signed = assuranceSigned(keys, assurance);
+  if (signed) valid++;
+  const validator = assurance.validator_index;
+  console.log(`validator ${validator}: ${signed ? "signed it" : "FORGED"}`);
+  run.event("assurance", { validator, key: keys[validator], bitfield: assurance.bitfield, signed });
+}
+console.log(`${valid} of ${vector.input.assurances.length} signatures are valid.`);
+const link = await run.report();
+if (link) console.log(`reported to Grafana: ${link}`);
+```
+
+**Run**
+
+```sh
+node bin/assurances.ts ../vectors/stf/assurances/tiny/assurances_with_bad_signature-1.json
+# prints: validator 1: FORGED
+# prints: 5 of 6 signatures are valid.
+# prints: reported to Grafana
+```
+
+Caught! Validator 1's assurance carries a signature its key never made. The new
+*Assurances* panel on the dashboard lists each one: the validator, `signed: true` or
+`false`, its key and its bitfield. Then point it at
+`../vectors/stf/assurances/full/some_assurances-1.json` and watch 1,023 validators
+check out.
+
+<details>
+<summary>lasair: the dollar sign, in <code>conformance/assurances_stf.ml</code></summary>
+
+lasair met the same `$`, and settled it the same way, by trying both:
+
+```ocaml
+(* Note: Graypaper uses \token{\$jam_available} but per dakk's clarification,
+   the $ is notation for "binary string" - actual context omits the dollar sign.
+   Verified against test vectors: "jam_available" works, "$jam_available" does not. *)
+let assurance_context = Bytes.of_string "jam_available"
+```
+
+For the signature itself, lasair calls a Rust library, `ed25519-consensus`, through a
+small bridge. Both clients lean on a specialist here, just as with Blake2b.
+
+</details>
+
+## What you have
+
+Part 5, done. Your client can check a block's links (hashes), its contents (the
+extrinsic hash), and who signed what (Ed25519). Guarantees and dispute votes are signed
+the same way, with their own prefixes; you'll check them in the parts that process them.
