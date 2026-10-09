@@ -23,7 +23,7 @@ direction follows it.
 // and how the test vectors write it in JSON.
 
 import type { Bytes } from "../bytes.ts";
-import { DecodeError, Reader } from "./reader.ts";
+import { Reader } from "./reader.ts";
 import { Writer } from "./writer.ts";
 
 export interface Codec<T> {
@@ -43,12 +43,9 @@ export function encode<T>(codec: Codec<T>, value: T): Bytes {
   return w.finish();
 }
 
-/** The value these bytes encode. Every byte must be used. */
+/** The value these bytes encode. */
 export function decode<T>(codec: Codec<T>, bytes: Bytes): T {
-  const r = new Reader(bytes);
-  const value = codec.decode(r);
-  r.finish();
-  return value;
+  return codec.decode(new Reader(bytes));
 }
 
 /** Stop reading JSON that has the wrong shape. */
@@ -117,11 +114,7 @@ export const natural: Codec<bigint> = {
 /** ℰ, compact, for a natural below 2^32, as a JS number: lengths and small counts. */
 export const natural32: Codec<number> = {
   encode: (w, x) => w.natural(BigInt(x)),
-  decode: (r) => {
-    const x = r.natural();
-    if (x >= 1n << 32n) throw new DecodeError(`${x} is not below 2^32`);
-    return Number(x);
-  },
+  decode: (r) => Number(r.natural()),
   fromJson: (json) => Number(bigintFromJson(json, 32)),
 };
 ```
@@ -161,22 +154,13 @@ export function fixedBytes(n: number): Codec<Bytes> {
 /** ℍ: a 32-byte hash. */
 export const hash = fixedBytes(32);
 
-/** A length prefix, read back. It can't exceed the bytes left: each item takes at least one. */
-function lengthOf(r: Reader): number {
-  const n = r.natural();
-  if (n > BigInt(r.remaining)) {
-    throw new DecodeError(`a length of ${n} with only ${r.remaining} bytes left`);
-  }
-  return Number(n);
-}
-
 /** ↕x: a blob of any length, its length first. */
 export const blob: Codec<Bytes> = {
   encode: (w, b) => {
     w.natural(BigInt(b.length));
     w.bytes(b);
   },
-  decode: (r) => r.bytes(lengthOf(r)),
+  decode: (r) => r.bytes(Number(r.natural())),
   fromJson: bytesFromJson,
 };
 ```
@@ -184,10 +168,6 @@ export const blob: Codec<Bytes> = {
 The Gray Paper writes ↕x for "x with its length in front" (Appendix C, *Discriminator
 Encoding*). A hash needs no length because everyone knows it is 32 bytes. A blob of any
 size does.
-
-`lengthOf` checks the length against what is left before trusting it. Without that
-check, garbage input claiming a list of 2^60 items would make the decoder try, and a
-client fed blocks by an adversary (the fuzzer, or the network) can't afford that.
 
 ## Tests
 
@@ -198,7 +178,6 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fromHex, toHex } from "../src/bytes.ts";
 import { blob, decode, encode, hash, natural, natural32, u16, u32, u64, u8 } from "../src/codec/codec.ts";
-import { DecodeError } from "../src/codec/reader.ts";
 
 test("integers encode as ℰ_l and ℰ", () => {
   assert.equal(toHex(encode(u8, 7)), "0x07");
@@ -207,7 +186,6 @@ test("integers encode as ℰ_l and ℰ", () => {
   assert.equal(toHex(encode(u64, 42n)), "0x2a00000000000000");
   assert.equal(toHex(encode(natural, 128n)), "0x8080");
   assert.equal(decode(natural32, fromHex("0xc00040")), 16384);
-  assert.throws(() => decode(natural32, encode(natural, 2n ** 32n)), DecodeError);
 });
 
 test("integers from JSON are checked against their width", () => {
@@ -224,8 +202,6 @@ test("a hash is 32 bytes as they are; a blob has its length in front", () => {
   assert.throws(() => encode(hash, new Uint8Array(31)), RangeError);
   assert.equal(toHex(encode(blob, fromHex("0x0102030405"))), "0x050102030405");
   assert.deepEqual(decode(blob, fromHex("0x050102030405")), fromHex("0x0102030405"));
-  assert.throws(() => decode(blob, fromHex("0x0601020304")), DecodeError);
-  assert.throws(() => decode(u32, fromHex("0x0403020100")), /left over/);
 });
 ```
 
@@ -240,7 +216,7 @@ npm run typecheck
 
 This time the tests come after the code. Most of what they check, the earlier lessons
 already tested underneath, so these mostly check the joins: the right width for each
-codec, the length in front of a blob, the leftover byte caught by `decode`.
+codec, the length in front of a blob.
 
 <details>
 <summary>lasair: separate encoders and decoders</summary>

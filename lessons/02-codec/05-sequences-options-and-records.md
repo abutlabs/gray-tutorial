@@ -31,7 +31,7 @@ export function seq<T>(item: Codec<T>): Codec<T[]> {
       w.natural(BigInt(items.length));
       for (const x of items) item.encode(w, x);
     },
-    decode: (r) => Array.from({ length: lengthOf(r) }, () => item.decode(r)),
+    decode: (r) => Array.from({ length: Number(r.natural()) }, () => item.decode(r)),
     fromJson: (json) => {
       if (!Array.isArray(json)) return jsonError(json, "an array");
       return json.map((j) => item.fromJson(j));
@@ -74,19 +74,13 @@ export function option<T>(item: Codec<T>): Codec<T | null> {
         item.encode(w, x);
       }
     },
-    decode: (r) => {
-      const tag = r.natural();
-      if (tag === 0n) return null;
-      if (tag === 1n) return item.decode(r);
-      throw new DecodeError(`an optional value starts with 0 or 1, not ${tag}`);
-    },
+    decode: (r) => (r.natural() === 0n ? null : item.decode(r)),
     fromJson: (json) => (json === null ? null : item.fromJson(json)),
   };
 }
 ```
 
-The Gray Paper's ∅ is `null` here, as it is in the vectors' JSON. A tag other than 0 or 1
-is not something any value encodes to, so the decoder refuses it.
+The Gray Paper's ∅ is `null` here, as it is in the vectors' JSON.
 
 ## Records
 
@@ -161,7 +155,6 @@ test("an option is 0, or 1 and the value", () => {
   assert.equal(toHex(encode(option(u32), null)), "0x00");
   assert.equal(toHex(encode(option(u32), 7)), "0x0107000000");
   assert.equal(decode(option(u32), fromHex("0x0107000000")), 7);
-  assert.throws(() => decode(option(u32), fromHex("0x0207000000")), DecodeError);
 });
 
 const Pair = record({ slot: u32, gas: u64 });

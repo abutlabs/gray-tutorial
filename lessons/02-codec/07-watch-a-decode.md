@@ -39,7 +39,7 @@ lesson 2.3.
 ```ts
 export class Reader {
   #bytes: Bytes;
-  #at = 0;
+  #at = 0; // where the next read starts
   #trace: Trace | null;
   #path: string[] = []; // the names of the fields being read, outermost first
   #inner = false; // whether the field being read has named fields of its own
@@ -49,15 +49,9 @@ export class Reader {
     this.#trace = trace;
   }
 
-  /** How many bytes are left to read. */
-  get remaining(): number {
-    return this.#bytes.length - this.#at;
-  }
-
-  /** The next n bytes, as a copy. */
+  /** The next n bytes. */
   bytes(n: number): Bytes {
-    if (n > this.remaining) throw new DecodeError(`wanted ${n} bytes, ${this.remaining} left`);
-    const out = new Uint8Array(this.#bytes.subarray(this.#at, this.#at + n));
+    const out = this.#bytes.slice(this.#at, this.#at + n);
     this.#at += n;
     return out;
   }
@@ -72,11 +66,6 @@ export class Reader {
     const { value, length } = decodeNatural(this.#bytes, this.#at);
     this.#at += length;
     return value;
-  }
-
-  /** The end: an encoding uses every byte; leftover bytes mean it was not what we expected. */
-  finish(): void {
-    if (this.remaining !== 0) throw new DecodeError(`${this.remaining} byte(s) left over`);
   }
 
   /**
@@ -114,12 +103,9 @@ reported.
 ```ts
 import type { Trace } from "./reader.ts";
 
-/** The value these bytes encode. Every byte must be used. A trace gets every field. */
+/** The value these bytes encode. A trace gets every field. */
 export function decode<T>(codec: Codec<T>, bytes: Bytes, trace: Trace | null = null): T {
-  const r = new Reader(bytes, trace);
-  const value = codec.decode(r);
-  r.finish();
-  return value;
+  return codec.decode(new Reader(bytes, trace));
 }
 
 /** ↕[...]: a sequence of any length, its length first. */
@@ -130,7 +116,7 @@ export function seq<T>(item: Codec<T>): Codec<T[]> {
       for (const x of items) item.encode(w, x);
     },
     decode: (r) => {
-      const n = r.field("length", () => lengthOf(r));
+      const n = r.field("length", () => Number(r.natural()));
       return Array.from({ length: n }, (_, i) => r.field(String(i), () => item.decode(r)));
     },
     fromJson: (json) => {
@@ -166,12 +152,7 @@ export function option<T>(item: Codec<T>): Codec<T | null> {
         item.encode(w, x);
       }
     },
-    decode: (r) => {
-      const tag = r.field("present", () => r.natural());
-      if (tag === 0n) return null;
-      if (tag === 1n) return item.decode(r);
-      throw new DecodeError(`an optional value starts with 0 or 1, not ${tag}`);
-    },
+    decode: (r) => (r.field("present", () => r.natural()) === 0n ? null : item.decode(r)),
     fromJson: (json) => (json === null ? null : item.fromJson(json)),
   };
 }

@@ -229,7 +229,7 @@ The decoder took the first 2 bytes of the refine gas limit (`2a 00`) as the expo
 count, 42, and each gas limit then started 2 bytes late, which makes them huge. The
 three fields together are still 18 bytes, so the payload and everything after it still
 line up and decode correctly. Move a field of a different width and everything after it
-goes wrong, often with a `DecodeError`. Put `export_count` back before going on.
+goes wrong. Put `export_count` back before going on.
 
 <details>
 <summary>lasair: <code>encode_refinement_context</code></summary>
