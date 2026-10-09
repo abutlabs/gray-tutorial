@@ -4,7 +4,8 @@
 // "Add to" and "Replace in" need two conventions, which the lessons follow and the
 // reader can see:
 //  - Import lines at the top of a snippet go to the top of the file, merged with the
-//    file's own imports. An import is a single line.
+//    file's own imports. An import is a single line. A value import of a name takes it
+//    out of a type import from the same module: the value brings its type along.
 //  - A declaration (function, const, type, interface, class) starts at column 0, with
 //    its comment directly above it, and runs until the next declaration, import or
 //    comment at column 0, or the next statement at column 0 after a blank line (such
@@ -79,8 +80,21 @@ function mergeImports(lines: string[], imports: string[]): string[] {
       if (last >= 0) out.splice(last + 1, 0, imp);
       else out.splice(leadingComment(out), 0, imp, ...(out.length ? [""] : []));
     }
+    if (named && !named[1]) dropFromTypeImport(out, named[3], names(named[2]));
   }
   return out;
+}
+
+/** Takes names out of the type import from one module; a type import left empty goes. */
+function dropFromTypeImport(lines: string[], from: string, values: string[]): void {
+  const k = lines.findIndex((l) => {
+    const m = NAMED.exec(l);
+    return m !== null && m[1] !== undefined && m[3] === from;
+  });
+  if (k < 0) return;
+  const left = names(NAMED.exec(lines[k])![2]).filter((n) => !values.includes(n));
+  if (left.length > 0) lines[k] = `import type { ${left.join(", ")} } from ${from};`;
+  else lines.splice(k, 1);
 }
 
 const names = (list: string) => list.split(",").map((n) => n.trim()).filter(Boolean);

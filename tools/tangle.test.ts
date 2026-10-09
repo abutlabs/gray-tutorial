@@ -59,6 +59,15 @@ test("a value import and a type import from one module stay apart", () => {
   assert.match(out, /^import type \{ T \} from "\.\/t\.ts";\nimport \{ v \} from "\.\/t\.ts";$/m);
 });
 
+test("a value import takes over a type import of the same name", () => {
+  const start = `import type { T, U } from "./t.ts";\n\nconst k = 1;\n`;
+  const out = run(start, "add", `import { T } from "./t.ts";\n\nconst m = T;`);
+  assert.match(out, /^import type \{ U \} from "\.\/t\.ts";\nimport \{ T \} from "\.\/t\.ts";$/m);
+  const only = run(`import type { T } from "./t.ts";\n\nconst k = 1;\n`, "add", `import { T } from "./t.ts";`);
+  assert.match(only, /^import \{ T \} from "\.\/t\.ts";$/m);
+  assert.doesNotMatch(only, /import type/);
+});
+
 test("the first import goes after the file's opening comment", () => {
   const out = run(`// Header.\n\nexport const k = 1;\n`, "add", `import { v } from "./v.ts";\n\nexport const m = v;`);
   assert.equal(out, `// Header.\n\nimport { v } from "./v.ts";\n\nexport const k = 1;\n\nexport const m = v;\n`);

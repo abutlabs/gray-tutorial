@@ -602,6 +602,36 @@
     "w": 24,
     "h": 10
    }
+  },
+  {
+   "id": 17,
+   "type": "logs",
+   "title": "Safrole",
+   "description": "What bin/safrole.ts told about one block of Safrole: the slot, η₀ stirred, whether a new epoch began, the rotation, the sealers, the marks, and whether the whole state after matches the vector.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"safrole\", run_id=~\"$run_id\"} | json | line_format \"{{.what}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 134,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

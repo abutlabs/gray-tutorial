@@ -302,3 +302,5 @@ back. Same order, a different way to see it. Try a few slots by hand: both give 
 
 The lottery's endgame: closing on time, announcing the winners, and seating them, outside
 in, in the epoch they'll seal.
+
+Next: [8.5 One step of Safrole](./05-one-step-of-safrole.md)

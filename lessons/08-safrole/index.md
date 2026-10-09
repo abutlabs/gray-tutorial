@@ -9,3 +9,4 @@ that makes the lottery fair.
 - [8.2 Rotating the validators](./02-rotating-the-validators.md)
 - [8.3 The fallback sealers](./03-the-fallback-sealers.md)
 - [8.4 The lottery's winners](./04-the-lotterys-winners.md)
+- [8.5 One step of Safrole](./05-one-step-of-safrole.md)
