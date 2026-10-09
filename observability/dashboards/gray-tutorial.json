@@ -392,6 +392,36 @@
     "w": 24,
     "h": 12
    }
+  },
+  {
+   "id": 10,
+   "type": "logs",
+   "title": "Reading σ",
+   "description": "What bin/read-state.ts read from the state: τ (the time), η (four hashes of entropy) and κ (each validator's Ed25519 and Bandersnatch keys).",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"read-state\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"time\\\"}}τ: slot {{.slot}}{{else if eq .step \\\"entropy\\\"}}η{{.index}}: {{.hash}}{{else}}κ{{.index}}: ed25519 {{.ed25519}}  bandersnatch {{.bandersnatch}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 68,
+    "w": 24,
+    "h": 10
+   }
   }
  ]
 }

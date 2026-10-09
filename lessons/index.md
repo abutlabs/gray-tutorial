@@ -60,6 +60,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
 - [6.1 The state trie](./06-state-and-merklization/01-the-state-trie.md)
 - [6.2 State keys](./06-state-and-merklization/02-state-keys.md)
+- [6.3 Reading the state](./06-state-and-merklization/03-reading-the-state.md)
 
 ## Still to be written
 
@@ -68,7 +69,6 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 6 · State and Merklization (rest) | reading σ | §4, App. D |
 | 7 · Time and shuffling | epochs, entropy, the Fisher-Yates shuffle | §4, App. E |
 | 8 · Safrole | Bandersnatch, tickets, sealing keys | §6, App. F |
 | 9 · Recent history | recent blocks, the accumulation-output belt | §7 |

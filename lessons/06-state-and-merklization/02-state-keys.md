@@ -302,3 +302,5 @@ has the same recipe a second time, as `state_key_from_index_service` in
 
 A map of the state: for any key, which part of JAM it holds, and for any part of JAM,
 its key.
+
+Next: [6.3 Reading the state](./03-reading-the-state.md)

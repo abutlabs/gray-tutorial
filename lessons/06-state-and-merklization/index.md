@@ -7,3 +7,4 @@ learns to read the state it stands for.
 
 - [6.1 The state trie](./01-the-state-trie.md)
 - [6.2 State keys](./02-state-keys.md)
+- [6.3 Reading the state](./03-reading-the-state.md)
