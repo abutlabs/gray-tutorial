@@ -318,3 +318,5 @@ comment tells why it's there. An older version treated *any* split as wonky, lik
 
 A court clerk: every vote's signature checked against the right judges, every verdict
 counted and filed in ψ.
+
+Next: [10.2 Culprits and faults](./02-culprits-and-faults.md)

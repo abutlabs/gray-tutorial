@@ -722,6 +722,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 21,
+   "type": "logs",
+   "title": "Offenders",
+   "description": "What bin/offenders.ts found: each culprit (a guarantor of a bad report) and each fault (a vote against the verdict), with whether its signature is really theirs.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"offenders\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"culprit\\\"}}culprit {{.key}}: guaranteed {{.report}}, really theirs: {{.signed}}{{else}}fault {{.key}}: voted {{.said}} on {{.report}}, really theirs: {{.signed}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 170,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

@@ -6,3 +6,4 @@ for a bad report, or voted against the truth, is named an offender and loses the
 This part makes your client the court.
 
 - [10.1 Votes and verdicts](./01-votes-and-verdicts.md)
+- [10.2 Culprits and faults](./02-culprits-and-faults.md)
