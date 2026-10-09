@@ -238,3 +238,5 @@ with no shifts, no masks and no special case.
 
 Every instruction in the Gray Paper's tables, bar one: `ecalli`, the door out of the
 machine to the host. That's next.
+
+Next: [15.8 A real program](./08-a-real-program.md)

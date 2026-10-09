@@ -1232,6 +1232,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 38,
+   "type": "logs",
+   "title": "A real program starts",
+   "description": "What bin/start.ts did: the bootstrap service's memory as Y lays it out, its starting registers, every step from accumulation's entry point, and the host call it stops at.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"start\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 307,
+    "w": 24,
+    "h": 12
+   }
   }
  ]
 }

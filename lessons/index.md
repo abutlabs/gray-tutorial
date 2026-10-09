@@ -115,6 +115,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [15.5 Arithmetic](./15-the-pvm/05-arithmetic.md)
 - [15.6 Branches and calls](./15-the-pvm/06-branches-and-calls.md)
 - [15.7 Bits and bytes](./15-the-pvm/07-bits-and-bytes.md)
+- [15.8 A real program](./15-the-pvm/08-a-real-program.md)
 
 ## Still to be written
 
@@ -124,7 +125,7 @@ this order, and each one is checked end to end before it is published here.
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 15 · The PVM (rest) | instructions, registers, memory, gas | App. A |
+| 15 · The PVM (rest) | gas: what each basic block costs | App. A.9 |
 | 16 · Host calls | the accumulate invocation and its host calls | App. B |
 | 17 · Accumulation | the ready queue, privileges, transfers | §12 |
 | 18 · Statistics | validator, core and service activity | §13 |
