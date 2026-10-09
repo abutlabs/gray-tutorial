@@ -270,6 +270,28 @@ npm test
 npm run typecheck
 ```
 
+## Bytes in events
+
+One snag before the program: `JSON.stringify` has never heard of bytes. Hand it a
+`Uint8Array` and you get `{"0":4,"1":3,"2":2,"3":1}`, which is accurate and completely
+useless. Teach `line` to write bytes the way the test vectors do:
+
+**Replace in** `src/obs.ts`
+
+```ts
+import { toHex } from "./bytes.ts";
+
+/** An event as Loki stores it: one line of JSON, with bytes written as 0x hex. */
+function line(step: string, fields: Record<string, unknown>): string {
+  return JSON.stringify({ step, ...fields }, (_key, value) =>
+    value instanceof Uint8Array ? toHex(value) : value,
+  );
+}
+```
+
+The second argument to `JSON.stringify` is a *replacer*: it sees every value on the way
+out and may swap it for another. Bytes become hex; everything else passes through.
+
 ## A program to watch any decode
 
 **New file** `bin/decode.ts`

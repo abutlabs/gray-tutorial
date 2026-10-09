@@ -1,214 +1,142 @@
 # Watch your client
 
-A test tells you whether code is right. It doesn't tell you what the code did. lasair, a
-complete JAM client, learned that late: it passed its tests and still had to grow
-observability before anyone could see why a network misbehaved. (The observability
-course opens with that story:
+A test tells you whether your code is right. It doesn't tell you what your code *did*.
+lasair, a complete JAM client, passed its tests for months before it grew a way to show
+what was going on inside, and then wondered how it had ever lived without one. (The
+observability course opens with that story:
 [Why a JAM network needs observability](https://abutlabs.github.io/jam-learning/observability/lesson.html?lesson=00-welcome/01-why-observe).)
 
-Your client starts the other way round. Before it knows any JAM, it learns to report what
-it does, and from now on every run is watched: each `npm test`, each program you run, and
-later each step of importing a block.
+Your client starts the other way round. Before it knows a single JAM rule, it learns to
+talk to the stack you started in lesson 0.2. By the end of this lesson it has said hello,
+and every test run from then on reports itself.
 
 ## Two kinds of signal
 
 | Signal | What it answers | Where it goes |
 | --- | --- | --- |
-| **Events**: one JSON line per thing that happened | What exactly happened, in what order? | Loki |
-| **Numbers**: a value per run | How many tests passed? Which slot is it? | Pushgateway, then Prometheus |
+| **Events**: one line of JSON per thing that happened | What happened, in what order? | Loki |
+| **Numbers**: one value per run | How many tests passed? What slot is it? | Pushgateway, then Prometheus |
 
-Grafana shows both on the dashboard **Gray Tutorial: your client**. A client reports a
-whole **run** at once, at its end, and every event and number of the run carries the
-run's id. In Grafana you can pick one run and see only what it did.
+A **run** (one `npm test`, or one program) collects its events and numbers and sends
+them in one go, at the end, all labelled with the run's id. In Grafana you can pick a
+run and see only what it did.
 
-Both stores take plain HTTP, so the client needs no library to talk to them: `fetch`,
-built into Node, is enough.
-
-## The tests
-
-The tests run against a stand-in for the stack, a small HTTP server inside the test that
-records what it is sent. That way the tests check exactly what your client sends, and pass
-whether or not the real stack is running.
-
-**New file** `test/obs.test.ts`
-
-```ts
-import { test } from "node:test";
-import assert from "node:assert/strict";
-import { createServer } from "node:http";
-import type { AddressInfo } from "node:net";
-import { Run } from "../src/obs.ts";
-
-/** A stand-in for the stack: an HTTP server that records every request it gets. */
-async function fakeStack() {
-  const got: { method: string; url: string; body: string }[] = [];
-  const server = createServer((req, res) => {
-    let body = "";
-    req.on("data", (chunk) => (body += chunk));
-    req.on("end", () => {
-      got.push({ method: req.method ?? "", url: req.url ?? "", body });
-      res.writeHead(204).end();
-    });
-  });
-  await new Promise<void>((ready) => server.listen(0, "127.0.0.1", ready));
-  const url = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-  const stack = { loki: url, pushgateway: url, grafana: url, client: "test" };
-  return { got, stack, close: () => server.close() };
-}
-
-test("a run sends its events to Loki and its numbers to the Pushgateway", async () => {
-  const fake = await fakeStack();
-  const run = new Run("demo");
-  run.event("hello", { big: 2n ** 64n - 1n, bytes: Uint8Array.of(1, 255) });
-  run.number("answer", 42);
-  const link = await run.report(fake.stack);
-  fake.close();
-
-  const grafana = fake.stack.grafana;
-  assert.equal(link, `${grafana}/d/gray-tutorial?var-client=test&var-run_id=${run.id}`);
-  const [loki, pushgateway] = fake.got;
-  assert.equal(loki.url, "/loki/api/v1/push");
-  const stream = JSON.parse(loki.body).streams[0];
-  const labels = { job: "gray_tutorial", client: "test", kind: "demo", run_id: run.id };
-  assert.deepEqual(stream.stream, labels);
-  const line = JSON.parse(stream.values[0][1]);
-  assert.deepEqual(line, { step: "hello", big: "18446744073709551615", bytes: "0x01ff" });
-  assert.equal(pushgateway.method, "PUT");
-  assert.equal(pushgateway.url, "/metrics/job/gray_tutorial/client/test/kind/demo");
-  assert.equal(pushgateway.body, `gray_tutorial_answer{run_id="${run.id}"} 42\n`);
-});
-
-test("with no stack running, a run says so and the client carries on", async () => {
-  const fake = await fakeStack();
-  fake.close(); // nothing answers at its address any more
-  const run = new Run("demo");
-  run.event("hello");
-  assert.equal(await run.report(fake.stack), null);
-});
-```
-
-`fakeStack` listens on port 0, which asks the system for any free port, and reads the port
-it got from `server.address()`. The second test closes its stand-in before reporting, so
-nothing answers at that address: what happens when the stack is down. Its run prints a
-`not reported:` line, which is the client saying so.
-
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-It fails because `src/obs.ts` doesn't exist yet. You write it next.
+Both stores speak plain HTTP, so `fetch`, built into Node, is all the client needs.
 
 ## The module
 
 **New file** `src/obs.ts`
 
 ```ts
-// Observability: the client reports what it does to the observability stack (abutlabs/
-// observability), so every run can be watched in Grafana. Events go to Loki as JSON lines;
-// numbers go to the Pushgateway, where Prometheus reads them.
+// Observability: the client tells the observability stack what it does. Events go to
+// Loki, numbers to the Pushgateway, and Grafana shows both.
 
-/** Where the stack listens (./obs up's ports), and who is reporting. */
-export const STACK = {
-  loki: process.env.OBS_LOKI ?? "http://127.0.0.1:3100",
-  pushgateway: process.env.OBS_PUSHGATEWAY ?? "http://127.0.0.1:9091",
-  grafana: process.env.OBS_GRAFANA ?? "http://127.0.0.1:3300",
-  client: process.env.OBS_CLIENT ?? "you",
-};
+const LOKI = "http://127.0.0.1:3100";
+const PUSHGATEWAY = "http://127.0.0.1:9091";
+const GRAFANA = "http://127.0.0.1:3300";
 
-/** One run of the client, its tests or a program: its events and numbers, reported together. */
+/** Who is reporting: "you", unless OBS_CLIENT says otherwise. */
+const CLIENT = process.env.OBS_CLIENT ?? "you";
+
+/** One run of the client (its tests, or a program): what it did and what it measured. */
 export class Run {
   readonly kind: string;
   readonly id: string;
-  #events: [string, string][] = []; // [time in nanoseconds, JSON line], as Loki takes them
-  #numbers = new Map<string, number>();
+  #events: [string, string][] = []; // [time in nanoseconds, line], as Loki wants them
+  #numbers: string[] = []; // lines of Prometheus text, as the Pushgateway wants them
 
   constructor(kind: string) {
     this.kind = kind;
-    this.id = `${kind}-${new Date().toISOString().replace(/\D/g, "").slice(0, 17)}`;
+    this.id = `${kind}-${Date.now()}`;
   }
 
-  /** Something the client did: the step, and the values that matter. */
+  /** Something the client did: the step, and the values worth seeing. */
   event(step: string, fields: Record<string, unknown> = {}): void {
-    // nanoseconds; the event count keeps events in order within one millisecond
-    const at = BigInt(Date.now()) * 1_000_000n + BigInt(this.#events.length % 1_000_000);
-    this.#events.push([at.toString(), JSON.stringify({ step, ...fields }, jsonValue)]);
+    // nanoseconds; adding the event's number keeps events in the order they happened
+    const time = BigInt(Date.now()) * 1_000_000n + BigInt(this.#events.length);
+    this.#events.push([time.toString(), line(step, fields)]);
   }
 
-  /** A number this run measured, such as how many tests passed. */
+  /** A number the run measured, such as how many tests passed. */
   number(name: string, value: number): void {
-    this.#numbers.set(name, value);
+    this.#numbers.push(`gray_tutorial_${name}{run_id="${this.id}"} ${value}\n`);
   }
 
-  /** Sends the run to the stack: a link to it in Grafana, or null if the stack is not there. */
-  async report(stack = STACK): Promise<string | null> {
-    const labels = { job: "gray_tutorial", client: stack.client, kind: this.kind, run_id: this.id };
+  /** Sends the run to the stack: where to see it in Grafana, or null if the stack is down. */
+  async report(): Promise<string | null> {
+    const labels = { job: "gray_tutorial", client: CLIENT, kind: this.kind, run_id: this.id };
     try {
-      if (this.#events.length > 0) {
-        const push = { streams: [{ stream: labels, values: this.#events }] };
-        const url = `${stack.loki}/loki/api/v1/push`;
-        await send("POST", url, "application/json", JSON.stringify(push));
-      }
-      if (this.#numbers.size > 0) {
-        let text = "";
-        for (const [name, value] of this.#numbers) {
-          text += `gray_tutorial_${name}{run_id="${this.id}"} ${value}\n`;
-        }
-        const group = `/metrics/job/gray_tutorial/client/${stack.client}/kind/${this.kind}`;
-        await send("PUT", stack.pushgateway + group, "text/plain", text);
-      }
-    } catch (e) {
-      const why = e instanceof Error && e.cause instanceof Error ? e.cause.message : String(e);
-      console.log(`not reported: the observability stack is not reachable (${why})`);
+      const loki = await fetch(`${LOKI}/loki/api/v1/push`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ streams: [{ stream: labels, values: this.#events }] }),
+      });
+      const group = `${PUSHGATEWAY}/metrics/job/gray_tutorial/client/${CLIENT}/kind/${this.kind}`;
+      const push = await fetch(group, { method: "PUT", body: this.#numbers.join("") });
+      if (!loki.ok || !push.ok) throw new Error("the stack said no");
+    } catch {
+      console.log("not reported: is the observability stack up? (../observability/obs up)");
       return null;
     }
-    return `${stack.grafana}/d/gray-tutorial?var-client=${stack.client}&var-run_id=${this.id}`;
+    return `${GRAFANA}/d/gray-tutorial?var-client=${CLIENT}&var-run_id=${this.id}`;
   }
 }
 
-/** JSON for what JSON.stringify can't write: bigints as decimal strings, bytes as 0x hex. */
-function jsonValue(_key: string, value: unknown): unknown {
-  if (typeof value === "bigint") return value.toString();
-  if (value instanceof Uint8Array) return "0x" + value.toHex();
-  return value;
-}
-
-async function send(method: string, url: string, type: string, body: string): Promise<void> {
-  const headers = { "Content-Type": type };
-  const res = await fetch(url, { method, body, headers, signal: AbortSignal.timeout(3000) });
-  if (!res.ok) throw new Error(`${url}: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
+/** An event as Loki stores it: one line of JSON. */
+function line(step: string, fields: Record<string, unknown>): string {
+  return JSON.stringify({ step, ...fields });
 }
 ```
 
-The pieces:
+The tour:
 
-- `STACK` holds the addresses, and `client` names who reports: `you`, unless `OBS_CLIENT`
-  says otherwise. (The tutorial's own checks report as `tutorial-check`, so their runs
-  don't mix with yours.)
-- `event` keeps each event as Loki wants it: a time in nanoseconds, as a string, and the
-  line. `jsonValue` fixes the two kinds of value JSON can't hold: a `bigint` becomes its
-  digits, bytes become hex.
-- `report` sends everything in two requests. The Pushgateway keeps one group per
-  `client` and `kind` and replaces it on every push, so it always holds the latest run's
-  numbers. That is what the dashboard's "last run" panels show.
-- If the stack is down, `report` says so in one line and returns `null`. Your client keeps
-  working without it.
+- A `Run` is a little notebook. `event` writes down something that happened, `number`
+  writes down something measured, and `report` mails the notebook to the stack.
+- Loki wants each event's time in nanoseconds. `Date.now()` gives milliseconds, so
+  multiply by a million, then add the event's number, so two events in the same
+  millisecond still come out in order.
+- The Pushgateway keeps one group per `client` and `kind`, and each `PUT` replaces it.
+  So it always holds the *latest* run's numbers, which is exactly what the dashboard's
+  "last run" panels show.
+- `CLIENT` is `you`. The tutorial's own checks run with `OBS_CLIENT=tutorial-check`, so
+  their runs never mix with yours.
+- Stack down? `report` says so in one line and returns `null`. Your client carries on.
+
+## Say hello
+
+**New file** `bin/hello.ts`
+
+```ts
+// Says hello to the observability stack: your client's very first report.
+
+import { Run } from "../src/obs.ts";
+
+const run = new Run("hello");
+run.event("hello", { message: "my JAM client is alive" });
+run.number("hellos", 1);
+const link = await run.report();
+if (link) console.log(`reported to Grafana: ${link}`);
+```
+
+The file is a module, so it can `await` at the top level: Node waits for the report
+before it exits.
 
 **Run**
 
 ```sh
-npm test
-# prints: fail 0
-npm run typecheck
+node bin/hello.ts
+# prints: reported to Grafana
 ```
+
+Open the link. In *Everything your client reported* there it is:
+`{"step":"hello","message":"my JAM client is alive"}`. Your client's first words. Frame
+them.
 
 ## Every test run, reported
 
-Node's test runner lets you add a **reporter**: a function that receives every test's
-result as it happens. This one turns them into a run, events for each test and numbers
-for the totals, and reports it.
+Node's test runner lets you plug in a **reporter**: a function that gets every test's
+result as it happens. This one turns the results into a run (an event per test, the
+totals as numbers) and reports it.
 
 **New file** `test/grafana.ts`
 
@@ -243,10 +171,11 @@ export default async function* grafana(source: AsyncIterable<TestEvent>): AsyncG
 ```
 
 A reporter is an *async generator*: `for await` takes each test event as the runner
-produces it, and each `yield` writes text to the terminal. This one writes a single line,
-at the end. Its name doesn't end in `.test.ts`, so the runner doesn't run it as a test.
+produces it, and each `yield` writes text to the terminal. This one yields a single line
+at the very end. Its name doesn't end in `.test.ts`, so the runner never mistakes it for
+a test.
 
-Tell `npm test` to use it, next to the usual output (`spec`):
+Plug it into `npm test`, next to the usual output (`spec`):
 
 **Rewrite** `package.json`
 
@@ -270,20 +199,20 @@ Tell `npm test` to use it, next to the usual output (`spec`):
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported 2 tests to Grafana
+# prints: reported 0 tests to Grafana
 npm run typecheck
 ```
 
-Open the link it prints. *Test results* lists your two tests, and *Tests passed* says 2.
-Run `npm test` again: a second run appears, with its own id in the *run* menu at the top.
+Zero tests, zero failures: a perfect record, technically. On the dashboard, *Tests passed*
+now says 0. The next lesson writes your first real test, and you'll watch that number
+climb for the rest of the tutorial.
 
 <details>
 <summary>lasair: the same idea, for its gate</summary>
 
 lasair reports its conformance gate the same way, from Python, in
-`scripts/obsreport.py`: one push per run to the Pushgateway, grouped so it replaces the
-run's previous numbers.
+`scripts/obsreport.py`: one push per run to the Pushgateway, replacing the group's
+previous numbers.
 
 ```python
 def push(cli, job, run_id, net, snapshot):
@@ -294,13 +223,12 @@ def push(cli, job, run_id, net, snapshot):
 ```
 
 `obs push` is the stack's command-line tool sending the same `PUT` your `report` sends.
-lasair's gate dashboard is built on those numbers, as yours is on your runs.
 
 </details>
 
 ## What you have
 
-A client that reports itself: every test run lands in Grafana with each test's result,
-and any program can report its own run with three calls: `new Run`, `event`, `report`.
+A client that reports itself. It has said hello, every `npm test` lands in Grafana, and
+any program can report a run with three calls: `new Run`, `event`, `report`.
 
 Next: [0.4 The JAM clock](./04-the-jam-clock.md)
