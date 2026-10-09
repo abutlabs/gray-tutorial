@@ -109,6 +109,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 **[Part 15 · The PVM](./15-the-pvm/index.md)**
 
 - [15.1 The program blob](./15-the-pvm/01-the-program-blob.md)
+- [15.2 Instructions](./15-the-pvm/02-instructions.md)
 
 ## Still to be written
 

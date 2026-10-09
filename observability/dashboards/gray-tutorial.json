@@ -1052,6 +1052,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 32,
+   "type": "logs",
+   "title": "Disassembly",
+   "description": "What bin/disassemble.ts decoded: each instruction's place in the code, its name, registers, immediates and jump target.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"disassemble\", run_id=~\"$run_id\"} | json | line_format \"{{.at}}  {{.text}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 256,
+    "w": 24,
+    "h": 10
+   }
   }
  ]
 }

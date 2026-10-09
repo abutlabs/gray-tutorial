@@ -34,16 +34,33 @@ memory.)
 
 ## The tests
 
+The tests need the trace's service code, and later lessons will too, so a helper finds
+it, next to the other vector readers:
+
+**Add to** `test/vectors.ts`
+
+```ts
+import { toHex } from "../src/bytes.ts";
+import { blake2b256 } from "../src/hash.ts";
+import { readService } from "../src/services.ts";
+
+/** The code of service 0, from the state before the first block of the fallback trace. */
+export function bootstrapCode(): Uint8Array {
+  const { entries } = traceState("fallback", 1);
+  const { code_hash } = readService(entries, 0);
+  const preimage = entries.find((e) => toHex(blake2b256(e.value)) === toHex(code_hash));
+  return (preimage as { value: Uint8Array }).value;
+}
+```
+
 **New file** `test/program.test.ts`
 
 ```ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fromHex, toHex } from "../src/bytes.ts";
-import { blake2b256 } from "../src/hash.ts";
 import { deblob, startsInstruction, unpackCode } from "../src/pvm/program.ts";
-import { readService } from "../src/services.ts";
-import { traceState } from "./vectors.ts";
+import { bootstrapCode } from "./vectors.ts";
 
 test("deblob by hand: one jump, three bytes of code, two instructions", () => {
   // |j| = 1, z = 1, |c| = 3 | j = [2] | c = 00 01 02 | k = 0000 0101: bytes 0 and 2 start one
@@ -52,14 +69,6 @@ test("deblob by hand: one jump, three bytes of code, two instructions", () => {
   assert.equal(toHex(program.code), "0x000102");
   assert.deepEqual([0, 1, 2].map((i) => startsInstruction(program, i)), [true, false, true]);
 });
-
-/** The code of service 0, from the state before the first block of the fallback trace. */
-function bootstrapCode(): Uint8Array {
-  const { entries } = traceState("fallback", 1);
-  const { code_hash } = readService(entries, 0);
-  const preimage = entries.find((e) => toHex(blake2b256(e.value)) === toHex(code_hash));
-  return (preimage as { value: Uint8Array }).value;
-}
 
 test("a real service's code: metadata, then a standard program that ends it exactly", () => {
   const preimage = bootstrapCode();
@@ -270,3 +279,5 @@ pass; your `deblob` shows the shape.
 
 A real service's code, unpacked down to its instructions: metadata, memory layout, jump
 table, code and bitmask, every byte accounted for.
+
+Next: [15.2 Instructions](./02-instructions.md)
