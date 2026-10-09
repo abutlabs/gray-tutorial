@@ -7,3 +7,4 @@ builds it, starting by unpacking a real service's code.
 - [15.1 The program blob](./01-the-program-blob.md)
 - [15.2 Instructions](./02-instructions.md)
 - [15.3 The machine](./03-the-machine.md)
+- [15.4 Memory](./04-memory.md)

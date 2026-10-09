@@ -179,13 +179,11 @@ function jumpIndirect(m: Machine, a: bigint): Exit {
   return jumpTo(m, table[Number(a / 2n) - 1]);
 }
 
-/** Ψ₁ (GP App. A.4): runs the instruction at ı, for the instructions built so far. */
-export function step(m: Machine): Exit {
-  const ins = decodeInstruction(m.program, m.pc);
+/** Lesson 15.3's instructions: control flow, loading constants, and simple arithmetic. */
+function basics(m: Machine, ins: Instruction): Exit | undefined {
   const [a, b, c] = ins.registers; // the GP's register letters, in its order
-  const [x, y] = ins.immediates;
+  const [x] = ins.immediates;
   const reg = m.registers; // ω
-  m.pc = ins.next; // most instructions just move on
   switch (ins.name) {
     case "trap":
       return "panic";
@@ -229,8 +227,25 @@ export function step(m: Machine): Exit {
     case "branch_ne_imm":
       return branch(m, ins, ins.target as number, reg[a] !== x);
     default:
-      throw new Error(`${ins.name} isn't built yet`);
+      return undefined; // not one of these
   }
+}
+
+/** A family of instructions: runs the instruction if it's one of its own, else undefined. */
+type Family = (m: Machine, ins: Instruction) => Exit | undefined;
+
+/** Every family of instructions built so far. */
+const FAMILIES: Family[] = [basics];
+
+/** Ψ₁ (GP App. A.4): runs the instruction at ı. Each family has a go at it. */
+export function step(m: Machine): Exit {
+  const ins = decodeInstruction(m.program, m.pc);
+  m.pc = ins.next; // most instructions just move on
+  for (const family of FAMILIES) {
+    const exit = family(m, ins);
+    if (exit !== undefined) return exit;
+  }
+  throw new Error(`${ins.name} isn't built yet`);
 }
 
 /** Ψ, without gas yet: steps until the machine halts or panics. */
@@ -245,8 +260,10 @@ export function run(m: Machine): Exit {
 The machine is a plain object that `step` *changes*. Most of your client works on values
 it doesn't change, but a machine is exactly something that changes as it runs (like
 Part 2's `Writer` and `Reader`, which move along as they go). `step` decodes
-the instruction (lesson 15.2), moves ı on, and then lets each instruction override
-that: a jump sets ı itself, a halt or panic stops. Each register's meaning depends on
+the instruction (lesson 15.2), moves ı on, and then offers it to each *family* of
+instructions in turn. This lesson has one family, `basics`; later lessons add more to
+`FAMILIES` without touching `step`. Inside a family, each instruction can override the
+move: a jump sets ı itself, a halt or panic stops. Each register's meaning depends on
 the layout, as lesson 15.2's comments said: `add_64` writes its *third* register, and
 `add_imm_64` its *first*. Instructions not built yet throw an `Error`, which is your
 bug, not the program's: a panic is the program's fault, a thrown `Error` is yours.
@@ -349,3 +366,5 @@ read. `logand … 0xFFFFFFFFL` is the `mod 2^32`.
 
 A running PVM: registers, an instruction counter, seventeen instructions, basic blocks,
 and the two ways a program ends.
+
+Next: [15.4 Memory](./04-memory.md)

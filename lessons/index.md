@@ -111,6 +111,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [15.1 The program blob](./15-the-pvm/01-the-program-blob.md)
 - [15.2 Instructions](./15-the-pvm/02-instructions.md)
 - [15.3 The machine](./15-the-pvm/03-the-machine.md)
+- [15.4 Memory](./15-the-pvm/04-memory.md)
 
 ## Still to be written
 
