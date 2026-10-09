@@ -325,5 +325,6 @@ step traces of later parts, say *which step* made it wrong, while it happens.
 ## What you have
 
 A codec that can tell you, byte by byte, what it read, and a program that shows any
-decode in the terminal and in Grafana. Part 3 encodes the rest of the work structures:
-work-packages, work-digests and work-reports.
+decode in the terminal and in Grafana.
+
+Next: [Part 3 · Work and reports](../03-work-and-reports/index.md)

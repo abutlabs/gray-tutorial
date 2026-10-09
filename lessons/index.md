@@ -34,6 +34,10 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [2.6 The first test vectors](./02-codec/06-the-first-test-vectors.md)
 - [2.7 Watch a decode](./02-codec/07-watch-a-decode.md)
 
+**[Part 3 · Work and reports](./03-work-and-reports/index.md)**
+
+- [3.1 A work-package](./03-work-and-reports/01-a-work-package.md)
+
 ## Still to be written
 
 The road from here to a full block importer, part by part. The parts are written in
@@ -41,7 +45,7 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 3 · Work and reports | work-packages, work-digests, work-reports | §11, §14, App. C |
+| 3 · Work and reports (rest) | work-digests, availability specs, work-reports | §11, §14, App. C |
 | 4 · Blocks | tiny and full configs, extrinsics, header, block | §5, App. C |
 | 5 · Hashing and signatures | Blake2b, Keccak, Ed25519 | §3 |
 | 6 · State and Merklization | σ, state keys, the trie, the state root | §4, App. D |
