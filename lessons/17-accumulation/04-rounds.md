@@ -403,4 +403,4 @@ used.
 A block's accumulation in rounds: transfers sent, carried over, and delivered, the money
 before the code. Thirty-seven official vectors now match as whole blocks.
 
-Next: [Part 18 · Statistics](../18-statistics/index.md)
+Next: [17.5 Privileges](./05-privileges.md)

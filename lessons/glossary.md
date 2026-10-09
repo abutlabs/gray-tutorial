@@ -125,6 +125,10 @@ compact 128 starts at offset 2. ([2.3](./02-codec/03-writer-and-reader.md))
 **Generic (`<T>`).** A type with a blank in it, filled in where it's used. *Example:*
 `Codec<number>` is a codec for numbers. ([2.4](./02-codec/04-codecs.md))
 
+**Optional field.** A field written with a `?`, which an object may leave out; reading a
+missing one gives `undefined`. *Example:* `privileges?: Privileges`.
+([17.5](./17-accumulation/05-privileges.md))
+
 **`Map`.** A lookup table from keys to values. *Example:* a service's storage maps each
 key to its value. ([16.5](./16-host-calls/05-storage.md))
 
@@ -387,6 +391,20 @@ receiver's balance before its code runs, and the transfer becomes one of its inp
 **Transfer input.** An accumulation input that starts with a 1, then one transfer; an
 operand starts with a 0. *Example:* service 1's only input in round 2.
 ([17.4](./17-accumulation/04-rounds.md))
+
+**Privilege.** χ. A right only one service holds at a time: the manager (χ_M, may change
+the others), an assigner for each core (χ_A), the delegator (χ_V, picks the next
+validators), the registrar (χ_R, creates services with small ids), and the
+always-accumulate services (χ_Z). *Example:* service 0 is core 0's assigner.
+([17.5](./17-accumulation/05-privileges.md))
+
+**Assigner.** χ_A[c]. The service that may set core c's authorizer queue and hand that
+right on. *Example:* service 0 hands core 0 to service 1 with `assign`.
+([17.5](./17-accumulation/05-privileges.md))
+
+**Authorizer queue.** φ[c]. For each core, 80 authorizer hashes; one joins the core's pool
+every slot. *Example:* the 80 hashes `assign` hands over with a core.
+([13.1](./13-authorization/01-the-authorizer-pools.md))
 
 **Accumulation statistics.** S(s) = (N, T, G). For each service, per block: the digests
 it accumulated, the transfers it received, the gas it used. *Example:* (1, 0, 29,643).
