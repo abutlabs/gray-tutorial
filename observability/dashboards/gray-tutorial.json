@@ -782,6 +782,36 @@
     "w": 24,
     "h": 6
    }
+  },
+  {
+   "id": 23,
+   "type": "logs",
+   "title": "Availability",
+   "description": "What bin/available.ts counted: for each core with a pending report, how many validators hold its data, and whether that's more than two thirds (available).",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"available\", run_id=~\"$run_id\"} | json | line_format \"core {{.core}}: {{.assured}} of {{.validators}} hold its data, available: {{.available}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 184,
+    "w": 24,
+    "h": 10
+   }
   }
  ]
 }
