@@ -274,3 +274,5 @@ hardening pass sorts them.
 
 The chain's short-term memory: eight blocks, kept up to date, with the blank from last
 block filled in every time.
+
+Next: [Part 10 · Disputes](../10-disputes/index.md)
