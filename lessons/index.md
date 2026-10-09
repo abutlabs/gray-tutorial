@@ -101,6 +101,10 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
 - [13.1 The authorizer pools](./13-authorization/01-the-authorizer-pools.md)
 
+**[Part 14 · Services and preimages](./14-services/index.md)**
+
+- [14.1 Providing preimages](./14-services/01-providing-preimages.md)
+
 ## Still to be written
 
 The road from here to a full block importer, part by part. The parts are written in
@@ -109,7 +113,7 @@ this order, and each one is checked end to end before it is published here.
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 14 · Services and preimages | accounts, storage, preimage requests | §9, §12 |
+| 14 · Services and preimages (rest) | the service account | §9 |
 | 15 · The PVM | decoding programs, every instruction, gas | App. A |
 | 16 · Host calls | the accumulate invocation and its host calls | App. B |
 | 17 · Accumulation | the ready queue, privileges, transfers | §12 |

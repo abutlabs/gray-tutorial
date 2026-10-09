@@ -293,3 +293,5 @@ and that comment didn't. Comments go stale; tests don't.
 
 Part 13, done: every core's pool of authorizers, kept moving block by block, checked on
 the vectors and on 99 real blocks.
+
+Next: [Part 14 · Services and preimages](../14-services/index.md)

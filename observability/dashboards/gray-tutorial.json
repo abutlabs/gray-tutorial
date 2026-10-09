@@ -962,6 +962,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 29,
+   "type": "logs",
+   "title": "Preimages",
+   "description": "What bin/preimages.ts did: each preimage in the block, given to the service that asked for it, with the request's history before and after.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"preimages\", run_id=~\"$run_id\"} | json | line_format \"service {{.service}}: {{.bytes}} bytes, hash {{.hash}}  request {{.was}} → {{.now}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 234,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }
