@@ -84,6 +84,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
 - [10.1 Votes and verdicts](./10-disputes/01-votes-and-verdicts.md)
 - [10.2 Culprits and faults](./10-disputes/02-culprits-and-faults.md)
+- [10.3 Clearing the cores](./10-disputes/03-clearing-the-cores.md)
 
 ## Still to be written
 
@@ -93,7 +94,6 @@ this order, and each one is checked end to end before it is published here.
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 10 · Disputes (rest) | clearing judged reports from the cores | §10 |
 | 11 · Assurances | availability of work-reports | §11 |
 | 12 · Guarantees | reports on cores, guarantor assignment | §11 |
 | 13 · Authorization | authorizer pools and queues | §8 |

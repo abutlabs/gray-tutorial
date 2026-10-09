@@ -1,0 +1,240 @@
+# Clearing the cores
+
+A trial has one more consequence, and it's the most practical one. Remember the cores
+from Part 3: each one can hold a single guaranteed work-report while the validators make
+sure its data is available. If that report has just been judged bad, or wonky, it has no
+business sitting there. Out it goes, freeing the core for honest work. This lesson
+finishes Part 10.
+
+## What the Gray Paper says
+
+§11 defines **ρ** (C(10), lesson 6.2): for each core, either nothing or a *pending
+report*: the guarantee that put it there (lesson 4.3, report, slot and signatures) and
+the slot it arrived in.
+
+§10 then clears it (equation *removenonpositive*): ρ‡, ρ after the judgments, is ρ with
+every core emptied whose report was judged **bad or wonky** in this block. Which report
+is it? The verdict names a report by its hash, H(ℰ(report)), the very same hash
+lesson 5.2 put in the extrinsic hash. So: hash each pending report, and compare.
+
+A good verdict leaves its report where it is. The ‡ is the Gray Paper's mark for
+"partway through the block": the assurances (Part 11) and guarantees (Part 12) change ρ
+again later in the same block.
+
+## The cores
+
+ρ gets its own file, since Parts 11 and 12 will lean on it too:
+
+**New file** `src/cores.ts`
+
+```ts
+// The cores (GP §11): each core holds at most one guaranteed work-report while the
+// validators make sure its data is available.
+
+import { ReportGuarantee } from "./block.ts";
+import type { Value } from "./codec/codec.ts";
+import { option, record, seqN, u32 } from "./codec/codec.ts";
+import type { Config } from "./config.ts";
+
+/** A report on a core, waiting for its data to become available, and since which slot. */
+export const PendingReport = record({
+  guarantee: ReportGuarantee, // the guarantee that put it there, report and all
+  registered_slot: u32,
+});
+export type PendingReport = Value<typeof PendingReport>;
+
+/** ρ, C(10): one place per core, each holding a pending report or nothing. */
+export function PendingReports(config: Config) {
+  return seqN(option(PendingReport), config.core_count);
+}
+```
+
+`seqN(option(…), C)`: exactly one place per core, no length in front, each place a
+pending report or nothing (lessons 4.5 and 4.6 had both tools).
+
+## The tests
+
+**Replace in** `test/disputes.test.ts`
+
+```ts
+/** A disputes test vector: the parts of it this lesson uses. */
+type DisputesVector = {
+  input: { disputes: unknown };
+  pre_state: { psi: unknown; tau: number; kappa: unknown[]; lambda: unknown[]; rho: unknown };
+  post_state: { psi: unknown; rho: unknown };
+  output: { err?: string; ok?: { offenders_mark: string[] } };
+};
+```
+
+**Add to** `test/disputes.test.ts`
+
+```ts
+import { clearJudged } from "../src/disputes.ts";
+import { PendingReports } from "../src/cores.ts";
+import type { PendingReport } from "../src/cores.ts";
+import { encode } from "../src/codec/codec.ts";
+import { blake2b256 } from "../src/hash.ts";
+import { WorkReport } from "../src/work.ts";
+
+test("ρ‡: a report judged bad or wonky is taken off its core", () => {
+  let cleared = 0;
+  for (const config of [TINY, FULL]) {
+    for (const { name, vector } of acceptedVectors(config)) {
+      const judged = judgedVerdicts(config, vector).map(({ verdict, keys }) => ({
+        target: verdict.target,
+        outcome: outcome(verdict, keys.length),
+      }));
+      const before = PendingReports(config).fromJson(vector.pre_state.rho);
+      const after = clearJudged(before, judged);
+      assert.deepEqual(after, PendingReports(config).fromJson(vector.post_state.rho), name);
+      cleared += before.filter((p) => p !== null).length - after.filter((p) => p !== null).length;
+    }
+  }
+  assert.equal(cleared, 2); // one core on tiny, one on full
+});
+
+test("ρ‡: wonky clears a core too, and good leaves it be", () => {
+  const vector = vectorJson("stf/disputes/tiny/progress_invalidates_avail_assignments-1.json");
+  const cores = PendingReports(TINY).fromJson((vector as DisputesVector).pre_state.rho);
+  const pending = cores[0] as PendingReport; // core 0 holds a report
+  const target = blake2b256(encode(WorkReport, pending.guarantee.report));
+  assert.equal(clearJudged(cores, [{ target, outcome: "wonky" }])[0], null);
+  assert.equal(clearJudged(cores, [{ target, outcome: "good" }])[0], pending);
+});
+```
+
+The vectors only ever clear a core over a *bad* verdict, one core on tiny and one of the
+341 on full. So the second test borrows a real pending report from them and judges it
+by hand, wonky and then good, to pin down the other two cases.
+
+**Run, expect it to fail**
+
+```sh
+npm test
+# fails with: does not provide an export named
+```
+
+## The code
+
+**Add to** `src/disputes.ts`
+
+```ts
+import { encode } from "./codec/codec.ts";
+import type { PendingReport } from "./cores.ts";
+import { blake2b256 } from "./hash.ts";
+import { WorkReport } from "./work.ts";
+
+/** ρ‡ (GP §10): take every report judged bad or wonky off its core. */
+export function clearJudged(
+  cores: (PendingReport | null)[],
+  judged: { target: Bytes; outcome: Outcome }[],
+): (PendingReport | null)[] {
+  const condemned = new Set(judged.filter((j) => j.outcome !== "good").map((j) => toHex(j.target)));
+  return cores.map((pending) => {
+    if (pending === null) return null;
+    const report = blake2b256(encode(WorkReport, pending.guarantee.report)); // as in lesson 5.2
+    return condemned.has(toHex(report)) ? null : pending;
+  });
+}
+```
+
+A `Set` of the condemned reports' hashes, as hex, then one pass over the cores.
+
+**Run**
+
+```sh
+npm test
+# prints: ρ‡: a report judged bad or wonky is taken off its core
+# prints: ρ‡: wonky clears a core too, and good leaves it be
+# prints: fail 0
+# prints: reported
+npm run typecheck
+```
+
+## Watch it
+
+**New file** `bin/cores.ts`
+
+```ts
+// Shows which cores lose their pending report to the verdicts of a disputes test vector.
+// Usage: node bin/cores.ts <vector.json>, such as the vector that clears a core:
+//   node bin/cores.ts ../vectors/stf/disputes/tiny/progress_invalidates_avail_assignments-1.json
+
+import { readFileSync } from "node:fs";
+import { DisputesExtrinsic } from "../src/block.ts";
+import { toHex } from "../src/bytes.ts";
+import { encode } from "../src/codec/codec.ts";
+import { FULL, TINY } from "../src/config.ts";
+import { PendingReports } from "../src/cores.ts";
+import { clearJudged, judges, outcome } from "../src/disputes.ts";
+import { blake2b256 } from "../src/hash.ts";
+import { Run } from "../src/obs.ts";
+import { ValidatorKey } from "../src/state.ts";
+import { WorkReport } from "../src/work.ts";
+
+const [file] = process.argv.slice(2);
+const config = file.includes("/full/") ? FULL : TINY;
+const { input, pre_state } = JSON.parse(readFileSync(file, "utf8"));
+const keys = (list: unknown[]) => list.map((key) => ValidatorKey.fromJson(key));
+const [active, previous] = [keys(pre_state.kappa), keys(pre_state.lambda)];
+const judged = DisputesExtrinsic.fromJson(input.disputes).verdicts.map((verdict) => ({
+  target: verdict.target,
+  outcome: outcome(verdict, judges(config, pre_state.tau, verdict.age, active, previous).length),
+}));
+const before = PendingReports(config).fromJson(pre_state.rho);
+const after = clearJudged(before, judged);
+const run = new Run("cores");
+let kept = 0;
+before.forEach((pending, core) => {
+  if (pending === null) return;
+  if (after[core] !== null) {
+    kept++;
+    return;
+  }
+  const report = blake2b256(encode(WorkReport, pending.guarantee.report));
+  const verdict = judged.find((j) => toHex(j.target) === toHex(report))?.outcome;
+  console.log(`core ${core}: its report ${toHex(report).slice(0, 10)}… was judged ${verdict}`);
+  run.event("cleared", { core, report, verdict });
+});
+console.log(`${kept} of ${config.core_count} cores keep their reports`);
+run.event("kept", { kept, cores: config.core_count });
+const link = await run.report();
+if (link) console.log(`reported to Grafana: ${link}`);
+```
+
+**Run**
+
+```sh
+node bin/cores.ts ../vectors/stf/disputes/tiny/progress_invalidates_avail_assignments-1.json
+# prints: was judged bad
+# prints: 1 of 2 cores keep their reports
+# prints: reported to Grafana
+```
+
+Both cores' reports were on trial in this block. Core 0's was judged bad, so it leaves;
+core 1's was judged good, so it stays. Run the `full` version of the same vector: 340 of
+341 cores keep their reports. The *Cores* panel shows which core was emptied, and why.
+
+<details>
+<summary>lasair: two roads to the same set, in <code>conformance/stf_guarantees.ml</code></summary>
+
+```ocaml
+        let newly lst pre = List.filter (fun t ->
+          not (List.exists (Bytes.equal t) pre)) lst in
+        let clear_targets =
+          newly psi'.Disputes_stf.bad pre_bad
+          @ newly psi'.Disputes_stf.wonky pre_wonky in
+```
+
+lasair works out which reports to clear differently: it compares ψ′'s bad and wonky sets
+with ψ's, and takes whatever is *new*. Your client asks the block's verdicts directly.
+Both give exactly this block's condemned reports; it's worth seeing that a rule can be
+read more than one way, and checking that the readings agree.
+
+</details>
+
+## What you have
+
+Part 10, done: your client holds the whole trial. It checks every vote, files the
+verdicts, names the offenders with real evidence, announces them in the header, and
+clears the condemned reports off the cores.

@@ -752,6 +752,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 22,
+   "type": "logs",
+   "title": "Cores",
+   "description": "What bin/cores.ts found: each core that loses its pending report because the report was judged bad or wonky, then how many cores keep theirs.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"cores\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"cleared\\\"}}core {{.core}}: report {{.report}} judged {{.verdict}}, off the core{{else}}{{.kept}} of {{.cores}} cores keep their reports{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 178,
+    "w": 24,
+    "h": 6
+   }
   }
  ]
 }

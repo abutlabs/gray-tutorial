@@ -227,3 +227,5 @@ size between epochs. That's why your `outcome` takes the judges' count.
 
 The consequences of a trial: offenders named with evidence that checks out, kept in ψ_O,
 and announced in the block's header.
+
+Next: [10.3 Clearing the cores](./03-clearing-the-cores.md)
