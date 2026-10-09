@@ -113,6 +113,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [15.3 The machine](./15-the-pvm/03-the-machine.md)
 - [15.4 Memory](./15-the-pvm/04-memory.md)
 - [15.5 Arithmetic](./15-the-pvm/05-arithmetic.md)
+- [15.6 Branches and calls](./15-the-pvm/06-branches-and-calls.md)
 
 ## Still to be written
 

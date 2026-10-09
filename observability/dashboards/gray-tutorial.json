@@ -1172,6 +1172,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 36,
+   "type": "logs",
+   "title": "Branches",
+   "description": "What bin/branches.ts ran: every branch with r0 = −1 against 1, and whether it jumped. Unsigned, −1 is the biggest number there is; signed, it's less than 1.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"branches\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}  taken: {{.taken}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 291,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

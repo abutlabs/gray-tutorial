@@ -406,3 +406,5 @@ one half of the job free.
 
 All 72 arithmetic and logic instructions, in both widths, every corner of the Gray
 Paper's tables written down and tested.
+
+Next: [15.6 Branches and calls](./06-branches-and-calls.md)
