@@ -41,7 +41,7 @@ below do.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { Operand, serviceInputs } from "../src/accumulate.ts";
-import { fromHex, toHex } from "../src/bytes.ts";
+import { fromHex } from "../src/bytes.ts";
 import { decode } from "../src/codec/codec.ts";
 import { TINY } from "../src/config.ts";
 import type { Accumulation } from "../src/host.ts";
@@ -68,7 +68,7 @@ type Vector = {
   };
   post_state: {
     statistics: { id: number; record: { accumulate_gas_used: number } }[];
-    accounts: { id: number; data: { storage: { key: string; value: string }[] } }[];
+    accounts: { id: number; data: AccountJson }[];
   };
 };
 
@@ -106,7 +106,7 @@ function runVector(name: string, s: number) {
   return {
     result: accumulate(TINY, a, vector.input.slot, gas),
     gas: BigInt(post.statistics.find((x) => x.id === s)!.record.accumulate_gas_used),
-    storage: post.accounts.find((x) => x.id === s)!.data.storage,
+    after: accountFromJson(post.accounts.find((x) => x.id === s)!.data),
   };
 }
 
@@ -122,19 +122,23 @@ const CASES: [string, number][] = [
   ["same_round_storage_isolation-2", 1730],
 ];
 
+/** Checks service s's accumulation in test vector `name` against the vector's post-state. */
+function checkVector(name: string, s: number) {
+  const { result, gas, after } = runVector(name, s);
+  assert.equal(result.gasUsed, gas);
+  const mine = result.accounts.get(s)!;
+  assert.deepEqual(mine.storage, after.storage);
+}
+
 for (const [name, s] of CASES) {
-  test(`${name}: service ${s} spends the vector's gas and leaves its storage`, () => {
-    const { result, gas, storage } = runVector(name, s);
-    assert.equal(result.gasUsed, gas);
-    const mine = [...result.accounts.get(s)!.storage].map(([k, v]) => `${k}=${toHex(v)}`);
-    assert.deepEqual(mine.sort(), storage.map((e) => `${e.key}=${e.value}`).sort());
-  });
+  test(`${name}: service ${s} ends as the vector says`, () => checkVector(name, s));
 }
 ```
 
 `runVector` sets a vector up the way Ψ_A wants it: the accounts, the service's code, its
-inputs and gas from the reports, the entropy, the slot. Then each case checks two things the
-vector records about the result: the gas used, and every key and value left in storage.
+inputs and gas from the reports, the entropy, the slot. `checkVector` compares two things
+with the vector's post-state: the gas used, and the storage left behind, read with the
+same `accountFromJson` as the accounts going in.
 
 **Run, expect it to fail**
 
@@ -206,7 +210,7 @@ by hand. `serviceInputs` walks the reports in order and keeps the digests for s.
 
 ```sh
 npm test
-# prints: service 1730 spends the vector's gas and leaves its storage
+# prints: same_round_storage_isolation-2: service 1730 ends as the vector says
 # prints: fail 0
 # prints: reported
 npm run typecheck

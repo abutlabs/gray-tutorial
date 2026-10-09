@@ -202,7 +202,7 @@ export function accumulateHost(config: Config, a: Accumulation): Host {
 ```sh
 npm test
 # prints: lookup: a preimage the service keeps, found by its hash
-# prints: lookup_foreign_preimage-2: service 0 spends the vector's gas and leaves its storage
+# prints: lookup_foreign_preimage-2: service 0 ends as the vector says
 # prints: fail 0
 # prints: reported
 npm run typecheck
@@ -250,3 +250,5 @@ every account into the context, which keeps it to one `Map` lookup.
 
 Services that can read any preimage on the chain, and ten official accumulate vectors
 passing end to end.
+
+Next: [16.9 Asking for preimages](./09-asking-for-preimages.md)
