@@ -30,7 +30,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [2.2 Compact naturals](./02-codec/02-compact-naturals.md)
 - [2.3 Writer and Reader](./02-codec/03-writer-and-reader.md)
 - [2.4 Codecs](./02-codec/04-codecs.md)
-- [2.5 Sequences, options and records](./02-codec/05-sequences-options-and-records.md)
+- [2.5 Sequences and records](./02-codec/05-sequences-and-records.md)
 - [2.6 The first test vectors](./02-codec/06-the-first-test-vectors.md)
 - [2.7 Watch a decode](./02-codec/07-watch-a-decode.md)
 

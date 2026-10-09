@@ -9,7 +9,7 @@ and to Grafana, like every other run.
 
 A decode trace is a list of the **innermost fields** of a value, in the order they are
 read. Each says its path (`import_segments.0.index`), where its bytes start and end, and
-the bytes themselves. Lengths and option tags count as fields too (`import_segments.length`),
+the bytes themselves. Lengths count as fields too (`import_segments.length`),
 so the trace covers every byte of the encoding exactly once. That is easy to test, and it
 is what makes a trace trustworthy: no byte is read without being reported.
 
@@ -123,34 +123,6 @@ export function seq<T>(item: Codec<T>): Codec<T[]> {
   };
 }
 
-/** [...]_n: exactly n items, with no length in front. */
-export function seqN<T>(item: Codec<T>, n: number): Codec<T[]> {
-  return {
-    encode: (w, items) => {
-      if (items.length !== n) throw new RangeError(`expected ${n} items, got ${items.length}`);
-      for (const x of items) item.encode(w, x);
-    },
-    decode: (r) => Array.from({ length: n }, (_, i) => r.field(String(i), () => item.decode(r))),
-    fromJson: (json) => (json as unknown[]).map((j) => item.fromJson(j)),
-  };
-}
-
-/** ¿x: 0 for nothing (null), or 1 and the value. */
-export function option<T>(item: Codec<T>): Codec<T | null> {
-  return {
-    encode: (w, x) => {
-      if (x === null) {
-        w.natural(0n);
-      } else {
-        w.natural(1n);
-        item.encode(w, x);
-      }
-    },
-    decode: (r) => (r.field("present", () => r.natural()) === 0n ? null : item.decode(r)),
-    fromJson: (json) => (json === null ? null : item.fromJson(json)),
-  };
-}
-
 /** A tuple with named fields, encoded field after field in the order they are written. */
 export function record<F extends Fields>(fields: F): Codec<{ [K in keyof F]: Value<F[K]> }> {
   type T = { [K in keyof F]: Value<F[K]> };
@@ -174,8 +146,7 @@ export function record<F extends Fields>(fields: F): Codec<{ [K in keyof F]: Val
 }
 ```
 
-A sequence names its length `length` and its items `0`, `1`, `2`. An option names its tag
-`present`, and the value after it keeps its own name.
+A sequence names its length `length` and its items `0`, `1`, `2`.
 
 ## The tests
 

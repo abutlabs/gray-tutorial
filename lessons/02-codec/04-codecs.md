@@ -193,4 +193,4 @@ order.
 
 </details>
 
-Next: [2.5 Sequences, options and records](./05-sequences-options-and-records.md)
+Next: [2.5 Sequences and records](./05-sequences-and-records.md)
