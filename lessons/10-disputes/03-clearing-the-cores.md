@@ -12,7 +12,7 @@ finishes Part 10.
 report*: the guarantee that put it there (lesson 4.3, report, slot and signatures) and
 the slot it arrived in.
 
-§10 then clears it (equation *removenonpositive*): ρ‡, ρ after the judgments, is ρ with
+§10 then clears it (equation *removenonpositive*): ρ†, ρ after the judgments, is ρ with
 every core emptied whose report was judged **bad or wonky** in this block. Which report
 is it? The verdict names a report by its hash, H(ℰ(report)), the very same hash
 lesson 5.2 put in the extrinsic hash. So: hash each pending report, and compare.
@@ -76,7 +76,7 @@ import { encode } from "../src/codec/codec.ts";
 import { blake2b256 } from "../src/hash.ts";
 import { WorkReport } from "../src/work.ts";
 
-test("ρ‡: a report judged bad or wonky is taken off its core", () => {
+test("ρ†: a report judged bad or wonky is taken off its core", () => {
   let cleared = 0;
   for (const config of [TINY, FULL]) {
     for (const { name, vector } of acceptedVectors(config)) {
@@ -93,7 +93,7 @@ test("ρ‡: a report judged bad or wonky is taken off its core", () => {
   assert.equal(cleared, 2); // one core on tiny, one on full
 });
 
-test("ρ‡: wonky clears a core too, and good leaves it be", () => {
+test("ρ†: wonky clears a core too, and good leaves it be", () => {
   const vector = vectorJson("stf/disputes/tiny/progress_invalidates_avail_assignments-1.json");
   const cores = PendingReports(TINY).fromJson((vector as DisputesVector).pre_state.rho);
   const pending = cores[0] as PendingReport; // core 0 holds a report
@@ -124,7 +124,7 @@ import type { PendingReport } from "./cores.ts";
 import { blake2b256 } from "./hash.ts";
 import { WorkReport } from "./work.ts";
 
-/** ρ‡ (GP §10): take every report judged bad or wonky off its core. */
+/** ρ† (GP §10): take every report judged bad or wonky off its core. */
 export function clearJudged(
   cores: (PendingReport | null)[],
   judged: { target: Bytes; outcome: Outcome }[],
@@ -144,8 +144,8 @@ A `Set` of the condemned reports' hashes, as hex, then one pass over the cores.
 
 ```sh
 npm test
-# prints: ρ‡: a report judged bad or wonky is taken off its core
-# prints: ρ‡: wonky clears a core too, and good leaves it be
+# prints: ρ†: a report judged bad or wonky is taken off its core
+# prints: ρ†: wonky clears a core too, and good leaves it be
 # prints: fail 0
 # prints: reported
 npm run typecheck

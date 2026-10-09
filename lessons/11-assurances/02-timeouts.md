@@ -7,7 +7,7 @@ Then Part 11 is done.
 
 ## What the Gray Paper says
 
-§11 again: ρ‡‡, the cores after the assurances. A core's pending report p is dropped
+§11 again: ρ‡, the cores after the assurances. A core's pending report p is dropped
 when any of these holds:
 
 1. **p became available** (lesson 11.1): its job on the core is done. It moves on to be
@@ -48,7 +48,7 @@ export function availableCores(
 **Replace in** `src/assurances.ts`
 
 ```ts
-/** W: the reports that become available, core by core. */
+/** 𝐑: the reports that become available, core by core. */
 export function nowAvailable(
   cores: (PendingReport | null)[],
   assurances: Assurance[],
@@ -82,7 +82,7 @@ type AssurancesVector = {
 import { availableCores, clearCores } from "../src/assurances.ts";
 import type { PendingReport } from "../src/cores.ts";
 
-test("ρ‡‡: a core lets go of a report once available, timed out, or the set resizes", () => {
+test("ρ‡: a core lets go of a report once available, timed out, or the set resizes", () => {
   let released = 0;
   for (const config of [TINY, FULL]) {
     for (const { name, vector } of acceptedVectors(config)) {
@@ -130,7 +130,7 @@ npm test
 export const AVAILABILITY_TIMEOUT = 5;
 
 /**
- * ρ‡‡ (GP §11): a core lets go of its report when the report became available, when it
+ * ρ‡ (GP §11): a core lets go of its report when the report became available, when it
  * has waited U slots, or when the number of validators changed.
  */
 export function clearCores(
@@ -151,7 +151,7 @@ export function clearCores(
 
 ```sh
 npm test
-# prints: ρ‡‡: a core lets go of a report once available, timed out, or the set resizes
+# prints: ρ‡: a core lets go of a report once available, timed out, or the set resizes
 # prints: a report registered at slot 7 may wait through slot 11, and times out at 12
 # prints: fail 0
 # prints: reported
@@ -237,7 +237,7 @@ slots, the other has only waited one. Try
       ) pre.avail_assignments in
 ```
 
-lasair does W and ρ‡‡ in a single pass: each core either hands its report to the
+lasair does 𝐑 and ρ‡ in a single pass: each core either hands its report to the
 available list and empties, or empties for a timeout or a resize, or keeps it. Yours
 takes two smaller steps. Both are fine. One pass is a little faster; two steps are
 easier to test one at a time.

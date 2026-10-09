@@ -18,8 +18,8 @@ Careful: that's the *opposite* of lesson 6.1's trie, which reads key bits most
 significant first. JAM uses both orders, each in its own place. Mixing them up is a
 classic way to spend an afternoon.
 
-**When is a report available?** W, the newly available reports, takes the cores in
-order, and a core's report joins W if the number of assurances with its bit set is
+**When is a report available?** 𝐑, the newly available reports, takes the cores in
+order, and a core's report joins 𝐑 if the number of assurances with its bit set is
 greater than ⅔·|κ|: more than two thirds of the current validators. With 6 validators
 that's 5 or more; with 1,023, it's 683 or more.
 
@@ -62,7 +62,7 @@ function acceptedVectors(config: Config): { name: string; vector: AssurancesVect
     .filter(({ vector }) => !vector.output.err);
 }
 
-test("W: a report becomes available when more than two thirds of κ hold its data", () => {
+test("𝐑: a report becomes available when more than two thirds of κ hold its data", () => {
   let available = 0;
   for (const config of [TINY, FULL]) {
     for (const { name, vector } of acceptedVectors(config)) {
@@ -86,7 +86,7 @@ test("on tiny, 5 of 6 validators make a report available, and 4 don't", () => {
 });
 ```
 
-The second test checks W, the list of newly available reports, against every accepted
+The second test checks 𝐑, the list of newly available reports, against every accepted
 vector, in core order. The third looks inside one tiny vector: core 0 gets 5 assurances
 and core 1 gets 4, just either side of the line.
 
@@ -120,7 +120,7 @@ export function assuredCount(assurances: Assurance[], core: number): number {
   return assurances.filter((assurance) => bitAt(assurance.bitfield, core)).length;
 }
 
-/** W: the reports that become available, core by core: more than 2/3 of κ assure them. */
+/** 𝐑: the reports that become available, core by core: more than 2/3 of κ assure them. */
 export function nowAvailable(
   cores: (PendingReport | null)[],
   assurances: Assurance[],
@@ -143,7 +143,7 @@ least significant first instead of most. (And it answers `true` or `false`.)
 ```sh
 npm test
 # prints: bits are packed least significant first: 0x05 is cores 0 and 2
-# prints: W: a report becomes available when more than two thirds of κ hold its data
+# prints: 𝐑: a report becomes available when more than two thirds of κ hold its data
 # prints: fail 0
 # prints: reported
 npm run typecheck
