@@ -20,15 +20,19 @@ export default defineConfig({
     search: { provider: "local" },
     outline: { level: [2, 3] },
     docFooter: { prev: "Previous lesson", next: "Next lesson" },
-    sidebar: parts.map((p) => ({
-      text: p.title,
-      link: `/${p.dir}/`,
-      collapsed: false,
-      items: p.lessons.map((l) => ({
-        text: `${l.id} ${l.title.replace(/^[\d.]+\s+/, "")}`,
-        link: `/${l.file.replace(/\.md$/, "")}`,
+    sidebar: [
+      { text: "Start here", link: "/" },
+      { text: "Glossary", link: "/glossary" },
+      ...parts.map((p) => ({
+        text: p.title,
+        link: `/${p.dir}/`,
+        collapsed: false,
+        items: p.lessons.map((l) => ({
+          text: `${l.id} ${l.title.replace(/^[\d.]+\s+/, "")}`,
+          link: `/${l.file.replace(/\.md$/, "")}`,
+        })),
       })),
-    })),
+    ],
   },
 });
 

@@ -2,13 +2,29 @@
 
 Build a JAM client in TypeScript, one Gray Paper rule at a time.
 
+## Start here
+
+1. **Read [0.1 What you will build](./00-start/01-what-you-will-build.md).** A short read
+   with nothing to type: what JAM is, what a client does, and where this tutorial goes.
+2. **Set up with [0.2 Set up the project](./00-start/02-set-up-the-project.md).** Node 26,
+   the tools, the dashboard, and your first passing test.
+3. **Then one lesson at a time, in order.** Each one explains one rule in plain words,
+   gives you the code in small snippets, and has you run it.
+
+Stuck on a word? Every JAM word, Gray Paper symbol and programming term is in the
+[glossary](./glossary.md), in plain English with an example.
+
+You don't need to know the Gray Paper, cryptography or blockchains to begin: each idea
+arrives when it's needed, with an example first. You do need to be at ease reading a
+little TypeScript or JavaScript.
+
+## How it works
+
 Each lesson explains a piece of the Gray Paper, gives you the code for it in small
 snippets, and has you run it. You assemble the snippets into your own client in
 `client/`, run the tests, and watch it grow, from an empty folder to a program that
 imports JAM blocks and agrees byte for byte with the official test vectors. From the
 first lesson on, it reports every run to Grafana, so you can watch what it does.
-
-Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
 ## Lessons
 

@@ -27,6 +27,11 @@ lesson. `npm test` checks those links, and that each lesson ends with a link to 
 
 ## Shape
 
+0. **New words**: right under the opening paragraph, every term the lesson uses for the
+   first time (a JAM word, a Gray Paper symbol, a programming word a newcomer may not
+   know), each with a one-line plain-English definition and a tiny concrete example. Add
+   each one to `lessons/glossary.md` too (plain English, example, the symbol, the lesson).
+   A word used before it's defined is a bug.
 1. **What the Gray Paper says**: the rule, quoted or paraphrased, with its section
    (§11, *Refinement Context*; Appendix C). Check every quote against the 0.8.0 tex.
 2. **The code**: tests first where it helps, then the code, each in a labelled snippet.
@@ -34,6 +39,12 @@ lesson. `npm test` checks those links, and that each lesson ends with a link to 
 4. **lasair**, folded in `<details>`: the same rule in lasair's OCaml, quoted from the
    source (say when comments are trimmed), with a sentence on reading it.
 5. A link to the next lesson.
+
+**Foundations before complexity.** A beginner should never meet the hard parts first.
+Inside a lesson: plain English and a concrete example first, the Gray Paper's notation
+second, code third, and at most about three new ideas. Across the tutorial: the base rules
+of every part through block import come first; cryptography, hardening and rare cases come
+after, in parts marked as later.
 
 **The first pass teaches the base rule.** A lesson shows the rule working in its simplest
 form; edge cases, hostile input and fuzzer-level defences wait for the hardening pass,
