@@ -106,6 +106,10 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [14.1 Providing preimages](./14-services/01-providing-preimages.md)
 - [14.2 The service account](./14-services/02-the-service-account.md)
 
+**[Part 15 · The PVM](./15-the-pvm/index.md)**
+
+- [15.1 The program blob](./15-the-pvm/01-the-program-blob.md)
+
 ## Still to be written
 
 The road from here to a full block importer, part by part. The parts are written in
@@ -114,7 +118,7 @@ this order, and each one is checked end to end before it is published here.
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 15 · The PVM | decoding programs, every instruction, gas | App. A |
+| 15 · The PVM (rest) | instructions, registers, memory, gas | App. A |
 | 16 · Host calls | the accumulate invocation and its host calls | App. B |
 | 17 · Accumulation | the ready queue, privileges, transfers | §12 |
 | 18 · Statistics | validator, core and service activity | §13 |

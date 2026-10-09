@@ -246,3 +246,5 @@ holds 18,446,744,073,709,551,615.
 
 Part 14, done: services get the data they asked for, and your client can read any
 service's account and check that its footprint and its balance add up.
+
+Next: [Part 15 · The PVM](../15-the-pvm/index.md)

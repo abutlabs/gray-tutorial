@@ -1022,6 +1022,36 @@
     "w": 24,
     "h": 6
    }
+  },
+  {
+   "id": 31,
+   "type": "logs",
+   "title": "Program",
+   "description": "What bin/program.ts unpacked from a service's code: the preimage's layers (metadata, standard program, PVM blob) and the blob's jump table, code and bitmask.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"program\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 248,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }
