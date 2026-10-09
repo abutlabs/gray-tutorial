@@ -198,3 +198,5 @@ will too.
 ## What you have
 
 The randomness at the heart of Safrole: stirred every block, set aside every epoch.
+
+Next: [8.2 Rotating the validators](./02-rotating-the-validators.md)

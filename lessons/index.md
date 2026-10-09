@@ -70,6 +70,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 **[Part 8 · Safrole](./08-safrole/index.md)**
 
 - [8.1 Stirring the entropy](./08-safrole/01-stirring-the-entropy.md)
+- [8.2 Rotating the validators](./08-safrole/02-rotating-the-validators.md)
 
 ## Still to be written
 
@@ -78,7 +79,7 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 8 · Safrole (rest) | validator rotation, sealing keys, tickets, Bandersnatch | §6, App. G |
+| 8 · Safrole (rest) | sealing keys, tickets, Bandersnatch | §6, App. G |
 | 9 · Recent history | recent blocks, the accumulation-output belt | §7 |
 | 10 · Disputes | judgments, verdicts, culprits, faults | §10 |
 | 11 · Assurances | availability of work-reports | §11 |

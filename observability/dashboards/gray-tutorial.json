@@ -512,6 +512,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 14,
+   "type": "logs",
+   "title": "Validator rotation",
+   "description": "What bin/rotation.ts computed from a safrole vector: each validator set before and after the block, every validator shown by the first four hex digits of its Ed25519 key (0000: an offender, zeroed).",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"rotation\", run_id=~\"$run_id\"} | json | line_format \"{{.set}}  {{.before}}  →  {{.after}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 106,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

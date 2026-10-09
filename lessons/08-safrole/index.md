@@ -6,3 +6,4 @@ makes the block. This part builds Safrole piece by piece, starting with the rand
 that makes the lottery fair.
 
 - [8.1 Stirring the entropy](./01-stirring-the-entropy.md)
+- [8.2 Rotating the validators](./02-rotating-the-validators.md)
