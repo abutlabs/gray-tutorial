@@ -14,3 +14,4 @@ budget comes later.
 - [17.5 Privileges](./05-privileges.md)
 - [17.6 Who wins](./06-who-wins.md)
 - [17.7 Ejecting a service](./07-ejecting-a-service.md)
+- [17.8 Creating a service](./08-creating-a-service.md)

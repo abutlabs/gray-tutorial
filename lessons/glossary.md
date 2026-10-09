@@ -488,6 +488,18 @@ hash of 32 zero bytes names service 0. ([17.7](./17-accumulation/07-ejecting-a-s
 on tiny, 19,200 on full. *Example:* forgotten at slot 10, gone from slot 43 on tiny.
 ([17.7](./17-accumulation/07-ejecting-a-service.md))
 
+**Public id.** A service id of 2^16 (S) or more: anyone may create a service with one;
+ids below S are the registrar's. *Example:* 70,000 is public, 5 isn't.
+([17.8](./17-accumulation/08-creating-a-service.md))
+
+**Next free id.** i. The id a run's next `new` hands out: from the creating service's id,
+η′₀ and the slot, then 42 further on after each use. *Example:* 70,000, then 70,042.
+([17.8](./17-accumulation/08-creating-a-service.md))
+
+**Gratis storage.** f. A discount on a service's deposit: storage it keeps without paying
+for it. Only the manager may give it. *Example:* gratis from anyone else: `HUH`.
+([17.8](./17-accumulation/08-creating-a-service.md))
+
 **Request.** A service asking for a preimage by hash and length. Its history is a short
 list of slots: asked for, provided, forgotten. ([16.9](./16-host-calls/09-asking-for-preimages.md))
 

@@ -368,4 +368,4 @@ Services that can leave: ejected by the service they named, their balance passed
 rounds that remove what their runs removed. Fifty official vectors now pass as whole
 blocks.
 
-Next: [Part 18 · Statistics](../18-statistics/index.md)
+Next: [17.8 Creating a service](./08-creating-a-service.md)
