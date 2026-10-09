@@ -44,6 +44,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
 - [4.1 Tickets and preimages](./04-blocks/01-tickets-and-preimages.md)
 - [4.2 Tiny and full](./04-blocks/02-tiny-and-full.md)
+- [4.3 Guarantees](./04-blocks/03-guarantees.md)
 
 ## Still to be written
 
@@ -52,7 +53,7 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 4 · Blocks (rest) | guarantees, disputes, header, block | §5, §10, §11, App. C |
+| 4 · Blocks (rest) | disputes, header, block | §5, §10, App. C |
 | 5 · Hashing and signatures | Blake2b, Keccak, Ed25519 | §3 |
 | 6 · State and Merklization | σ, state keys, the trie, the state root | §4, App. D |
 | 7 · Time and shuffling | epochs, entropy, the Fisher-Yates shuffle | §4, App. E |
