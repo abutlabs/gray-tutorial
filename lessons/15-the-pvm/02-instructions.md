@@ -452,3 +452,5 @@ runs, where yours works out the target straight away.
 
 A disassembler: any JAM service's code, read instruction by instruction, every
 argument decoded and every jump checked against the real thing.
+
+Next: [15.3 The machine](./03-the-machine.md)
