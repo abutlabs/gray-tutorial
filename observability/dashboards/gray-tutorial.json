@@ -302,14 +302,14 @@
    "id": 7,
    "type": "logs",
    "title": "Chain",
-   "description": "What bin/chain.ts checked: each block's slot, its header hash, and whether it names the block before as its parent.",
+   "description": "What bin/chain.ts checked: each block's slot, its header hash, whether it names the block before as its parent, and whether its extrinsic matches its header's extrinsic hash.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"chain\", run_id=~\"$run_id\"} | json | line_format \"slot {{.slot}}  {{.hash}}  linked: {{.linked}}\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"chain\", run_id=~\"$run_id\"} | json | line_format \"slot {{.slot}}  {{.hash}}  linked: {{.linked}}  extrinsic matches: {{.matches}}\"",
      "refId": "A",
      "queryType": "range"
     }

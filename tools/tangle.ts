@@ -6,8 +6,10 @@
 //  - Import lines at the top of a snippet go to the top of the file, merged with the
 //    file's own imports. An import is a single line.
 //  - A declaration (function, const, type, interface, class) starts at column 0, with
-//    its comment directly above it, and runs until the next line that starts at
-//    column 0 with a declaration, an import or a comment. Its body is indented.
+//    its comment directly above it, and runs until the next declaration, import or
+//    comment at column 0, or the next statement at column 0 after a blank line (such
+//    as a test). A statement right under it, with no blank line between, goes with
+//    it. Its body is indented.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -93,6 +95,7 @@ function leadingComment(lines: string[]): number {
 interface Block { name: string | null; start: number; end: number } // lines [start, end)
 
 const STARTS = /^(export|import|const|let|var|function|async|type|interface|class|abstract|declare|enum)\b|^\/\/|^\/\*/;
+const STATEMENT = /^[^\s})\]]/; // any other line at column 0, but a closing bracket
 const COMMENT = /^\/\/|^\/\*/;
 const DECL = /^(?:export\s+)?(?:default\s+)?(?:declare\s+)?(?:async\s+)?(function\*?|const|let|var|type|interface|class|abstract\s+class|enum)\s+([A-Za-z_$][\w$]*)/;
 
@@ -107,9 +110,10 @@ function declName(line: string): string | null {
 function blocks(lines: string[]): Block[] {
   const out: (Block & { commentOnly: boolean })[] = [];
   for (let i = 0; i < lines.length; i++) {
-    if (!STARTS.test(lines[i])) continue;
+    const glued = i > 0 && lines[i - 1].trim() !== "";
+    if (!STARTS.test(lines[i]) && !(STATEMENT.test(lines[i]) && !glued)) continue;
     const cur = out.at(-1);
-    const attached = cur && cur.commentOnly && lines[i - 1].trim() !== "";
+    const attached = cur && cur.commentOnly && glued;
     if (attached && COMMENT.test(lines[i])) continue; // the comment goes on
     if (attached) {
       cur.commentOnly = false; // the comment belongs to this declaration

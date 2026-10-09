@@ -208,3 +208,5 @@ on a well-tested library here.
 
 A hash function, and proof that your encoding of headers is exact: if it were off by a
 single byte, not one of those 99 links would hold.
+
+Next: [5.2 The extrinsic hash](./02-the-extrinsic-hash.md)

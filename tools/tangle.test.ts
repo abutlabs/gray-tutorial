@@ -88,6 +88,18 @@ test("a type and a value of the same name are two declarations", () => {
   assert.equal(run(start, "replace", "export type W = string;\nexport const W = 3;"), "export const W = 3;\nexport type W = string;\n\nexport const after = 0;\n");
 });
 
+test("replace stops at a top-level statement, such as a test, after the declaration", () => {
+  const start = "function f(): number {\n  return 1;\n}\n\ntest(\"f\", () => {\n  f();\n});\n";
+  const out = run(start, "replace", "function f(): number {\n  return 2;\n}");
+  assert.equal(out, start.replace("return 1", "return 2"));
+});
+
+test("a statement right under a declaration, with no blank line, goes with it", () => {
+  const start = "const x = 1;\nif (x) {\n  go();\n}\n\nlater();\n";
+  const out = run(start, "replace", "const x = 2;\nif (x > 1) {\n  go();\n}");
+  assert.equal(out, "const x = 2;\nif (x > 1) {\n  go();\n}\n\nlater();\n");
+});
+
 test("replace needs a declaration of that name", () => {
   assert.throws(() => run(file, "replace", "export const nine = 9;"), /no declaration named nine/);
   assert.throws(() => run(file, "replace", "console.log(1);"), /only hold declarations/);
