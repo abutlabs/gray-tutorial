@@ -6,3 +6,4 @@ the cores, availability promises, disputes. This part encodes all of it, piece b
 until your client can read a whole block, checked against the official vectors.
 
 - [4.1 Tickets and preimages](./01-tickets-and-preimages.md)
+- [4.2 Tiny and full](./02-tiny-and-full.md)

@@ -164,5 +164,6 @@ changed nothing for it, and your `u8` is right from the start.
 
 ## What you have
 
-Two of the five parts of a block's extrinsic. Next, the first part whose size depends on
-which JAM you're running, tiny or full. (That lesson is still being written.)
+Two of the five parts of a block's extrinsic.
+
+Next: [4.2 Tiny and full](./02-tiny-and-full.md)
