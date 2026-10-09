@@ -842,6 +842,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 25,
+   "type": "logs",
+   "title": "Guarantors",
+   "description": "What bin/guarantors.ts checked: for each guarantee, its core, the slot it was made at, which rotation's assignment it answers to, its signers, and whether they're all assigned to that core.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"guarantors\", run_id=~\"$run_id\"} | json | line_format \"core {{.core}}, made at slot {{.made}} ({{.which}}): signers {{.signers}}, all assigned: {{.assigned}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 202,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }
