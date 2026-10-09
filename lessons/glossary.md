@@ -330,6 +330,18 @@ accumulated in it; dependencies are checked against it.
 the same block. *Example:* A accumulates, so D, waiting for A, goes right after it.
 ([17.2](./17-accumulation/02-waiting-reports.md))
 
+**Deferred transfer.** 𝕏. Money one service sends another while it accumulates: the
+sender pays at once, the receiver gets it in the next round of the same block.
+*Example:* service 0 sends service 1 a hundred. ([17.3](./17-accumulation/03-sending-a-transfer.md))
+
+**Memo.** W_T = 128 bytes. A note that travels with a transfer, for the receiver's code to
+read. *Example:* the bytes of "gift", then 124 zeros.
+([17.3](./17-accumulation/03-sending-a-transfer.md))
+
+**Outbox.** This client's name for the transfers a run has sent so far (the GP's 𝐭), and
+the ones its last checkpoint kept. *Example:* two sent, one before the checkpoint.
+([17.3](./17-accumulation/03-sending-a-transfer.md))
+
 **Accumulation statistics.** S(s) = (N, T, G). For each service, per block: the digests
 it accumulated, the transfers it received, the gas it used. *Example:* (1, 0, 29,643).
 ([17.1](./17-accumulation/01-a-blocks-accumulation.md))

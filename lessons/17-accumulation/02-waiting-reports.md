@@ -413,4 +413,4 @@ the rest with the newly done packages. Your `unlock` is the same recursion as a 
 Reports that wait for each other, unlocked in the right order, and a queue and history
 that match 36 official vectors.
 
-Next: [Part 18 · Statistics](../18-statistics/index.md)
+Next: [17.3 Sending a transfer](./03-sending-a-transfer.md)
