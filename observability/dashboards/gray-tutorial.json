@@ -932,6 +932,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 28,
+   "type": "logs",
+   "title": "Authorizer pools",
+   "description": "What bin/pools.ts did: each core's authorizer pool before and after the block (each authorizer as its first 4 hex digits), the one that left and the one that joined from the queue.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"pools\", run_id=~\"$run_id\"} | json | line_format \"core {{.core}}: {{.before}}  − {{.gone}}, + {{.joined}}  →  {{.after}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 226,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }
