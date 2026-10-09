@@ -356,3 +356,5 @@ sizes, and were 134 bytes long.
 
 A host that answers two questions, gas and fetch, and a real service that runs to a clean
 halt. 1,450 gas from matching the test vector.
+
+Next: [16.3 Growing the heap](./03-growing-the-heap.md)
