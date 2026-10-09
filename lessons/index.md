@@ -117,6 +117,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [15.7 Bits and bytes](./15-the-pvm/07-bits-and-bytes.md)
 - [15.8 A real program](./15-the-pvm/08-a-real-program.md)
 - [15.9 What instructions cost](./15-the-pvm/09-what-instructions-cost.md)
+- [15.10 The pipeline](./15-the-pvm/10-the-pipeline.md)
 
 ## Still to be written
 

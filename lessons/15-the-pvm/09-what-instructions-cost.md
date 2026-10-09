@@ -327,3 +327,5 @@ your table matches on names.
 ## What you have
 
 A price for every instruction the PVM knows. Next, the CPU that adds them up.
+
+Next: [15.10 The pipeline](./10-the-pipeline.md)
