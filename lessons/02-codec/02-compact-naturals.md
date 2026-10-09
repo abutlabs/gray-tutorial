@@ -96,6 +96,26 @@ npm test
 The test file exists, so this time Node complains about the names it imports, not the
 file. You add them next.
 
+A compact natural is a first byte glued to the rest, so first a little glue. The Gray
+Paper writes joining byte strings as ⌢:
+
+**Add to** `src/bytes.ts`
+
+```ts
+/** The parts one after another: the GP's ⌢. */
+export function concatBytes(...parts: Bytes[]): Bytes {
+  const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
+  let at = 0;
+  for (const p of parts) {
+    out.set(p, at);
+    at += p.length;
+  }
+  return out;
+}
+```
+
+It makes one array big enough for every part, then copies each part in after the last.
+
 **Add to** `src/codec/numbers.ts`
 
 ```ts

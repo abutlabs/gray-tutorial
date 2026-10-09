@@ -1,68 +1,57 @@
 # Bytes and hex
 
+Before JAM can be clever, it has to be bytes. Hashes, keys, blocks, whole states: all
+bytes in the end. This lesson gives your client a word for bytes and a way to read and
+write them the way the test vectors do.
+
 ## What the Gray Paper says
 
-Section 3 of the Gray Paper (Notational Conventions) names the sets everything else is
-built from. Two you will meet on every page:
+Section 3 of the Gray Paper (*Notational Conventions*) names the building blocks. Two
+you'll meet on nearly every page:
 
-- **𝔹**, the octet strings, which the paper calls *blobs*. 𝔹ₙ are those of length n.
+- **𝔹**, the octet strings, which the paper calls *blobs*. 𝔹ₙ are the ones of length n.
 - **ℍ = 𝔹₃₂**, 32-byte values. Every hash in JAM is one.
 
-It also draws a line between bytes and numbers: *"an octet is always serialized to
-itself, whereas a natural number may be serialized as a sequence of potentially several
-octets"*. The number 5 and the byte 5 are different things in JAM, and the client keeps
-them apart from the first line.
+It also draws a firm line: *"an octet is always serialized to itself, whereas a natural
+number may be serialized as a sequence of potentially several octets"*. The byte 5 and
+the number 5 are different creatures in JAM. Your client keeps them apart from the start.
 
 ## Bytes in TypeScript
 
-A `Uint8Array`: a fixed-length array of integers 0 to 255, stored as raw bytes. Two
-alternatives you might reach for, and why not:
-
-- `number[]` takes eight times the memory and allows any number, 300 or −1.5.
-- Node's `Buffer` is a `Uint8Array` with surprises: `buf.slice()` shares memory instead
-  of copying, and `assert.deepEqual` treats a `Buffer` and a `Uint8Array` with the same
-  bytes as different. It also exists only in Node.
+A `Uint8Array`: a row of numbers from 0 to 255, stored as raw bytes. (A plain `number[]`
+would take eight times the memory and happily hold 300 or −1.5. Node's `Buffer` is a
+`Uint8Array` with a few surprises, and only exists in Node. `Uint8Array` it is.)
 
 ## Hex
 
-The test vectors write bytes as text: `"0x"` and then two hex digits per byte, so the
-bytes 1, 2, 255 are `"0x0102ff"`. JavaScript has hex built in: `bytes.toHex()` gives
-`"0102ff"`, and `Uint8Array.fromHex("0102ff")` gives the bytes back. The vectors put `0x` in
-front, which the built-ins don't use, so your two functions add it and check for it.
+The test vectors write bytes as text: `0x`, then two hex digits per byte. The bytes 1, 2
+and 255 become `"0x0102ff"`. Node 26 speaks hex already: `bytes.toHex()` gives
+`"0102ff"`, and `Uint8Array.fromHex("0102ff")` gives the bytes back. All you add is the
+`0x`.
 
-The tests come first. They import `src/bytes.ts`, which doesn't exist yet: you run them,
-watch them fail, then write the file. Every lesson works this way, because a test written
-first says what the code must do before there is any code to agree with.
+The test first, as always:
 
 **New file** `test/bytes.test.ts`
 
 ```ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { bytesEqual, concatBytes, fromHex, toHex } from "../src/bytes.ts";
+import { fromHex, toHex } from "../src/bytes.ts";
 
 test("hex there and back", () => {
-  const b = Uint8Array.of(0, 1, 0x7f, 0x80, 0xff);
-  assert.equal(toHex(b), "0x00017f80ff");
-  assert.deepEqual(fromHex("0x00017f80ff"), b);
-  assert.deepEqual(fromHex("0x00017F80FF"), b);
+  const bytes = Uint8Array.of(1, 2, 255);
+  assert.equal(toHex(bytes), "0x0102ff");
+  assert.deepEqual(fromHex("0x0102ff"), bytes);
+});
+
+test("no bytes at all is just 0x", () => {
   assert.equal(toHex(new Uint8Array(0)), "0x");
-});
-
-test("fromHex refuses what is not 0x and whole bytes", () => {
-  for (const bad of ["00", "0x0", "0xzz", "0x 1"]) {
-    assert.throws(() => fromHex(bad), SyntaxError);
-  }
-});
-
-test("equal and concat", () => {
-  assert.ok(bytesEqual(fromHex("0x0102"), Uint8Array.of(1, 2)));
-  assert.ok(!bytesEqual(fromHex("0x0102"), fromHex("0x010203")));
-  assert.ok(!bytesEqual(fromHex("0x0102"), fromHex("0x0103")));
-  const joined = concatBytes(fromHex("0x01"), fromHex("0x"), fromHex("0x0203"));
-  assert.deepEqual(joined, fromHex("0x010203"));
+  assert.deepEqual(fromHex("0x"), new Uint8Array(0));
 });
 ```
+
+`assert.deepEqual` compares two arrays byte by byte. (Plain `===` would only ask whether
+they are the very same object, which two separate arrays never are.)
 
 **Run, expect it to fail**
 
@@ -71,49 +60,29 @@ npm test
 # fails with: Cannot find module
 ```
 
-It fails because `src/bytes.ts` doesn't exist yet. You write it now.
+Red: there's no `src/bytes.ts` yet. Let's fix that.
 
 **New file** `src/bytes.ts`
 
 ```ts
 // Bytes: the Gray Paper's octet strings (GP §3).
 
-/** An octet string: the GP's 𝔹, and its fixed-length kinds such as ℍ (32 bytes). */
+/** An octet string: the GP's 𝔹, and fixed-length kinds of it such as ℍ (32 bytes). */
 export type Bytes = Uint8Array;
 
-/** The bytes as the test vectors write them: "0x" and two lowercase hex digits each. */
+/** The bytes as the test vectors write them: "0x", then two hex digits per byte. */
 export function toHex(bytes: Bytes): string {
   return "0x" + bytes.toHex();
 }
 
-/** The bytes written as "0x" hex; throws a SyntaxError on anything else. */
+/** The bytes back from "0x" hex. */
 export function fromHex(hex: string): Bytes {
-  if (!hex.startsWith("0x")) throw new SyntaxError(`hex bytes start with 0x: ${hex.slice(0, 20)}`);
-  return Uint8Array.fromHex(hex.slice(2)); // throws on an odd number of digits, or a non-hex one
-}
-
-/** Whether two byte strings hold the same bytes. (=== asks whether they are the same object.) */
-export function bytesEqual(a: Bytes, b: Bytes): boolean {
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
-  return true;
-}
-
-/** The parts one after another: the GP's ⌢ operator. */
-export function concatBytes(...parts: Bytes[]): Bytes {
-  const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
-  let at = 0;
-  for (const p of parts) {
-    out.set(p, at);
-    at += p.length;
-  }
-  return out;
+  return Uint8Array.fromHex(hex.slice(2)); // slice(2) skips the "0x"
 }
 ```
 
-`type Bytes = Uint8Array` is an alias: it adds no checks, but every signature now says
-what it means. `Uint8Array.fromHex` already refuses an odd number of digits and anything
-that isn't a hex digit, with a `SyntaxError`, so `fromHex` only has to check the `0x`.
+`type Bytes = Uint8Array` is an *alias*: a second name for the same type. It checks
+nothing extra, but from now on every function that takes bytes says so out loud.
 
 **Run**
 
@@ -124,20 +93,30 @@ npm test
 npm run typecheck
 ```
 
-<details>
-<summary>lasair: OCaml's <code>bytes</code></summary>
+Green. Four tests on the dashboard now.
 
-OCaml has a built-in `bytes` type, a mutable string of bytes, and lasair uses it for
-every 𝔹. Joining encodings, the GP's ⌢, is a function over a list of them, from
-`lib/serialization.ml`:
+<details>
+<summary>lasair: hex by hand, in <code>lib/serialization.ml</code></summary>
+
+OCaml has no hex built in, so lasair does it one *nibble* (half a byte) at a time:
 
 ```ocaml
-(** Concatenate multiple encoded values *)
-let encode_tuple (parts : bytes list) : bytes =
+(** Convert bytes to hex string for debugging *)
+let bytes_to_hex (bs : bytes) : string =
+  let hex = Bytes.create (Bytes.length bs * 2) in
+  for i = 0 to Bytes.length bs - 1 do
+    let b = Char.code (Bytes.get bs i) in
+    let hi = b lsr 4 in
+    let lo = b land 0xF in
+    Bytes.set hex (i * 2) (if hi < 10 then Char.chr (hi + 48) else Char.chr (hi + 87));
+    Bytes.set hex (i * 2 + 1) (if lo < 10 then Char.chr (lo + 48) else Char.chr (lo + 87))
+  done;
+  Bytes.to_string hex
 ```
 
-OCaml writes the type after the name (`parts : bytes list`, a list of bytes values) and
-the return type after the arguments (`: bytes`).
+`b lsr 4` is the top four bits, `b land 0xF` the bottom four. Then a little ASCII magic:
+48 is the character `0`, and adding 87 turns 10 into `a`. This is what `toHex` does for
+you, inside Node.
 
 </details>
 
