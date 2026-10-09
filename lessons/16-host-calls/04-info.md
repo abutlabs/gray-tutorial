@@ -1,7 +1,7 @@
 # Info
 
-The survey is in: run every service in the accumulate test vectors through your host, and
-the first question it can't answer yet is one of three: `info`, `read` or `write`. All
+Across the accumulate test vectors, the first question a service asks that your host
+can't answer yet is one of three: `info`, `read` or `write`. All
 three are about service *accounts*, the records and storage lesson 14.2 read out of the
 state. So the host needs to know the accounts, and the gentlest of the three goes first.
 `info` just looks.
@@ -32,15 +32,32 @@ the accounts, the code, the entropy and the inputs.
 
 ## The tests
 
-The 16.2 and 16.3 helpers now build that bundle:
+The 16.2 and 16.3 helpers now build that bundle, the vector's accounts read by a helper
+from `services.ts` (you'll write it in a moment):
 
 **Replace in** `test/host.test.ts`
 
 ```ts
+/** The parts of an accumulate test vector these tests read. */
+type AccumulateVector = {
+  input: { slot: number };
+  pre_state: {
+    entropy: string;
+    accounts: {
+      id: number;
+      data: AccountJson & {
+        service: { code_hash: string };
+        preimage_blobs: { hash: string; blob: string }[];
+      };
+    }[];
+  };
+  post_state: { statistics: { record: { accumulate_gas_used: number } }[] };
+};
+
 /** Accumulation's host, for service 0 with a tiny program, an entropy of sevens, no inputs. */
 const accumulating = accumulateHost(TINY, {
   id: 0,
-  accounts: new Map([[0, { info: tinyInfo() }]]),
+  accounts: tinyAccounts(),
   code: tinyCode(),
   entropy: new Uint8Array(32).fill(7),
   inputs: [],
@@ -57,9 +74,7 @@ function vectorService() {
   const { memory, registers } = standardProgram(code, args);
   const machine = newMachine(deblob(code.program), registers, memory, 100_000n);
   machine.pc = 5; // accumulation
-  const accounts = new Map(
-    vector.pre_state.accounts.map((a) => [a.id, { info: ServiceInfo.fromJson(a.data.service) }]),
-  );
+  const accounts = new Map(vector.pre_state.accounts.map((a) => [a.id, accountFromJson(a.data)]));
   const entropy = fromHex(vector.pre_state.entropy);
   const host = accumulateHost(TINY, { id, accounts, code, entropy, inputs: [] });
   const expected = BigInt(vector.post_state.statistics[0].record.accumulate_gas_used);
@@ -71,7 +86,8 @@ function vectorService() {
 
 ```ts
 import { info } from "../src/host.ts";
-import { ServiceInfo } from "../src/services.ts";
+import type { Account, AccountJson } from "../src/services.ts";
+import { accountFromJson, ServiceInfo } from "../src/services.ts";
 
 /** A service's record, made up: a balance of 1,000, 2 items in 50 bytes, created at slot 5. */
 function tinyInfo(): ServiceInfo {
@@ -90,6 +106,11 @@ function tinyInfo(): ServiceInfo {
   };
 }
 
+/** The accounts the tests' accumulation sees: service 0, with tinyInfo's record. */
+function tinyAccounts(): Map<number, Account> {
+  return new Map([[0, { info: tinyInfo() }]]);
+}
+
 /** A machine about to ask info about service `who`, with a writable page at 0x20000. */
 function asking(who: bigint) {
   const memory = new Map();
@@ -100,7 +121,7 @@ function asking(who: bigint) {
 
 test("info: a service's record, 96 bytes, starting with its code hash", () => {
   const machine = asking(2n ** 64n - 1n); // 2^64 − 1: itself
-  assert.equal(info(machine, new Map([[0, { info: tinyInfo() }]]), 0), "continue");
+  assert.equal(info(machine, tinyAccounts(), 0), "continue");
   assert.equal(machine.registers[7], 96n);
   const start = readMemory(machine.memory, 0x20000n, 33);
   assert.deepEqual(start, Uint8Array.of(...Array(32).fill(9), 232)); // then 1,000's low byte
@@ -109,13 +130,13 @@ test("info: a service's record, 96 bytes, starting with its code hash", () => {
 
 test("its minimum balance comes worked out: 100 + 10 per item + 1 per byte = 170", () => {
   const machine = asking(0n); // service 0, by number this time
-  info(machine, new Map([[0, { info: tinyInfo() }]]), 0);
+  info(machine, tinyAccounts(), 0);
   assert.deepEqual(readMemory(machine.memory, 0x20000n + 40n, 2), Uint8Array.of(170, 0));
 });
 
 test("info about a service that isn't there: NONE", () => {
   const machine = asking(42n);
-  info(machine, new Map([[0, { info: tinyInfo() }]]), 0);
+  info(machine, tinyAccounts(), 0);
   assert.equal(machine.registers[7], NONE);
 });
 ```
@@ -132,13 +153,23 @@ npm test
 
 ## The code
 
-An account, as accumulation sees it, is just its record so far. It will grow:
+An account, as accumulation sees it, is just its record so far. It will grow, and
+`accountFromJson` will grow with it, so the tests and the bin never need to change when it
+does:
 
 **Add to** `src/services.ts`
 
 ```ts
 /** A service account (GP §9) as accumulation sees it. So far: its record. */
 export type Account = { info: ServiceInfo };
+
+/** An account as the accumulate test vectors write it. */
+export type AccountJson = { service: unknown };
+
+/** An account from the accumulate test vectors' JSON. */
+export function accountFromJson(json: AccountJson): Account {
+  return { info: ServiceInfo.fromJson(json.service) };
+}
 ```
 
 `info` copies out exactly as `fetch` does, and `read` and `lookup` will too, so the copying
@@ -256,11 +287,11 @@ The bin hands over the bundle too:
 **Replace in** `bin/host.ts`
 
 ```ts
-import { ServiceInfo } from "../src/services.ts";
+import { accountFromJson } from "../src/services.ts";
 
 const answer = accumulateHost(TINY, {
   id: account.id,
-  accounts: new Map([[account.id, { info: ServiceInfo.fromJson(account.data.service) }]]),
+  accounts: new Map([[account.id, accountFromJson(account.data)]]),
   code,
   entropy: fromHex(vector.pre_state.entropy),
   inputs: [],
@@ -304,3 +335,5 @@ out on the spot, as both clients do here, it can't go stale.
 ## What you have
 
 A host that knows the accounts, and can tell a service about any of them.
+
+Next: [16.5 Storage](./05-storage.md)

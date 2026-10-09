@@ -10,3 +10,4 @@ the test vectors down to the last unit of gas.
 - [16.2 Fetch](./02-fetch.md)
 - [16.3 Growing the heap](./03-growing-the-heap.md)
 - [16.4 Info](./04-info.md)
+- [16.5 Storage](./05-storage.md)
