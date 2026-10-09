@@ -3,6 +3,22 @@
 Your first piece of real JAM. It's tiny, and it is everywhere: every block in JAM says
 *when* it belongs, and that "when" comes from this clock.
 
+## New words
+
+- **Timeslot (slot).** One tick of JAM's clock: six seconds, numbered from 0. *Example:*
+  slot 1 runs from 12:00:06 to 12:00:12 UTC on 1 January 2025.
+- **JAM Common Era.** The moment JAM's clock starts: 12:00 UTC on 1 January 2025.
+  *Example:* slot 0 begins right then.
+- **Unix epoch.** The moment most computer clocks count from: 00:00 UTC on 1 January
+  1970. (Nothing to do with a JAM epoch, which arrives in lesson 7.1.) *Example:* the JAM
+  Common Era is 1,735,732,800 seconds after it.
+- **Header.** A block's cover page; among other things, it names the block's slot
+  (lesson 4.6). *Example:* a header saying slot 43.
+- **Test-first.** Writing a test before the code it tests, watching it fail, then making it
+  pass. *Example:* this lesson's `slotAt`.
+- **Assertion.** One check inside a test: if the value isn't what it should be, the test
+  fails and says what it got. *Example:* `assert.equal(at("2025-01-01T13:00:00Z"), 600)`.
+
 ## What the Gray Paper says
 
 JAM keeps time in six-second **timeslots**, counted from the **JAM Common Era**: 12:00
@@ -77,12 +93,49 @@ export const SLOT_SECONDS = 6;
 /** The timeslot a moment falls in: whole slots since the JAM Common Era. */
 export function slotAt(date: Date): number {
   const ms = date.getTime() - JAM_COMMON_ERA * 1000;
-  return Math.floor(ms / (SLOT_SECONDS * 1000));
+  return Math.round(ms / (SLOT_SECONDS * 1000));
 }
 ```
 
-Milliseconds since the era, divided by the milliseconds in a slot, rounded down. That's
-the whole JAM clock.
+Milliseconds since the era, divided by the milliseconds in a slot, rounded to a whole
+number. Run the tests:
+
+**Run, expect it to fail**
+
+```sh
+npm test
+# fails with: Expected values to be strictly equal
+```
+
+## Bug hunt
+
+Red again, and this time the file is there. Something in it is wrong. (On purpose: every
+so often a lesson hands you a bug, so that finding one becomes a habit before it matters.)
+Three places tell you what happened:
+
+1. **The test output.** One test failed, `slot 0 is the first six seconds of the JAM
+   Common Era`, and below it: `1 !== 0`. Your code said 1 where the test wanted 0. The
+   other test, *an hour is 600 slots*, passed.
+2. **The dashboard.** *Tests failed* now says 1, and *Test results* has a `FAIL` line
+   with the same message. Every run is kept, so you can put this run next to the last
+   one.
+3. **The line.** The failing test has three assertions; the output points at the second,
+   `at("2025-01-01T12:00:05.999Z")`: 5.999 seconds into the era. In slots that's
+   5.999 / 6 = 0.9998, and `Math.round` turns 0.9998 into 1. But slot 1 doesn't start
+   until the sixth second. A slot number counts the *whole* slots that have gone by, so
+   it must round *down*.
+
+The fix is one word:
+
+**Replace in** `src/time.ts`
+
+```ts
+/** The timeslot a moment falls in: whole slots since the JAM Common Era. */
+export function slotAt(date: Date): number {
+  const ms = date.getTime() - JAM_COMMON_ERA * 1000;
+  return Math.floor(ms / (SLOT_SECONDS * 1000));
+}
+```
 
 **Run**
 
@@ -93,7 +146,9 @@ npm test
 npm run typecheck
 ```
 
-Green, and on the dashboard *Tests passed* jumps from 0 to 2.
+Green, and on the dashboard *Tests passed* jumps to 2 and *Tests failed* drops back to
+0. Milliseconds since the era, divided by the milliseconds in a slot, rounded down: that's
+the whole JAM clock.
 
 Why two commands? Node strips the types and runs the code without ever looking at them,
 so a type error would sail straight through `npm test`. `npm run typecheck` is the one

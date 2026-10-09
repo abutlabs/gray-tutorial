@@ -7,6 +7,21 @@ it, the symbol comes next, and the link at the end goes to the lesson that build
 You don't need to read this page first. Come back whenever a word stops you. The groups go
 from the most everyday words to the most JAM-specific ones.
 
+## The big picture
+
+**JAM.** A blockchain protocol that blends ideas from Polkadot and Ethereum: anyone can put
+a program (a service) on it, and the work for those programs runs in parallel on many
+cores. *Example:* in Part 15 you run a real service's code.
+([0.1](./00-start/01-what-you-will-build.md))
+
+**Gray Paper (GP).** JAM's specification: the document that defines every rule, mostly in
+maths. This tutorial follows version 0.8.0. *Example:* "§4" is its section 4.
+([0.1](./00-start/01-what-you-will-build.md))
+
+**Client.** A program that follows a protocol's rules. A JAM client reads blocks and works
+out the chain's state, the same way every other client does. *Example:* lasair, and yours.
+([0.1](./00-start/01-what-you-will-build.md))
+
 ## Programming words
 
 **TypeScript.** JavaScript with types: you write down what kind of value each thing is
@@ -28,6 +43,36 @@ it doesn't. This tutorial writes the test first, watches it fail, then writes th
 a correct client must produce, as files. Matching them is how you know your client is
 right. *Example:* `codec/tiny/work_item.bin` and its `.json`.
 ([2.6](./02-codec/06-the-first-test-vectors.md))
+
+**nvm.** A tool that installs Node versions and switches between them. *Example:*
+`nvm use`. ([0.2](./00-start/02-set-up-the-project.md))
+
+**tsc.** The TypeScript compiler; in this tutorial it only checks types and writes
+nothing. *Example:* `npm run typecheck`. ([0.2](./00-start/02-set-up-the-project.md))
+
+**Docker.** Runs ready-made programs in containers, so a whole set of tools starts with one
+command. *Example:* `./obs up`. ([0.2](./00-start/02-set-up-the-project.md))
+
+**Module.** A file that shares code with other files through `import` and `export`.
+*Example:* `src/time.ts` exports `slotAt`. ([0.2](./00-start/02-set-up-the-project.md))
+
+**Assertion.** One check inside a test: if the value is wrong, the test fails and says what
+it got. *Example:* `assert.equal(slot, 600)`. ([0.4](./00-start/04-the-jam-clock.md))
+
+**Test-first.** Writing a test before the code it tests, watching it fail, then making it
+pass. *Example:* lesson 0.4's `slotAt`. ([0.4](./00-start/04-the-jam-clock.md))
+
+**Reporter.** A plug-in for Node's test runner that receives every test's result; yours
+sends them to Grafana. *Example:* `test/grafana.ts`. ([0.3](./00-start/03-watch-your-client.md))
+
+**Observability, event and run.** Observability is seeing what a program does while it
+runs. An event is one line saying something happened; a run is one `npm test` or one
+program, everything it reported labelled with one id. *Example:* pick a run in Grafana to
+see only its events. ([0.3](./00-start/03-watch-your-client.md))
+
+**Unix epoch.** 00:00 UTC on 1 January 1970, the moment most computer clocks count from
+(nothing to do with a JAM epoch). *Example:* the JAM Common Era is 1,735,732,800 seconds
+after it. ([0.4](./00-start/04-the-jam-clock.md))
 
 **`bigint`.** A JavaScript whole number with no size limit, written with an `n`.
 Ordinary numbers lose precision past about 9 quadrillion (2^53); JAM's 64-bit numbers

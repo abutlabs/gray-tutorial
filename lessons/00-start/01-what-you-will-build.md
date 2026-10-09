@@ -8,10 +8,33 @@ client gets.
 You write every line yourself (typing or pasting, no judgement here). And on the way you
 read most of the Gray Paper, one rule at a time, with code running beside it. Sneaky.
 
+## New words
+
+- **JAM.** A blockchain protocol that blends ideas from Polkadot and Ethereum: anyone can
+  put a program (a *service*) on it, and the work for those programs runs in parallel on
+  many *cores*. The name comes from "join-accumulate", part of its model of computing.
+  *Example:* in Part 15 you'll run a real JAM service's code.
+- **Gray Paper (GP).** JAM's specification: the document that defines every rule, mostly
+  in maths. This tutorial follows version 0.8.0. *Example:* "§4" means its section 4.
+- **Client.** A program that follows a protocol's rules. A JAM client reads blocks and
+  works out the chain's state, the same way every other JAM client does. *Example:*
+  lasair is a JAM client, and so will yours be.
+- **Block.** A batch of new information added to the chain, at most one every six
+  seconds. *Example:* the test vectors include runs of 100 real blocks.
+- **State.** Everything the chain remembers between blocks: who the validators are, every
+  service's data, the time, and more. *Example:* "it's slot 43" is part of the state.
+- **Test vector.** An official example: an input, with the exact output a correct client
+  must produce from it. *Example:* a block, and the state it must lead to.
+
+Every word like these is also in the [glossary](../glossary.md). Each lesson starts with
+the ones it brings in.
+
 ## The whole thing in one line
 
-The Gray Paper (GP), JAM's specification, hangs everything off one equation (§4,
-*Overview*):
+In plain words: the chain remembers a *state*. Each *block* changes that state, following
+fixed rules. A client is a program that applies those rules, and every client that applies
+them correctly gets exactly the same new state. The Gray Paper says all of that in one
+equation (§4, *Overview*):
 
 ```text
 σ′ ≡ Υ(σ, B)

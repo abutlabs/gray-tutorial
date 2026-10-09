@@ -10,6 +10,17 @@ Your client starts the other way round. Before it knows a single JAM rule, it le
 talk to the stack you started in lesson 0.2. By the end of this lesson it has said hello,
 and every test run from then on reports itself.
 
+## New words
+
+- **Observability.** Being able to see what a program does, from the outside, while it
+  runs. *Example:* a dashboard showing every test of your last `npm test`.
+- **Event.** One line saying that something happened, with its details. *Example:*
+  `{"step": "hello"}`.
+- **Run.** One `npm test`, or one run of a program, with everything it reported labelled
+  by one id. *Example:* in Grafana, pick a run to see only what it did.
+- **Reporter.** A plug-in for Node's test runner that receives every test's result. Yours
+  sends them to the stack. *Example:* `test/grafana.ts`, later in this lesson.
+
 ## Two kinds of signal
 
 | Signal | What it answers | Where it goes |

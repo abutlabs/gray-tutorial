@@ -4,6 +4,21 @@ Four things to set up, then you never think about them again: Node, the tutorial
 tools, the observability stack, and an empty client. Ten minutes, tops. You need git,
 VS Code (or any editor) and Docker Desktop.
 
+## New words
+
+- **Node.** The program that runs JavaScript (and, from version 26, TypeScript) outside a
+  browser. *Example:* `node --version` says which one you have.
+- **nvm.** A tool that installs Node versions and switches between them. *Example:*
+  `nvm use` switches to the version the project asks for.
+- **npm.** Node's package manager: it downloads libraries and runs a project's scripts.
+  *Example:* `npm install` fetches everything a project needs.
+- **tsc.** The TypeScript compiler. Here it only checks your types, and writes nothing.
+  *Example:* `npm run typecheck` runs it.
+- **Docker.** Runs ready-made programs in *containers*, so a whole set of tools starts
+  with one command. *Example:* `./obs up` starts the observability stack in Docker.
+- **Module.** A file that shares code with other files through `import` and `export`.
+  *Example:* lesson 0.4's `src/time.ts` exports `slotAt`, and its test imports it.
+
 ## Node 26
 
 The repo's `.nvmrc` says `26`. With [nvm](https://github.com/nvm-sh/nvm), at the repo
