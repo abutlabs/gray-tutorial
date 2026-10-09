@@ -46,6 +46,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [4.2 Tiny and full](./04-blocks/02-tiny-and-full.md)
 - [4.3 Guarantees](./04-blocks/03-guarantees.md)
 - [4.4 Disputes](./04-blocks/04-disputes.md)
+- [4.5 Maybe, and exactly n](./04-blocks/05-maybe-and-exactly-n.md)
 
 ## Still to be written
 

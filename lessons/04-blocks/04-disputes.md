@@ -182,3 +182,5 @@ are, and that trap is gone. Specs evolve, and sometimes they make your life easi
 
 All five parts of a block's extrinsic: tickets, preimages, assurances, guarantees and
 disputes, each matching the official vectors at both sizes.
+
+Next: [4.5 Maybe, and exactly n](./05-maybe-and-exactly-n.md)
