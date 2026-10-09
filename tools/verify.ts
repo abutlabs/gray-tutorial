@@ -1,5 +1,5 @@
 // Follows the whole tutorial the way the reader does: from an empty client in
-// .reference/, it applies every lesson's snippets in order and runs every Run block at
+// .tangled/, it applies every lesson's snippets in order and runs every Run block at
 // the point the lesson runs it. A lesson is only correct if this passes.
 //
 //   npm run verify              every lesson
@@ -12,7 +12,7 @@ import { join } from "node:path";
 import { readLessons, ROOT } from "./lessons.ts";
 import { applyStep } from "./tangle.ts";
 
-const REFERENCE = join(ROOT, ".reference");
+const TANGLED = join(ROOT, ".tangled");
 const [from, to] = process.argv.length > 3 ? process.argv.slice(2) : [undefined, process.argv[2]];
 
 const lessons = readLessons();
@@ -20,10 +20,20 @@ const last = to ? lessons.findIndex((l) => l.id === to) : lessons.length - 1;
 const first = from ? lessons.findIndex((l) => l.id === from) : 0;
 if (last < 0 || first < 0) throw new Error(`no lesson ${last < 0 ? to : from}`);
 
+// The lessons report every run to the observability stack, so it must be up. The
+// tutorial's own runs report as client "tutorial-check", apart from the reader's.
+const LOKI = process.env.OBS_LOKI ?? "http://127.0.0.1:3100";
+const up = await fetch(`${LOKI}/ready`, { signal: AbortSignal.timeout(3000) }).then((r) => r.ok, () => false);
+if (!up) {
+  console.log(`the observability stack is not running (no Loki at ${LOKI}): ../observability/obs up`);
+  process.exit(1);
+}
+const env = { ...process.env, OBS_CLIENT: "tutorial-check" };
+
 // Start from an empty client, but keep node_modules: npm install is then quick.
-mkdirSync(REFERENCE, { recursive: true });
-for (const name of readdirSync(REFERENCE)) {
-  if (name !== "node_modules") rmSync(join(REFERENCE, name), { recursive: true, force: true });
+mkdirSync(TANGLED, { recursive: true });
+for (const name of readdirSync(TANGLED)) {
+  if (name !== "node_modules") rmSync(join(TANGLED, name), { recursive: true, force: true });
 }
 
 let failures = 0, runs = 0;
@@ -35,7 +45,7 @@ for (const [i, lesson] of lessons.slice(0, last + 1).entries()) {
     const where = `lessons/${lesson.file}:${step.line}`;
     if (step.kind === "file") {
       try {
-        applyStep(REFERENCE, step);
+        applyStep(TANGLED, step);
       } catch (e) {
         console.log(`  FAIL ${where}  ${(e as Error).message}`);
         process.exit(1); // later steps build on this one
@@ -45,7 +55,7 @@ for (const [i, lesson] of lessons.slice(0, last + 1).entries()) {
     if (!running) continue;
     runs++;
     const t = Date.now();
-    const r = spawnSync("bash", ["-eo", "pipefail", "-c", step.command], { cwd: REFERENCE, encoding: "utf8" });
+    const r = spawnSync("bash", ["-eo", "pipefail", "-c", step.command], { cwd: TANGLED, env, encoding: "utf8" });
     const output = r.stdout + r.stderr;
     // "# prints: x" and "# fails with: x" lines tell the reader what to expect; the output must contain x
     const expected = [...step.command.matchAll(/^# (?:prints|fails with): (.+)$/gm)].map((m) => m[1].trim());

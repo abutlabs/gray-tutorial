@@ -108,6 +108,7 @@ code that reads it check before using it. The codec in Part 2 does exactly that.
 ```sh
 npm test
 # prints: fail 0
+# prints: reported
 npm run typecheck
 ```
 

@@ -186,6 +186,7 @@ JAM structure from here on: a codec, and the type taken from it.
 ```sh
 npm test
 # prints: fail 0
+# prints: reported
 npm run typecheck
 ```
 

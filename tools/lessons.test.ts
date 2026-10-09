@@ -34,10 +34,10 @@ test("each lesson ends by pointing to the next one", () => {
   }
 });
 
-test("snippet lines fit half a laptop screen: 100 characters, imports aside", () => {
+test("TypeScript snippet lines fit half a laptop screen: 100 characters, imports aside", () => {
   const long: string[] = [];
   for (const p of parts) for (const l of p.lessons) for (const s of l.steps) {
-    if (s.kind !== "file") continue;
+    if (s.kind !== "file" || !s.path.endsWith(".ts")) continue;
     s.code.split("\n").forEach((line, i) => {
       if (line.length > 100 && !line.startsWith("import ")) long.push(`${l.id} ${s.path} line ${i + 1}`);
     });

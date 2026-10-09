@@ -1,0 +1,302 @@
+{
+ "uid": "gray-tutorial",
+ "title": "Gray Tutorial: your client",
+ "tags": [
+  "gray-tutorial"
+ ],
+ "timezone": "browser",
+ "refresh": "10s",
+ "time": {
+  "from": "now-6h",
+  "to": "now"
+ },
+ "editable": true,
+ "graphTooltip": 1,
+ "schemaVersion": 39,
+ "version": 1,
+ "description": "What your JAM client reported: every test run, every program run, every step it took.",
+ "templating": {
+  "list": [
+   {
+    "name": "client",
+    "label": "client",
+    "type": "query",
+    "datasource": {
+     "type": "loki",
+     "uid": "loki"
+    },
+    "query": "label_values({job=\"gray_tutorial\"}, client)",
+    "definition": "label_values({job=\"gray_tutorial\"}, client)",
+    "refresh": 2,
+    "sort": 1,
+    "includeAll": false,
+    "multi": false,
+    "current": {
+     "text": "you",
+     "value": "you"
+    },
+    "options": [],
+    "hide": 0
+   },
+   {
+    "name": "run_id",
+    "label": "run",
+    "type": "query",
+    "datasource": {
+     "type": "loki",
+     "uid": "loki"
+    },
+    "query": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
+    "definition": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
+    "refresh": 2,
+    "sort": 2,
+    "includeAll": true,
+    "allValue": ".+",
+    "multi": false,
+    "current": {
+     "text": "All",
+     "value": "$__all"
+    },
+    "options": [],
+    "hide": 0
+   }
+  ]
+ },
+ "annotations": {
+  "list": []
+ },
+ "links": [],
+ "panels": [
+  {
+   "id": 1,
+   "type": "stat",
+   "title": "Tests passed (last run)",
+   "description": "How many tests passed in the latest npm test.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "expr": "gray_tutorial_tests_passed{client=\"$client\"}",
+     "refId": "A",
+     "instant": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "decimals": 0,
+     "noValue": "nothing yet",
+     "color": {
+      "mode": "fixed",
+      "fixedColor": "text"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "graphMode": "none",
+    "colorMode": "value",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 6,
+    "h": 4
+   }
+  },
+  {
+   "id": 2,
+   "type": "stat",
+   "title": "Tests failed (last run)",
+   "description": "How many tests failed in the latest npm test.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "expr": "gray_tutorial_tests_failed{client=\"$client\"}",
+     "refId": "A",
+     "instant": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "decimals": 0,
+     "noValue": "nothing yet",
+     "color": {
+      "mode": "fixed",
+      "fixedColor": "text"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "graphMode": "none",
+    "colorMode": "value",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   },
+   "gridPos": {
+    "x": 6,
+    "y": 0,
+    "w": 6,
+    "h": 4
+   }
+  },
+  {
+   "id": 3,
+   "type": "stat",
+   "title": "JAM timeslot (last reported)",
+   "description": "The timeslot bin/now.ts reported last: six-second slots since the JAM Common Era.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "expr": "gray_tutorial_slot{client=\"$client\"}",
+     "refId": "A",
+     "instant": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "decimals": 0,
+     "noValue": "nothing yet",
+     "color": {
+      "mode": "fixed",
+      "fixedColor": "text"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "graphMode": "none",
+    "colorMode": "value",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   },
+   "gridPos": {
+    "x": 12,
+    "y": 0,
+    "w": 12,
+    "h": 4
+   }
+  },
+  {
+   "id": 4,
+   "type": "logs",
+   "title": "Test results",
+   "description": "Every test of every npm test run, newest first. Pick a run above to see only that one.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"test\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .ok \\\"true\\\"}}pass{{else}}FAIL{{end}}  {{.name}}  ({{.file}}, {{.ms}} ms){{if .error}}  {{.error}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": true,
+    "wrapLogMessage": true,
+    "sortOrder": "Descending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 4,
+    "w": 24,
+    "h": 10
+   }
+  },
+  {
+   "id": 6,
+   "type": "logs",
+   "title": "Decode trace",
+   "description": "What bin/decode.ts read, field by field: where each field's bytes start and end, and the bytes. Pick a decode run above.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"decode\", run_id=~\"$run_id\"} | json | step=\"decode\" | line_format \"{{.from}}..{{.to}}  {{.field}}  {{.bytes}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 14,
+    "w": 24,
+    "h": 10
+   }
+  },
+  {
+   "id": 5,
+   "type": "logs",
+   "title": "Everything your client reported",
+   "description": "Every event, as the JSON line your client sent: the step, then its values.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", run_id=~\"$run_id\"}",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": true,
+    "wrapLogMessage": true,
+    "sortOrder": "Descending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 24,
+    "w": 24,
+    "h": 12
+   }
+  }
+ ]
+}

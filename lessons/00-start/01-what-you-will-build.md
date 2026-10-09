@@ -33,7 +33,7 @@ end. Later parts can go further (networking, making blocks) on the same code.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 0 · Start | the project, the JAM clock | §4 |
+| 0 · Start | the project, the observability stack, the JAM clock | §4 |
 | 1 · Bytes and numbers | hex, numbers too big for JavaScript | §3 |
 | 2 · The codec | integer encodings, `Codec<T>`, the first test vectors | App. C |
 | 3 · Work and reports | work-packages, work-digests, work-reports | §11, §14 |
@@ -67,6 +67,16 @@ type.
 The tutorial is checked the same way: a script follows every lesson in order, applies
 every snippet to an empty client and runs every **Run** block. A lesson is only
 published when all of them pass.
+
+## You will watch it work
+
+From lesson 0.3 on, your client reports everything it does to an observability stack
+running on your machine (Grafana, Prometheus and Loki): every test run, every program you
+run, and later every step of importing a block. When a test fails, the failure is in
+Grafana with the rest of the run. When a block import goes wrong, you will see which step
+of Υ went wrong, not just a wrong state root at the end.
+
+lasair added this only after it needed it. Your client has it from the start.
 
 ## The test vectors
 
@@ -106,6 +116,9 @@ On one laptop screen, in VS Code:
    on the other. (In this repo, lessons open rendered already; to see one's source,
    right-click its tab and choose *Reopen Editor With... > Text Editor*.)
 3. Open a terminal (*Terminal > New Terminal*) and `cd client`.
+
+Grafana opens in your browser, in a tab of its own, for when you want to look at what a
+run did.
 
 The same lessons are a website too, with search and copy buttons: run `npm run site` at
 the repo root and it opens in your browser.

@@ -26,6 +26,34 @@ npm install       # the website and the lesson tools
 npm run vectors   # the official test vectors, about 1.4 GB, into vectors/
 ```
 
+## The observability stack
+
+From the next lesson on, your client reports everything it does to an observability
+stack: Grafana to look at, Prometheus for numbers, Loki for events. It is the same stack
+lasair reports into, and it runs in Docker, so start Docker Desktop first.
+
+The stack is its own repo, [abutlabs/observability](https://github.com/abutlabs/observability).
+Clone it next to this one, so the two folders sit side by side, and start it:
+
+```sh
+cd ..                     # the folder that holds gray-tutorial/
+git clone https://github.com/abutlabs/observability.git    # once
+cd observability
+./obs up
+cd ../gray-tutorial
+```
+
+`./obs up` prints the addresses it serves. Open Grafana at http://localhost:3300 and go to
+*Dashboards*: there is a folder **gray-tutorial** with the dashboard **Gray Tutorial: your
+client**. The stack found it in this repo's `observability/dashboards/`, because the
+checkouts sit side by side (if yours don't, start it with
+`OBS_PROJECT_DIRS=/path/to/gray-tutorial ./obs up`). The dashboard is empty: nothing has
+reported yet.
+
+Leave the stack running while you work. `./obs down` stops it, and your data stays for
+the next `./obs up`. To learn the stack itself, there is a whole course,
+[Learning Observability](https://abutlabs.github.io/jam-learning/observability/).
+
 ## Your client
 
 Everything from here on happens in `client/`, which is empty. Open a terminal there:
@@ -42,7 +70,7 @@ cd client
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test",
+    "test": "node --test \"test/**/*.test.ts\"",
     "typecheck": "tsc -p ."
   },
   "devDependencies": {
@@ -54,8 +82,9 @@ cd client
 
 - `"type": "module"`: every file is an ES module, so files share code with `import` and
   `export`.
-- `npm test` runs Node's built-in test runner, which finds every file whose name ends in
-  `.test.ts`.
+- `npm test` runs Node's built-in test runner on every file in `test/` whose name ends in
+  `.test.ts`. The pattern matters: without it, Node runs every file in a `test/` folder,
+  helpers included.
 - `npm run typecheck` runs `tsc`, which checks the types and writes nothing.
 - The versions are exact, so your client and the tutorial's behave the same.
 
@@ -99,135 +128,9 @@ for small programs you run.
 npm install
 ```
 
-## Your first piece of JAM: the clock
-
-JAM keeps time in six-second **timeslots**. The Gray Paper (§4, *Time*) counts time from
-the **JAM Common Era**, 12:00 UTC on 1 January 2025, which is 1,735,732,800 seconds after
-the Unix epoch. A timeslot lasts P = 6 seconds (§4, *Epochs and Slots*), so slot 0 is the
-first six seconds of the era and slot 600 begins an hour later. Every block header names
-its slot, and a block from a future slot is invalid (§5: a header's slot times P may not
-be later than the current time).
-
-Write the test first. It says what `slotAt` must do before `slotAt` exists:
-
-**New file** `test/time.test.ts`
-
-```ts
-import { test } from "node:test";
-import assert from "node:assert/strict";
-import { slotAt } from "../src/time.ts";
-
-const at = (iso: string) => slotAt(new Date(iso));
-
-test("slot 0 is the first six seconds of the JAM Common Era", () => {
-  assert.equal(at("2025-01-01T12:00:00Z"), 0);
-  assert.equal(at("2025-01-01T12:00:05.999Z"), 0);
-  assert.equal(at("2025-01-01T12:00:06Z"), 1);
-});
-
-test("an hour is 600 slots", () => {
-  assert.equal(at("2025-01-01T13:00:00Z"), 600);
-});
-
-test("there are no slots before the era", () => {
-  assert.throws(() => at("2025-01-01T11:59:59Z"), RangeError);
-});
-```
-
-`node:test` gives you `test(name, fn)`, and `node:assert/strict` gives you assertions
-that compare exactly (`assert.equal(1, "1")` fails).
-
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-The `# fails with:` line says what to look for in the output: Node can't find
-`src/time.ts`, because there isn't one yet. (A `#` line is a comment, so the shell skips
-it; `# prints:` lines work the same way.)
-
-**New file** `src/time.ts`
-
-```ts
-// Time: JAM counts six-second timeslots from the JAM Common Era (GP §4).
-
-/** The JAM Common Era began at 12:00 UTC on 1 January 2025: seconds after the Unix epoch. */
-export const JAM_COMMON_ERA = 1_735_732_800;
-
-/** P: a timeslot lasts six seconds. */
-export const SLOT_SECONDS = 6;
-
-/** The timeslot a moment falls in: whole slots since the JAM Common Era. */
-export function slotAt(date: Date): number {
-  const ms = date.getTime() - JAM_COMMON_ERA * 1000;
-  if (ms < 0) throw new RangeError(`${date.toISOString()} is before the JAM Common Era`);
-  return Math.floor(ms / (SLOT_SECONDS * 1000));
-}
-```
-
-**Run**
-
-```sh
-npm test
-# prints: fail 0
-npm run typecheck
-```
-
-Both pass. They check different things. Node strips the types and runs the code
-without looking at them, so a type error would not fail `npm test`. `npm run typecheck`
-is what catches it. Run both after every change.
-
-## A program
-
-**New file** `bin/now.ts`
-
-```ts
-// Prints the JAM timeslot it is right now.
-
-import { slotAt } from "../src/time.ts";
-
-console.log(`It is JAM timeslot ${slotAt(new Date())}.`);
-```
-
-**Run**
-
-```sh
-node bin/now.ts
-# prints: It is JAM timeslot
-```
-
-It prints a slot in the millions: the number of six-second slots since the start of
-2025. Run it again six seconds later and the number has gone up by one.
-
-<details>
-<summary>lasair: the same clock, in <code>lib/overview.ml</code></summary>
-
-```ocaml
-(** Unix timestamp of JAM Common Era start *)
-let jam_common_era_unix : int64 = 1_735_732_800L
-
-(** Convert Unix timestamp to JAM timeslot *)
-let timeslot_of_unix (unix_ts : int64) : timeslot option =
-  let open Int64 in
-  let diff = sub unix_ts jam_common_era_unix in
-  if diff < 0L then None
-  else Some (Int32.of_int (to_int (div diff (of_int Constants.c_slot_seconds))))
-```
-
-Where your `slotAt` throws before the era, lasair returns `None`: OCaml's `option` type
-says "maybe no value", and the caller must handle both cases. `let open Int64 in` lets
-the function write `sub` and `div` for `Int64.sub` and `Int64.div`.
-
-JAM time is this simple on purpose: every node computes the same slot from its own
-clock, with no messages.
-
-</details>
-
 ## What you have
 
-A project that runs TypeScript without a build, tests with `node --test`, checks types
-with `tsc`, and your first JAM rule with its tests.
+Node 24, the official test vectors, the observability stack running, and an empty client
+project that knows how to test and type-check itself.
 
-Next: [Part 1 · Bytes and numbers](../01-bytes-and-numbers/index.md)
+Next: [0.3 Watch your client](./03-watch-your-client.md)

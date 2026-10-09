@@ -121,6 +121,7 @@ hex digits, so it rejects an odd count of digits along with everything else.
 ```sh
 npm test
 # prints: fail 0
+# prints: reported
 npm run typecheck
 ```
 

@@ -1,5 +1,23 @@
 # Writing a lesson
 
+## How a part is made
+
+1. **Build it in `reference/` first** (the private reference client): plain, simple code
+   that keeps the Gray Paper's structure, tested against the official vectors, every step
+   reporting through a `Trace` or a `Run`, with `OBS_CLIENT=reference`.
+2. **Write the lessons from it**, in the shape below, snippets copied from the reference.
+3. **Check**: `npm run verify` (the lessons rebuild a working client from nothing, with
+   the stack up) and `npm run compare -- <last lesson> --dir reference` (the lessons give
+   exactly the reference's code).
+
+## Observability in every lesson
+
+Every step a lesson builds also reports what it did: test runs through
+`test/grafana.ts`, programs through `Run`, codec and later STF steps through a `Trace`.
+A **Run** block that reports says so (`# prints: reported`), so verify checks the run
+reached the stack. When a step needs a new panel, it goes into
+`observability/dashboards/gray-tutorial.json` in the same change.
+
 ## Where
 
 `lessons/NN-part-name/NN-lesson-name.md`. The numbers give the order and the lesson's id

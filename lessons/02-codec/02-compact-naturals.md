@@ -150,6 +150,7 @@ those bytes are not an encoding at all. This decoder, like lasair's, accepts the
 ```sh
 npm test
 # prints: fail 0
+# prints: reported
 npm run typecheck
 ```
 

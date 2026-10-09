@@ -3,6 +3,8 @@
 //   npm run compare -- 2.3     how client/ differs from the client after lesson 2.3
 //   npm run catch-up -- 2.3    make client/ the client after lesson 2.3; your files are
 //                              first copied to .backup/, so nothing is lost
+//   npm run compare -- 2.3 --dir reference
+//                              the same comparison for another client folder
 //
 // node_modules and package-lock.json are left out of both.
 
@@ -12,12 +14,13 @@ import { join, relative } from "node:path";
 import { lessonsThrough, ROOT } from "./lessons.ts";
 import { applyStep } from "./tangle.ts";
 
-const CLIENT = join(ROOT, "client");
+const dirFlag = process.argv.indexOf("--dir");
+const CLIENT = join(ROOT, dirFlag > 0 ? process.argv[dirFlag + 1] : "client");
 const EXPECTED = join(ROOT, ".expected");
 const SKIP = new Set(["node_modules", "package-lock.json", ".DS_Store", ".gitkeep"]);
 
 const write = process.argv.includes("--write");
-const id = process.argv.slice(2).find((a) => !a.startsWith("--"));
+const id = process.argv.slice(2).find((a, i, all) => !a.startsWith("--") && all[i - 1] !== "--dir");
 if (!id) {
   console.log(`usage: npm run ${write ? "catch-up" : "compare"} -- <lesson>, for example 2.3`);
   process.exit(2);
@@ -57,8 +60,9 @@ let differ = 0;
 for (const f of all) {
   if (!mine.includes(f)) { console.log(`missing in your client: ${f}`); differ++; continue; }
   if (!theirs.includes(f)) { console.log(`only in your client: ${f}`); continue; }
-  const d = spawnSync("git", ["diff", "--no-index", "--color=always", "--", join("client", f), join(".expected", f)], { cwd: ROOT, encoding: "utf8" });
-  if (d.status !== 0) { process.stdout.write(d.stdout); differ++; }
+  const d = spawnSync("git", ["diff", "--no-index", "--color=always", "--", join(relative(ROOT, CLIENT), f), join(".expected", f)], { cwd: ROOT, encoding: "utf8" });
+  if (d.status !== 0 && d.status !== 1) throw new Error(`git diff failed on ${f}: ${d.stderr}`);
+  if (d.status === 1) { process.stdout.write(d.stdout); differ++; }
 }
 console.log(differ
   ? `\n${differ} file(s) differ from the client after lesson ${id}. Lines with - are yours, + are the lesson's.`

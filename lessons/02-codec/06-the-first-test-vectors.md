@@ -94,8 +94,8 @@ to wherever you run the tests from. `readFileSync` returns a Node `Buffer`, and
 `new Uint8Array(...)` copies it into a plain `Uint8Array`, which is what `deepEqual`
 expects to compare with (lesson 1.1).
 
-The file is in `test/` but is not a test (its name doesn't end in `.test.ts`), so the
-test runner leaves it alone and the tests import it.
+Its name doesn't end in `.test.ts`, so `npm test`'s pattern leaves it out: it is a
+helper the tests import, like `test/grafana.ts`.
 
 ## The structures
 
@@ -202,6 +202,7 @@ npm test
 # prints: refine_context (full)
 # prints: work_item (full)
 # prints: fail 0
+# prints: reported
 npm run typecheck
 ```
 
@@ -215,11 +216,11 @@ gas limits, and run `npm test`. The work_item tests fail with a diff (`+` is wha
 code decoded, `-` is the vector's JSON):
 
 ```text
-+   accumulate_gas_limit: 11821949021847552n,
++   accumulate_gas_limit: 1125899906842624n,
 -   accumulate_gas_limit: 42n,
 +   export_count: 42,
 -   export_count: 4,
-+   refine_gas_limit: 1125899906842624n,
++   refine_gas_limit: 11821949021847552n,
 -   refine_gas_limit: 42n,
 ```
 
@@ -255,5 +256,6 @@ Gray Paper 0.8.0, and lasair's type marks them so.
 ## What you have
 
 A codec built from a dozen small pieces, and the first two JAM structures agreeing with
-the official vectors at both parameter sets. Part 3 does the rest of the work
-structures: work-packages, work-digests and work-reports.
+the official vectors at both parameter sets.
+
+Next: [2.7 Watch a decode](./07-watch-a-decode.md)

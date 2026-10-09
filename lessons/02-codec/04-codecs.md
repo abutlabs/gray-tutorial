@@ -237,6 +237,7 @@ test("a hash is 32 bytes as they are; a blob has its length in front", () => {
 ```sh
 npm test
 # prints: fail 0
+# prints: reported
 npm run typecheck
 ```
 

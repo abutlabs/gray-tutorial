@@ -15,3 +15,4 @@ and agrees with the official test vectors, byte for byte.
 - [2.4 Codecs](./04-codecs.md)
 - [2.5 Sequences, options and records](./05-sequences-options-and-records.md)
 - [2.6 The first test vectors](./06-the-first-test-vectors.md)
+- [2.7 Watch a decode](./07-watch-a-decode.md)

@@ -13,7 +13,11 @@ official test vectors.
 nvm use               # Node 24, from .nvmrc
 npm install           # the website and the tools
 npm run vectors       # the official test vectors, about 1.4 GB, into vectors/
+../observability/obs up   # the observability stack (abutlabs/observability, checked out beside this repo)
 ```
+
+Your client reports every run to that stack from lesson 0.3 on: open Grafana at
+http://localhost:3300, folder *gray-tutorial*, dashboard *Gray Tutorial: your client*.
 
 Then read [lessons/index.md](lessons/index.md), in either of two ways:
 
@@ -26,11 +30,14 @@ Then read [lessons/index.md](lessons/index.md), in either of two ways:
 ## The repo
 
 ```
-lessons/      the tutorial: one folder per part, plain Markdown
-client/       your JAM client, built lesson by lesson (empty at the start)
-vectors/      the official test vectors, v0.8.0 of davxy/jam-test-vectors (npm run vectors)
-tools/        how the lessons are checked
-.vitepress/   the website, made from lessons/
+lessons/         the tutorial: one folder per part, plain Markdown
+client/          your JAM client, built lesson by lesson (empty at the start)
+observability/   the client's Grafana dashboard (the stack finds it by itself)
+vectors/         the official test vectors, v0.8.0 of davxy/jam-test-vectors (npm run vectors)
+tools/           how the lessons are checked
+.vitepress/      the website, made from lessons/
+reference/       not in this repo: the client the lessons are written from (a private
+                 repo of its own, checked out here and ignored)
 ```
 
 ## Commands
@@ -40,7 +47,8 @@ tools/        how the lessons are checked
 | `npm run site` | the lessons as a website |
 | `npm run compare -- 2.3` | how your `client/` differs from the client after lesson 2.3 |
 | `npm run catch-up -- 2.3` | make `client/` the client after lesson 2.3 (yours is copied to `.backup/` first) |
-| `npm run verify` | follow every lesson from an empty client in `.reference/` and run every **Run** block |
+| `npm run verify` | follow every lesson from an empty client in `.tangled/` and run every **Run** block (the stack must be up) |
+| `npm run compare -- 2.3 --dir reference` | the same comparison for another client folder |
 | `npm run check` | type-check and test the tools, and build the website (which fails on a broken link) |
 
 ## How the lessons are checked

@@ -5,7 +5,8 @@ Build a JAM client in TypeScript, one Gray Paper rule at a time.
 Each lesson explains a piece of the Gray Paper, gives you the code for it in small
 snippets, and has you run it. You assemble the snippets into your own client in
 `client/`, run the tests, and watch it grow, from an empty folder to a program that
-imports JAM blocks and agrees byte for byte with the official test vectors.
+imports JAM blocks and agrees byte for byte with the official test vectors. From the
+first lesson on, it reports every run to Grafana, so you can watch what it does.
 
 Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
@@ -15,6 +16,8 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
 - [0.1 What you will build](./00-start/01-what-you-will-build.md)
 - [0.2 Set up the project](./00-start/02-set-up-the-project.md)
+- [0.3 Watch your client](./00-start/03-watch-your-client.md)
+- [0.4 The JAM clock](./00-start/04-the-jam-clock.md)
 
 **[Part 1 · Bytes and numbers](./01-bytes-and-numbers/index.md)**
 
@@ -29,6 +32,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [2.4 Codecs](./02-codec/04-codecs.md)
 - [2.5 Sequences, options and records](./02-codec/05-sequences-options-and-records.md)
 - [2.6 The first test vectors](./02-codec/06-the-first-test-vectors.md)
+- [2.7 Watch a decode](./02-codec/07-watch-a-decode.md)
 
 ## Still to be written
 

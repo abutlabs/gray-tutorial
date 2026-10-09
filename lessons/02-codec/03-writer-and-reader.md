@@ -187,6 +187,7 @@ Two choices worth a look:
 ```sh
 npm test
 # prints: fail 0
+# prints: reported
 npm run typecheck
 ```
 

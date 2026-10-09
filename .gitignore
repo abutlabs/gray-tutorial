@@ -1,6 +1,7 @@
 node_modules/
 vectors/
-.reference/
+.tangled/
+reference/
 .expected/
 .backup/
 .vitepress/cache/

@@ -5,7 +5,7 @@
   },
   "files.exclude": {
     "**/node_modules": true,
-    ".reference": true,
+    ".tangled": true,
     ".expected": true,
     ".vitepress/cache": true,
     ".vitepress/dist": true

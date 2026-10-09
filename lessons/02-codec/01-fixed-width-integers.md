@@ -94,6 +94,7 @@ significant) byte down, shifting each one in.
 ```sh
 npm test
 # prints: fail 0
+# prints: reported
 npm run typecheck
 ```
 

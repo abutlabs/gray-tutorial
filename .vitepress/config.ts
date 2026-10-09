@@ -12,6 +12,8 @@ export default defineConfig({
   description: "Build a JAM client in TypeScript, one Gray Paper rule at a time.",
   srcDir: "lessons",
   cleanUrls: true,
+  // Grafana and the stack are on localhost on purpose; every other link must resolve
+  ignoreDeadLinks: [/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/],
   lastUpdated: false,
   markdown: { config: snippetLabels },
   themeConfig: {
