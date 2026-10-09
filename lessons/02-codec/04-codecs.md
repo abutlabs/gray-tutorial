@@ -23,8 +23,7 @@ direction follows it.
 // and how the test vectors write it in JSON.
 
 import type { Bytes } from "../bytes.ts";
-import { DecodeError } from "./numbers.ts";
-import { Reader } from "./reader.ts";
+import { DecodeError, Reader } from "./reader.ts";
 import { Writer } from "./writer.ts";
 
 export interface Codec<T> {
@@ -199,7 +198,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fromHex, toHex } from "../src/bytes.ts";
 import { blob, decode, encode, hash, natural, natural32, u16, u32, u64, u8 } from "../src/codec/codec.ts";
-import { DecodeError } from "../src/codec/numbers.ts";
+import { DecodeError } from "../src/codec/reader.ts";
 
 test("integers encode as ℰ_l and ℰ", () => {
   assert.equal(toHex(encode(u8, 7)), "0x07");

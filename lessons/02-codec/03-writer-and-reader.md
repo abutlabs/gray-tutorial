@@ -22,8 +22,7 @@ elements"*). A Writer does exactly that, and a Reader undoes it in the same orde
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fromHex, toHex } from "../src/bytes.ts";
-import { DecodeError } from "../src/codec/numbers.ts";
-import { Reader } from "../src/codec/reader.ts";
+import { DecodeError, Reader } from "../src/codec/reader.ts";
 import { Writer } from "../src/codec/writer.ts";
 
 test("a reader reads back what a writer wrote, in the same order", () => {
@@ -134,7 +133,12 @@ writing a whole block costs a handful of copies, not one per field.
 // Reader: walks through the bytes of an encoding, front to back.
 
 import type { Bytes } from "../bytes.ts";
-import { DecodeError, decodeFixed, decodeNatural } from "./numbers.ts";
+import { decodeFixed, decodeNatural } from "./numbers.ts";
+
+/** A decoder met bytes that are not an encoding of what it expected. */
+export class DecodeError extends Error {
+  name = "DecodeError";
+}
 
 export class Reader {
   #bytes: Bytes;
