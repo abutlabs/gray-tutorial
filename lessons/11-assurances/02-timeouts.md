@@ -249,4 +249,4 @@ easier to test one at a time.
 Part 11, done: your client reads every assurance, makes reports available, and frees
 the cores of reports that made it, ran out of time, or outlived their validator set.
 
-Next: [Part 12 · Guarantees](../12-guarantees/index.md)
+Next: [11.3 Bad assurances](./03-bad-assurances.md)

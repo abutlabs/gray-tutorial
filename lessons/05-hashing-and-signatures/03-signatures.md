@@ -27,7 +27,8 @@ Three details, and each one matters:
   "I hold my piece" can never be replayed as "this report is good".
 - **ℰ(parent, bitfield)** is just the two side by side: a hash and a fixed-size bitfield
   encode as themselves. The parent is the block's parent hash, and an assurance's
-  `anchor` must be exactly that (§11 again), so your code signs the anchor.
+  `anchor` must be exactly that (§11 again), so your code signs the anchor. (Lesson 11.3
+  checks that the two really are the same.)
 
 ## Another library
 

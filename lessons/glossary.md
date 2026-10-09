@@ -229,6 +229,17 @@ A work-item's *extrinsics* are something else: data blobs sent along with the it
 refine to read. *Example:* `items.1.extrinsic.0`, its first blob's hash and length.
 ([3.1](./03-work-and-reports/01-a-work-package.md))
 
+**Anchor (of an assurance).** The block an assurance was made on top of; it must be the
+parent of the block carrying it. *Example:* an assurance anchored two blocks back is
+refused. ([11.3](./11-assurances/03-bad-assurances.md))
+
+**Rejected block.** A block that breaks any rule: refused whole, nothing in it counts, and
+the state stays as it was. *Example:* one bad signature sinks the block.
+([11.3](./11-assurances/03-bad-assurances.md))
+
+**Error name.** The test vectors' name for the rule a rejected block breaks. *Example:*
+`bad_signature`. ([11.3](./11-assurances/03-bad-assurances.md))
+
 **Parent.** The block before this one. Each header names its parent by hash, which is
 what makes the blocks a chain. ([5.1](./05-hashing-and-signatures/01-hashes.md))
 

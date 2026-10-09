@@ -106,6 +106,7 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 
 - [11.1 Available](./11-assurances/01-available.md)
 - [11.2 Timeouts](./11-assurances/02-timeouts.md)
+- [11.3 Bad assurances](./11-assurances/03-bad-assurances.md)
 
 **[Part 12 · Guarantees](./12-guarantees/index.md)**
 

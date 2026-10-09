@@ -1502,6 +1502,36 @@
     "w": 24,
     "h": 10
    }
+  },
+  {
+   "id": 47,
+   "type": "logs",
+   "title": "Assurance checks",
+   "description": "What bin/check-assurances.ts did: every assurances test vector of one size, checked against the rules of GP §11.2: accepted, or the first rule broken, and the vector's own verdict if it differs.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"assurance-check\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}: {{.ours}}{{if eq .agree \\\"false\\\"}} (the vector says {{.theirs}}){{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 385,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }
