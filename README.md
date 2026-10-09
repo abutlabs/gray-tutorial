@@ -32,7 +32,7 @@ Then read [lessons/index.md](lessons/index.md), in either of two ways:
 ```
 lessons/         the tutorial: one folder per part, plain Markdown
 client/          your JAM client, built lesson by lesson: empty at the start, and
-                 git-ignored, so it stays yours (`git init` inside it for a history)
+                 git-ignored, so it stays yours (see "Your client's own repository")
 observability/   the client's Grafana dashboard (the stack finds it by itself)
 vectors/         the official test vectors, v0.8.0 of davxy/jam-test-vectors (npm run vectors)
 tools/           how the lessons are checked
@@ -40,6 +40,44 @@ tools/           how the lessons are checked
 reference/       not in this repo: the client the lessons are written from (a private
                  repo of its own, checked out here and ignored)
 ```
+
+## Your client's own repository
+
+This repository ignores `client/`: your code never lands in the tutorial's history, and
+`git pull` brings new lessons without touching it. To keep a history of your own, and a
+copy on GitHub, make `client/` a repository of its own:
+
+```sh
+cd client
+git init                                  # client/ becomes its own repository
+printf 'node_modules/\n' > .gitignore     # keep downloaded packages out of it
+git add .
+git commit -m "My JAM client"
+```
+
+Then create an empty repository on GitHub (no README, licence or .gitignore, so the
+first push goes in cleanly), for example `my-jam-client`, private if you like, and link
+it up:
+
+```sh
+git remote add origin git@github.com:YOUR-NAME/my-jam-client.git
+git branch -M main
+git push -u origin main
+```
+
+With the GitHub CLI, those last steps are one command:
+`gh repo create my-jam-client --private --source=. --push`.
+
+From then on there are two repositories, one inside the other, each minding its own
+files:
+
+- **inside `client/`**: commit and push your work, `git add . && git commit -m "lesson
+  3.2" && git push`;
+- **in the tutorial folder**, one level up: `git pull` for new lessons. It never sees
+  `client/`, and your client's repository never sees the lessons.
+
+`npm run catch-up` leaves `client/.git` alone: it copies your files to `.backup/` first
+and never touches your history.
 
 ## Commands
 
