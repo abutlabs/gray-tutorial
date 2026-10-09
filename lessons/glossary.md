@@ -382,6 +382,18 @@ check and fetch everything. ([3.3](./03-work-and-reports/03-a-work-report.md))
 **Authorizer.** Code that decides whether a package may use a core at all. Each core keeps
 a small pool of authorizers. ([13.1](./13-authorization/01-the-authorizer-pools.md))
 
+**Rotation.** R slots (4 on tiny, 10 on full) after which the guarantors move on to the
+next core. *Example:* on tiny, slots 12 to 15 are one rotation.
+([12.4](./12-guarantees/04-bad-guarantees.md))
+
+**Active core.** One of the first |κ′|/3 cores, the ones the current validators can staff
+three apiece. *Example:* 6 validators keep 2 cores active.
+([12.4](./12-guarantees/04-bad-guarantees.md))
+
+**Authorizer pool.** α[c]. The authorizers core c accepts right now; a report's authorizer
+must be in its core's pool. *Example:* refused as `core_unauthorized` if it isn't.
+([12.4](./12-guarantees/04-bad-guarantees.md))
+
 **Credential.** One guarantor's signature on a guarantee: its validator index and its
 Ed25519 signature. *Example:* index 3, then 64 bytes. ([4.3](./04-blocks/03-guarantees.md))
 

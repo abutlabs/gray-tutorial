@@ -7,3 +7,4 @@ assignments, checks the guarantees' signatures, and puts new reports on free cor
 - [12.1 Who guarantees what](./01-who-guarantees-what.md)
 - [12.2 Signed and counted](./02-signed-and-counted.md)
 - [12.3 Onto the cores](./03-onto-the-cores.md)
+- [12.4 Bad guarantees](./04-bad-guarantees.md)

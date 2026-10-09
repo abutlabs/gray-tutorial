@@ -1562,6 +1562,36 @@
     "w": 24,
     "h": 10
    }
+  },
+  {
+   "id": 49,
+   "type": "logs",
+   "title": "Guarantee checks",
+   "description": "What bin/check-guarantees.ts did: the guarantees of every reports test vector of one size, checked against the rules of GP §11 (the first rule broken, or 'guarantees pass'), next to the vector's own verdict on the whole block.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"guarantee-check\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}: {{.ours}} (the vector: {{.theirs}})\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 403,
+    "w": 24,
+    "h": 10
+   }
   }
  ]
 }

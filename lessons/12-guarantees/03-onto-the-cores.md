@@ -222,4 +222,4 @@ noticed: the adapter only counts the reported packages.
 Part 12, done: guarantors dealt, signatures checked, reporters counted, and every good
 report seated on its core with its package noted for the history.
 
-Next: [Part 13 · Authorization](../13-authorization/index.md)
+Next: [12.4 Bad guarantees](./04-bad-guarantees.md)
