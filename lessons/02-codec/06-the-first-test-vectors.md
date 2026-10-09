@@ -60,7 +60,6 @@ import { fileURLToPath } from "node:url";
 import type { Bytes } from "../src/bytes.ts";
 import type { Codec } from "../src/codec/codec.ts";
 import { decode, encode } from "../src/codec/codec.ts";
-import { parseJson } from "../src/json.ts";
 
 const VECTORS = fileURLToPath(new URL("../../vectors/", import.meta.url));
 
@@ -73,7 +72,7 @@ export function vectorPath(name: string): string {
 }
 
 export function vectorJson(name: string): unknown {
-  return parseJson(readFileSync(vectorPath(name), "utf8"));
+  return JSON.parse(readFileSync(vectorPath(name), "utf8"));
 }
 
 export function vectorBytes(name: string): Bytes {

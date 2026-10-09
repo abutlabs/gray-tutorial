@@ -93,13 +93,12 @@ export const u16 = fixedNumber(2);
 /** ℰ₄: a u32: timeslots, service ids. */
 export const u32 = fixedNumber(4);
 
-/** A u64 from JSON: a number, or a bigint when it was too big for one (lesson 1.2). */
+/** A natural below 2^bits from JSON, where the vectors write it as a plain number. */
 function bigintFromJson(json: unknown, bits: number): bigint {
-  const x = typeof json === "number" && Number.isSafeInteger(json) ? BigInt(json) : json;
-  if (typeof x !== "bigint" || x < 0n || x >= 1n << BigInt(bits)) {
+  if (typeof json !== "number" || !Number.isInteger(json) || json < 0 || json >= 2 ** bits) {
     return jsonError(json, `a u${bits}`);
   }
-  return x;
+  return BigInt(json);
 }
 
 /** ℰ₈: a u64: gas, balances. */
@@ -218,7 +217,6 @@ test("integers from JSON are checked against their width", () => {
   assert.throws(() => u16.fromJson(1.5), TypeError);
   assert.throws(() => u32.fromJson("7"), TypeError);
   assert.equal(u64.fromJson(42), 42n);
-  assert.equal(u64.fromJson(2n ** 64n - 1n), 2n ** 64n - 1n);
 });
 
 test("a hash is 32 bytes as they are; a blob has its length in front", () => {
