@@ -269,3 +269,5 @@ whole set.
 
 Guarantees you can trust: every signature real, every signer the right guarantor, no
 offender's word accepted, and the reporters counted once each.
+
+Next: [12.3 Onto the cores](./03-onto-the-cores.md)

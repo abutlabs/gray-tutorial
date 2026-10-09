@@ -902,6 +902,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 27,
+   "type": "logs",
+   "title": "Placed",
+   "description": "What bin/placed.ts did: each guaranteed report placed on its core (and whether the core was empty), then the packages the block reports, sorted by hash.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"placed\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"placed\\\"}}core {{.core}} ({{.was}}): package {{.package}} from slot {{.slot}}{{else}}reported: package {{.package}}, exports root {{.exports_root}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 218,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

@@ -95,6 +95,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 
 - [12.1 Who guarantees what](./12-guarantees/01-who-guarantees-what.md)
 - [12.2 Signed and counted](./12-guarantees/02-signed-and-counted.md)
+- [12.3 Onto the cores](./12-guarantees/03-onto-the-cores.md)
 
 ## Still to be written
 
@@ -104,7 +105,6 @@ this order, and each one is checked end to end before it is published here.
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 12 · Guarantees (rest) | reports onto cores | §11 |
 | 13 · Authorization | authorizer pools and queues | §8 |
 | 14 · Services and preimages | accounts, storage, preimage requests | §9, §12 |
 | 15 · The PVM | decoding programs, every instruction, gas | App. A |
