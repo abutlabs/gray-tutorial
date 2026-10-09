@@ -50,6 +50,10 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [4.6 The header](./04-blocks/06-the-header.md)
 - [4.7 The block](./04-blocks/07-the-block.md)
 
+**[Part 5 · Hashing and signatures](./05-hashing-and-signatures/index.md)**
+
+- [5.1 Hashes](./05-hashing-and-signatures/01-hashes.md)
+
 ## Still to be written
 
 The road from here to a full block importer, part by part. The parts are written in
@@ -57,7 +61,7 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 5 · Hashing and signatures | Blake2b, Keccak, Ed25519 | §3 |
+| 5 · Hashing and signatures (rest) | the extrinsic hash, Ed25519 signatures | §3, §5, §11 |
 | 6 · State and Merklization | σ, state keys, the trie, the state root | §4, App. D |
 | 7 · Time and shuffling | epochs, entropy, the Fisher-Yates shuffle | §4, App. E |
 | 8 · Safrole | Bandersnatch, tickets, sealing keys | §6, App. F |
