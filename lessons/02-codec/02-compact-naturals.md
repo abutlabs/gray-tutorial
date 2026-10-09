@@ -94,7 +94,7 @@ npm test
 ```
 
 The test file exists, so this time Node complains about the names it imports, not the
-file.
+file. You add them next.
 
 **Add to** `src/codec/numbers.ts`
 

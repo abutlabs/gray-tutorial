@@ -71,6 +71,9 @@ npm test
 # fails with: Cannot find module
 ```
 
+It fails because `src/codec/writer.ts` and `src/codec/reader.ts` don't exist yet. You
+write them next.
+
 ## The Writer
 
 **New file** `src/codec/writer.ts`

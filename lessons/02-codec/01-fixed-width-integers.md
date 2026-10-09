@@ -58,6 +58,8 @@ npm test
 # fails with: Cannot find module
 ```
 
+It fails because `src/codec/numbers.ts` doesn't exist yet. You write it next.
+
 **New file** `src/codec/numbers.ts`
 
 ```ts

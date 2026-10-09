@@ -99,6 +99,8 @@ npm test
 # fails with: Cannot find module
 ```
 
+It fails because `src/obs.ts` doesn't exist yet. You write it next.
+
 ## The module
 
 **New file** `src/obs.ts`
@@ -169,7 +171,7 @@ export class Run {
 /** JSON for what JSON.stringify can't write: bigints as decimal strings, bytes as 0x hex. */
 function jsonValue(_key: string, value: unknown): unknown {
   if (typeof value === "bigint") return value.toString();
-  if (value instanceof Uint8Array) return "0x" + Buffer.from(value).toString("hex");
+  if (value instanceof Uint8Array) return "0x" + value.toHex();
   return value;
 }
 
@@ -258,7 +260,7 @@ Tell `npm test` to use it, next to the usual output (`spec`):
     "typecheck": "tsc -p ."
   },
   "devDependencies": {
-    "@types/node": "24.19.1",
+    "@types/node": "26.6.4",
     "typescript": "7.0.2"
   }
 }

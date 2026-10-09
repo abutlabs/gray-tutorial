@@ -46,7 +46,7 @@ The test vectors are JSON, and `JSON.parse` turns every number into a float. A u
 would pass when it shouldn't.
 
 Today every number in the vectors' JSON fits below 2^53, so this has not bitten anyone.
-The parser below makes sure it can't. Node 24's `JSON.parse` passes a reviver function
+The parser below makes sure it can't. Node's `JSON.parse` passes a reviver function
 the source text of each value, so a big integer can be read from its digits as a
 `bigint`.
 
@@ -81,6 +81,8 @@ Look at the first assertion: `JSON.parse` turned 18446744073709551615 into
 npm test
 # fails with: Cannot find module
 ```
+
+It fails because `src/json.ts` doesn't exist yet. You write it next.
 
 **New file** `src/json.ts`
 

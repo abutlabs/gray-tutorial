@@ -10,7 +10,7 @@ official test vectors.
 ## Start
 
 ```sh
-nvm use               # Node 24, from .nvmrc
+nvm use               # Node 26, from .nvmrc
 npm install           # the website and the tools
 npm run vectors       # the official test vectors, about 1.4 GB, into vectors/
 ../observability/obs up   # the observability stack (abutlabs/observability, checked out beside this repo)

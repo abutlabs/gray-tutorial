@@ -1,21 +1,23 @@
 # Set up the project
 
-You need git, VS Code (or any editor), and Node.js 24.
+You need git, VS Code (or any editor), Docker Desktop, and Node.js 26.
 
-## Node 24
+## Node 26
 
-The repo's `.nvmrc` file says `24`. With [nvm](https://github.com/nvm-sh/nvm), at the
+The repo's `.nvmrc` file says `26`. With [nvm](https://github.com/nvm-sh/nvm), at the
 repo root:
 
 ```sh
 nvm install      # once
 nvm use          # in each new terminal
-node --version   # v24.something
+node --version   # v26.something
 ```
 
-Why Node 24: it runs TypeScript files directly. It strips the type annotations and runs
+Why Node 26: it runs TypeScript files directly. It strips the type annotations and runs
 what is left, so there is no build step. The code you type is the code that runs. The
-types are still checked, separately, by the TypeScript compiler `tsc`.
+types are still checked, separately, by the TypeScript compiler `tsc`. It also has the
+newest JavaScript built-ins, such as turning bytes into hex and back, which lesson 1.1
+uses.
 
 ## The repo's own tools
 
@@ -74,7 +76,7 @@ cd client
     "typecheck": "tsc -p ."
   },
   "devDependencies": {
-    "@types/node": "24.19.1",
+    "@types/node": "26.6.4",
     "typescript": "7.0.2"
   }
 }
@@ -93,8 +95,8 @@ cd client
 ```json
 {
   "compilerOptions": {
-    "target": "es2024",
-    "lib": ["es2024"],
+    "target": "esnext",
+    "lib": ["esnext"],
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "types": ["node"],
@@ -111,6 +113,8 @@ cd client
 
 The options that matter:
 
+- `lib`: `esnext`, the newest JavaScript built-ins (such as `Uint8Array.fromHex`), which
+  Node 26 has.
 - `strict`: every check on. `null` must be handled, every parameter has a type.
 - `noEmit`: `tsc` only checks. Node runs the `.ts` files itself.
 - `allowImportingTsExtensions`: imports name the real file, `./bytes.ts`, as Node needs.
@@ -130,7 +134,7 @@ npm install
 
 ## What you have
 
-Node 24, the official test vectors, the observability stack running, and an empty client
+Node 26, the official test vectors, the observability stack running, and an empty client
 project that knows how to test and type-check itself.
 
 Next: [0.3 Watch your client](./03-watch-your-client.md)

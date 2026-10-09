@@ -26,10 +26,13 @@ alternatives you might reach for, and why not:
 ## Hex
 
 The test vectors write bytes as text: `"0x"` and then two hex digits per byte, so the
-bytes 1, 2, 255 are `"0x0102ff"`. You need to turn bytes into hex and back. (JavaScript
-is getting this built in, as `Uint8Array.fromHex`, but Node 24 doesn't have it yet.)
+bytes 1, 2, 255 are `"0x0102ff"`. JavaScript has hex built in: `bytes.toHex()` gives
+`"0102ff"`, and `Uint8Array.fromHex("0102ff")` gives the bytes back. The vectors put `0x` in
+front, which the built-ins don't use, so your two functions add it and check for it.
 
-The tests first:
+The tests come first. They import `src/bytes.ts`, which doesn't exist yet: you run them,
+watch them fail, then write the file. Every lesson works this way, because a test written
+first says what the code must do before there is any code to agree with.
 
 **New file** `test/bytes.test.ts`
 
@@ -48,7 +51,7 @@ test("hex there and back", () => {
 
 test("fromHex refuses what is not 0x and whole bytes", () => {
   for (const bad of ["00", "0x0", "0xzz", "0x 1"]) {
-    assert.throws(() => fromHex(bad), /not 0x/);
+    assert.throws(() => fromHex(bad), SyntaxError);
   }
 });
 
@@ -68,6 +71,8 @@ npm test
 # fails with: Cannot find module
 ```
 
+It fails because `src/bytes.ts` doesn't exist yet. You write it now.
+
 **New file** `src/bytes.ts`
 
 ```ts
@@ -78,19 +83,13 @@ export type Bytes = Uint8Array;
 
 /** The bytes as the test vectors write them: "0x" and two lowercase hex digits each. */
 export function toHex(bytes: Bytes): string {
-  let hex = "0x";
-  for (const b of bytes) hex += b.toString(16).padStart(2, "0");
-  return hex;
+  return "0x" + bytes.toHex();
 }
 
-/** The bytes written as "0x" hex; throws on anything else. */
+/** The bytes written as "0x" hex; throws a SyntaxError on anything else. */
 export function fromHex(hex: string): Bytes {
-  if (!/^0x([0-9a-fA-F]{2})*$/.test(hex)) {
-    throw new Error(`not 0x and whole bytes of hex: ${hex.slice(0, 20)}`);
-  }
-  const bytes = new Uint8Array((hex.length - 2) / 2);
-  for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(hex.slice(2 + 2 * i, 4 + 2 * i), 16);
-  return bytes;
+  if (!hex.startsWith("0x")) throw new SyntaxError(`hex bytes start with 0x: ${hex.slice(0, 20)}`);
+  return Uint8Array.fromHex(hex.slice(2)); // throws on an odd number of digits, or a non-hex one
 }
 
 /** Whether two byte strings hold the same bytes. (=== asks whether they are the same object.) */
@@ -113,8 +112,8 @@ export function concatBytes(...parts: Bytes[]): Bytes {
 ```
 
 `type Bytes = Uint8Array` is an alias: it adds no checks, but every signature now says
-what it means. `/^0x([0-9a-fA-F]{2})*$/` accepts `0x` followed by any number of pairs of
-hex digits, so it rejects an odd count of digits along with everything else.
+what it means. `Uint8Array.fromHex` already refuses an odd number of digits and anything
+that isn't a hex digit, with a `SyntaxError`, so `fromHex` only has to check the `0x`.
 
 **Run**
 

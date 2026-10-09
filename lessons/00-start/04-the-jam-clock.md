@@ -50,7 +50,7 @@ npm test
 ```
 
 The `# fails with:` line says what to look for in the output: Node can't find
-`src/time.ts`, because there isn't one yet. (A `#` line is a comment, so the shell skips
+`src/time.ts`, because there isn't one yet: you write it next. (A `#` line is a comment, so the shell skips
 it; `# prints:` lines work the same way.) The failed run is reported too: on the
 dashboard, *Tests failed* is no longer 0, and *Test results* says which test failed and
 why.
