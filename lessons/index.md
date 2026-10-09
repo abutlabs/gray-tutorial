@@ -151,6 +151,7 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 **[Part 17 · Accumulation](./17-accumulation/index.md)**
 
 - [17.1 A block's accumulation](./17-accumulation/01-a-blocks-accumulation.md)
+- [17.2 Waiting reports](./17-accumulation/02-waiting-reports.md)
 
 ## Still to be written
 

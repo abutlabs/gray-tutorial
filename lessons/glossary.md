@@ -236,6 +236,22 @@ fixed amount of free gas, whether or not work came in for it. *Example:* in the
 none sees what the others do in that round. The GP's Δ\*.
 ([17.1](./17-accumulation/01-a-blocks-accumulation.md))
 
+**Dependency.** Anything a report waits for: its prerequisites, and any work-packages its
+segment-root lookups name. *Example:* report D depends on package A.
+([17.2](./17-accumulation/02-waiting-reports.md))
+
+**Ready queue.** ω. Where reports with dependencies wait: one list for each slot of an
+epoch, used as a ring. *Example:* a report arriving at slot 43 on tiny waits in list 7.
+([17.2](./17-accumulation/02-waiting-reports.md))
+
+**Accumulated history.** ξ. For each of the last E slots, the set of work-packages
+accumulated in it; dependencies are checked against it.
+([17.2](./17-accumulation/02-waiting-reports.md))
+
+**Unlock.** A waiting report goes once its last dependency is accumulated, possibly in
+the same block. *Example:* A accumulates, so D, waiting for A, goes right after it.
+([17.2](./17-accumulation/02-waiting-reports.md))
+
 **Accumulation statistics.** S(s) = (N, T, G). For each service, per block: the digests
 it accumulated, the transfers it received, the gas it used. *Example:* (1, 0, 29,643).
 ([17.1](./17-accumulation/01-a-blocks-accumulation.md))

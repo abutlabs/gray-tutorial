@@ -7,3 +7,4 @@ simplest block, then reports that wait for others, the gas budget for a block,
 privileges, and transfers between services.
 
 - [17.1 A block's accumulation](./01-a-blocks-accumulation.md)
+- [17.2 Waiting reports](./02-waiting-reports.md)

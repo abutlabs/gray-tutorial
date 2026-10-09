@@ -116,7 +116,7 @@ const BLOCK_CASES = [
 ];
 
 for (const name of BLOCK_CASES) {
-  test(`${name}: the block's accounts and statistics are the vector's`, () => checkBlock(name));
+  test(`${name}: the block ends as the vector says`, () => checkBlock(name));
 }
 ```
 
@@ -211,7 +211,7 @@ fresh copy of the starting accounts, which is all "the same starting state" take
 
 ```sh
 npm test
-# prints: same_round_storage_isolation-2: the block's accounts and statistics are the vector's
+# prints: same_round_storage_isolation-2: the block ends as the vector says
 # prints: fail 0
 # prints: reported
 npm run typecheck
@@ -302,3 +302,5 @@ your fresh copy for each service.
 
 A whole block's accumulation, in its simplest form, matching 29 official vectors on every
 account and every statistic.
+
+Next: [17.2 Waiting reports](./02-waiting-reports.md)
