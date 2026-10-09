@@ -75,6 +75,10 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [8.4 The lottery's winners](./08-safrole/04-the-lotterys-winners.md)
 - [8.5 One step of Safrole](./08-safrole/05-one-step-of-safrole.md)
 
+**[Part 9 · Recent history](./09-recent-history/index.md)**
+
+- [9.1 The mountain belt](./09-recent-history/01-the-mountain-belt.md)
+
 ## Still to be written
 
 The road from here to a full block importer, part by part. The parts are written in
@@ -82,8 +86,8 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 8 · Safrole (rest) | sealing keys, tickets, Bandersnatch | §6, App. G |
-| 9 · Recent history | recent blocks, the accumulation-output belt | §7 |
+| 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
+| 9 · Recent history (rest) | recent blocks | §7 |
 | 10 · Disputes | judgments, verdicts, culprits, faults | §10 |
 | 11 · Assurances | availability of work-reports | §11 |
 | 12 · Guarantees | reports on cores, guarantor assignment | §11 |

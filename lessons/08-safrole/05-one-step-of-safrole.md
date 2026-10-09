@@ -282,3 +282,5 @@ vectors handed you that output as `input.entropy`. The line after it is your
 
 Safrole, end to end, for every block that brings no tickets: the whole state after it, and
 both marks for its header, right on every vector it can run.
+
+Next: [Part 9 · Recent history](../09-recent-history/index.md)
