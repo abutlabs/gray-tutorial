@@ -3,23 +3,36 @@
 Time to turn numbers into bytes. JAM, like most of computing, writes them a little
 backwards: the small end first.
 
+## New words
+
+- **Encode, decode.** Encoding turns a value into bytes; decoding turns the bytes back
+  into the value. *Example:* 4,807 encodes as the two bytes `c7 12`.
+- **Little-endian.** Least significant byte first: the small end of the number leads.
+  *Example:* 4,807 is `0x12c7`, and it's written `c7 12`.
+- **Fixed-width integer.** A number always written in the same number of bytes, however
+  small it is. *Example:* a u32 is always four bytes, so 1 is `01 00 00 00`.
+
+All three are in the [glossary](../glossary.md).
+
+## Small end first
+
+4,807 is `0x12C7` in hex: the bytes `12` and `C7`. JAM writes them the other way round,
+`C7 12`: the low byte first. Like writing a date as day-month-year.
+
+And the width never changes. A timeslot is a u32, so it takes four bytes in every block
+header, even when it's 1: `01 00 00 00`.
+
 ## What the Gray Paper says
 
-Appendix C, *Fixed-length Integer Encoding*: most integers in JAM are written in a fixed
-number of bytes, l of them, least significant byte first (*little-endian*). The paper
-defines it one byte at a time:
+Appendix C, *Fixed-length Integer Encoding*, defines it one byte at a time:
 
 ```text
 ℰ_l(x) = []                          if l = 0
 ℰ_l(x) = [x mod 256] ⌢ ℰ_{l−1}(⌊x / 256⌋)   otherwise
 ```
 
-Read it like a recipe: write down the lowest byte, chop it off, repeat with one byte
-fewer. So 4,807, which is `0x12C7` in hex, written in two bytes, comes out as `C7 12`.
-Little end first, like reading a date as day-month-year.
-
-The subscript is the width: ℰ₄ is a u32, ℰ₈ a u64. A timeslot is always ℰ₄ in a header,
-however small the number.
+Read it like a recipe (⌢ means "followed by"): write down the lowest byte, chop it off,
+repeat with one byte fewer. The subscript l is the width: ℰ₄ is a u32, ℰ₈ a u64.
 
 ## The code
 

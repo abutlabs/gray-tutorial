@@ -12,6 +12,19 @@ So each kind of value gets one object holding all three, a `Codec<T>`. Small cod
 (a u32, a hash) snap together into codecs for whole structures, like bricks. The field
 order gets written once, and every direction follows it.
 
+## New words
+
+- **Codec.** One object that knows one kind of value three ways: how to encode it, how to
+  decode it, and how to read it from JSON. *Example:* `u32`, the codec for 4-byte numbers.
+- **JSON.** The plain-text format the test vectors are written in. *Example:*
+  `{"slot": 42, "hash": "0x01..."}`.
+- **Interface.** A TypeScript list of what an object must have, with no code in it.
+  *Example:* every codec has `encode`, `decode` and `fromJson`.
+- **Generic (`<T>`).** A type with a blank in it, filled in where it's used. *Example:*
+  `Codec<number>` is a codec for numbers, `Codec<Bytes>` one for bytes.
+
+All four are in the [glossary](../glossary.md).
+
 ## The interface
 
 **New file** `src/codec/codec.ts`

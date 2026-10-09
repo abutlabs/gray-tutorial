@@ -7,6 +7,18 @@ structure in bookkeeping. Two little helpers make the bookkeeping disappear:
 - a **Writer**, which collects the pieces of an encoding as you write them;
 - a **Reader**, which walks through bytes front to back, keeping its own place.
 
+## New words
+
+- **Class.** A blueprint for objects that keep their own data and come with their own
+  functions, called *methods*. *Example:* `new Writer()` makes a writer, and `w.natural(5n)`
+  calls one of its methods.
+- **Private field.** A field whose name starts with `#`: only the class's own methods can
+  touch it. *Example:* the Reader's `#at`.
+- **Offset.** A position in a row of bytes, counted from 0. *Example:* in `c7 12 80 80`,
+  the compact 128 starts at offset 2.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 Appendix C encodes a structure by putting its parts' encodings one after another:

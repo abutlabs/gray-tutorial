@@ -102,6 +102,29 @@ says what a value is for. *Example:* `type Bytes = Uint8Array`.
 of, innermost first. Look for the first line in your own code. *Example:* `at fromHex
 (src/bytes.ts:13:21)`. ([1.1](./01-bytes-and-numbers/01-bytes-and-hex.md))
 
+**Off-by-one.** A bug that's wrong by exactly one, usually at the edge of a range: `<=`
+where `<` was meant, or a count that starts at 1 instead of 0. *Example:* treating 128
+as if it fitted in one byte. ([2.2](./02-codec/02-compact-naturals.md))
+
+**Class, method.** A class is a blueprint for objects that keep their own data; its
+functions are methods. *Example:* `new Writer()` makes a writer; `w.natural(5n)` calls a
+method. ([2.3](./02-codec/03-writer-and-reader.md))
+
+**Private field.** A field of a class whose name starts with `#`: only the class's own
+methods can touch it. *Example:* the Reader's `#at`. ([2.3](./02-codec/03-writer-and-reader.md))
+
+**Offset.** A position in a row of bytes, counted from 0. *Example:* in `c7 12 80 80`, the
+compact 128 starts at offset 2. ([2.3](./02-codec/03-writer-and-reader.md))
+
+**JSON.** The plain-text format the test vectors are written in. *Example:* `{"slot":
+42}`. ([2.4](./02-codec/04-codecs.md))
+
+**Interface.** A TypeScript list of what an object must have, with no code in it.
+*Example:* every `Codec` has `encode`, `decode` and `fromJson`. ([2.4](./02-codec/04-codecs.md))
+
+**Generic (`<T>`).** A type with a blank in it, filled in where it's used. *Example:*
+`Codec<number>` is a codec for numbers. ([2.4](./02-codec/04-codecs.md))
+
 **`Map`.** A lookup table from keys to values. *Example:* a service's storage maps each
 key to its value. ([16.5](./16-host-calls/05-storage.md))
 
@@ -121,13 +144,23 @@ is the byte 255; `0x0102` is the bytes 1 and 2. ([1.1](./01-bytes-and-numbers/01
 **Little-endian.** Writing a number's bytes smallest first. JAM does this everywhere.
 *Example:* 258 in two bytes is `0x0201`. ([2.1](./02-codec/01-fixed-width-integers.md))
 
+**Fixed-width integer.** ℰ_l. A number always written in the same l bytes, however small
+it is. *Example:* a u32 always takes four bytes, so 1 is `01 00 00 00`.
+([2.1](./02-codec/01-fixed-width-integers.md))
+
 **Encoding, decoding, codec.** Encoding turns a value into bytes; decoding turns the
-bytes back; a codec is the pair. The GP writes encoding as ℰ (Appendix C). *Example:* the
-number 5 in one byte encodes as `0x05`. ([2.4](./02-codec/04-codecs.md))
+bytes back. A codec is one object that does both for one kind of value, and reads it from
+the test vectors' JSON too. The GP writes encoding as ℰ (Appendix C). *Example:* the
+number 5 in one byte encodes as `0x05`.
+([2.1](./02-codec/01-fixed-width-integers.md)), codec ([2.4](./02-codec/04-codecs.md))
 
 **Compact natural.** JAM's space-saving way to encode a whole number: small numbers take
 one byte, bigger ones more, and the first byte says how many follow. *Example:* 5 is
 `0x05`, one byte; 300 takes two. ([2.2](./02-codec/02-compact-naturals.md))
+
+**Leading ones.** The one-bits at the very start of a byte, before its first zero; in a
+compact natural, how many more bytes follow. *Example:* `110xxxxx` has two.
+([2.2](./02-codec/02-compact-naturals.md))
 
 **Blob.** Any run of bytes of no fixed length. Encoded with its length in front (the GP's
 ↕). *Example:* the three bytes 1, 2, 3 encode as `0x03010203`.
