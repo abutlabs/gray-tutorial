@@ -6,3 +6,4 @@ tallies are there so that whoever does pay can see who earned it. This part buil
 validators first.
 
 - [18.1 Who did what](./01-who-did-what.md)
+- [18.2 What cores and services did](./02-what-cores-and-services-did.md)

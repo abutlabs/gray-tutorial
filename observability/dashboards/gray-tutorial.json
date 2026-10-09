@@ -1442,6 +1442,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 45,
+   "type": "logs",
+   "title": "Core and service activity",
+   "description": "What bin/activity.ts did: one block's tallies for each core (data load, popularity, the work it took on) and each service (its share of that work), the fields that aren't zero.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"activity\", run_id=~\"$run_id\"} | json | line_format \"{{.who}}: {{.did}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 367,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

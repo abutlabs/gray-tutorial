@@ -156,6 +156,7 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 **[Part 18 · Statistics](./18-statistics/index.md)**
 
 - [18.1 Who did what](./18-statistics/01-who-did-what.md)
+- [18.2 What cores and services did](./18-statistics/02-what-cores-and-services-did.md)
 
 ## Still to be written
 
@@ -167,6 +168,5 @@ this order, and each one is checked end to end before it is published here.
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
 | 16 · Host calls (rest) | fetch, storage, the accumulation context and Ψ_A | App. B |
 | 17 · Accumulation (rest) | waiting reports, the block's gas budget, privileges, transfers | §12 |
-| 18 · Statistics (rest) | core and service activity | §13 |
 | 19 · Block import | Υ: every piece in order, the block-import traces | §4, §5 |
 | 20 · Facing the fuzzer | the conformance fuzzer's protocol | |

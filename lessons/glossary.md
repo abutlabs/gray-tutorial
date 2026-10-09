@@ -142,6 +142,9 @@ seal. *Example:* `header.slot` says when the block was made. ([4.6](./04-blocks/
 
 **Extrinsic.** E. The block's contents from the outside world, in five parts: tickets,
 preimages, guarantees, assurances and disputes. ([4.1](./04-blocks/01-tickets-and-preimages.md))
+A work-item's *extrinsics* are something else: data blobs sent along with the item, for
+refine to read. *Example:* `items.1.extrinsic.0`, its first blob's hash and length.
+([3.1](./03-work-and-reports/01-a-work-package.md))
 
 **Parent.** The block before this one. Each header names its parent by hash, which is
 what makes the blocks a chain. ([5.1](./05-hashing-and-signatures/01-hashes.md))
@@ -214,6 +217,15 @@ payload and gets a result. ([3.2](./03-work-and-reports/02-work-digests.md))
 
 **Work-digest (work result).** What refining one work-item produced: an output, or an
 error, plus the gas it may use when accumulated. ([3.2](./03-work-and-reports/02-work-digests.md))
+
+**Bundle.** A work-package together with everything needed to refine it: its extrinsics,
+and the segments it imports with their proofs. Its length is in the report's
+`package_spec`. *Example:* a 17180-byte bundle.
+([18.2](./18-statistics/02-what-cores-and-services-did.md))
+
+**Segment.** A 4104-byte piece of data (W_G) that a work-item exports, for later packages
+to import. Every 64 of them come with a proof page. *Example:* a report exporting 3
+segments. ([18.2](./18-statistics/02-what-cores-and-services-did.md))
 
 **Work-report.** A core's statement about one package: its digests, and enough detail to
 check and fetch everything. ([3.3](./03-work-and-reports/03-a-work-report.md))
@@ -311,6 +323,22 @@ account. *Example:* 43, after accumulating in slot 43.
 progress and the one before: blocks, tickets, preimages and their bytes, guarantees,
 assurances. *Example:* 1 block, 2 tickets, 3 preimages of 51 bytes.
 ([18.1](./18-statistics/01-who-did-what.md))
+
+**Core statistics.** π_C. One block's scorecard for each core: the work in the reports it
+took on, its data load and its popularity. *Example:* core 0: 821 gas, a 17180-byte
+bundle. ([18.2](./18-statistics/02-what-cores-and-services-did.md))
+
+**Service statistics.** π_S. One block's scorecard for each active service: its share of
+the work refined, the preimages provided for it, its accumulation. *Example:* service 42:
+2 digests, 1518 gas. ([18.2](./18-statistics/02-what-cores-and-services-did.md))
+
+**Data load.** The bytes a core's newly available reports ask validators to keep: each
+bundle, plus its segments and their proof pages. *Example:* 12345 + 4 × 4104 = 28761.
+([18.2](./18-statistics/02-what-cores-and-services-did.md))
+
+**Popularity.** How many of a block's assurances have a core's bit set. *Example:* 4 of
+6 validators assure core 1: popularity 4.
+([18.2](./18-statistics/02-what-cores-and-services-did.md))
 
 **Author.** H_I. The validator that made a block, named in its header by index.
 *Example:* `author_index: 1`. ([18.1](./18-statistics/01-who-did-what.md))

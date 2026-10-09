@@ -288,3 +288,5 @@ at a time, with a small function for each.
 ## What you have
 
 Every validator's tally, kept the Gray Paper's way, and matching every statistics vector.
+
+Next: [18.2 What cores and services did](./02-what-cores-and-services-did.md)
