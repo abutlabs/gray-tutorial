@@ -121,3 +121,5 @@ value.
 
 Every kind of codec a JAM block needs: integers, bytes, sequences, records, either-or,
 maybe, and exactly n.
+
+Next: [4.6 The header](./06-the-header.md)

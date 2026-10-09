@@ -10,3 +10,4 @@ until your client can read a whole block, checked against the official vectors.
 - [4.3 Guarantees](./03-guarantees.md)
 - [4.4 Disputes](./04-disputes.md)
 - [4.5 Maybe, and exactly n](./05-maybe-and-exactly-n.md)
+- [4.6 The header](./06-the-header.md)

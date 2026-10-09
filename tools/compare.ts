@@ -17,7 +17,7 @@ import { applyStep } from "./tangle.ts";
 const dirFlag = process.argv.indexOf("--dir");
 const CLIENT = join(ROOT, dirFlag > 0 ? process.argv[dirFlag + 1] : "client");
 const EXPECTED = join(ROOT, ".expected");
-const SKIP = new Set(["node_modules", "package-lock.json", ".DS_Store", ".gitkeep"]);
+const SKIP = new Set(["node_modules", "package-lock.json", ".DS_Store", ".gitkeep", ".git"]);
 
 const write = process.argv.includes("--write");
 const id = process.argv.slice(2).find((a, i, all) => !a.startsWith("--") && all[i - 1] !== "--dir");
