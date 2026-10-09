@@ -4,6 +4,29 @@ Two ways to build big values out of small ones: lists, and structures with named
 With these two, the next lesson encodes a real JAM structure and checks it against the
 official vectors.
 
+## New words
+
+- **Sequence.** A list of values of one kind, encoded one after another, with its length
+  in front when the length can vary. *Example:* the bytes 1, 2, 3 as a list: `03 01 02 03`.
+- **Record.** A value with named fields, always encoded in the same field order. The Gray
+  Paper calls it a *tuple*. *Example:* a slot (u32) and a gas amount (u64), side by side.
+- **Codec factory.** A function that takes codecs and builds a new one from them.
+  *Example:* `seq(u8)`, a codec for lists of bytes.
+- **Mapped type.** A TypeScript type built by going through another type's field names
+  one by one. *Example:* `{ [K in keyof F]: Value<F[K]> }`, below.
+
+All four are in the [glossary](../glossary.md).
+
+## Lists and structures
+
+The list 1, 2, 3, each a single byte, encodes as `03 01 02 03`: its length (a compact
+natural from lesson 2.2) and then each item. The length tells a decoder where the list
+ends.
+
+A record with a slot of 42 (u32) and a gas amount of 7 (u64) encodes as
+`2a 00 00 00 07 00 00 00 00 00 00 00`: the fields in order, and nothing else. No names, no
+length: both sides already know the fields and their order, so the bytes don't repeat it.
+
 ## What the Gray Paper says
 
 From Appendix C:

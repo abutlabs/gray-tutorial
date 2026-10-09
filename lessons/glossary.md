@@ -129,6 +129,10 @@ compact 128 starts at offset 2. ([2.3](./02-codec/03-writer-and-reader.md))
 missing one gives `undefined`. *Example:* `privileges?: Privileges`.
 ([17.5](./17-accumulation/05-privileges.md))
 
+**Mapped type.** A TypeScript type built by going through another type's field names one
+by one. *Example:* `{ [K in keyof F]: Value<F[K]> }` gives each field its codec's type.
+([2.5](./02-codec/05-sequences-and-records.md))
+
 **`Map`.** A lookup table from keys to values. *Example:* a service's storage maps each
 key to its value. ([16.5](./16-host-calls/05-storage.md))
 
@@ -173,6 +177,27 @@ compact natural, how many more bytes follow. *Example:* `110xxxxx` has two.
 **Sequence and record.** A sequence is a list of the same kind of thing, a record a fixed
 set of named fields, encoded one after another. *Example:* a work-item is a record; the
 items of a package are a sequence. ([2.5](./02-codec/05-sequences-and-records.md))
+
+**Codec factory.** A function that takes codecs and builds a new codec from them.
+*Example:* `seq(u8)` is a codec for lists of bytes. ([2.5](./02-codec/05-sequences-and-records.md))
+
+**Hex dump.** A file's bytes printed as hex, a few to a line, to read by eye. *Example:*
+`node bin/hexdump.ts work_item.bin` prints `04 03 02 01 70 a5 ...`.
+([2.6](./02-codec/06-the-first-test-vectors.md))
+
+**Round trip.** Decoding bytes, encoding the result, and getting the very same bytes back:
+how a codec proves it agrees with a test vector. *Example:* `work_item.bin` → a work item
+→ `work_item.bin`. ([2.6](./02-codec/06-the-first-test-vectors.md))
+
+**Decode trace.** A list of every innermost field a decoder read, each with its field
+path and where its bytes were; every byte covered once. Not a block trace. *Example:*
+`0..4 service`. ([2.7](./02-codec/07-watch-a-decode.md))
+
+**Field path.** A field's place inside a value, from the outside in, with dots.
+*Example:* `import_segments.0.index`. ([2.7](./02-codec/07-watch-a-decode.md))
+
+**Innermost field.** A field with no fields inside it: a number, a hash, a length.
+*Example:* `service` is one; `import_segments` isn't. ([2.7](./02-codec/07-watch-a-decode.md))
 
 **Option.** A value that may be missing: one byte, 0 for "nothing" or 1 and then the
 value. *Example:* a header's epoch mark is only there at an epoch's start.

@@ -5,6 +5,17 @@ In lesson 2.6 you moved one field and three values went haywire. The test told y
 decoder a voice: for every field, which bytes it read and where they sit. The trace goes
 to your terminal and to Grafana, like everything else your client does.
 
+## New words
+
+- **Decode trace.** A list of every field a decoder read, with where its bytes were.
+  (Not a block trace, the recorded run of blocks from Part 19.) *Example:* `0..4 service`.
+- **Field path.** A field's place inside a value, from the outside in, with dots.
+  *Example:* `import_segments.0.index`: the index of the first imported segment.
+- **Innermost field.** A field with no fields inside it: a number, a hash, a length.
+  *Example:* `service` is one; `import_segments` isn't.
+
+All three are in the [glossary](../glossary.md).
+
 ## The idea
 
 A decode trace is a list of the **innermost fields** of a value, in the order they are

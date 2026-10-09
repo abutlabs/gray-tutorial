@@ -6,6 +6,18 @@ the exact bytes ℰ produces. Decode the bytes into the JSON's values, encode th
 back into the very same bytes, and your codec agrees with every other client's. No
 partial credit.
 
+## New words
+
+- **Hex dump.** A file's bytes printed as hex, a few to a line, to read them by eye.
+  *Example:* `04 03 02 01 70 a5 08 29`.
+- **Round trip.** Decode the bytes, encode the result, and check you got the very same
+  bytes back. *Example:* `work_item.bin` → a work item → `work_item.bin` again.
+- **Tiny and full.** JAM's two sizes, with the same rules: *full* is the real network,
+  *tiny* a small one for tests (6 validators, 2 cores). *Example:* `codec/tiny/` and
+  `codec/full/`.
+
+All three are in the [glossary](../glossary.md), next to *test vector*.
+
 ## Look at one
 
 From `client/`, the vectors are at `../vectors/`. A small program to show a file's bytes
