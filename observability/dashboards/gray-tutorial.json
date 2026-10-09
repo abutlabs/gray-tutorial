@@ -357,6 +357,41 @@
     "w": 24,
     "h": 10
    }
+  },
+  {
+   "id": 9,
+   "type": "logs",
+   "title": "State trie",
+   "description": "What bin/state.ts built: each state entry's leaf (how deep in the trie, its key, its value's size), then the state root and whether the block's header promises the same.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"state\", run_id=~\"$run_id\"} | json | step=\"leaf\" | line_format \"depth {{.depth}}  {{.key}}  {{.size}}-byte value\"",
+     "refId": "A",
+     "queryType": "range"
+    },
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"state\", run_id=~\"$run_id\"} | json | step=\"root\" | line_format \"state root {{.root}}  the header promises it: {{.matches}}\"",
+     "refId": "B",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 56,
+    "w": 24,
+    "h": 12
+   }
   }
  ]
 }

@@ -56,6 +56,10 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [5.2 The extrinsic hash](./05-hashing-and-signatures/02-the-extrinsic-hash.md)
 - [5.3 Signatures](./05-hashing-and-signatures/03-signatures.md)
 
+**[Part 6 · State and Merklization](./06-state-and-merklization/index.md)**
+
+- [6.1 The state trie](./06-state-and-merklization/01-the-state-trie.md)
+
 ## Still to be written
 
 The road from here to a full block importer, part by part. The parts are written in
@@ -63,7 +67,7 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 6 · State and Merklization | σ, state keys, the trie, the state root | §4, App. D |
+| 6 · State and Merklization (rest) | state keys, reading σ | §4, App. D |
 | 7 · Time and shuffling | epochs, entropy, the Fisher-Yates shuffle | §4, App. E |
 | 8 · Safrole | Bandersnatch, tickets, sealing keys | §6, App. F |
 | 9 · Recent history | recent blocks, the accumulation-output belt | §7 |
