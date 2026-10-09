@@ -7,6 +7,18 @@ kept small.
 
 There's one genuinely new idea here: a value that is *either* one thing *or* another.
 
+## New words
+
+- **Work digest.** One work item's result card: which service, how it went, how hard the
+  core worked. The vectors still call it a *work result*. *Example:* `work_result_1`, a
+  digest whose item panicked.
+- **Union type.** A TypeScript type that is one shape *or* another. *Example:*
+  `{ ok: Bytes } | { error: WorkError }`.
+- **Tag.** A number in front of an encoded value that says which case follows.
+  *Example:* tag 0 is "here comes the output", tag 2 is "it panicked".
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §11 (*Work Digest*) defines a digest as ten things:
@@ -98,7 +110,7 @@ export const WorkResult: Codec<WorkResult> = {
   },
   decode: (r) => {
     const tag = Number(r.natural());
-    return tag === 0 ? { ok: blob.decode(r) } : { error: ERRORS[tag - 1] };
+    return tag === 0 ? { ok: blob.decode(r) } : { error: ERRORS[tag] };
   },
   fromJson: (json) => {
     const [name, value] = Object.entries(json as object)[0];
@@ -141,6 +153,66 @@ The tour:
 - `RefineLoad` is a record inside the digest, matching the JSON's `refine_load` object. On
   the wire there's no nesting, just five compact numbers in a row, and a nested record
   encodes to exactly that.
+
+**Run, expect it to fail**
+
+```sh
+npm test
+# fails with: bad_exports
+```
+
+## Bug hunt
+
+Red, and your own new test passed. (Your fourth planted bug, and a new kind: a codec
+whose two directions disagree.) Here's the trail:
+
+1. **The test output.** *a result is tag 0 and the output, or just an error's tag* passed.
+   So did `work_result_0`, the successful digest. Only `work_result_1` failed, tiny and
+   full, and its diff points at one line:
+
+   ```text
+   result: {
+   +     error: 'bad_exports'
+   -     error: 'panic'
+   ```
+
+   `+` is what your code produced, `-` what the vector expected. Your client read a panic
+   as "bad exports".
+2. **The dashboard.** *Tests failed* says 2, and *Test results* has the two `FAIL` lines,
+   both `work_result_1`.
+3. **The reasoning.** Your encode test proved a panic *writes* as `0x02`, and the vector's
+   bytes say `02` too. So the bytes are right and the *reading* is wrong. `decode` turns
+   tag 2 into `ERRORS[2]`, the third name in the list: `"bad_exports"`. But tags start at
+   1 (0 means success), and list positions start at 0. Encoding remembered the `+ 1`;
+   decoding forgot the `- 1`.
+
+That's why the vectors check both directions: decode the bytes into the value, *and*
+encode the value back into the bytes. A test of one direction can't catch the other.
+The fix:
+
+**Replace in** `src/work.ts`
+
+```ts
+/** O(result): tag 0 and the output as a blob, or just the error's tag. */
+export const WorkResult: Codec<WorkResult> = {
+  encode: (w, result) => {
+    if ("ok" in result) {
+      w.natural(0n);
+      blob.encode(w, result.ok);
+    } else {
+      w.natural(BigInt(ERRORS.indexOf(result.error) + 1));
+    }
+  },
+  decode: (r) => {
+    const tag = Number(r.natural());
+    return tag === 0 ? { ok: blob.decode(r) } : { error: ERRORS[tag - 1] };
+  },
+  fromJson: (json) => {
+    const [name, value] = Object.entries(json as object)[0];
+    return name === "ok" ? { ok: fromHex(value as string) } : { error: name as WorkError };
+  },
+};
+```
 
 **Run**
 

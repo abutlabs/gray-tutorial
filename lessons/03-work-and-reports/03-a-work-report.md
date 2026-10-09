@@ -5,6 +5,18 @@ wraps it all up: the **work-report**, the receipt a core produces for one whole
 work-package. Validators sign it, pass it around, check it, and finally fold its results
 into the chain. Everything from Part 3 meets here.
 
+## New words
+
+- **Work-report.** A core's receipt for one whole work-package: its digests, and enough
+  detail to check and fetch everything. *Example:* the `work_report` vector.
+- **Availability specification.** How to find a package's data again: its hash, its
+  bundle's length, the erasure root and shard count, and its exported segments' root and
+  count. *Example:* a report's `package_spec`.
+- **Erasure coding.** Chopping data into one piece per validator so cleverly that any
+  third of the pieces can rebuild it all. *Example:* 6 shards on tiny, 1,023 on full.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §11 (*Work Report*) says a report is:

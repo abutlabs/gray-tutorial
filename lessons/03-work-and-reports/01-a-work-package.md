@@ -4,6 +4,18 @@ In Part 2 you encoded a single work item. Nobody sends a work item on its own, t
 Items travel in a **work-package**: a parcel of up to sixteen jobs, addressed to one of
 JAM's cores, with a permission slip stapled to the front.
 
+## New words
+
+- **Work-package.** Up to 16 work items for one core, packed together with what's needed
+  to let them in. *Example:* a package of one item, for service 42.
+- **Authorizer.** A small program that decides whether a package may use a core at all.
+  *Example:* a package names its authorizer by a service and a code hash.
+- **Refinement context.** The chain as a package saw it when it was built: a recent block
+  to anchor on, and anything that must be accumulated first. *Example:* lesson 2.6's
+  `refine_context` vector.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §14 (*Packages and Items*) defines a work-package as six things:

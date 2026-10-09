@@ -133,6 +133,14 @@ missing one gives `undefined`. *Example:* `privileges?: Privileges`.
 by one. *Example:* `{ [K in keyof F]: Value<F[K]> }` gives each field its codec's type.
 ([2.5](./02-codec/05-sequences-and-records.md))
 
+**Union type.** A TypeScript type that is one shape or another; a check like `"ok" in x`
+tells which. *Example:* `{ ok: Bytes } | { error: WorkError }`.
+([3.2](./03-work-and-reports/02-work-digests.md))
+
+**Tag.** A number in front of an encoded value saying which case follows. *Example:* in a
+work result, 0 is "the output follows", 2 is "it panicked".
+([3.2](./03-work-and-reports/02-work-digests.md))
+
 **`Map`.** A lookup table from keys to values. *Example:* a service's storage maps each
 key to its value. ([16.5](./16-host-calls/05-storage.md))
 
@@ -331,6 +339,19 @@ and the segments it imports with their proofs. Its length is in the report's
 **Segment.** A 4104-byte piece of data (W_G) that a work-item exports, for later packages
 to import. Every 64 of them come with a proof page. *Example:* a report exporting 3
 segments. ([18.2](./18-statistics/02-what-cores-and-services-did.md))
+
+**Refinement context.** The chain as a work-package saw it when built: an anchor block (its
+hash, slot, state root and belt root), a lookup anchor to read preimages from, and the
+packages that must be accumulated first. *Example:* every package and report carries one.
+([3.1](./03-work-and-reports/01-a-work-package.md))
+
+**Availability specification.** How to find a package's data again: its hash, its
+bundle's length, the erasure root and shard count, and its exported segments' root and
+count. *Example:* a report's `package_spec`. ([3.3](./03-work-and-reports/03-a-work-report.md))
+
+**Erasure coding.** Chopping data into one piece (shard) per validator so that any third
+of the pieces can rebuild it all. *Example:* 6 shards on tiny, 1,023 on full.
+([3.3](./03-work-and-reports/03-a-work-report.md))
 
 **Work-report.** A core's statement about one package: its digests, and enough detail to
 check and fetch everything. ([3.3](./03-work-and-reports/03-a-work-report.md))
