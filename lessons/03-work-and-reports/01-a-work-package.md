@@ -144,5 +144,6 @@ reader at once, in the encoding's order.
 
 ## What you have
 
-The parcel that carries work into JAM, encoded byte for byte. Next up: what comes *out*
-of a core. (That lesson is still being written.)
+The parcel that carries work into JAM, encoded byte for byte.
+
+Next: [3.2 Work digests](./02-work-digests.md)

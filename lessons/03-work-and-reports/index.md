@@ -6,3 +6,4 @@ encodes the paperwork of that journey, from the parcel that goes in to the repor
 comes out, each piece checked against the official vectors.
 
 - [3.1 A work-package](./01-a-work-package.md)
+- [3.2 Work digests](./02-work-digests.md)
