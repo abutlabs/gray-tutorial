@@ -291,3 +291,5 @@ writes a `compare_u64` for the `_u` branches, while your `bigint`s are unsigned 
 
 Every branch, and calls both ways. Your machine now runs every instruction but eleven:
 ten that count and shuffle bits, and `ecalli`, the door out to the host.
+
+Next: [15.7 Bits and bytes](./07-bits-and-bytes.md)

@@ -10,3 +10,4 @@ builds it, starting by unpacking a real service's code.
 - [15.4 Memory](./04-memory.md)
 - [15.5 Arithmetic](./05-arithmetic.md)
 - [15.6 Branches and calls](./06-branches-and-calls.md)
+- [15.7 Bits and bytes](./07-bits-and-bytes.md)
