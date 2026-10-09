@@ -227,3 +227,5 @@ number spellings of the same fraction; pick the one you can check in your head.
 
 Your client can read a bitfield the right way round, count assurances per core, and say
 which reports just became available.
+
+Next: [11.2 Timeouts](./02-timeouts.md)

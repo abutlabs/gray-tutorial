@@ -6,3 +6,4 @@ which cores' data they hold. This part counts those assurances, makes reports
 available, and clears out the ones that waited too long.
 
 - [11.1 Available](./01-available.md)
+- [11.2 Timeouts](./02-timeouts.md)

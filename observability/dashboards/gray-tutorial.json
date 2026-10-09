@@ -812,6 +812,36 @@
     "w": 24,
     "h": 10
    }
+  },
+  {
+   "id": 24,
+   "type": "logs",
+   "title": "Releases",
+   "description": "What bin/release.ts decided for each core's pending report: it became available, it timed out, it was cleared because the validator set resized, or it stays.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"release\", run_id=~\"$run_id\"} | json | line_format \"core {{.core}} at slot {{.slot}} (waiting since {{.since}}): {{.fate}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 194,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

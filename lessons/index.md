@@ -89,6 +89,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 **[Part 11 · Assurances](./11-assurances/index.md)**
 
 - [11.1 Available](./11-assurances/01-available.md)
+- [11.2 Timeouts](./11-assurances/02-timeouts.md)
 
 ## Still to be written
 
@@ -98,7 +99,6 @@ this order, and each one is checked end to end before it is published here.
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 11 · Assurances (rest) | timeouts: clearing the cores | §11 |
 | 12 · Guarantees | reports on cores, guarantor assignment | §11 |
 | 13 · Authorization | authorizer pools and queues | §8 |
 | 14 · Services and preimages | accounts, storage, preimage requests | §9, §12 |
