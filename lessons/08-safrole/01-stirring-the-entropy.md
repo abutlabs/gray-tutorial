@@ -1,0 +1,200 @@
+# Stirring the entropy
+
+Part 8 is **Safrole**, JAM's block-production engine. It answers the big question of
+every blockchain: *who gets to make the next block?* JAM's answer is a lottery whose
+winners stay secret until their slot comes, and a lottery is only fair if its randomness
+is. So Safrole starts where every good card game does: with a thorough shuffle of the
+deck. This lesson keeps the chain's randomness, η, fresh, one block at a time.
+
+## What the Gray Paper says
+
+§6 (*Sealing and Entropy Accumulation*): every block stirs new randomness into η₀, the
+accumulator:
+
+> η′₀ = H(η₀ ⌢ Y(H_v))
+
+H_v is the header's `entropy_source` (lesson 4.6): a 96-byte Bandersnatch **VRF**
+signature by the block's author. Y(H_v) is its *output*, 32 bytes of randomness with a
+special property. The author can't choose it: for a given key and message, a VRF's
+output comes out one way only. Yet everyone can check it was made honestly. So
+nobody, not even the author, can steer what goes into η.
+
+Computing Y needs Bandersnatch, which this tutorial hasn't got yet. The `safrole` test
+vectors hand it to you instead, as `input.entropy`. And the rest of η′ is lesson 7.1's
+history: moved along one at a new epoch, unchanged otherwise.
+
+## The tests
+
+The safrole vectors come as a folder of small scenarios, so the tests need a way to list
+a folder:
+
+**Add to** `test/vectors.ts`
+
+```ts
+import { readdirSync } from "node:fs";
+
+/** The JSON vectors in a folder of vectors/, by name, such as "stf/safrole/tiny". */
+export function vectorFiles(folder: string): string[] {
+  const files = readdirSync(VECTORS + folder).filter((f) => f.endsWith(".json"));
+  return files.map((f) => `${folder}/${f}`);
+}
+```
+
+**New file** `test/safrole.test.ts`
+
+```ts
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { fromHex, toHex } from "../src/bytes.ts";
+import { FULL, TINY } from "../src/config.ts";
+import { epochOf } from "../src/epoch.ts";
+import { nextEntropy } from "../src/safrole.ts";
+import { vectorFiles, vectorJson } from "./vectors.ts";
+
+/** A safrole test vector: the parts of it the lessons use so far. */
+type SafroleVector = {
+  input: { slot: number; entropy: string };
+  pre_state: { tau: number; eta: string[] };
+  post_state: { eta: string[] };
+  output: { err?: string };
+};
+
+test("η′: each block stirs its VRF output into η₀, and a new epoch moves the history", () => {
+  let checked = 0;
+  for (const config of [TINY, FULL]) {
+    for (const name of vectorFiles(`stf/safrole/${config.name}`)) {
+      const { input, pre_state, post_state, output } = vectorJson(name) as SafroleVector;
+      if (output.err) continue; // a rejected block changes nothing
+      const newEpoch = epochOf(config, input.slot) > epochOf(config, pre_state.tau);
+      const eta = nextEntropy(pre_state.eta.map(fromHex), fromHex(input.entropy), newEpoch);
+      assert.deepEqual(eta.map(toHex), post_state.eta, name);
+      checked++;
+    }
+  }
+  assert.equal(checked, 33); // 15 tiny, 18 full
+});
+```
+
+Some vectors describe blocks that must be *rejected*: a bad slot, a bad ticket. Their
+`output` is an `err`, and their state doesn't change at all. Rejecting blocks comes later
+in Part 8, so for now the test skips them, and counts the rest: 15 on tiny, 18 on full.
+
+**Run, expect it to fail**
+
+```sh
+npm test
+# fails with: Cannot find module
+```
+
+## The code
+
+**New file** `src/safrole.ts`
+
+```ts
+// Safrole (GP §6): JAM's block-production engine. It decides who may seal each slot, and
+// keeps the chain's randomness fresh.
+
+import type { Bytes } from "./bytes.ts";
+import { concatBytes } from "./bytes.ts";
+import { entropyHistory } from "./epoch.ts";
+import { blake2b256 } from "./hash.ts";
+
+/**
+ * η′: every block stirs its VRF output into the accumulator, η′₀ = H(η₀ ⌢ output), and at a
+ * new epoch the history moves along one.
+ */
+export function nextEntropy(entropy: Bytes[], vrfOutput: Bytes, newEpoch: boolean): Bytes[] {
+  const accumulator = blake2b256(concatBytes(entropy[0], vrfOutput));
+  return [accumulator, ...entropyHistory(entropy, newEpoch)];
+}
+```
+
+One hash for the accumulator, and lesson 7.1's `entropyHistory` for the rest.
+
+**Run**
+
+```sh
+npm test
+# prints: η′: each block stirs its VRF output into η₀, and a new epoch moves the history
+# prints: fail 0
+# prints: reported
+npm run typecheck
+```
+
+33 scenarios, and your η′ matches every one. That includes `skip-epochs-1`, where the
+chain jumps from slot 10 to slot 46, straight over two whole epochs. Even then the
+history moves along just one place: the Gray Paper only asks *whether* a new epoch began,
+never how many.
+
+## Watch it
+
+**New file** `bin/entropy.ts`
+
+```ts
+// Shows how one block changes η, from a safrole test vector: the accumulator stirred with
+// the block's VRF output, and the history moving along if a new epoch begins.
+// Usage: node bin/entropy.ts <vector.json>, e.g.
+//        node bin/entropy.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+
+import { readFileSync } from "node:fs";
+import { fromHex, toHex } from "../src/bytes.ts";
+import { FULL, TINY } from "../src/config.ts";
+import { epochOf } from "../src/epoch.ts";
+import { Run } from "../src/obs.ts";
+import { nextEntropy } from "../src/safrole.ts";
+
+const [file] = process.argv.slice(2);
+const config = file.includes("/full/") ? FULL : TINY;
+const { input, pre_state, post_state } = JSON.parse(readFileSync(file, "utf8"));
+const newEpoch = epochOf(config, input.slot) > epochOf(config, pre_state.tau);
+const before: string[] = pre_state.eta;
+const after = nextEntropy(before.map(fromHex), fromHex(input.entropy), newEpoch).map(toHex);
+const short = (hash: string) => `${hash.slice(0, 18)}…`;
+const run = new Run("entropy");
+console.log(`slot ${pre_state.tau} → ${input.slot}${newEpoch ? ": a new epoch" : ""}`);
+console.log(`VRF output ${short(input.entropy)}`);
+after.forEach((hash, index) => {
+  console.log(`η${index}  ${short(before[index])}  →  ${short(hash)}`);
+  run.event("eta", { index, before: before[index], after: hash });
+});
+const matches = after.every((hash, index) => hash === post_state.eta[index]);
+console.log(`η′ matches the vector: ${matches}`);
+run.event("result", { slot: input.slot, newEpoch, matches });
+const link = await run.report();
+if (link) console.log(`reported to Grafana: ${link}`);
+```
+
+**Run**
+
+```sh
+node bin/entropy.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+# prints: slot 10 → 15: a new epoch
+# prints: η′ matches the vector: true
+# prints: reported to Grafana
+```
+
+Look at the four η lines: a staircase. Each old value steps down one row, η₀'s to η₁,
+η₁'s to η₂, and so on, while η₀ itself gets a brand-new hash and the oldest falls off the
+bottom. Try a vector without a new epoch, such as
+`../vectors/stf/safrole/tiny/publish-tickets-no-mark-2.json`: only η₀ changes. The
+*Entropy* panel shows the same staircase.
+
+<details>
+<summary>lasair: <code>accumulate_entropy</code>, in <code>conformance/safrole_stf.ml</code></summary>
+
+```ocaml
+(** Accumulate entropy: η₀' = Blake2b(η₀ || input_entropy) *)
+let accumulate_entropy eta0 input_entropy =
+  blake2b_256 (Bytes.cat eta0 input_entropy)
+```
+
+The same one-liner as yours, fed the same `input.entropy` from the same vectors. lasair's
+real block importer goes one step further: it starts from the 96-byte signature in the
+header and computes Y itself, with a Bandersnatch library. Once your client has one, it
+will too.
+
+</details>
+
+## What you have
+
+The randomness at the heart of Safrole: stirred every block, set aside every epoch.

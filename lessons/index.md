@@ -67,6 +67,10 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [7.1 Epochs](./07-time-and-shuffling/01-epochs.md)
 - [7.2 The shuffle](./07-time-and-shuffling/02-the-shuffle.md)
 
+**[Part 8 · Safrole](./08-safrole/index.md)**
+
+- [8.1 Stirring the entropy](./08-safrole/01-stirring-the-entropy.md)
+
 ## Still to be written
 
 The road from here to a full block importer, part by part. The parts are written in
@@ -74,7 +78,7 @@ this order, and each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 8 · Safrole | Bandersnatch, tickets, sealing keys | §6, App. G |
+| 8 · Safrole (rest) | validator rotation, sealing keys, tickets, Bandersnatch | §6, App. G |
 | 9 · Recent history | recent blocks, the accumulation-output belt | §7 |
 | 10 · Disputes | judgments, verdicts, culprits, faults | §10 |
 | 11 · Assurances | availability of work-reports | §11 |

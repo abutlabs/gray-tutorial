@@ -228,3 +228,5 @@ last item into the gap exactly as yours does: `work.(index) <- work.(remaining -
 
 A shuffle every node agrees on: give it a list and a hash, and every JAM client in the
 world deals the same hand.
+
+Next: [Part 8 · Safrole](../08-safrole/index.md)
