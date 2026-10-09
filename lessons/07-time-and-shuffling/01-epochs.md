@@ -208,3 +208,5 @@ with one `slice`. Both work; notice which one you'd rather check at 2 a.m.
 
 Your client knows what epoch it is, where in the epoch it is, and what has to change when
 a new one begins.
+
+Next: [7.2 The shuffle](./02-the-shuffle.md)

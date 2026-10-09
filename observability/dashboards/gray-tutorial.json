@@ -452,6 +452,36 @@
     "w": 24,
     "h": 10
    }
+  },
+  {
+   "id": 12,
+   "type": "logs",
+   "title": "Shuffle",
+   "description": "What bin/shuffle.ts did: each pick (the number from the hash, mod how many are left, the index it lands on, the item picked), then the shuffled order.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"shuffle\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"pick\\\"}}{{.number}} mod {{.left}} = {{.index}}: pick {{.picked}}{{else}}shuffled: {{.order}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 88,
+    "w": 24,
+    "h": 10
+   }
   }
  ]
 }
