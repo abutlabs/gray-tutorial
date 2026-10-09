@@ -254,3 +254,5 @@ and every key comes out wrong. Try it, and watch the κ test go red.
 
 Your client can read the state: find any component by its key, decode it with the codecs
 it already has, and trust it, because three independent witnesses agree.
+
+Next: [Part 7 · Time and shuffling](../07-time-and-shuffling/index.md)
