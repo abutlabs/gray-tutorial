@@ -338,3 +338,5 @@ address is part of the answer.
 
 Memory with pages and permissions, and every load and store: the PVM can now hold real
 data, and fails exactly the way the Gray Paper says when a program reaches too far.
+
+Next: [15.5 Arithmetic](./05-arithmetic.md)

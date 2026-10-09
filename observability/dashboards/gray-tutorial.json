@@ -1142,6 +1142,36 @@
     "w": 24,
     "h": 7
    }
+  },
+  {
+   "id": 35,
+   "type": "logs",
+   "title": "ALU",
+   "description": "What bin/alu.ts computed: the arithmetic edge cases the Gray Paper spells out, each instruction with its answer in hex and as a signed number.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"alu\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}  {{.what}}  {{.answer}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 283,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

@@ -112,6 +112,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [15.2 Instructions](./15-the-pvm/02-instructions.md)
 - [15.3 The machine](./15-the-pvm/03-the-machine.md)
 - [15.4 Memory](./15-the-pvm/04-memory.md)
+- [15.5 Arithmetic](./15-the-pvm/05-arithmetic.md)
 
 ## Still to be written
 

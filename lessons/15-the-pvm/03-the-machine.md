@@ -155,8 +155,6 @@ export function newMachine(program: Program, registers: bigint[] = []): Machine 
 /** The address that halts the machine when jumped to: where r0 points at the start. */
 export const HALT_ADDRESS = 2n ** 32n - 2n ** 16n;
 
-const MOD = 2n ** 64n; // registers hold 64 bits
-
 /** Moves to b, which must start a basic block (sjump). */
 function jumpTo(m: Machine, b: number): Exit {
   if (!m.blocks.has(b)) return "panic";
@@ -201,13 +199,13 @@ function basics(m: Machine, ins: Instruction): Exit | undefined {
       reg[a] = reg[b];
       return "continue";
     case "add_imm_64": // registers [A, B]: ω′_A = ω_B + ν_X
-      reg[a] = (reg[b] + x) % MOD;
+      reg[a] = (reg[b] + x) % 2n ** 64n; // registers hold 64 bits
       return "continue";
     case "add_64": // registers [A, B, D]: ω′_D = ω_A + ω_B
-      reg[c] = (reg[a] + reg[b]) % MOD;
+      reg[c] = (reg[a] + reg[b]) % 2n ** 64n;
       return "continue";
     case "sub_64":
-      reg[c] = (reg[a] + MOD - reg[b]) % MOD;
+      reg[c] = (reg[a] + 2n ** 64n - reg[b]) % 2n ** 64n;
       return "continue";
     case "and":
       reg[c] = reg[a] & reg[b];

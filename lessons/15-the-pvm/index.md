@@ -8,3 +8,4 @@ builds it, starting by unpacking a real service's code.
 - [15.2 Instructions](./02-instructions.md)
 - [15.3 The machine](./03-the-machine.md)
 - [15.4 Memory](./04-memory.md)
+- [15.5 Arithmetic](./05-arithmetic.md)
