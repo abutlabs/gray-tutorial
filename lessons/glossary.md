@@ -182,6 +182,10 @@ compact natural, how many more bytes follow. *Example:* `110xxxxx` has two.
 ↕). *Example:* the three bytes 1, 2, 3 encode as `0x03010203`.
 ([2.5](./02-codec/05-sequences-and-records.md))
 
+**Fixed-length sequence.** A list whose length the protocol fixes, so it's written with no
+length in front. The GP writes ⟦T⟧ₙ. *Example:* the tickets mark.
+([4.5](./04-blocks/05-maybe-and-exactly-n.md))
+
 **Sequence and record.** A sequence is a list of the same kind of thing, a record a fixed
 set of named fields, encoded one after another. *Example:* a work-item is a record; the
 items of a package are a sequence. ([2.5](./02-codec/05-sequences-and-records.md))
@@ -207,7 +211,7 @@ path and where its bytes were; every byte covered once. Not a block trace. *Exam
 **Innermost field.** A field with no fields inside it: a number, a hash, a length.
 *Example:* `service` is one; `import_segments` isn't. ([2.7](./02-codec/07-watch-a-decode.md))
 
-**Option.** A value that may be missing: one byte, 0 for "nothing" or 1 and then the
+**Option (discriminator).** A value that may be missing: one byte, 0 for "nothing" or 1 and then the
 value. *Example:* a header's epoch mark is only there at an epoch's start.
 ([4.5](./04-blocks/05-maybe-and-exactly-n.md))
 
@@ -220,6 +224,10 @@ that day was slot 1. ([0.4](./00-start/04-the-jam-clock.md))
 **Epoch.** A run of E slots: 600 (one hour) on the real network, 12 on the tiny test
 network. Validators and the block-making lottery change at epoch boundaries.
 ([7.1](./07-time-and-shuffling/01-epochs.md))
+
+**Configuration.** The numbers that make one JAM bigger than another: validators, cores,
+epoch length. *Example:* `TINY` has 6 validators and 2 cores.
+([4.2](./04-blocks/02-tiny-and-full.md))
 
 **Tiny and full.** Two sizes of JAM with the same rules: *full* is the real network (1,023
 validators, 341 cores), *tiny* a small one for tests (6 validators, 2 cores). The test
@@ -305,6 +313,21 @@ the future lotteries. ([8.1](./08-safrole/01-stirring-the-entropy.md))
 **Safrole.** JAM's way of choosing who makes each block: a lottery run one epoch ahead.
 ([8.5](./08-safrole/05-one-step-of-safrole.md))
 
+**Ring VRF proof.** Cryptography proving that *some* validator in a set made something,
+without saying which. *Example:* every ticket carries a 784-byte one.
+([4.1](./04-blocks/01-tickets-and-preimages.md))
+
+**Epoch mark.** At an epoch's first block only: fresh randomness and the keys of the
+validators starting their epoch. *Example:* most headers have none.
+([4.6](./04-blocks/06-the-header.md))
+
+**Tickets mark.** Once per epoch, when the ticket lottery closes: the winning ticket for
+every slot of the next epoch. *Example:* 12 tickets on tiny, 600 on full.
+([4.6](./04-blocks/06-the-header.md))
+
+**Offenders mark.** The Ed25519 keys of the validators a block convicts in its disputes.
+*Example:* empty in almost every block. ([4.6](./04-blocks/06-the-header.md))
+
 **Ticket.** A validator's anonymous entry in the lottery for the next epoch's slots.
 ([4.1](./04-blocks/01-tickets-and-preimages.md), [8.4](./08-safrole/04-the-lotterys-winners.md))
 
@@ -358,6 +381,9 @@ check and fetch everything. ([3.3](./03-work-and-reports/03-a-work-report.md))
 
 **Authorizer.** Code that decides whether a package may use a core at all. Each core keeps
 a small pool of authorizers. ([13.1](./13-authorization/01-the-authorizer-pools.md))
+
+**Credential.** One guarantor's signature on a guarantee: its validator index and its
+Ed25519 signature. *Example:* index 3, then 64 bytes. ([4.3](./04-blocks/03-guarantees.md))
 
 **Guarantee and guarantor.** Two or three validators (the guarantors) sign a work-report
 to vouch that it's right; that bundle is a guarantee, and it puts the report onto its

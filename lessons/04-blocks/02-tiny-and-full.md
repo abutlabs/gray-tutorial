@@ -8,6 +8,16 @@ in folders named after them, and until now every structure looked the same in bo
 Today that changes. Meet the first structure whose *shape* depends on the size of the
 network: the assurance.
 
+
+## New words
+
+- **Configuration.** The numbers that make one JAM bigger than another: how many
+  validators, how many cores. *Example:* `TINY` has 6 validators and 2 cores.
+- **Validator.** One of the machines that run JAM: they make blocks, vouch for work, and
+  keep data. *Example:* 1,023 on full.
+
+Both are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §11 (*The Assurances Extrinsic*): each validator can say, in a block, which cores' data

@@ -5,6 +5,18 @@ in the chain, who made it, and what's inside, sealed with the author's signature
 node reads every header. It's the most-read structure in JAM, and now your client can
 read it too.
 
+
+## New words
+
+- **Epoch mark.** At an epoch's first block only: fresh randomness, and the keys of the
+  validators starting their epoch. *Example:* most headers have none.
+- **Tickets mark.** Once per epoch, when the lottery closes: the winning ticket for every
+  slot of the next epoch. *Example:* 600 tickets on full.
+- **Seal.** The author's signature over the rest of the header. *Example:* 96 bytes, the
+  last field.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §5 (*The Header*) defines ten fields:

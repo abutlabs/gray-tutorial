@@ -10,6 +10,16 @@ Next up is the block header, and it has two quirks your codec can't handle yet:
 
 Two small codecs, and your toolbox is complete for the whole block.
 
+
+## New words
+
+- **Option (discriminator).** A value that may be missing, with a byte in front saying
+  whether it's there. *Example:* `00` for nothing; `01` and then the value.
+- **Fixed-length sequence.** A list whose length everyone already knows, so none is
+  written. *Example:* the tickets mark, exactly 12 tickets on tiny.
+
+Both are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 Appendix C, *Discriminator Encoding*: a value that might be missing (∅) is written with a

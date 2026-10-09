@@ -3,6 +3,18 @@
 Time to build a block. Not all at once: a block is a header plus five bags of stuff from
 the outside world, and this lesson fills the two simplest bags.
 
+
+## New words
+
+- **Extrinsic.** The part of a block that comes from outside the chain's state, in five
+  lists. *Example:* tickets, preimages, guarantees, assurances, disputes.
+- **Ticket.** An anonymous entry in the lottery for who makes blocks in the next epoch.
+  *Example:* `attempt` 1, and a 784-byte proof.
+- **Ring VRF proof.** Cryptography that proves *some* validator in a set made something,
+  without saying *which*. *Example:* every ticket carries one.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §4 splits a block into its **header** and its **extrinsic** (the data that comes from

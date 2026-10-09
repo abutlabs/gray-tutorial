@@ -6,6 +6,18 @@ blocks: they vote, a verdict is recorded, and whoever vouched for the bad report
 a **culprit**. Validators who voted the wrong way are recorded as **faults**. It's the
 most dramatic part of the extrinsic, and the last one.
 
+
+## New words
+
+- **Verdict.** The votes of two thirds of the validators, plus one, on one report.
+  *Example:* 5 votes on tiny.
+- **Culprit.** A validator who vouched for a report that turned out bad. *Example:* a
+  guarantor's key and its signed guarantee, as evidence.
+- **Fault.** A validator whose vote went against the verdict. *Example:* "valid", on a
+  report judged bad.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §10 (*Disputes, Verdicts and Judgments*) puts three lists in a block:
