@@ -1537,14 +1537,14 @@
    "id": 48,
    "type": "logs",
    "title": "Dispute checks",
-   "description": "What bin/check-disputes.ts did: the verdicts of every disputes test vector of one size, checked against the rules of GP §10 (the first rule broken, or 'verdicts pass'), next to the vector's own verdict on the whole block.",
+   "description": "What bin/check-disputes.ts did: the disputes of every disputes test vector of one size, checked against the rules of GP §10 (verdicts, then culprits and faults): accepted, or the first rule broken, and the vector's own verdict if it differs.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"dispute-check\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}: {{.ours}} (the vector: {{.theirs}})\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"dispute-check\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}: {{.ours}}{{if eq .agree \\\"false\\\"}} (the vector says {{.theirs}}){{end}}\"",
      "refId": "A",
      "queryType": "range"
     }

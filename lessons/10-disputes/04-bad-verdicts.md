@@ -249,4 +249,4 @@ split between a third and two thirds of the judges.
 Verdicts that are checked, not trusted: seven rules, and every disputes vector's verdicts
 passed or refused as they should be, tiny in the tests and full with the bin.
 
-Next: [Part 11 · Assurances](../11-assurances/index.md)
+Next: [10.5 Bad culprits and faults](./05-bad-culprits-and-faults.md)

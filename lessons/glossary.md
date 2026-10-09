@@ -391,9 +391,16 @@ do. *Example:* in epoch 3, ages 3 and 2 are fine, 1 isn't.
 third of the judges (wonky); any other split rejects the block. *Example:* on tiny, 5, 0
 or 2. ([10.4](./10-disputes/04-bad-verdicts.md))
 
+**Evidence.** What makes an accusation stick: the accused validator's own signature. A
+culprit carries its signed guarantee, a fault its signed vote.
+([10.5](./10-disputes/05-bad-culprits-and-faults.md))
+
+**If and only if (⇔).** Two statements true together or false together. *Example:* "the
+report is bad ⇔ the fault voted valid". ([10.5](./10-disputes/05-bad-culprits-and-faults.md))
+
 **Culprit, fault and offender.** A culprit guaranteed a report that turned out bad; a
-fault voted against the verdict. Both become *offenders*, and lose their part in the
-validator sets. ([10.2](./10-disputes/02-culprits-and-faults.md))
+fault voted against the verdict. Both become *offenders* (their keys go into ψ_O), and
+lose their part in the validator sets. ([10.2](./10-disputes/02-culprits-and-faults.md))
 
 ## Services and their accounts
 

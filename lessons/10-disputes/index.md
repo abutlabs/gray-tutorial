@@ -9,3 +9,4 @@ This part makes your client the court.
 - [10.2 Culprits and faults](./02-culprits-and-faults.md)
 - [10.3 Clearing the cores](./03-clearing-the-cores.md)
 - [10.4 Bad verdicts](./04-bad-verdicts.md)
+- [10.5 Bad culprits and faults](./05-bad-culprits-and-faults.md)

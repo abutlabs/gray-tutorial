@@ -102,6 +102,7 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 - [10.2 Culprits and faults](./10-disputes/02-culprits-and-faults.md)
 - [10.3 Clearing the cores](./10-disputes/03-clearing-the-cores.md)
 - [10.4 Bad verdicts](./10-disputes/04-bad-verdicts.md)
+- [10.5 Bad culprits and faults](./10-disputes/05-bad-culprits-and-faults.md)
 
 **[Part 11 · Assurances](./11-assurances/index.md)**
 
