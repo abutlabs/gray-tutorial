@@ -662,6 +662,36 @@
     "w": 24,
     "h": 10
    }
+  },
+  {
+   "id": 19,
+   "type": "logs",
+   "title": "Recent history",
+   "description": "What bin/history.ts read from a real state: each remembered block (slot, header hash, state root, how many work-packages it reported), then the belt's peaks.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"history\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"block\\\"}}slot {{.slot}}  header {{.header_hash}}  state root {{.state_root}}  reported {{.reported}}{{else}}the belt: {{.peaks}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 152,
+    "w": 24,
+    "h": 10
+   }
   }
  ]
 }

@@ -243,3 +243,5 @@ same `history` vectors. OCaml's `match` makes the binary counter almost a poem.
 
 A Merkle mountain belt, the commitment JAM keeps for bridges, appended to in a handful of
 hashes per block, whatever its length.
+
+Next: [9.2 Recent blocks](./02-recent-blocks.md)

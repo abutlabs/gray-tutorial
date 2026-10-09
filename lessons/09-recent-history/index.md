@@ -6,3 +6,4 @@ accumulation output, built so other chains can read it. Guarantors lean on this 
 show their work is anchored in a real, recent block. This part builds it.
 
 - [9.1 The mountain belt](./01-the-mountain-belt.md)
+- [9.2 Recent blocks](./02-recent-blocks.md)

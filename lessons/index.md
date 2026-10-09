@@ -78,6 +78,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 **[Part 9 · Recent history](./09-recent-history/index.md)**
 
 - [9.1 The mountain belt](./09-recent-history/01-the-mountain-belt.md)
+- [9.2 Recent blocks](./09-recent-history/02-recent-blocks.md)
 
 ## Still to be written
 
@@ -87,7 +88,6 @@ this order, and each one is checked end to end before it is published here.
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 9 · Recent history (rest) | recent blocks | §7 |
 | 10 · Disputes | judgments, verdicts, culprits, faults | §10 |
 | 11 · Assurances | availability of work-reports | §11 |
 | 12 · Guarantees | reports on cores, guarantor assignment | §11 |
