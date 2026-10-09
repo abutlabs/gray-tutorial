@@ -345,3 +345,5 @@ lesson left for `HARDENING.md`.
 
 A machine that runs every instruction in the Gray Paper, and a real service started on
 it, right up to its first question for the host. Answering that question is Part 16.
+
+Next: [15.9 What instructions cost](./09-what-instructions-cost.md)

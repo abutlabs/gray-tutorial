@@ -12,3 +12,4 @@ builds it, starting by unpacking a real service's code.
 - [15.6 Branches and calls](./06-branches-and-calls.md)
 - [15.7 Bits and bytes](./07-bits-and-bytes.md)
 - [15.8 A real program](./08-a-real-program.md)
+- [15.9 What instructions cost](./09-what-instructions-cost.md)

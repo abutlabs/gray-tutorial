@@ -1,0 +1,329 @@
+# What instructions cost
+
+A program that loops forever would stall every validator running it. JAM's answer is
+**gas**: a service gets a budget, and every piece of code it runs is paid for before it
+runs. In Gray Paper 0.8.0 the price is set by a little thought experiment: imagine a
+modern CPU running the code, and count its cycles. That takes two parts, the price list
+and the CPU. This lesson is the price list: what each instruction costs.
+
+## What the Gray Paper says
+
+App. A.10, the gas cost tables. Every instruction has a row with three things:
+
+- **č, cycles**: how long it takes to finish. An `add_64` takes 1, a load or a store 25
+  (the Gray Paper calls that 𝔪), a multiply 3 to 6, a divide 60, `ecalli` 100. And
+  `move_reg` takes 0: the CPU just relabels a register, no work at all.
+- **ď, decode slots**: how much decoding it needs, from 1 to 4.
+- **x̌, execution units**: which parts of the CPU it occupies while it runs. There are five
+  kinds: ALU, load, store, multiply and divide. A load needs an ALU and a load unit.
+
+Three rows depend on more than the instruction's name:
+
+- **𝔓(a, b)** is a if the instruction writes a register it also reads, b if not. So
+  `add_64 r0 = r0 + r1` needs 1 decode slot and `add_64 r2 = r0 + r1` needs 2. Picture a
+  CPU whose add always overwrites one of its inputs: aiming at a third register takes an
+  extra copy first.
+- **𝔓_S(a, b)**, for the shifts and rotations with three registers: a if ω_D is the same
+  register as ω_A.
+- **𝔟**, a branch's cycles: 20, or just 1 if either way it can go (the next instruction, or
+  the target) starts with `trap` or `unlikely`. That's lesson 15.6's hint at work: a branch
+  to a `trap` is usually a check that should never fail, so a CPU would guess it right.
+
+For 𝔓, App. A.9 defines š and ř: the registers an instruction reads and writes, straight
+from its row in the instruction tables, whether or not they change when it runs. A `cmov`
+reads the register it writes (it might keep it). `ecalli` reads and writes none.
+
+## The tests
+
+**New file** `test/gas.test.ts`
+
+```ts
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import type { Cost } from "../src/pvm/gas.ts";
+import { instructionCost, registersUsed } from "../src/pvm/gas.ts";
+import { decodeInstruction, opcodeInfo } from "../src/pvm/instructions.ts";
+import { assemble } from "../src/pvm/program.ts";
+
+/** The cost of the first instruction of a hand-made program. */
+function costOf(...instructions: number[][]): Cost {
+  const program = assemble(instructions);
+  return instructionCost(program, decodeInstruction(program, 0));
+}
+
+test("which registers an instruction reads and writes", () => {
+  const used = (bytes: number[]) => registersUsed(decodeInstruction(assemble([bytes]), 0));
+  assert.deepEqual(used([200, 0x10, 2]), { reads: [0, 1], writes: [2] }); // add_64 r2 = r0 + r1
+  assert.deepEqual(used([130, 0x10]), { reads: [1], writes: [0] }); // load_ind_u64 r0, [r1]
+  assert.deepEqual(used([123, 0x10]), { reads: [0, 1], writes: [] }); // store_ind_u64 r0, [r1]
+  assert.deepEqual(used([218, 0x10, 2]), { reads: [0, 1, 2], writes: [2] }); // cmov_iz
+});
+
+test("a row from the GP's table: add_64 is 1 cycle, and 1 or 2 decode slots", () => {
+  assert.deepEqual(costOf([200, 0x10, 2]), { cycles: 1, slots: 2, units: [1, 0, 0, 0, 0] });
+  assert.equal(costOf([200, 0x10, 0]).slots, 1); // r0 = r0 + r1: writes a register it reads
+});
+
+test("memory is slow: a load or a store takes 25 cycles, and a load unit or a store unit", () => {
+  assert.deepEqual(costOf([130, 0x10]), { cycles: 25, slots: 1, units: [1, 1, 0, 0, 0] });
+  assert.deepEqual(costOf([123, 0x10]), { cycles: 25, slots: 1, units: [1, 0, 1, 0, 0] });
+});
+
+test("dividing takes 60 cycles; ecalli takes 100", () => {
+  assert.equal(costOf([203, 0x10, 2]).cycles, 60); // div_u_64
+  assert.equal(costOf([10, 0]).cycles, 100);
+});
+
+test("a branch costs 20, or 1 if either way leads to trap or unlikely", () => {
+  assert.equal(costOf([170, 0x10, 4], [1], [1]).cycles, 20); // both ways: fallthrough
+  assert.equal(costOf([170, 0x10, 4], [1], [0]).cycles, 1); // the target is a trap
+  assert.equal(costOf([170, 0x10, 4], [2], [1]).cycles, 1); // the next one is unlikely
+});
+
+test("every instruction has a row in the cost table: 139 of them", () => {
+  let rows = 0;
+  for (let opcode = 0; opcode < 256; opcode++) {
+    if (!opcodeInfo(opcode)) continue;
+    assert.ok(costOf([opcode], [0]).cycles >= 0, opcodeInfo(opcode)!.name);
+    rows++;
+  }
+  assert.equal(rows, 139);
+});
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+# fails with: Cannot find module
+```
+
+## The code
+
+**New file** `src/pvm/gas.ts`
+
+```ts
+// Gas (GP App. A.9 and A.10): what running code costs. Every instruction has a row in the
+// GP's cost table: the cycles it takes, the decode slots it needs, and the execution units
+// of the virtual CPU it occupies. Lesson 15.10 feeds the rows through a model CPU.
+
+import type { Instruction } from "./instructions.ts";
+import type { Program } from "./program.ts";
+
+/** How many of each execution unit: ALU, load, store, multiply, divide (the GP's 𝔼). */
+export type Units = [number, number, number, number, number];
+
+/** An instruction's row in the cost table: cycles (č), decode slots (ď) and units (x̌). */
+export type Cost = { cycles: number; slots: number; units: Units };
+
+const NONE: Units = [0, 0, 0, 0, 0];
+const ALU: Units = [1, 0, 0, 0, 0];
+const LOAD: Units = [1, 1, 0, 0, 0];
+const STORE: Units = [1, 0, 1, 0, 0];
+const MUL: Units = [1, 0, 0, 1, 0];
+const DIV: Units = [1, 0, 0, 0, 1];
+
+/** 𝔪 (GP App. A.10): a load or a store takes 25 cycles. */
+const MEMORY = 25;
+
+/**
+ * š and ř (GP App. A.9): the registers an instruction reads, and those it writes, from its
+ * row in the instruction tables. A cmov reads the register it writes: it may keep it.
+ */
+export function registersUsed(ins: Instruction): { reads: number[]; writes: number[] } {
+  const { name, layout, registers: r } = ins;
+  if (/^(store|branch|jump_ind)/.test(name)) return { reads: r, writes: [] };
+  if (layout === "regRegReg") {
+    return { reads: name.startsWith("cmov") ? r : r.slice(0, 2), writes: [r[2]] }; // [A, B, D]
+  }
+  if (layout === "regReg") return { reads: [r[1]], writes: [r[0]] }; // [D, A]
+  return { reads: name.startsWith("cmov") ? r : r.slice(1), writes: r.slice(0, 1) };
+}
+
+/** What a row can depend on: the GP's 𝔓 and 𝔓_S for this instruction, and its 𝔟. */
+type Context = { p: (a: number, b: number) => number; ps: (a: number, b: number) => number };
+type Row = (c: Context & { b: number }) => Cost;
+const cost = (cycles: number, slots: number, units: Units): Cost => ({ cycles, slots, units });
+const fixed = (c: number, s: number, u: Units): Row => () => cost(c, s, u);
+
+// The GP's kinds of row, named after its own (\simplealuthreeop and friends).
+const simple: Row = ({ p }) => cost(1, p(1, 2), ALU);
+const simple32: Row = ({ p }) => cost(2, p(2, 3), ALU);
+const trivial = fixed(1, 1, ALU);
+const trivial2 = fixed(2, 1, ALU);
+const shift: Row = ({ ps }) => cost(1, ps(2, 3), ALU);
+const shift32: Row = ({ ps }) => cost(2, ps(3, 4), ALU);
+const shiftAlt = fixed(1, 3, ALU);
+const shiftAlt32 = fixed(2, 4, ALU);
+const compare = fixed(3, 3, ALU);
+const minMax: Row = ({ p }) => cost(3, p(2, 3), ALU);
+const divide = fixed(60, 4, DIV);
+
+/** The rest of the GP's cost table (App. A.10); loads, stores and branches come below. */
+const COSTS: Record<string, Row> = {
+  move_reg: fixed(0, 1, NONE),
+  and: simple, xor: simple, or: simple, add_64: simple, sub_64: simple,
+  and_imm: simple, xor_imm: simple, or_imm: simple, add_imm_64: simple, shlo_r_imm_64: simple,
+  shar_r_imm_64: simple, shlo_l_imm_64: simple, rot_r_64_imm: simple, reverse_bytes: simple,
+  add_32: simple32, sub_32: simple32, add_imm_32: simple32, shlo_r_imm_32: simple32,
+  shar_r_imm_32: simple32, shlo_l_imm_32: simple32, rot_r_32_imm: simple32,
+  count_set_bits_64: trivial, count_set_bits_32: trivial, leading_zero_bits_64: trivial,
+  leading_zero_bits_32: trivial, sign_extend_8: trivial, sign_extend_16: trivial,
+  zero_extend_16: trivial, trailing_zero_bits_64: trivial2, trailing_zero_bits_32: trivial2,
+  shlo_l_64: shift, shlo_r_64: shift, shar_r_64: shift, rot_l_64: shift, rot_r_64: shift,
+  shlo_l_32: shift32, shlo_r_32: shift32, shar_r_32: shift32, rot_l_32: shift32,
+  rot_r_32: shift32, shlo_l_imm_alt_64: shiftAlt, shlo_r_imm_alt_64: shiftAlt,
+  shar_r_imm_alt_64: shiftAlt, rot_r_64_imm_alt: shiftAlt, shlo_l_imm_alt_32: shiftAlt32,
+  shlo_r_imm_alt_32: shiftAlt32, shar_r_imm_alt_32: shiftAlt32, rot_r_32_imm_alt: shiftAlt32,
+  set_lt_u: compare, set_lt_s: compare, set_lt_u_imm: compare, set_lt_s_imm: compare,
+  set_gt_u_imm: compare, set_gt_s_imm: compare,
+  cmov_iz: fixed(2, 2, ALU), cmov_nz: fixed(2, 2, ALU),
+  cmov_iz_imm: fixed(2, 3, ALU), cmov_nz_imm: fixed(2, 3, ALU),
+  max: minMax, max_u: minMax, min: minMax, min_u: minMax,
+  div_u_32: divide, div_s_32: divide, rem_u_32: divide, rem_s_32: divide,
+  div_u_64: divide, div_s_64: divide, rem_u_64: divide, rem_s_64: divide,
+  and_inv: fixed(2, 3, ALU), or_inv: fixed(2, 3, ALU), xnor: ({ p }) => cost(2, p(2, 3), ALU),
+  neg_add_imm_64: fixed(2, 3, ALU), neg_add_imm_32: fixed(3, 4, ALU),
+  load_imm: fixed(1, 1, NONE), load_imm_64: fixed(1, 2, NONE),
+  mul_64: ({ p }) => cost(3, p(1, 2), MUL), mul_imm_64: ({ p }) => cost(3, p(1, 2), MUL),
+  mul_32: ({ p }) => cost(4, p(2, 3), MUL), mul_imm_32: ({ p }) => cost(4, p(2, 3), MUL),
+  mul_upper_s_s: fixed(4, 4, MUL), mul_upper_u_u: fixed(4, 4, MUL),
+  mul_upper_s_u: fixed(6, 4, MUL),
+  trap: fixed(2, 1, NONE), fallthrough: fixed(2, 1, NONE), unlikely: fixed(40, 1, NONE),
+  jump: fixed(15, 1, NONE), load_imm_jump: fixed(15, 1, NONE),
+  jump_ind: fixed(22, 1, NONE), load_imm_jump_ind: fixed(22, 1, NONE),
+  ecalli: fixed(100, 4, ALU),
+};
+
+/** An instruction's row: every load, store and branch shares one; the rest are in COSTS. */
+function rowOf(name: string): Row {
+  if (/^load_(ind_)?[ui]\d+$/.test(name)) return fixed(MEMORY, 1, LOAD);
+  if (name.startsWith("store_")) return fixed(MEMORY, 1, STORE);
+  if (name.startsWith("branch_")) return ({ b }) => cost(b, 1, ALU);
+  return COSTS[name];
+}
+
+/** 𝔟 (GP App. A.10): 1 if either way a branch can go starts with unlikely or trap, else 20. */
+function branchCost(program: Program, ins: Instruction): number {
+  const opcodeAt = (i: number) => program.code[i] ?? 0; // past the end, ζ is zeros: trap
+  const ways = [ins.next, ins.target as number]; // fall through, or jump
+  return ways.some((i) => [0, 2].includes(opcodeAt(i))) ? 1 : 20;
+}
+
+/** An instruction's cost (GP App. A.10): its row, for its registers and its branch targets. */
+export function instructionCost(program: Program, ins: Instruction): Cost {
+  const { reads, writes } = registersUsed(ins);
+  const overlap = writes.some((r) => reads.includes(r));
+  const [a, , d] = ins.registers; // for the shifts: registers [A, B, D]
+  const p = (x: number, y: number) => (overlap ? x : y); // 𝔓: writes a register it reads?
+  const ps = (x: number, y: number) => (a === d ? x : y); // 𝔓_S: is ω_D the same as ω_A?
+  const b = ins.name.startsWith("branch_") ? branchCost(program, ins) : 0;
+  return rowOf(ins.name)({ p, ps, b });
+}
+```
+
+`registersUsed` reads the registers off the instruction's layout. Stores, branches and
+`jump_ind` only read; three-register instructions read A and B and write D; two-register
+ones read A and write D; everything else writes its first register and reads the rest.
+
+The table copies the Gray Paper's row by row, and its names (`simple`, `shift`,
+`compare`...) follow the shorthands the Gray Paper's own source uses for its kinds of row,
+so you can hold the two side by side. Loads, stores and branches each share one row, so a
+pattern finds them. `branchCost` reads the opcode byte at both ways a branch can go. Past
+the end of the code there is nothing, and the Gray Paper's ζ says nothing reads as zeros:
+`trap`.
+
+**Run**
+
+```sh
+npm test
+# prints: every instruction has a row in the cost table: 139 of them
+# prints: fail 0
+# prints: reported
+npm run typecheck
+```
+
+## Watch it
+
+**New file** `bin/costs.ts`
+
+```ts
+// Shows the cost sheet of a real basic block: the one the bootstrap service's accumulation
+// jumps to first. Each instruction's cycles, decode slots and execution units.
+// Usage: node bin/costs.ts
+
+import { readFileSync } from "node:fs";
+import { fromHex, toHex } from "../src/bytes.ts";
+import { blake2b256 } from "../src/hash.ts";
+import { Run } from "../src/obs.ts";
+import { instructionCost } from "../src/pvm/gas.ts";
+import { decodeInstruction } from "../src/pvm/instructions.ts";
+import { basicBlocks } from "../src/pvm/machine.ts";
+import { deblob, unpackCode } from "../src/pvm/program.ts";
+import { readService } from "../src/services.ts";
+import type { KeyValue } from "../src/trie.ts";
+
+const trace = JSON.parse(readFileSync("../vectors/traces/fallback/00000001.json", "utf8"));
+const entries: KeyValue[] = trace.pre_state.keyvals.map((e: { key: string; value: string }) => ({
+  key: fromHex(e.key),
+  value: fromHex(e.value),
+}));
+const service = readService(entries, 0);
+const preimage = entries.find((e) => toHex(blake2b256(e.value)) === toHex(service.code_hash))!;
+const program = deblob(unpackCode(preimage.value).program);
+const blocks = basicBlocks(program);
+
+const UNITS = ["ALU", "load", "store", "mul", "div"];
+const run = new Run("costs");
+let at = decodeInstruction(program, 5).target as number; // where accumulation's jump goes
+console.log(`the basic block at ${at}:`);
+for (;;) {
+  const ins = decodeInstruction(program, at);
+  const { cycles, slots, units } = instructionCost(program, ins);
+  const used = UNITS.filter((_, k) => units[k] > 0).join("+") || "none";
+  const row = `${ins.name.padEnd(16)} cycles ${String(cycles).padStart(3)}  slots ${slots}`;
+  console.log(`${row}  ${used}`);
+  run.event("cost", { at, name: ins.name, cycles, slots, units: used });
+  if (blocks.has(ins.next)) break; // the next instruction starts another block
+  at = ins.next;
+}
+const link = await run.report();
+if (link) console.log(`reported to Grafana: ${link}`);
+```
+
+**Run**
+
+```sh
+node bin/costs.ts
+# prints: the basic block at 92078:
+# prints: store_ind_u64    cycles  25  slots 1  ALU+store
+# prints: load_imm_jump    cycles  15  slots 1  none
+# prints: reported to Grafana
+```
+
+You met this block in lesson 15.8: a function getting started. It makes room on the
+stack, saves three registers there, and calls another function. Add up its cycles and you
+get 91. But a real CPU doesn't wait for one store to finish before starting the next: the
+model has four store units, and they can all work at once. The next lesson builds that
+CPU, and this block comes out far cheaper than 91. The *Costs* panel has the sheet.
+
+<details>
+<summary>lasair: <code>inst_cost</code>, in <code>lib/pvm_gas.ml</code></summary>
+
+```ocaml
+let inst_cost ~(branch : int) (i : instruction) : cost =
+  let alu3 = c 1 (overlap 1 2 i) u_alu and alu3_32 = c 2 (overlap 2 3 i) u_alu in
+  let alu2 = c 1 (overlap 1 2 i) u_alu and alu2_32 = c 2 (overlap 2 3 i) u_alu in
+  let triv1 = c 1 1 u_alu and triv2 = c 2 1 u_alu in
+  let shifts = c 1 (overlap_shift 2 3 i) u_alu and shifts_32 = c 2 (overlap_shift 3 4 i) u_alu in
+```
+
+The same trick: name the Gray Paper's kinds of row once, then give each instruction its
+kind. lasair matches on its decoded instruction type, one constructor per instruction;
+your table matches on names.
+
+</details>
+
+## What you have
+
+A price for every instruction the PVM knows. Next, the CPU that adds them up.

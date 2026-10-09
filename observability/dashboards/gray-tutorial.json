@@ -1262,6 +1262,36 @@
     "w": 24,
     "h": 12
    }
+  },
+  {
+   "id": 39,
+   "type": "logs",
+   "title": "Costs",
+   "description": "What bin/costs.ts listed: each instruction of a real basic block with its row from the Gray Paper's cost table: cycles, decode slots and execution units.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"costs\", run_id=~\"$run_id\"} | json | line_format \"{{.at}}  {{.name}}  cycles {{.cycles}}  slots {{.slots}}  {{.units}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 319,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

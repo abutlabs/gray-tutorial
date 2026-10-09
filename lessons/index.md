@@ -116,6 +116,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [15.6 Branches and calls](./15-the-pvm/06-branches-and-calls.md)
 - [15.7 Bits and bytes](./15-the-pvm/07-bits-and-bytes.md)
 - [15.8 A real program](./15-the-pvm/08-a-real-program.md)
+- [15.9 What instructions cost](./15-the-pvm/09-what-instructions-cost.md)
 
 ## Still to be written
 
