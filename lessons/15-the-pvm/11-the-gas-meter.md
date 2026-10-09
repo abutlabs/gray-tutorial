@@ -242,3 +242,5 @@ in `HARDENING.md`.
 A complete PVM: every instruction, memory, a real program's setup, host calls as a way
 out, and gas, priced and charged the Gray Paper's way. Part 15, done. Next, the host
 answers back.
+
+Next: [Part 16 · Host calls](../16-host-calls/index.md)

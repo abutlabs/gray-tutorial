@@ -1352,6 +1352,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 42,
+   "type": "logs",
+   "title": "Host calls",
+   "description": "What bin/host.ts saw: every host call a real service made during accumulation, the answer it got, the gas left, and how the service stopped.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"host\", run_id=~\"$run_id\"} | json | line_format \"{{if .name}}host call {{.call}} ({{.name}}): {{.said}}, {{.gas}} gas left{{else}}stops {{.exit}} with {{.gas}} gas left{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 343,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }
