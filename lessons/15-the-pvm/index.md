@@ -14,3 +14,4 @@ builds it, starting by unpacking a real service's code.
 - [15.8 A real program](./08-a-real-program.md)
 - [15.9 What instructions cost](./09-what-instructions-cost.md)
 - [15.10 The pipeline](./10-the-pipeline.md)
+- [15.11 The gas meter](./11-the-gas-meter.md)

@@ -1322,6 +1322,36 @@
     "w": 24,
     "h": 8
    }
+  },
+  {
+   "id": 41,
+   "type": "logs",
+   "title": "Gas",
+   "description": "What bin/gas.ts ran: the bootstrap service with a gas budget, each basic block it paid for on the way in, and where it stopped: at its first host call, or out of gas.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"gas\", run_id=~\"$run_id\"} | json | line_format \"budget {{.budget}}: {{if .exit}}stops {{.exit}} having spent {{.spent}}{{else}}block at {{.at}} costs {{.paid}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 335,
+    "w": 24,
+    "h": 8
+   }
   }
  ]
 }

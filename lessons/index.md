@@ -118,6 +118,7 @@ Start with [0.1 What you will build](./00-start/01-what-you-will-build.md).
 - [15.8 A real program](./15-the-pvm/08-a-real-program.md)
 - [15.9 What instructions cost](./15-the-pvm/09-what-instructions-cost.md)
 - [15.10 The pipeline](./15-the-pvm/10-the-pipeline.md)
+- [15.11 The gas meter](./15-the-pvm/11-the-gas-meter.md)
 
 ## Still to be written
 
@@ -127,7 +128,6 @@ this order, and each one is checked end to end before it is published here.
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 15 · The PVM (rest) | gas: what each basic block costs | App. A.9 |
 | 16 · Host calls | the accumulate invocation and its host calls | App. B |
 | 17 · Accumulation | the ready queue, privileges, transfers | §12 |
 | 18 · Statistics | validator, core and service activity | §13 |
