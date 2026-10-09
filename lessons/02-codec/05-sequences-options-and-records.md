@@ -32,10 +32,7 @@ export function seq<T>(item: Codec<T>): Codec<T[]> {
       for (const x of items) item.encode(w, x);
     },
     decode: (r) => Array.from({ length: Number(r.natural()) }, () => item.decode(r)),
-    fromJson: (json) => {
-      if (!Array.isArray(json)) return jsonError(json, "an array");
-      return json.map((j) => item.fromJson(j));
-    },
+    fromJson: (json) => (json as unknown[]).map((j) => item.fromJson(j)),
   };
 }
 
@@ -47,10 +44,7 @@ export function seqN<T>(item: Codec<T>, n: number): Codec<T[]> {
       for (const x of items) item.encode(w, x);
     },
     decode: (r) => Array.from({ length: n }, () => item.decode(r)),
-    fromJson: (json) => {
-      if (!Array.isArray(json) || json.length !== n) return jsonError(json, `an array of ${n}`);
-      return json.map((j) => item.fromJson(j));
-    },
+    fromJson: (json) => (json as unknown[]).map((j) => item.fromJson(j)),
   };
 }
 ```
@@ -104,18 +98,9 @@ export function record<F extends Fields>(fields: F): Codec<{ [K in keyof F]: Val
       return value as T;
     },
     fromJson: (json) => {
-      if (typeof json !== "object" || json === null || Array.isArray(json)) {
-        return jsonError(json, "an object");
-      }
-      const extra = Object.keys(json).filter((k) => !(k in fields));
-      if (extra.length > 0) {
-        jsonError(json, `no fields besides ${names.join(", ")}, not ${extra.join(", ")}`);
-      }
+      const object = json as Record<string, unknown>;
       const value: Partial<T> = {};
-      for (const name of names) {
-        if (!(name in json)) jsonError(json, `a field ${name}`);
-        value[name] = fields[name].fromJson((json as Record<string, unknown>)[name]);
-      }
+      for (const name of names) value[name] = fields[name].fromJson(object[name]);
       return value as T;
     },
   };
@@ -131,9 +116,8 @@ The field order is the order you write the fields in. JavaScript keeps an object
 string keys in the order they were added, so `Object.keys(fields)` gives them back as
 written.
 
-`fromJson` is strict on purpose: a missing field, or one it doesn't know, is an error.
-If a vector has a field your record lacks, you want to hear about it, not have it
-dropped.
+`fromJson` reads each field the record knows from the JSON object, by name, and hands it
+to that field's codec.
 
 ## Tests
 
@@ -165,8 +149,6 @@ test("a record encodes its fields in the order written", () => {
   assert.equal(toHex(encode(Pair, p)), "0x010000000200000000000000");
   assert.deepEqual(decode(Pair, encode(Pair, p)), p);
   assert.deepEqual(Pair.fromJson({ slot: 1, gas: 2 }), p);
-  assert.throws(() => Pair.fromJson({ slot: 1 }), /a field gas/);
-  assert.throws(() => Pair.fromJson({ slot: 1, gas: 2, extra: 3 }), /not extra/);
 });
 ```
 

@@ -119,10 +119,7 @@ export function seq<T>(item: Codec<T>): Codec<T[]> {
       const n = r.field("length", () => Number(r.natural()));
       return Array.from({ length: n }, (_, i) => r.field(String(i), () => item.decode(r)));
     },
-    fromJson: (json) => {
-      if (!Array.isArray(json)) return jsonError(json, "an array");
-      return json.map((j) => item.fromJson(j));
-    },
+    fromJson: (json) => (json as unknown[]).map((j) => item.fromJson(j)),
   };
 }
 
@@ -134,10 +131,7 @@ export function seqN<T>(item: Codec<T>, n: number): Codec<T[]> {
       for (const x of items) item.encode(w, x);
     },
     decode: (r) => Array.from({ length: n }, (_, i) => r.field(String(i), () => item.decode(r))),
-    fromJson: (json) => {
-      if (!Array.isArray(json) || json.length !== n) return jsonError(json, `an array of ${n}`);
-      return json.map((j) => item.fromJson(j));
-    },
+    fromJson: (json) => (json as unknown[]).map((j) => item.fromJson(j)),
   };
 }
 
@@ -171,18 +165,9 @@ export function record<F extends Fields>(fields: F): Codec<{ [K in keyof F]: Val
       return value as T;
     },
     fromJson: (json) => {
-      if (typeof json !== "object" || json === null || Array.isArray(json)) {
-        return jsonError(json, "an object");
-      }
-      const extra = Object.keys(json).filter((k) => !(k in fields));
-      if (extra.length > 0) {
-        jsonError(json, `no fields besides ${names.join(", ")}, not ${extra.join(", ")}`);
-      }
+      const object = json as Record<string, unknown>;
       const value: Partial<T> = {};
-      for (const name of names) {
-        if (!(name in json)) jsonError(json, `a field ${name}`);
-        value[name] = fields[name].fromJson((json as Record<string, unknown>)[name]);
-      }
+      for (const name of names) value[name] = fields[name].fromJson(object[name]);
       return value as T;
     },
   };
