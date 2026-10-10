@@ -204,7 +204,7 @@
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"host\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"sent\\\"}}sent {{.amount}} to service {{.dest}}, with {{.gas}} gas, memo {{.memo}}{{else if .name}}host call {{.call}} ({{.name}}): {{.said}}, {{.gas}} gas left{{else}}stops {{.exit}}, using {{.used}} gas{{end}}\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"host\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"sent\\\"}}sent {{.amount}} to service {{.dest}}, with {{.gas}} gas, memo {{.memo}}{{else if .name}}host call {{.call}} ({{.name}}): {{.said}}, {{.gas}} gas left{{else}}stops {{.exit}}{{if .used}}, using {{.used}} gas{{else}}, {{.gas}} gas left{{end}}{{end}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -234,7 +234,7 @@
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"accumulate\", run_id=~\"$run_id\"} | json | line_format \"{{if .slot}}slot {{.slot}}: accumulated {{.went}}; {{.waiting}} still waiting; assigners {{.assigners}}{{else}}service {{.s}}: {{.count}} digest(s), {{.transfers}} transfer(s), used {{.used}} (vector: {{.expected}}){{end}}\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"accumulate\", run_id=~\"$run_id\"} | json | line_format \"{{if .slot}}slot {{.slot}}: accumulated {{.went}}; {{.waiting}} still waiting{{if .assigners}}; assigners {{.assigners}}{{end}}{{else}}service {{.s}}:{{if .count}} {{.count}} digest(s),{{end}}{{if .inputs}} {{.inputs}} input(s),{{end}}{{if .transfers}} {{.transfers}} transfer(s),{{end}} used {{.used}} (vector: {{.expected}}){{end}}\"",
      "refId": "A",
      "queryType": "range"
     }

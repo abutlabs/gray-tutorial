@@ -247,6 +247,8 @@ Caught! Validator 1's assurance carries a signature its key never made. The new
 `../vectors/stf/assurances/full/some_assurances-1.json` and watch 1,023 validators
 check out.
 
+![Assurances panel](./images/03-assurances.png)
+
 <details>
 <summary>lasair: the dollar sign, in <code>conformance/assurances_stf.ml</code></summary>
 

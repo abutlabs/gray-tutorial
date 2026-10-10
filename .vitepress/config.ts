@@ -1,5 +1,6 @@
 // The website: the same Markdown files as in VS Code, with a sidebar, search, copy
-// buttons and dark mode. `npm run site` serves it at http://localhost:5173.
+// buttons and dark mode. `npm run site` serves it at http://localhost:5173; GitHub Pages
+// serves it at https://abutlabs.github.io/gray-tutorial/ (SITE_BASE, set by the workflow).
 
 import { defineConfig } from "vitepress";
 import type MarkdownIt from "markdown-it";
@@ -11,6 +12,7 @@ export default defineConfig({
   title: "Gray Tutorial",
   description: "Build a JAM client in TypeScript, one Gray Paper rule at a time.",
   srcDir: "lessons",
+  base: process.env.SITE_BASE ?? "/",
   cleanUrls: true,
   // Grafana and the stack are on localhost on purpose; every other link must resolve
   ignoreDeadLinks: [/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/],
@@ -18,6 +20,8 @@ export default defineConfig({
   markdown: { config: snippetLabels },
   themeConfig: {
     search: { provider: "local" },
+    nav: [{ text: "JAM learning", link: "https://abutlabs.github.io/jam-learning/" }],
+    socialLinks: [{ icon: "github", link: "https://github.com/abutlabs/gray-tutorial" }],
     outline: { level: [2, 3] },
     docFooter: { prev: "Previous lesson", next: "Next lesson" },
     sidebar: [

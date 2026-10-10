@@ -156,6 +156,8 @@ Red, and both new tests with it. (Your fifth planted bug.) The trail:
    on the very first link.
 2. **The dashboard.** *Tests failed* says 2, and *Test results* has both `FAIL` lines. One
    cause, two symptoms: every hash is wrong, so every link is.
+
+   ![Failed tests panel](./images/01-failed-tests.png)
 3. **The reasoning.** 128 hex digits is 64 bytes. Your code calls `blake2b(data)`, and
    Blake2b can make fingerprints of any size up to 64 bytes. Ask for nothing, and the
    library picks its own default: the biggest. JAM's H is Blake2b with a *32-byte* output,
@@ -231,6 +233,8 @@ node bin/chain.ts
 On the dashboard, the *Chain* panel lists all hundred blocks: slot, hash, and `linked:
 true` for every one after the first. (Block 1's parent is the genesis header, which isn't
 in the trace, so its link stays unchecked.)
+
+![Chain panel](./images/01-chain.png)
 
 <details>
 <summary>lasair: <code>blake2b_256</code>, in <code>lib/utilities.ml</code></summary>

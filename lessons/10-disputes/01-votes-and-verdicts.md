@@ -295,6 +295,8 @@ that report's hash, `0x0e5751c0…`, should ring a bell: it's the Blake2b of no 
 all, from lesson 5.1. Test vectors need report hashes from somewhere! The *Verdicts*
 panel has every trial.
 
+![Verdicts panel](./images/01-verdicts.png)
+
 <details>
 <summary>lasair: <code>classify_verdict</code>, in <code>conformance/disputes_stf.ml</code></summary>
 

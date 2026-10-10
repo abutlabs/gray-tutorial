@@ -260,6 +260,8 @@ block, its 2 tickets and its 3 preimages of 51 bytes, and the four validators wh
 guarantees get one each. The block's assurances aren't there: they went into the tally that
 just closed. The *Validator statistics* panel keeps the table.
 
+![Validator statistics panel](./images/01-validator-statistics.png)
+
 <details>
 <summary>lasair: turning the page, in <code>lib/statistics.ml</code></summary>
 

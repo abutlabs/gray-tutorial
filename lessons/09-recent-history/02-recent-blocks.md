@@ -248,6 +248,8 @@ Eight blocks, slots 42 to 49, and only the newest still waiting for its state ro
 read the belt backwards, as lesson 9.1 taught you: 110001 in binary is 49, one
 accumulation root for each block so far. The *Recent history* panel shows it all.
 
+![Recent history panel](./images/02-recent-history.png)
+
 <details>
 <summary>lasair: <code>recent_history_core</code>, in <code>conformance/stf_transitions.ml</code></summary>
 

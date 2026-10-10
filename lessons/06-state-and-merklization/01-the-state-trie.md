@@ -286,6 +286,8 @@ its hash is the code hash in the service's own entry, the one under `0xff`. Thos
 keys that are all zeros after the first byte look suspiciously *designed*, don't they?
 That's the next lesson. The dashboard's *State trie* panel has every leaf and the root.
 
+![State trie panel](./images/01-state-trie.png)
+
 <details>
 <summary>lasair: <code>merkle_trie_depth</code>, in <code>lib/merklization.ml</code></summary>
 

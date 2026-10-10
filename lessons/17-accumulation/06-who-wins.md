@@ -431,6 +431,8 @@ node bin/accumulate.ts ../vectors/stf/accumulate/tiny/assign_from_non_assigner-3
 Service 0 held both cores, gave core 0 to service 1, and the block agrees: core 0's
 assigner is 1 now. The *Accumulate* panel shows the assigners on the block's line.
 
+![Accumulate panel](./images/06-accumulate.png)
+
 <details>
 <summary>lasair: the assigners, in <code>conformance/stf_guarantees.ml</code></summary>
 

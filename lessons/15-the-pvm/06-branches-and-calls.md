@@ -269,6 +269,8 @@ Read it in pairs. Every unsigned comparison and its signed twin disagree about â
 `eq` and `ne` have no twin, and now you can see why: equal bits are equal however you
 read them. The *Branches* panel has all sixteen.
 
+![Branches panel](./images/06-branches.png)
+
 <details>
 <summary>lasair: <code>Load_imm_jump_ind</code>, in <code>lib/pvm.ml</code></summary>
 

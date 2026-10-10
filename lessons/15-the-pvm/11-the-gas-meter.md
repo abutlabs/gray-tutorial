@@ -218,6 +218,8 @@ cycles are most of the bill. 243 in all. Then the same start on a budget of 100:
 blocks paid, 32 gas left, and the fourth costs 73. Out of gas, at the door of the block
 it couldn't afford. The *Gas* panel has both runs.
 
+![Gas panel](./images/11-gas.png)
+
 <details>
 <summary>lasair: paying for a block, in <code>lib/pvm.ml</code></summary>
 

@@ -207,6 +207,8 @@ The *Chain* panel now ends each block's line with `extrinsic matches: true`. Try
 others too: `node bin/chain.ts safrole`, `node bin/chain.ts storage`, and plain
 `node bin/chain.ts` for `fallback`.
 
+![Chain panel](./images/02-chain.png)
+
 ### Break it on purpose
 
 In Gray Paper 0.7.2, preimages went into the extrinsic hash *whole*: only reports were

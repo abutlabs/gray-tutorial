@@ -343,6 +343,8 @@ node bin/host.ts ../vectors/stf/accumulate/tiny/work_for_ejected_service-2.json 
 Service 0 ejects service 2 (`OK`), using exactly the vector's gas. The *Host calls* panel
 has the call by name, and `node bin/accumulate.ts` on the same vector shows the block.
 
+![Host calls panel](./images/07-host-calls.png)
+
 <details>
 <summary>lasair: who's the ejector, in <code>lib/pvm_host.ml</code></summary>
 

@@ -383,6 +383,8 @@ Core 0's report became available, so core 0 carries its data load: 12345 + 4 × 
 Core 1 is popular too, with 4 assurances, but not popular enough: it carries nothing yet.
 Both runs land in the *Core and service activity* panel, one line per card.
 
+![Core and service activity panel](./images/02-core-and-service-activity.png)
+
 <details>
 <summary>lasair: the data load, in <code>lib/statistics.ml</code></summary>
 

@@ -180,6 +180,8 @@ whose two directions disagree.) Here's the trail:
    as "bad exports".
 2. **The dashboard.** *Tests failed* says 2, and *Test results* has the two `FAIL` lines,
    both `work_result_1`.
+
+   ![Failed tests panel](./images/02-failed-tests.png)
 3. **The reasoning.** Your encode test proved a panic *writes* as `0x02`, and the vector's
    bytes say `02` too. So the bytes are right and the *reading* is wrong. `decode` turns
    tag 2 into `ERRORS[2]`, the third name in the list: `"bad_exports"`. But tags start at

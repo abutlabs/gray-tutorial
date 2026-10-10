@@ -216,6 +216,8 @@ Twenty-nine vectors and not one "the vector says": your client's disputes agree 
 of them. `node bin/check-disputes.ts full` says the same of the full ones (give it a
 minute). The *Dispute checks* panel keeps the list.
 
+![Dispute checks panel](./images/05-dispute-checks.png)
+
 <details>
 <summary>lasair: rule 6 word for word, in <code>conformance/disputes_stf.ml</code></summary>
 

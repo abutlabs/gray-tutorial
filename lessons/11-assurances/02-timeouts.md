@@ -216,6 +216,8 @@ slots, the other has only waited one. Try
 `val_set_size_change_clears_pending_reports-1.json`, where κ goes from 6 validators to
 3 and the waiting report is swept away. The *Releases* panel shows each core's fate.
 
+![Releases panel](./images/02-releases.png)
+
 <details>
 <summary>lasair: one pass, in <code>conformance/assurances_stf.ml</code></summary>
 

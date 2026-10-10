@@ -119,6 +119,8 @@ node bin/decode.ts block ../vectors/codec/tiny/block.bin
 mark and two juries of 683. It scrolls by in a blink, and the whole trace lands in
 Grafana's *Decode trace* panel, where you can search it.
 
+![Decode trace panel](./images/07-decode-trace.png)
+
 <details>
 <summary>lasair: <code>decode_block</code>, in <code>conformance/block_codec.ml</code></summary>
 

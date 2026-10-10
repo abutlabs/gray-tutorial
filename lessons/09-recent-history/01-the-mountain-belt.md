@@ -216,6 +216,8 @@ Now read the dots from right to left: after 5, `● · ●` is 101, after 6 `· 
 mountain first. Watch 7 → 8: three mountains merge into one, like 0111 + 1 = 1000. The
 *Belt* panel has every step; try `node bin/belt.ts 100`.
 
+![Belt panel](./images/01-belt.png)
+
 <details>
 <summary>lasair: <code>mmr_append</code>, in <code>conformance/history_stf.ml</code></summary>
 

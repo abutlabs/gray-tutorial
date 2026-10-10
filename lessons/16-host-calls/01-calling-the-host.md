@@ -231,6 +231,8 @@ service asked the same). Your host has never heard of `fetch`: WHAT. And the ser
 unable to learn the rules of the chain it's running on, gives up and panics. Fair enough.
 The *Host calls* panel has the conversation, short as it is. `fetch` is next.
 
+![Host calls panel](./images/01-host-calls.png)
+
 <details>
 <summary>lasair: the <code>log</code> host call, in <code>lib/pvm_host.ml</code></summary>
 

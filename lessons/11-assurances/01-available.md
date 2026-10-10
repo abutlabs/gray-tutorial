@@ -206,6 +206,8 @@ cores alternate: 683 of 1023, *available*; 682 of 1023, *still waiting*. The tes
 vectors sit exactly on the line, one validator either side, which is precisely where a
 `>=` instead of a `>` would be caught. The *Availability* panel lists every core.
 
+![Availability panel](./images/01-availability.png)
+
 <details>
 <summary>lasair: the threshold, in <code>conformance/assurances_stf.ml</code></summary>
 

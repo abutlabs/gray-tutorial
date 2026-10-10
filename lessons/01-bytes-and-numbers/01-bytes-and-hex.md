@@ -122,6 +122,8 @@ Last time the code gave a wrong answer. This time it crashes, and a crash leaves
 2. **The dashboard.** *Tests failed* says 2, and *Test results* has two `FAIL` lines with
    the same message. Two tests, one cause: both call `fromHex`. And `toHex` is fine: its
    assertions come first, and they passed.
+
+   ![Failed tests panel](./images/01-failed-tests.png)
 3. **The reasoning.** The message is odd: `"0x0102ff"` has eight characters, and eight is
    even. An error message is a clue, not a verdict: Node gives this one for any text it
    can't read as hex. So what can't it read? The `x`. `toHex` puts `0x` on the front, so

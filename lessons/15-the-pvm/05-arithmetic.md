@@ -383,6 +383,8 @@ and as a signed number. Compare the two `−8 >> 1` lines: the same bits in, `-4
 the arithmetic shift, and a huge positive number out of the logical one. The *ALU*
 panel has the table.
 
+![ALU panel](./images/05-alu.png)
+
 <details>
 <summary>lasair: signed division, in <code>lib/pvm.ml</code></summary>
 

@@ -230,6 +230,8 @@ service a hundred blocks into the `storage` trace,
 `../vectors/traces/storage/00000100.json`: 147 items in 170,189 bytes, and last
 accumulated at slot 98. It has been busy. The *Service* panel shows the account.
 
+![Service panel](./images/02-service.png)
+
 <details>
 <summary>lasair: <code>load_service_account</code>, in <code>conformance/stf_guarantees.ml</code></summary>
 

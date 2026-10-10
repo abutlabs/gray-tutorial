@@ -197,6 +197,8 @@ Core 0 gets `0x63c0…` and core 1 gets `0x3165…`, but the reported list start
 where one core is already taken and the new report takes a free one. The *Placed* panel
 shows both lists.
 
+![Placed panel](./images/03-placed.png)
+
 <details>
 <summary>lasair: placing reports, in <code>conformance/reports_stf.ml</code></summary>
 

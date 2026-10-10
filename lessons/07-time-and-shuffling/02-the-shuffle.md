@@ -203,6 +203,8 @@ number lands on index 2, and the item there is 6, not 2. The first two picks mov
 7 and 6 into their gaps. The *Shuffle* panel has every pick and the final order; try a
 hash of your own, and a longer list.
 
+![Shuffle panel](./images/02-shuffle.png)
+
 <details>
 <summary>lasair: <code>sequence_from_hash</code>, in <code>lib/utilities.ml</code></summary>
 

@@ -224,6 +224,8 @@ Every line where the rules found a bad verdict agrees with the vector, and
 what's left for lesson 10.5: blocks whose verdicts are fine, refused for their culprits or
 faults. The *Dispute checks* panel keeps the list.
 
+![Dispute checks panel](./images/04-dispute-checks.png)
+
 <details>
 <summary>lasair: the split, in <code>conformance/disputes_stf.ml</code></summary>
 

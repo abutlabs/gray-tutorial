@@ -427,6 +427,8 @@ the vector's gas, the transfer's 80,000 included. The *Host calls* panel shows t
 and, just before the end, the transfer. Service 1's balance hasn't moved yet: that's
 the next lesson.
 
+![Host calls panel](./images/03-host-calls.png)
+
 <details>
 <summary>lasair: the CASH check, in <code>lib/pvm_host.ml</code></summary>
 

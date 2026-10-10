@@ -245,6 +245,8 @@ reporters. Then try `bad_signature-1.json` (`all real: false`) and
 an offender, zeroed by Φ, and the guarantee sinks with it.
 The *Reporters* panel shows every check.
 
+![Reporters panel](./images/02-reporters.png)
+
 <details>
 <summary>lasair: what a test checks, in <code>conformance/reports_stf.ml</code></summary>
 

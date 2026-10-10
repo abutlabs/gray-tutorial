@@ -242,6 +242,8 @@ trace file: same hashes. And κ0's key, `0x4418fb8c…`, is an old friend: it's 
 from lesson 5.3's assurance vectors. The test vectors share one cast of six validators.
 The *Reading σ* panel shows all three components.
 
+![Reading σ panel](./images/03-reading-sigma.png)
+
 <details>
 <summary>lasair: <code>type validator_keys</code>, in <code>lib/definitions.ml</code></summary>
 

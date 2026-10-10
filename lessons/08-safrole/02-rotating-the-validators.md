@@ -249,6 +249,8 @@ validator 0, but each set holds them in a different order. After the block, each
 active into previous. Except for one tile: `ab00` is an offender, and arrived in pending
 as `0000`. The *Validator rotation* panel shows the same four rows.
 
+![Validator rotation panel](./images/02-validator-rotation.png)
+
 <details>
 <summary>lasair: <code>filter_offenders</code>, in <code>lib/cores.ml</code></summary>
 

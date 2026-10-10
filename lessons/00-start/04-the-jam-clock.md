@@ -119,6 +119,8 @@ Three places tell you what happened:
 2. **The dashboard.** *Tests failed* now says 1, and *Test results* has a `FAIL` line
    with the same message. Every run is kept, so you can put this run next to the last
    one.
+
+   ![Failed tests panel](./images/04-failed-tests.png)
 3. **The line.** The failing test has three assertions; the output points at the second,
    `at("2025-01-01T12:00:05.999Z")`: 5.999 seconds into the era. In slots that's
    5.999 / 6 = 0.9998, and `Math.round` turns 0.9998 into 1. But slot 1 doesn't start

@@ -164,6 +164,8 @@ Count them up: validator 1 seals 5 of the 12 slots, validators 2, 3 and 4 just o
 That's what picking by hash does: every slot is a fresh draw, so some validators get
 lucky, and nobody is guaranteed a turn. The *Sealers* panel has the whole epoch.
 
+![Sealers panel](./images/03-sealers.png)
+
 <details>
 <summary>lasair: F, in <code>conformance/stf_transitions.ml</code></summary>
 

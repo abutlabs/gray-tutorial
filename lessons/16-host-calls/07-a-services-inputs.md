@@ -301,6 +301,8 @@ from the same accounts and writes its own key: 1729 its "last", 1730 a key spell
 the other vectors in the list. The *Accumulate* panel lines up each service's gas with the
 vector's.
 
+![Accumulate panel](./images/07-accumulate.png)
+
 <details>
 <summary>lasair: the 0 in front, in <code>lib/pvm_host.ml</code></summary>
 

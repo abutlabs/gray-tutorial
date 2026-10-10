@@ -421,6 +421,8 @@ most common opcodes have names: `load_ind_u64` and `store_ind_u64`, moving 8-byt
 between registers and memory, and `load_imm`. The *Disassembly* panel shows each
 instruction.
 
+![Disassembly panel](./images/02-disassembly.png)
+
 <details>
 <summary>lasair: one variant per instruction, in <code>lib/pvm_decode.ml</code></summary>
 

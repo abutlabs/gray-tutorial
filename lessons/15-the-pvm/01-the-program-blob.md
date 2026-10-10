@@ -244,6 +244,8 @@ holding 39,849 instructions. 128,413 bytes of code over 39,849 instructions is a
 than a third of all instructions. Next lesson finds out what they are. The *Program* panel
 shows the layers.
 
+![Program panel](./images/01-program.png)
+
 <details>
 <summary>lasair: <code>parse_program</code>, in <code>lib/pvm.ml</code></summary>
 

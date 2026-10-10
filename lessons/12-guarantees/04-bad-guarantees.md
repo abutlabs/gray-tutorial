@@ -273,6 +273,8 @@ vectors have two cases tiny can't have, where the validator set has shrunk from 
 accepted, signed by validators 24, 578 and 603 of the old set. The *Guarantee checks* panel
 keeps the list.
 
+![Guarantee checks panel](./images/04-guarantee-checks.png)
+
 <details>
 <summary>lasair: the core, in <code>conformance/reports_stf.ml</code></summary>
 

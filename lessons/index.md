@@ -1,6 +1,17 @@
 # Gray Tutorial
 
-Build a JAM client in TypeScript, one Gray Paper rule at a time.
+lasair and the other JAM Prize clients aim to run as validators on the real JAM network,
+fast enough to keep up with it. This tutorial aims at understanding instead: you build a
+client to learn how JAM works, in TypeScript, simplicity and observability first. It is
+checked against the same official test vectors, but it isn't built for speed.
+
+| | lasair | Your Gray Tutorial client |
+| --- | --- | --- |
+| Language | OCaml | TypeScript |
+| How it runs | compiled to machine code before it runs | Node strips the types and runs the JavaScript: it starts as bytecode, and the busiest parts become machine code as it runs |
+| 64-bit numbers | `Int64`: plain machine arithmetic | `bigint`: exact, but much slower |
+| Several cores | possible (OCaml 5); today threads serve the network, and a block imports on one core | one thread (Node could add worker threads; the tutorial doesn't need them) |
+| Built for | the JAM Prize: conformance, then speed | learning |
 
 ## Start here
 
@@ -17,6 +28,12 @@ Stuck on a word? Every JAM word, Gray Paper symbol and programming term is in th
 You don't need to know the Gray Paper, cryptography or blockchains to begin: each idea
 arrives when it's needed, with an example first. You do need to be at ease reading a
 little TypeScript or JavaScript.
+
+**Building a JAM Prize implementation?** This tutorial gives you a whole client's code, and
+some lessons show lasair's, another Prize entry. The Prize rules ask teams to build
+clean-room and to declare any implementation code they view: read
+[the note on the Prize rules](https://abutlabs.github.io/jam-learning/lasair/index.html#prize-rules)
+first.
 
 ## How it works
 

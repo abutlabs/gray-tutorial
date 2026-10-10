@@ -296,6 +296,8 @@ Forty-four vectors, and not one "the vector says": your client's reports step ag
 all of them. `node bin/check-guarantees.ts full` says the same of the full ones. The
 *Guarantee checks* panel keeps the list.
 
+![Guarantee checks panel](./images/05-guarantee-checks.png)
+
 <details>
 <summary>lasair: a lookup, in <code>conformance/reports_stf.ml</code></summary>
 

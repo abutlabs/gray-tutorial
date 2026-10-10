@@ -200,6 +200,8 @@ guaranteed it are culprits. Report `0x11da…` was judged good, and validator `0
 `progress_with_bad_signatures-2.json`, where the second culprit's "evidence" is a
 forgery. The *Offenders* panel lists every offender.
 
+![Offenders panel](./images/02-offenders.png)
+
 <details>
 <summary>lasair: signing contexts, in <code>conformance/disputes_stf.ml</code></summary>
 

@@ -268,6 +268,8 @@ already ends at 51 (a = 48, then w and its two heap pages), so each is the cheap
 not 1,000. The *Host calls* panel has the conversation, now word for word what the vector
 expects.
 
+![Host calls panel](./images/03-host-calls.png)
+
 <details>
 <summary>lasair: finding a, in <code>lib/pvm_host.ml</code></summary>
 

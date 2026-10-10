@@ -340,6 +340,8 @@ node bin/run.ts
 each, and the return. Watch r2 climb, 10, 19, 27…, and r3 count down to 0. The *PVM run*
 panel has every step, with the registers each one changed.
 
+![PVM run panel](./images/03-pvm-run.png)
+
 <details>
 <summary>lasair: <code>djump_index</code>, in <code>lib/pvm.ml</code></summary>
 

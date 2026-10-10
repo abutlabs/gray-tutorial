@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { basename, dirname, join } from "node:path";
 import { LESSONS, readParts } from "./lessons.ts";
 
 const parts = readParts();
@@ -43,4 +43,25 @@ test("TypeScript snippet lines fit half a laptop screen: 100 characters, imports
     });
   }
   assert.deepEqual(long, []);
+});
+
+test("visual tutorial verification: every picture exists, is used, has alt text, fits", () => {
+  const files = readdirSync(LESSONS, { recursive: true }).map(String);
+  const shown = new Set<string>();
+  for (const md of files.filter((f) => f.endsWith(".md"))) {
+    const text = readFileSync(join(LESSONS, md), "utf8");
+    for (const [, alt, src] of text.matchAll(/!\[([^\]]*)\]\(([^)\s]+)\)/g)) {
+      const path = join(LESSONS, dirname(md), src);
+      const where = `${md}: ${src}`;
+      assert.ok(alt.trim(), `${where} has alt text`);
+      assert.match(src, /^\.\/images\/[^/]+$/, `${where} is in its part's images/ folder`);
+      assert.equal(basename(src).slice(0, 2), basename(md).slice(0, 2), `${where} is named for its lesson`);
+      assert.ok(existsSync(path), `${where} exists`);
+      assert.ok(statSync(path).size < 1_000_000, `${where} is under 1 MB`);
+      shown.add(path);
+    }
+  }
+  for (const f of files.filter((f) => /\.(png|jpe?g|gif|webp|svg)$/i.test(f))) {
+    assert.ok(shown.has(join(LESSONS, f)), `lessons/${f} is shown by a lesson`);
+  }
 });

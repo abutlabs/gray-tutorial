@@ -286,6 +286,8 @@ blocks on, `../vectors/traces/storage/00000100.json`: 164 entries. The same 16
 components, the same account, the same two preimages and requests, and 143 new things
 service 0 keeps. That's its storage, filling up block by block.
 
+![State trie panel](./images/02-state-trie.png)
+
 <details>
 <summary>lasair: <code>make_service_key</code>, in <code>lib/state_keys.ml</code></summary>
 

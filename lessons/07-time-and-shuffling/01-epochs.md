@@ -182,6 +182,8 @@ lesson 6.3, in the state before this very block. One block later it has retired 
 The *Epochs* panel lists every block with its epoch and phase, and flags the eight where
 a new epoch begins: watch the phase run 0 to 11, then start again.
 
+![Epochs panel](./images/01-epochs.png)
+
 <details>
 <summary>lasair: <code>rotate_entropy</code>, in <code>lib/safrole.ml</code></summary>
 

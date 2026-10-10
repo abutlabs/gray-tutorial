@@ -196,6 +196,8 @@ Eleven vectors, eleven verdicts, and no "the vector says" anywhere: your rules a
 vectors agree on every one. `node bin/check-assurances.ts full` does the same for the full
 vectors. The *Assurance checks* panel keeps the list.
 
+![Assurance checks panel](./images/03-assurance-checks.png)
+
 <details>
 <summary>lasair: the same rules, in <code>conformance/assurances_stf.ml</code></summary>
 

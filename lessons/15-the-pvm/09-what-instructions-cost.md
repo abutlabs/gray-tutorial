@@ -304,6 +304,8 @@ get 91. But a real CPU doesn't wait for one store to finish before starting the 
 model has four store units, and they can all work at once. The next lesson builds that
 CPU, and this block comes out far cheaper than 91. The *Costs* panel has the sheet.
 
+![Costs panel](./images/09-costs.png)
+
 <details>
 <summary>lasair: <code>inst_cost</code>, in <code>lib/pvm_gas.ml</code></summary>
 

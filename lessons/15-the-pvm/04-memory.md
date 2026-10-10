@@ -315,6 +315,8 @@ That's little-endian, lowest byte first, so the byte at 0x20000 is 0x80, which i
 loading it as a signed byte gives −128. And the fault names 0x30000, the start of the
 missing page, not 0x30005. The *Memory* panel has the run.
 
+![Memory panel](./images/04-memory.png)
+
 <details>
 <summary>lasair: loads, in <code>lib/pvm.ml</code></summary>
 

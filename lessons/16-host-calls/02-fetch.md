@@ -334,6 +334,8 @@ says it should have spent 16,417. The difference, 1,450, is hiding in those two 
 each cost 1,000, and the next lesson shows what `grow_heap` really costs. The *Host calls*
 panel has the whole conversation.
 
+![Host calls panel](./images/02-host-calls.png)
+
 <details>
 <summary>lasair: the constants, in <code>lib/pvm_host.ml</code></summary>
 

@@ -222,6 +222,8 @@ node bin/plan.ts
 That's the map of your client: every step of a block, in four waves, with the lesson that
 built it. The *Block import plan* panel keeps it.
 
+![Block import plan panel](./images/01-block-import-plan.png)
+
 ## What's next
 
 The next lessons of this part run real blocks through these waves and compare the whole

@@ -280,6 +280,8 @@ Try `node bin/accumulate.ts ../vectors/stf/accumulate/tiny/same_code_different_s
 service 1730 has a digest but no code of its own, so it shows 1 digest and 0 gas, just as
 the vector does. The *Accumulate* panel lines the services up.
 
+![Accumulate panel](./images/01-accumulate.png)
+
 <details>
 <summary>lasair: one round, in <code>conformance/accumulate_stf.ml</code></summary>
 

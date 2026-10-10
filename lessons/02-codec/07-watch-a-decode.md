@@ -292,6 +292,8 @@ Read the output against the hex dump from lesson 2.6: `service` is bytes 0 to 4,
 `code_hash` 4 to 36, `refine_gas_limit` 36 to 44. On the dashboard, *Decode trace* shows
 the same list for the run.
 
+![Decode trace panel](./images/07-decode-trace.png)
+
 ## Break it again
 
 Now move `export_count` above the gas limits in `WorkItem` again, as in lesson 2.6, and

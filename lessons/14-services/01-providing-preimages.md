@@ -255,6 +255,8 @@ Four pieces of data that service 0 was waiting for, from 3 bytes to 223, each on
 request history going from `[]` to `[8]`. Block 14 has ten. The *Preimages* panel lists
 every handover.
 
+![Preimages panel](./images/01-preimages.png)
+
 <details>
 <summary>lasair: <code>integrate_preimage</code>, in <code>conformance/stf_guarantees.ml</code></summary>
 

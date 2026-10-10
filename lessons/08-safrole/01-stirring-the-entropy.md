@@ -179,6 +179,8 @@ bottom. Try a vector without a new epoch, such as
 `../vectors/stf/safrole/tiny/publish-tickets-no-mark-2.json`: only η₀ changes. The
 *Entropy* panel shows the same staircase.
 
+![Entropy panel](./images/01-entropy.png)
+
 <details>
 <summary>lasair: <code>accumulate_entropy</code>, in <code>conformance/safrole_stf.ml</code></summary>
 

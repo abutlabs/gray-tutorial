@@ -268,6 +268,8 @@ the full vector `progress_authorizations-3.json`: at slot 645 the queue entry is
 because 645 mod 80 = 5. The wheel has gone round eight times. The *Authorizer pools*
 panel shows each change.
 
+![Authorizer pools panel](./images/01-authorizer-pools.png)
+
 <details>
 <summary>lasair: <code>next_pool</code>, in <code>conformance/authorizations_stf.ml</code></summary>
 

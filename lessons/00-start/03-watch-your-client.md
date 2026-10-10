@@ -143,6 +143,8 @@ Open the link. In *Everything your client reported* there it is:
 `{"step":"hello","message":"my JAM client is alive"}`. Your client's first words. Frame
 them.
 
+![The hello line in Grafana](./images/03-its-alive.png)
+
 ## Every test run, reported
 
 Node's test runner lets you plug in a **reporter**: a function that gets every test's

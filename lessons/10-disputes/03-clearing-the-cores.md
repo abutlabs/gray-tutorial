@@ -215,6 +215,8 @@ Both cores' reports were on trial in this block. Core 0's was judged bad, so it 
 core 1's was judged good, so it stays. Run the `full` version of the same vector: 340 of
 341 cores keep their reports. The *Cores* panel shows which core was emptied, and why.
 
+![Cores panel](./images/03-cores.png)
+
 <details>
 <summary>lasair: two roads to the same set, in <code>conformance/stf_guarantees.ml</code></summary>
 

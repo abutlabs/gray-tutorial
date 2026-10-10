@@ -303,6 +303,8 @@ the last rotation's hand was dealt from λ′ with η′₃.) Now try `wrong_ass
 the same validator 2 signs for core 0 *this* rotation, where it belongs to core 1, and
 it's caught. The *Guarantors* panel shows each guarantee's check.
 
+![Guarantors panel](./images/01-guarantors.png)
+
 <details>
 <summary>lasair: <code>guarantor_assignment</code>, in <code>conformance/stf_guarantees.ml</code></summary>
 

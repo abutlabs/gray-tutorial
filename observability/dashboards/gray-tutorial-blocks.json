@@ -247,7 +247,7 @@
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"chain\", run_id=~\"$run_id\"} | json | line_format \"slot {{.slot}}  {{.hash}}  linked: {{.linked}}  extrinsic matches: {{.matches}}\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"chain\", run_id=~\"$run_id\"} | json | line_format \"slot {{.slot}}  {{.hash}}  linked: {{.linked}}{{if .matches}}  extrinsic matches: {{.matches}}{{end}}\"",
      "refId": "A",
      "queryType": "range"
     }

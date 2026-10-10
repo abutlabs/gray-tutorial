@@ -280,6 +280,8 @@ up, one counting down, meeting at 5 and 6 in the middle. And the ids show what "
 means: ticket 0's id starts `0x00e5`, ticket 11's `0xff0a`. The *Lottery* panel has every
 seat. Try `publish-tickets-with-mark-3.json`, one block earlier: no mark yet.
 
+![Lottery panel](./images/04-lottery.png)
+
 <details>
 <summary>lasair: outside in, in <code>conformance/stf_transitions.ml</code></summary>
 

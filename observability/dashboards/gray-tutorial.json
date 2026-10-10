@@ -322,6 +322,36 @@
    }
   },
   {
+   "id": 50,
+   "type": "logs",
+   "title": "Failed tests",
+   "description": "Only the tests that failed, newest first, one line each (open a line for the whole error): where a bug hunt starts.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"test\", run_id=~\"$run_id\"} | json | ok != \"true\" | line_format \"FAIL  {{.name}}  ({{.file}}){{if .error}}  {{.error}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": true,
+    "wrapLogMessage": false,
+    "sortOrder": "Descending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 13,
+    "w": 24,
+    "h": 5
+   }
+  },
+  {
    "id": 4,
    "type": "logs",
    "title": "Test results",
@@ -346,7 +376,7 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 13,
+    "y": 18,
     "w": 24,
     "h": 10
    }
@@ -376,7 +406,7 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 23,
+    "y": 28,
     "w": 24,
     "h": 12
    }

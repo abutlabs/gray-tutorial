@@ -168,6 +168,8 @@ edge of a range, where bugs like to live. Your tools:
    come first, and the loop stops at the first failure).
 2. **The dashboard.** *Tests failed* says 1, and *Test results* has the `FAIL` line, label
    and all.
+
+   ![Failed tests panel](./images/02-failed-tests.png)
 3. **The reasoning.** 128 is 2^7: the very first number too big for one byte. One byte
    holds 7 bits of x after its leading zero, so 0 to 127, and nothing more. Your code
    gave 128 one byte, `0x80`, whose first bit is a one: a decoder would expect another

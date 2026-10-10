@@ -290,6 +290,8 @@ stores wait: they need its r1. From cycle 3 all three stores run side by side, w
 ahead of it. At 28 everything is finished, at 29 everything is retired: 29 − 3 = 26 gas.
 The *Pipeline* panel keeps the picture.
 
+![Pipeline panel](./images/10-pipeline.png)
+
 <details>
 <summary>lasair: the clock tick, in <code>lib/pvm_gas.ml</code></summary>
 

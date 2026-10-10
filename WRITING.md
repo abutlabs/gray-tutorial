@@ -2,9 +2,9 @@
 
 ## How a part is made
 
-1. **Build it in `reference/` first** (the private reference client): plain, simple code
-   that keeps the Gray Paper's structure, tested against the official vectors, every step
-   reporting through a `Trace` or a `Run`, with `OBS_CLIENT=reference`.
+1. **Build it in `reference/` first** (the reference client, a repository of its own):
+   plain, simple code that keeps the Gray Paper's structure, tested against the official
+   vectors, every step reporting through a `Trace` or a `Run`, with `OBS_CLIENT=reference`.
 2. **Write the lessons from it**, in the shape below, snippets copied from the reference.
 3. **Check**: `npm run verify` (the lessons rebuild a working client from nothing, with
    the stack up) and `npm run compare -- <last lesson> --dir reference` (the lessons give
@@ -22,6 +22,29 @@ reported stay on the overview, `gray-tutorial.json`, where the run links land. A
 joins a theme by widening that theme's title. `tools/dashboards.test.ts` checks that
 every panel a lesson names is on its Part's dashboard, and that all of them share one
 link bar and one pair of menus.
+
+## Visual tutorial verification
+
+A picture of what the reader's screen should show after a step: Grafana after a run, a
+terminal, the website. Use one wherever a step's result is something to look at, and at
+least for every new panel a lesson sends the reader to.
+
+- **Just the picture**, right after the step it shows: no label and no words around it.
+  The name is ours, for writing; the reader only sees a screenshot.
+- **File** `lessons/NN-part/images/NN-what.png`, the first `NN` being the lesson's own
+  number: `00-start/images/03-its-alive.png` is lesson 0.3's.
+- **Taken** by `npm run screenshots`, from a real run of the lesson's own code: it
+  follows the tutorial to the lesson (verify), runs it, and photographs one panel filtered
+  to that lesson's run. A new picture is one line in `SHOTS` in `tools/screenshots.ts`
+  (lesson, panel, and which of the lesson's runs if not its last), then the image line in
+  the lesson. Rerun it when a panel or a lesson's output changes.
+- **By hand** only for what the tool can't take, such as a whole dashboard (0.3's): cropped
+  to what matters, the thing to look at outlined, nothing private (no home-folder paths,
+  no tokens).
+- **Alt text** says what the picture shows, for anyone who can't see it.
+- **Under 1 MB.** `tools/lessons.test.ts` checks that every image a lesson shows exists,
+  sits in its part's `images/`, has alt text and fits; and that every image is shown by
+  some lesson.
 
 ## Where
 

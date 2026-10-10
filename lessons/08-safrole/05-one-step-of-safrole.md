@@ -259,6 +259,8 @@ stirs), and `publish-tickets-with-mark-5.json` (a new epoch sealed by tickets). 
 whose block brings tickets, such as `publish-tickets-no-mark-2.json`, gets a polite
 refusal. The *Safrole* panel tells each step's story.
 
+![Safrole panel](./images/05-safrole.png)
+
 <details>
 <summary>lasair: the missing piece, in <code>conformance/stf_transitions.ml</code></summary>
 

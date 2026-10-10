@@ -369,6 +369,8 @@ node bin/accumulate.ts ../vectors/stf/accumulate/tiny/transfer_for_live_service-
 Two services, two rounds: service 0 with its one digest in round 1, service 1 with its
 one transfer in round 2. Each line next to the vector's, in the *Accumulate* panel.
 
+![Accumulate panel](./images/04-accumulate.png)
+
 <details>
 <summary>lasair: Δ+ calls itself, in <code>conformance/accumulate_stf.ml</code></summary>
 

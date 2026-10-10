@@ -7,6 +7,16 @@ code in snippets. You assemble them into your own client in `client/`, run the t
 every step, and finish with a block importer that agrees byte for byte with the
 official test vectors.
 
+Read the lessons online at https://abutlabs.github.io/gray-tutorial/, part of
+[JAM learning](https://abutlabs.github.io/jam-learning/). To build the client you need
+this repository too: the tools, the dashboards and the test vectors live here.
+
+**Building a JAM Prize implementation?** This tutorial gives you a whole client's code,
+and some lessons show lasair's, another Prize entry. The Prize rules ask teams to build
+clean-room and to declare any implementation code they view: read
+[the note on the Prize rules](https://abutlabs.github.io/jam-learning/lasair/index.html#prize-rules)
+first.
+
 
 ## What you need
 
@@ -99,12 +109,10 @@ read the lessons:
 lessons/         the tutorial: one folder per part, plain Markdown
 client/          your JAM client, built lesson by lesson: empty at the start, and
                  git-ignored, so it stays yours (see "Your client's own repository")
-observability/   the client's Grafana dashboard (the stack finds it by itself)
+observability/   the client's Grafana dashboards (the stack finds them by itself)
 vectors/         the official test vectors, v0.8.0 of davxy/jam-test-vectors (npm run vectors)
 tools/           how the lessons are checked
 .vitepress/      the website, made from lessons/
-reference/       not in this repo: the client the lessons are written from (a private
-                 repo of its own, checked out here and ignored)
 ```
 
 ## Your client's own repository
@@ -153,7 +161,8 @@ and never touches your history.
 | `npm run compare -- 2.3` | how your `client/` differs from the client after lesson 2.3 |
 | `npm run catch-up -- 2.3` | make `client/` the client after lesson 2.3 (yours is copied to `.backup/` first) |
 | `npm run verify` | follow every lesson from an empty client in `.tangled/` and run every **Run** block (the stack must be up) |
-| `npm run compare -- 2.3 --dir reference` | the same comparison for another client folder |
+| `npm run screenshots` | retake the lessons' screenshots from fresh runs of each lesson (needs the stack and Google Chrome) |
+| `npm run compare -- 2.3 --dir ../other-client` | the same comparison for another client folder |
 | `npm run check` | type-check and test the tools, and build the website (which fails on a broken link) |
 
 ## How the lessons are checked

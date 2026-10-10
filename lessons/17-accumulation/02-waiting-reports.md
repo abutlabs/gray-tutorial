@@ -382,6 +382,8 @@ digests use exactly the vector's gas. Try the chains:
 `node bin/accumulate.ts ../vectors/stf/accumulate/tiny/enqueue_and_unlock_chain-4.json`.
 The *Accumulate* panel shows each block's line, then its services.
 
+![Accumulate panel](./images/02-accumulate.png)
+
 <details>
 <summary>lasair: unlocking, in <code>conformance/accumulate_stf.ml</code></summary>
 

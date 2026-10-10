@@ -213,6 +213,8 @@ of bits at the top. Look at the lowest byte, 0xf0: unsigned it's 240, signed it'
 register to the top. Try `node bin/bits.ts 0xdeadbeef` and `node bin/bits.ts -1`. The
 *Bits* panel keeps every run.
 
+![Bits panel](./images/07-bits.png)
+
 <details>
 <summary>lasair: <code>clz64</code>, in <code>lib/pvm.ml</code></summary>
 

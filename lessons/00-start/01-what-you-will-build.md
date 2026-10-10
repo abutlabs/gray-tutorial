@@ -108,7 +108,7 @@ vectors' own changelog says otherwise. Even referees publish corrections.)
 
 ## lasair, the neighbour
 
-[lasair](https://github.com/abutlabs/lasair) is a JAM client written in OCaml that passes
+[lasair](https://abutlabs.github.io/jam-learning/lasair/index.html) is a JAM client written in OCaml that passes
 all these vectors. Under many snippets a folded box shows how lasair does the same thing:
 
 <details>

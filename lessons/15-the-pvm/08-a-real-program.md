@@ -318,6 +318,8 @@ r10 = 0 says what it wants: in `fetch`'s table, item 0 is the chain's protocol c
 The service's first question is "what are the rules here?" Fair enough. The *A real
 program starts* panel has the whole run.
 
+![A real program starts panel](./images/08-a-real-program-starts.png)
+
 <details>
 <summary>lasair: <code>init_registers</code>, in <code>lib/pvm_program.ml</code></summary>
 

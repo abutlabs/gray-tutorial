@@ -526,6 +526,8 @@ The first service holds core 0 and hands it over: ω₇ = 0, `OK`. The second is
 0's assigner, so it gets `HUH`, and its code, written to expect that, carries on. Both
 runs in the *Host calls* panel, answers by name.
 
+![Host calls panel](./images/05-host-calls.png)
+
 <details>
 <summary>lasair: <code>host_assign</code>, in <code>lib/pvm_host.ml</code></summary>
 

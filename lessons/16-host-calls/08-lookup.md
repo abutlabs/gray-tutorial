@@ -223,6 +223,8 @@ node bin/accumulate.ts ../vectors/stf/accumulate/tiny/lookup_foreign_preimage-1.
 The bin from lesson 16.7 needs no change: point it at the new vector, and service 0's gas
 lines up with the vector's. The *Accumulate* panel shows it beside the others.
 
+![Accumulate panel](./images/08-accumulate.png)
+
 <details>
 <summary>lasair: finding the service, in <code>lib/pvm_host.ml</code></summary>
 
