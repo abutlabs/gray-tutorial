@@ -181,8 +181,8 @@ compact 128 starts at offset 2. ([2.3](./02-codec/03-writer-and-reader.md))
 `Codec<number>` is a codec for numbers. ([2.4](./02-codec/04-codecs.md))
 
 **Optional field.** A field written with a `?`, which an object may leave out; reading a
-missing one gives `undefined`. *Example:* `privileges?: Privileges`.
-([17.5](./17-accumulation/05-privileges.md))
+missing one gives `undefined`. *Example:* `output: { err?: string }`, a vector's output.
+([8.1](./08-safrole/01-stirring-the-entropy.md))
 
 **Mapped type.** A TypeScript type built by going through another type's field names one
 by one. *Example:* `{ [K in keyof F]: Value<F[K]> }` gives each field its codec's type.
@@ -457,15 +457,16 @@ the future lotteries. ([8.1](./08-safrole/01-stirring-the-entropy.md))
 ([8.5](./08-safrole/05-one-step-of-safrole.md))
 
 **Ticket accumulator.** γ_A. The best tickets entered so far in this epoch's lottery, at
-most E of them, sorted by id, lowest first. *Example:* empty again when an epoch begins.
-([8.4](./08-safrole/04-the-lotterys-winners.md))
+most E of them, sorted by id, lowest first. *Example:* at a new epoch it starts again, from
+only that block's own tickets. ([8.4](./08-safrole/04-the-lotterys-winners.md))
 
 **Outside-in order.** Z. The order the winning tickets take their slots: the first, the
 last, the second, the second to last, and so on inwards. *Example:* slot 0 gets the best
 ticket, slot 1 the worst of the winners. ([8.4](./08-safrole/04-the-lotterys-winners.md))
 
 **VRF.** A signature whose output is random, yet can't be chosen by the signer: for a given
-key and message it comes out one way only, and anyone can check it. *Example:* the
+key and input (the Gray Paper's *context*) it comes out one way only, and anyone can check
+it. *Example:* the
 header's 96-byte `entropy_source`. ([8.1](./08-safrole/01-stirring-the-entropy.md))
 
 **Ring VRF proof.** Cryptography proving that *some* validator in a set made something,

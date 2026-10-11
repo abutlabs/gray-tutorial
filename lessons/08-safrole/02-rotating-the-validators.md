@@ -287,8 +287,8 @@ previous  4418 cab2 8b8c f30a ab00 ad93  →  ab00 f30a 8b8c 4418 ad93 cab2
 reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=rotation-1791730470419
 ```
 
-Read it like a slide puzzle. The six validators are an old cast, `4418` is [lesson 5.3](../05-hashing-and-signatures/03-signatures.md)'s
-validator 0, but each set holds them in a different order. After the block, each row's
+Read it like a slide puzzle. The six validators are an old cast (`4418` is validator 0,
+whose key [lesson 6.3](../06-state-and-merklization/03-reading-the-state.md) printed as κ0), but each set holds them in a different order. After the block, each row's
 *right* side is the row above's *left*: staging slid into pending, pending into active,
 active into previous. Except for one tile: `ab00` is an offender, and arrived in pending
 as `0000`. The *Validator rotation* panel shows the same four rows.

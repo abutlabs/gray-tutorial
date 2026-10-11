@@ -13,7 +13,8 @@ winners, though, are already in the state, so everything here works today.)
 ## New words
 
 - **Ticket accumulator.** γ_A. The best tickets entered so far in this epoch's lottery, at
-  most E of them, sorted by id, lowest first. *Example:* empty again when an epoch begins.
+  most E of them, sorted by id, lowest first. *Example:* at a new epoch it starts again,
+  from only that block's own tickets.
 - **Outside-in order.** Z. The order the winning tickets take their slots: the first, the
   last, the second, the second to last, and so on inwards. *Example:* slot 0 gets the best
   ticket, slot 1 the worst of the winners.
@@ -26,7 +27,8 @@ Both are in the [glossary](../glossary.md).
 at most E of them, sorted by id. A ticket's id is random (a VRF output), and lower is
 better.
 
-**Y** is the phase at which the lottery closes: slot 500 of a 600-slot epoch on full, 10
+**Y** (not 8.1's Y(·), the VRF output: the Gray Paper uses two different letters) is the
+phase at which the lottery closes: slot 500 of a 600-slot epoch on full, 10
 of 12 on tiny. Then two things can happen:
 
 - **The tickets mark** (*The Markers*): the block that crosses phase Y, in the same epoch
@@ -359,7 +361,7 @@ seat. Try `publish-tickets-with-mark-3.json`, one block earlier: no mark yet.
 ```
 
 lasair works out each slot's ticket with a formula instead of walking two pointers: an
-even slot s takes ticket s / 2 from the front, an odd one ticket E − 1 − s / 2 from the
+even slot s takes ticket ⌊s/2⌋ from the front, an odd one ticket E − 1 − ⌊s/2⌋ from the
 back. Same order, a different way to see it. Try a few slots by hand: both give 0, 11,
 1, 10…
 

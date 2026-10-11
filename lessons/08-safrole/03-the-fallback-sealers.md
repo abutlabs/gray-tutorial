@@ -129,7 +129,8 @@ test at test/safrole.test.ts:86:1
 ...
 ```
 
-Red: twelve slots, twelve zero keys, where the vector has twelve real validators' keys.
+Red: twelve slots, twelve zero keys, where the vector has twelve real keys, from its six
+validators.
 
 ## The code
 

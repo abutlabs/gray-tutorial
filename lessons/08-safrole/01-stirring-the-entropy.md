@@ -14,7 +14,8 @@ deck. This lesson keeps the chain's randomness, η, fresh, one block at a time.
 - **Entropy.** η. Randomness the chain gathers from every block, so that no one can
   predict the future lotteries. *Example:* η₀, stirred by every block.
 - **VRF.** A signature whose output is random, yet can't be chosen by the signer: for a
-  given key and message it comes out one way only, and anyone can check it. *Example:*
+  given key and input (the Gray Paper's *context*) it comes out one way only, and anyone
+  can check it. *Example:*
   the header's 96-byte `entropy_source`.
 - **Optional field.** A field written with a `?`, which an object may leave out; reading a
   missing one gives `undefined`. *Example:* `output: { err?: string }`, a vector's output,
@@ -27,12 +28,12 @@ All four are in the [glossary](../glossary.md).
 §6 (*Sealing and Entropy Accumulation*): every block stirs new randomness into η₀, the
 accumulator:
 
-> η′₀ = H(η₀ ⌢ Y(H_v))
+> η′₀ = H(η₀ ⌢ Y(H_V))
 
-H_v is the header's `entropy_source` ([lesson 4.6](../04-blocks/06-the-header.md)): a 96-byte Bandersnatch *VRF*
-signature by the block's author. Y(H_v) is its *output*, 32 bytes of randomness with a
-special property. The author can't choose it: for a given key and message, a VRF's
-output comes out one way only. Yet everyone can check it was made honestly. So
+H_V is the header's `entropy_source` ([lesson 4.6](../04-blocks/06-the-header.md)): a 96-byte Bandersnatch *VRF*
+signature by the block's author. Y(H_V) is its *output*, 32 bytes of randomness with a
+special property. The author can't choose it: for a given key and input (here, a fixed
+label and the block's seal), a VRF's output comes out one way only. Yet everyone can check it was made honestly. So
 nobody, not even the author, can steer what goes into η.
 
 Computing Y needs Bandersnatch, which this tutorial hasn't got yet. The `safrole` test
@@ -95,8 +96,9 @@ test("η′: each block stirs its VRF output into η₀, and a new epoch moves t
 ```
 
 Some vectors describe blocks that must be *rejected*: a bad slot, a bad ticket. Their
-`output` is an `err`, and their state doesn't change at all. Rejecting blocks comes later
-in [Part 8](./index.md), so for now the test skips them, and counts the rest: 15 on tiny, 18 on full.
+`output` is an `err`, and their state doesn't change at all. Rejecting them takes checks
+this part can't make yet ([lesson 8.5](./05-one-step-of-safrole.md) says which), so for now the test skips them, and
+counts the rest: 15 on tiny, 18 on full.
 
 A stub that stirs nothing in: the entropy comes back as it went.
 
@@ -254,7 +256,8 @@ Look at the four η lines: a staircase. Each old value steps down one row, η₀
 η₁'s to η₂, and so on, while η₀ itself gets a brand-new hash and the oldest falls off the
 bottom. Try a vector without a new epoch, such as
 `../vectors/stf/safrole/tiny/publish-tickets-no-mark-2.json`: only η₀ changes. The
-*Entropy* panel shows the same staircase.
+*Entropy* panel, on the **3 · Consensus** dashboard (where all of [Part 8](./index.md)'s panels are),
+shows the same staircase.
 
 ![Entropy panel](./images/01-entropy.png)
 
