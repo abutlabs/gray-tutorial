@@ -52,7 +52,7 @@ Here they are, with their sizes in the state you met in [lesson 6.1](./01-the-st
 
 You can already read a few of those sizes. τ is 4 bytes: ℰ₄ of a timeslot ([lesson 0.4](../00-start/04-the-jam-clock.md)).
 η is 128: four 32-byte hashes. The three validator sets are 2,017 each: a length byte,
-then six validators of 336 bytes. Reading what's *inside* comes next lesson.
+then six validators of 336 bytes. Reading what's *inside* comes [next lesson](./03-reading-the-state.md).
 
 What a service keeps comes in three kinds, and each makes its h differently:
 

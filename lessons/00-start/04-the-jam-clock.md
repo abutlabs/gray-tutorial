@@ -371,7 +371,7 @@ let timeslot_of_unix (unix_ts : int64) : timeslot option =
 
 The same division. lasair also refuses moments before the era: it returns `None`, OCaml's
 "no value here", and the caller must deal with it. (Your clock will learn that in the
-hardening pass; nobody is importing blocks from 2024.) `let open Int64 in` lets the
+[hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md); nobody is importing blocks from 2024.) `let open Int64 in` lets the
 function write `sub` and `div` for `Int64.sub` and `Int64.div`.
 
 JAM time is this simple on purpose: every node works out the same slot from its own

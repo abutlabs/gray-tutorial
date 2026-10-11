@@ -56,7 +56,7 @@ npm run vectors
 
 ## The observability stack
 
-From the next lesson on, your client tells this stack everything it does. Grafana to
+From [the next lesson](./03-watch-your-client.md) on, your client tells this stack everything it does. Grafana to
 look at, Prometheus for numbers, Loki for events: the same stack lasair reports into.
 It runs in Docker, so start Docker Desktop first.
 

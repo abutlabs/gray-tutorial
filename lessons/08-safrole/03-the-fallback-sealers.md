@@ -63,7 +63,7 @@ test("F: an epoch without a full lottery is sealed by keys picked from κ′ by 
 });
 ```
 
-*Which* new epochs fall back is the next lesson's question. This test checks every vector
+*Which* new epochs fall back is [the next lesson](./04-the-lotterys-winners.md)'s question. This test checks every vector
 where the fallback happened: post_state's γ_S holds `keys` instead of `tickets`. It works
 out η′ and κ′ with lessons [8.1](./01-stirring-the-entropy.md) and [8.2](./02-rotating-the-validators.md)'s own functions, so your whole Safrole so far is on
 trial, not just F.

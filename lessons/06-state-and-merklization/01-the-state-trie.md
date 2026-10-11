@@ -23,7 +23,7 @@ All three are in the [glossary](../glossary.md).
 Appendix D does it in two stages:
 
 1. **Serialization** turns the state into a list of entries: each a 31-byte **key** and a
-   value of any length. (Which key holds what is the next lesson. Today they're just
+   value of any length. (Which key holds what is [the next lesson](./02-state-keys.md). Today they're just
    bytes.)
 2. **Merklization** turns those entries into one 32-byte root. That's today.
 
@@ -355,7 +355,7 @@ and the trie's shape appears:
 Most values are big enough to be hashed. The biggest, 159,322 bytes, is a service's code:
 its hash is the code hash in the service's own entry, the one under `0xff`. Those
 keys that are all zeros after the first byte look suspiciously *designed*, don't they?
-That's the next lesson. The dashboard's *State trie* panel has every leaf and the root.
+That's [the next lesson](./02-state-keys.md). The dashboard's *State trie* panel has every leaf and the root.
 
 ![State trie panel](./images/01-state-trie.png)
 

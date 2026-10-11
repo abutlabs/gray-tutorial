@@ -181,7 +181,7 @@ lose precision past 2^53).
 ```
 
 `serviceCode` finds a service's code the simplest way there is: the state value whose
-hash is the account's code hash. Lessons to come run that code, and they all start here.
+hash is the account's code hash. Lessons to come, from [Part 15](../15-the-pvm/index.md) on, run that code, and they all start here.
 
 **Run**
 

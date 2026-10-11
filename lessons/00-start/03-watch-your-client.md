@@ -243,7 +243,7 @@ this very run. (Above the summary, cut here, npm first echoes the command it run
 `typecheck` prints its own name and nothing more: from `tsc`, no news is good news.
 
 Zero tests, zero failures: a perfect record, technically. On the dashboard, *Tests passed*
-now says 0. The next lesson writes your first real test, and you'll watch that number
+now says 0. [The next lesson](./04-the-jam-clock.md) writes your first real test, and you'll watch that number
 climb for the rest of the tutorial.
 
 <details>

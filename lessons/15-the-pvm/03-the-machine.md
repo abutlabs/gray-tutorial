@@ -3,7 +3,7 @@
 Time to switch it on. Lessons [15.1](./01-the-program-blob.md) and [15.2](./02-instructions.md) read a program; this one *runs* one. The PVM
 is a small, very strict computer: thirteen 64-bit registers, an instruction counter,
 and a rulebook for each instruction. This lesson builds the machine and teaches it its
-first seventeen instructions, enough to run a loop. Memory comes next lesson, and gas
+first seventeen instructions, enough to run a loop. Memory comes [next lesson](./04-memory.md), and gas
 after that.
 
 ## New words

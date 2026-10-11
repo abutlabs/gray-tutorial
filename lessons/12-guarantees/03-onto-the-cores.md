@@ -16,8 +16,8 @@ assurances ([lesson 11.2](../11-assurances/02-timeouts.md)) have done their clea
 **The reported packages** are a dictionary: each reported work-package's hash, mapped to
 the root of the segments it exports. [Lesson 9.2](../09-recent-history/02-recent-blocks.md)'s `recordBlock` takes exactly these, as
 `work_packages`. A dictionary is kept **sorted by key**, so they're listed by package
-hash, not in the order the guarantees came. ([Lesson 9.2](../09-recent-history/02-recent-blocks.md) left sorting to the hardening
-pass. Here the vectors insist on it.)
+hash, not in the order the guarantees came. ([Lesson 9.2](../09-recent-history/02-recent-blocks.md) left sorting to the [hardening
+pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md). Here the vectors insist on it.)
 
 ## The tests
 

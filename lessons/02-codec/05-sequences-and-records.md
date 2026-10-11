@@ -1,7 +1,7 @@
 # Sequences and records
 
 Two ways to build big values out of small ones: lists, and structures with named fields.
-With these two, the next lesson encodes a real JAM structure and checks it against the
+With these two, [the next lesson](./06-the-first-test-vectors.md) encodes a real JAM structure and checks it against the
 official vectors.
 
 ## New words
@@ -174,7 +174,7 @@ type refinement_context = {
 }
 ```
 
-That's the structure you'll encode in the next lesson. lasair writes the type, then
+That's the structure you'll encode in [the next lesson](./06-the-first-test-vectors.md). lasair writes the type, then
 writes the field order a second time in `encode_refinement_context`, and a third time in
 `decode_refinement_context`.
 

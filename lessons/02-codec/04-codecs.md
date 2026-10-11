@@ -61,7 +61,7 @@ export function decode<T>(codec: Codec<T>, bytes: Bytes): T {
 ```
 
 `Value<C>` uses `infer`: "if C is a `Codec` of some T, give me that T". It lets the type
-of a whole structure fall out of its codec, as the next lesson shows off.
+of a whole structure fall out of its codec, as [the next lesson](./05-sequences-and-records.md) shows off.
 
 ## Integers
 
@@ -114,7 +114,7 @@ reach 2^64 (`bigint`, [lesson 1.2](../01-bytes-and-numbers/02-numbers.md)) and c
 
 `json as number` tells TypeScript "trust me, the vectors write a number here". The test
 vectors are well-formed, so the first pass trusts them; checking them is a job for the
-hardening pass.
+[hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md).
 
 ## Bytes
 

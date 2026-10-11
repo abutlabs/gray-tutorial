@@ -122,6 +122,7 @@ function prose(text: string): string {
   return text.replace(/```[\s\S]*?```|`[^`\n]*`|!?\[[^\]]*\]\([^)]*\)|^#.*$|<[^>\n]+>/gm, " ");
 }
 const pages = readdirSync(LESSONS, { recursive: true }).map(String).filter((f) => f.endsWith(".md"));
+const HARDENING = "https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md";
 const lessonAt = new Map(parts.flatMap((p) => p.lessons).map((l) => [l.file, l.id]));
 
 // As the Rust Book links every cross-reference: a reader can always follow one.
@@ -148,6 +149,24 @@ test("every mention of a part is a link to its page", () => {
     }
   }
   assert.deepEqual(plain, []);
+});
+
+// "The next lesson" links to it, and "the hardening pass" to HARDENING.md, where the
+// shortcuts are listed: a reader can follow either.
+test("the next lesson and the hardening pass are links, to the right place", () => {
+  const all = parts.flatMap((p) => p.lessons);
+  const problems: string[] = [];
+  for (const md of pages) {
+    const text = readFileSync(join(LESSONS, md), "utf8");
+    for (const [plain] of prose(text).matchAll(/\b(next\s+lesson|hardening\s+pass)\b/gi)) problems.push(`${md}: ${plain}`);
+    const at = all.findIndex((l) => l.file === md);
+    for (const [, words, href] of text.matchAll(/\[([^\]]*\b(?:next\s+lesson|hardening\s+pass)\b[^\]]*)\]\(([^)]*)\)/gi)) {
+      const want = /hardening/i.test(words) ? HARDENING : all[at + 1]?.file;
+      const got = /^https:/.test(href) ? href : join(dirname(md), href);
+      if (got !== want) problems.push(`${md}: [${words}] goes to ${href}`);
+    }
+  }
+  assert.deepEqual(problems, []);
 });
 
 // The code font means "exactly this code", and `bigint`s isn't code (the Book's style guide).

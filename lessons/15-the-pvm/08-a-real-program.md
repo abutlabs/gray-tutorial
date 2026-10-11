@@ -399,7 +399,7 @@ let init_registers (args : bytes) : int64 array =
 RA, SP, A0, A1: lasair's comments use the register names from RISC-V, the instruction set
 the PVM is based on. The return address, the stack pointer, the first two arguments: the
 same jobs your registers 0, 1, 7 and 8 do. lasair also checks Y's size rule, the one the
-note above leaves for the hardening pass.
+note above leaves for the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md).
 
 </details>
 

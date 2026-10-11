@@ -150,10 +150,10 @@ teaching. What we take from it, each with its reason. "Checked" means a test enf
 - **Quote what you explain.** After a long snippet, quote again the two to four lines the
   text explains, where it explains them. *Why:* nobody has to scroll back to find "the line
   with `#at`".
-- **Link every reference.** "lesson 2.3" and "Part 8" are always links (checked). When a lesson uses
-  something a later one explains, give the minimum ("for now, all you need to know is ...")
-  and link forward. *Why:* the tutorial reads as one connected whole, and a promise never
-  leaves the reader stuck.
+- **Link every reference.** "lesson 2.3", "Part 8", "the next lesson" and "the hardening
+  pass" are always links (checked). When a lesson uses something a later one explains,
+  give the minimum ("for now, all you need to know is ...") and link forward. *Why:* the
+  tutorial reads as one connected whole, and a promise never leaves the reader stuck.
 - **Italics for a new word.** In the body, a term from *New words* is in italics where it's
   first used. *Why:* the reader can match the use to the definition.
 - **Tangents in a note.** A side story (why `bigint`, how Node strips types) goes in a

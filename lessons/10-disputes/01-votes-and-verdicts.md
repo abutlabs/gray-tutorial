@@ -42,7 +42,7 @@ count is the *vote split*:
 | ⌊\|K\|/3⌋ (2 on tiny, 341 on full) | **wonky**: nobody can tell |
 
 **What the state keeps.** ψ (C(5), [lesson 6.2](../06-state-and-merklization/02-state-keys.md)) holds three sets of report hashes, good,
-bad and wonky, plus the offenders' keys (next lesson). Each verdict's report joins the
+bad and wonky, plus the offenders' keys ([next lesson](./02-culprits-and-faults.md)). Each verdict's report joins the
 set of its outcome. Sets in the state are kept sorted.
 
 ## The tests
