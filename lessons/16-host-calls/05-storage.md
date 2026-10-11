@@ -6,6 +6,13 @@ Every service has a little key-value store of its own in the state: its *storage
 to be able to afford it. When they're done, eight of the accumulate vectors' services run
 to the same gas *and* leave exactly the storage the vectors expect.
 
+## New words
+
+- **Storage.** A service's own key-value store in the state. *Example:* a service writes
+  the key "last" with some bytes, and reads it back next time.
+
+It's in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 **`read`** (host call 4, App. B.5, Ω_R) looks a key up in a service's storage. φ₇ says

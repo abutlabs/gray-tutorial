@@ -6,10 +6,19 @@ later block brings the data in its preimages extrinsic ([lesson 4.1](../04-block
 it really is what was asked for (its hash says so), and hands it over. This lesson is
 that handover, and it starts [Part 14](./index.md).
 
+## New words
+
+- **Request.** A service asking for a preimage by its hash and length. Its *history* is a
+  short list of slots: asked for, provided, forgotten. *Example:* `[]`, still waiting.
+- **`Map`.** JavaScript's lookup table, from keys to values. *Example:* the state's
+  entries, each found by its key in hex.
+
+Both are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
-§9 and §12. For every piece of data a service has asked for, it keeps a **request**,
-under [lesson 6.2](../06-state-and-merklization/02-state-keys.md)'s `requestKey(s, H(data), length)`. Its value is a short **history**,
+§9 and §12. For every piece of data a service has asked for, it keeps a *request*,
+under [lesson 6.2](../06-state-and-merklization/02-state-keys.md)'s `requestKey(s, H(data), length)`. Its value is a short *history*,
 the slots of its life so far:
 
 | History | Means |

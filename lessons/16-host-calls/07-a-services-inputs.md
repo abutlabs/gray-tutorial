@@ -13,8 +13,11 @@ gas and the byte of storage.
   root, the authorizer and its trace, the payload's hash, the gas and the result. An
   input that starts with a 0. *Example:* a report with two digests for one service gives
   that service two operands.
+- **Always-accumulate service.** χ_Z. A service that accumulates in every block, on a
+  fixed amount of free gas, whether or not work came in for it. *Example:* in the
+  `always_accumulate` vectors, service 1729 runs with 100,000 free gas.
 
-It's in the [glossary](../glossary.md).
+Both are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
