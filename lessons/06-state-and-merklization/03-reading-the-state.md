@@ -26,7 +26,7 @@ Appendix D's T says what each key's value is. Three of them:
 | C(6) | η, entropy: four hashes, newest first, no length in front | `seqN(hash, 4)` |
 | C(8) | κ, this epoch's validators, with their length in front | `seq(ValidatorKey)` |
 
-A **validator key** (§6) is 336 bytes, four keys for four jobs: Bandersnatch (32 bytes),
+A *validator key* (§6) is 336 bytes, four keys for four jobs: Bandersnatch (32 bytes),
 Ed25519 (32), BLS (144) and metadata (128). You met the first two in [lesson 4.6](../04-blocks/06-the-header.md), where
 an epoch mark carries just those. The state keeps all four.
 

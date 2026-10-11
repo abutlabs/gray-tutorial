@@ -4,7 +4,7 @@ Every JAM header carries `parent_state_root`: 32 bytes that stand for the *entir
 of the chain. Every validator's keys, every service's code and storage, every pending
 report: all of it, behind one hash. Change a single byte anywhere, and the root changes.
 How do you hash a whole world, and still be able to prove one small piece of it later?
-With a **trie**. This lesson builds one and checks it against 400 real states.
+With a *trie*. This lesson builds one and checks it against 400 real states.
 
 ## New words
 
@@ -15,17 +15,20 @@ With a **trie**. This lesson builds one and checks it against 400 real states.
   which.
 - **Merklization.** Hashing a whole trie down to one root, so that any one entry can later
   be proven with a few hashes. *Example:* 400 real states, each down to 32 bytes.
+- **State root.** One 32-byte hash that fingerprints the whole state, through a trie. Two
+  clients agree on the state exactly when they agree on the root. *Example:* a header's
+  `parent_state_root`.
 
-All three are in the [glossary](../glossary.md).
+All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
 Appendix D does it in two stages:
 
-1. **Serialization** turns the state into a list of entries: each a 31-byte **key** and a
+1. *Serialization* turns the state into a list of entries: each a 31-byte *key* and a
    value of any length. (Which key holds what is [the next lesson](./02-state-keys.md). Today they're just
    bytes.)
-2. **Merklization** turns those entries into one 32-byte root. That's today.
+2. *Merklization* turns those entries into one 32-byte root. That's today.
 
 The trie is binary: it sorts entries by their key's bits, most significant first. Every
 node is exactly 64 bytes, and its first bit says what kind it is.
