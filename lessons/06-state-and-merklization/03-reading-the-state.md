@@ -5,7 +5,6 @@ value in the state is an *encoding*, so the codecs you built in Part 2 can read 
 lesson reads three components, the time, the entropy and the validators, and checks each
 one against something completely independent: the blocks themselves.
 
-
 ## New words
 
 - **Validator key.** Everything the chain knows about one validator: four keys for four
@@ -16,6 +15,7 @@ one against something completely independent: the blocks themselves.
   bytes 64 to 207 of a validator key.
 
 All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 Appendix D's T says what each key's value is. Three of them:

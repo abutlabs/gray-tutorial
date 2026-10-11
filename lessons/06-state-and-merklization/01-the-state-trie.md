@@ -6,7 +6,6 @@ report: all of it, behind one hash. Change a single byte anywhere, and the root 
 How do you hash a whole world, and still be able to prove one small piece of it later?
 With a **trie**. This lesson builds one and checks it against 400 real states.
 
-
 ## New words
 
 - **Trie.** A tree that files entries by the bits of their keys: 0 goes left, 1 goes
@@ -18,6 +17,7 @@ With a **trie**. This lesson builds one and checks it against 400 real states.
   be proven with a few hashes. *Example:* 400 real states, each down to 32 bytes.
 
 All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 Appendix D does it in two stages:

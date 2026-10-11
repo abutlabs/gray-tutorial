@@ -5,7 +5,6 @@ three validators from the core that did the work sign it, putting their names (a
 eventually, their stake) on "this report is correct". A signed report is a
 **guarantee**, and guarantees are how work from the cores reaches the chain.
 
-
 ## New words
 
 - **Guarantee.** A work-report signed by the validators who vouch for it. *Example:* one

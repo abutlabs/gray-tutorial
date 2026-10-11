@@ -10,7 +10,6 @@ Next up is the block header, and it has two quirks your codec can't handle yet:
 
 Two small codecs, and your toolbox is complete for the whole block.
 
-
 ## New words
 
 - **Option (discriminator).** A value that may be missing, with a byte in front saying

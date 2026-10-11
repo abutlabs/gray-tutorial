@@ -4,13 +4,13 @@ Drumroll. You have a header (4.6) and all five parts of an extrinsic (4.1 to 4.4
 block is just the two together. This lesson is short on purpose: after everything you've
 built, the whole block is two little records, and then your client reads real JAM blocks.
 
-
 ## New words
 
 - **Block.** A header plus an extrinsic: everything the chain adds in one slot.
   *Example:* `block.bin` in the codec vectors.
 
 It's in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §4 says a block B is a header H and an extrinsic E, and the extrinsic is its five parts.

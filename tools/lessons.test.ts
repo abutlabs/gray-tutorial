@@ -123,6 +123,23 @@ test("every lesson closes with What you have", () => {
   }
 });
 
+// Markdown forgives a heading glued to the line above it, and blank lines doubled, but the
+// source reads worse for it, and an editor's outline can miss such a heading. Code aside.
+test("every heading has a blank line above it, and no blank line is doubled", () => {
+  const problems: string[] = [];
+  for (const file of readdirSync(LESSONS, { recursive: true }).map(String).filter((f) => f.endsWith(".md"))) {
+    const lines = readFileSync(join(LESSONS, file), "utf8").split("\n");
+    let code = false;
+    lines.forEach((line, i) => {
+      if (line.startsWith("```")) code = !code;
+      if (code || i === 0) return;
+      if (/^#{1,6} /.test(line) && lines[i - 1].trim() !== "") problems.push(`${file}:${i + 1} glued: ${line}`);
+      if (line.trim() === "" && lines[i - 1].trim() === "") problems.push(`${file}:${i + 1} a second blank line`);
+    });
+  }
+  assert.deepEqual(problems, []);
+});
+
 // .vscode/launch.json hands the debugger over in 1.2 (WRITING.md): each program made up to
 // then has a configuration, named for the lesson that makes it. Tests have only the two
 // for any lesson: all of them, and the open file.

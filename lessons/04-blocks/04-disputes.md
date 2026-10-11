@@ -6,7 +6,6 @@ blocks: they vote, a verdict is recorded, and whoever vouched for the bad report
 a **culprit**. Validators who voted the wrong way are recorded as **faults**. It's the
 most dramatic part of the extrinsic, and the last one.
 
-
 ## New words
 
 - **Verdict.** The votes of two thirds of the validators, plus one, on one report.

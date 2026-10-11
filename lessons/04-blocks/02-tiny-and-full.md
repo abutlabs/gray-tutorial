@@ -8,7 +8,6 @@ in folders named after them, and until now every structure looked the same in bo
 Today that changes. Meet the first structure whose *shape* depends on the size of the
 network: the assurance.
 
-
 ## New words
 
 - **Configuration.** The numbers that make one JAM bigger than another: how many

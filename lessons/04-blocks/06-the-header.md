@@ -5,7 +5,6 @@ in the chain, who made it, and what's inside, sealed with the author's signature
 node reads every header. It's the most-read structure in JAM, and now your client can
 read it too.
 
-
 ## New words
 
 - **Epoch mark.** At an epoch's first block only: fresh randomness, and the keys of the

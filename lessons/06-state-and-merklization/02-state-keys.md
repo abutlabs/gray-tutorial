@@ -6,7 +6,6 @@ JAM state is made by one of three recipes, which the Gray Paper calls C. Learn t
 recipes, and you know where to find anything: the validators, the clock, a service's
 code.
 
-
 ## New words
 
 - **State key.** The 31-byte key an entry of the state is filed under. *Example:* `0x0b`
@@ -15,6 +14,7 @@ code.
   *Example:* C(11) is τ, the time.
 
 Both are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 Appendix D. Every key is 31 bytes, made one of three ways:
