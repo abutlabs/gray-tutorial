@@ -1,11 +1,20 @@
 # The authorizer pools
 
 Who is allowed to use a core? Not just anyone with a work-package. Each piece of work
-must be *authorized*, by an **authorizer**: a small program, identified by a hash, that
+must be *authorized*, by an *authorizer*: a small program, identified by a hash, that
 decides whether a package may run. Each core keeps a short list of authorizers it
-currently accepts, its **pool**, and a long line of them waiting their turn, its
-**queue**. Every block, the pool changes a little: one goes out, one comes in. This
+currently accepts, its *pool*, and a long line of them waiting their turn, its
+*queue*. Every block, the pool changes a little: one goes out, one comes in. This
 lesson keeps the pools moving, and it's all of [Part 13](./index.md).
+
+## New words
+
+- **Authorizer queue.** ϕ[c]. For each core, 80 authorizer hashes waiting their turn; one
+  joins the core's pool every slot. *Example:* at slot 85, the queue's entry 5 (85 mod
+  80) joins.
+
+It's in the [glossary](../glossary.md), with the authorizer ([lesson 3.1](../03-work-and-reports/01-a-work-package.md)) and its
+pool ([lesson 12.4](../12-guarantees/04-bad-guarantees.md)).
 
 ## What the Gray Paper says
 
