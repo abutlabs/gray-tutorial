@@ -148,8 +148,23 @@ its 2 items and 1 for each of its 50 bytes, 170.
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/services.ts' does not provide an export named 'accountFromJson'
+...
+✖ test/host.test.ts (331.4ms)
+...
+ℹ tests 439
+ℹ suites 0
+ℹ pass 438
+ℹ fail 1
+...
+```
+
+Red: `src/services.ts` doesn't export `accountFromJson` yet, and `src/host.ts` has no
+`info`. Both arrive below, with a small move of `fetch`'s copying on the way.
 
 ## The code
 
@@ -302,11 +317,25 @@ const answer = accumulateHost(TINY, {
 
 ```sh
 npm test
-# prints: info: a service's record, 96 bytes, starting with its code hash
-# prints: service 1729 accumulates on exactly the 16,417 gas the test vector says
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (402.9ms)
+...
+✔ service 1729 accumulates on exactly the 16,417 gas the test vector says (127.6ms)
+✔ info: a service's record, 96 bytes, starting with its code hash (0.3ms)
+✔ its minimum balance comes worked out: 100 + 10 per item + 1 per byte = 170 (0.1ms)
+✔ info about a service that isn't there: NONE (0.1ms)
+...
+ℹ tests 453
+ℹ suites 0
+ℹ pass 453
+ℹ fail 0
+...
+reported 453 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738239858
+...
 ```
 
 Service 1729 still matches, to the gas: its accumulation never asks `info`, so nothing
@@ -334,6 +363,7 @@ out on the spot, as both clients do here, it can't go stale.
 
 ## What you have
 
-A host that knows the accounts, and can tell a service about any of them.
+A host that knows the accounts, and can tell a service about any of them. Looking isn't
+touching: [lesson 16.5](./05-storage.md) lets a service read and write its own storage.
 
 Next: [16.5 Storage](./05-storage.md)

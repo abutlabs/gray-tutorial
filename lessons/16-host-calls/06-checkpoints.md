@@ -7,6 +7,14 @@ lesson gives accumulation its two sets of accounts, the `checkpoint` host call t
 one into the other, and the function that decides at the end which one survives. And with
 those, your client has its first Ψ_A: a whole accumulation, start to finish.
 
+## New words
+
+- **Checkpoint.** A moment a service marks as "keep everything up to here": if it fails
+  later, its changes roll back to the last checkpoint. *Example:* a write, a checkpoint,
+  another write, then a panic: only the first write survives.
+
+It's in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 Ψ_A (App. B.4) runs a service with a *pair* of contexts, X and Y. Both start as the same
@@ -119,8 +127,23 @@ test("accumulate, Ψ_A: service 1729 halts on 16,417 gas, its accounts kept", ()
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/host.ts' does not provide an export named 'accumulate'
+...
+✖ test/host.test.ts (211.2ms)
+...
+ℹ tests 439
+ℹ suites 0
+ℹ pass 438
+ℹ fail 1
+...
+```
+
+Red: `src/host.ts` doesn't export `accumulate` yet. Ψ_A needs the second set of
+accounts, the `checkpoint` call and the collapse, so they come in a few steps below.
 
 ## The code
 
@@ -299,11 +322,24 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm test
-# prints: a panic undoes every write since the last checkpoint
-# prints: accumulate, Ψ_A: service 1729 halts on 16,417 gas, its accounts kept
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (246.3ms)
+...
+✔ a panic undoes every write since the last checkpoint (0.1ms)
+✔ checkpoint: what's done before it survives a panic after it (0.1ms)
+✔ accumulate, Ψ_A: service 1729 halts on 16,417 gas, its accounts kept (62.2ms)
+...
+ℹ tests 459
+ℹ suites 0
+ℹ pass 459
+ℹ fail 0
+...
+reported 459 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738269977
+...
 ```
 
 ## Watch it
@@ -312,10 +348,19 @@ npm run typecheck
 
 ```sh
 node bin/host.ts
-# prints: host call 2 (fetch): φ₇ = 122, 99367 gas left
-# prints: the service stops: "halt", using 16417 gas
-# prints: the test vector says: 16417
-# prints: reported to Grafana
+```
+
+```text
+host call 2 (fetch): φ₇ = 122, 99367 gas left
+host call 1 (grow_heap): φ₇ = 51, 98728 gas left
+host call 1 (grow_heap): φ₇ = 51, 97953 gas left
+host call 2 (fetch): φ₇ = 122, 96859 gas left
+host call 100 (log, from JIP-1): φ₇ = WHAT, 87377 gas left
+host call 2 (fetch): φ₇ = 1, 86270 gas left
+host call 2 (fetch): φ₇ = 1, 84708 gas left
+the service stops: "halt", using 16417 gas
+the test vector says: 16417
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791738276309
 ```
 
 The same conversation as [lesson 16.3](./03-growing-the-heap.md), through Ψ_A now. And across the accumulate vectors,
@@ -347,6 +392,7 @@ holds so far. It will hold more.
 ## What you have
 
 A whole accumulation, Ψ_A, that keeps what a service does when it succeeds, and falls
-back to its last checkpoint when it doesn't.
+back to its last checkpoint when it doesn't. So far each service has run with no inputs:
+[lesson 16.7](./07-a-services-inputs.md) hands it the work it was actually given.
 
 Next: [16.7 A service's inputs](./07-a-services-inputs.md)

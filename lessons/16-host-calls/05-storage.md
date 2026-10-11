@@ -92,8 +92,23 @@ adds one item and 34 + 4 + 3 bytes. Storing 1,000 bytes instead would push a_t t
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/host.ts' does not provide an export named 'FULL'
+...
+✖ test/host.test.ts (274.9ms)
+...
+ℹ tests 439
+ℹ suites 0
+ℹ pass 438
+ℹ fail 1
+...
+```
+
+Red: `src/host.ts` doesn't export `FULL`, `read` or `write` yet. They come together, with
+the account growing its storage first.
 
 ## The code
 
@@ -218,18 +233,30 @@ export function accumulateHost(config: Config, a: Accumulation): Host {
 
 ```sh
 npm test
-# prints: write stores a value under a key, and the footprint grows
-# prints: FULL: a service can't keep more than its balance covers
-# prints: service 1729 accumulates on exactly the 16,417 gas the test vector says
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (230.8ms)
+...
+✔ write stores a value under a key, and the footprint grows (0.2ms)
+✔ read finds it again; writing an empty value deletes it (0.1ms)
+✔ FULL: a service can't keep more than its balance covers (0.2ms)
+...
+ℹ tests 456
+ℹ suites 0
+ℹ pass 456
+ℹ fail 0
+...
+reported 456 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738256886
+...
 ```
 
 Across the accumulate vectors, eight services in seven vectors (`always_accumulate-2`,
 `process_one_immediate_report-1` and both `same_round_storage_isolation` among them) now
-finish with the vectors' gas to the unit and the vectors' storage to the byte. Part 17,
-which builds each service's inputs from the work reports, puts them all in tests. Most
+finish with the vectors' gas to the unit and the vectors' storage to the byte. [Part
+17](../17-accumulation/index.md), which builds each service's inputs from the work reports, puts them all in tests. Most
 write a key called "last". Forty more services get as far as `checkpoint`, the next host
 call.
 
@@ -251,6 +278,8 @@ every branch too, since it compares the account as it would be, whatever the wri
 
 ## What you have
 
-Services that can remember things between accumulations, and pay for what they keep.
+Services that can remember things between accumulations, and pay for what they keep. But
+a service that writes and then panics leaves half a job behind: [lesson 16.6](./06-checkpoints.md) decides
+what survives.
 
 Next: [16.6 Checkpoints](./06-checkpoints.md)
