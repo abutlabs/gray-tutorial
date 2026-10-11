@@ -94,8 +94,24 @@ test("an item accumulation doesn't have: NONE; nowhere to put it: panic", () => 
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/host.ts' does not provide an export named 'accumulateHost'
+...
+✖ test/host.test.ts (241.1ms)
+...
+ℹ tests 439
+ℹ suites 0
+ℹ pass 438
+ℹ fail 1
+...
+```
+
+Red: `src/host.ts` doesn't export `fetch` or `accumulateHost` yet. Fetch needs the
+constants, the items and the host that hands them out, so they come in one snippet,
+after `Config` grows.
 
 ## The code
 
@@ -256,10 +272,26 @@ calls arrive, they join its `switch`.
 
 ```sh
 npm test
-# prints: fetch copies an item into memory, and says how long it is
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (254.3ms)
+...
+✔ item 0: the protocol constants, 122 bytes, and tiny has 2 cores (0.3ms)
+✔ fetch copies an item into memory, and says how long it is (0.6ms)
+✔ asking for no bytes at all: just the length (0.2ms)
+✔ part of an item: from byte φ₈, and at most φ₉ bytes of it (0.2ms)
+✔ an item accumulation doesn't have: NONE; nowhere to put it: panic (0.6ms)
+...
+ℹ tests 447
+ℹ suites 0
+ℹ pass 447
+ℹ fail 0
+...
+reported 447 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738018596
+...
 ```
 
 ## Watch it
@@ -321,17 +353,25 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/host.ts
-# prints: host call 2 (fetch): φ₇ = 122, 99367 gas left
-# prints: host call 1 (grow_heap): φ₇ = WHAT
-# prints: the service stops: "halt", with 82133 gas left
-# prints: reported to Grafana
+```
+
+```text
+host call 2 (fetch): φ₇ = 122, 99367 gas left
+host call 1 (grow_heap): φ₇ = WHAT, 98003 gas left
+host call 1 (grow_heap): φ₇ = WHAT, 96503 gas left
+host call 2 (fetch): φ₇ = 122, 95409 gas left
+host call 100 (log, from JIP-1): φ₇ = WHAT, 85927 gas left
+host call 2 (fetch): φ₇ = 1, 84820 gas left
+host call 2 (fetch): φ₇ = 1, 83258 gas left
+the service stops: "halt", with 82133 gas left
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791738023798
 ```
 
 Now there's a conversation. Service 1729 asks for the constants (122 bytes, so it asks a
 second time with room for them), tries `grow_heap` twice, logs something, asks for its
 inputs (one byte: a sequence of none), and halts. It spent 17,867 gas. The test vector
 says it should have spent 16,417. The difference, 1,450, is hiding in those two WHATs:
-each cost 1,000, and the next lesson shows what `grow_heap` really costs. The *Host calls*
+each cost 1,000, and [lesson 16.3](./03-growing-the-heap.md) shows what `grow_heap` really costs. The *Host calls*
 panel has the whole conversation.
 
 ![Host calls panel](./images/02-host-calls.png)
@@ -357,6 +397,6 @@ sizes, and were 134 bytes long.
 ## What you have
 
 A host that answers two questions, gas and fetch, and a real service that runs to a clean
-halt. 1,450 gas from matching the test vector.
+halt. 1,450 gas from matching the test vector, and [lesson 16.3](./03-growing-the-heap.md) closes the gap.
 
 Next: [16.3 Growing the heap](./03-growing-the-heap.md)

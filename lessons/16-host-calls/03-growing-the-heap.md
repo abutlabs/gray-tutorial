@@ -134,8 +134,23 @@ the vector's own record.
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/host.ts' does not provide an export named 'growHeap'
+...
+✖ test/host.test.ts (230.5ms)
+...
+ℹ tests 439
+ℹ suites 0
+ℹ pass 438
+ℹ fail 1
+...
+```
+
+Red: `src/host.ts` doesn't export `growHeap` yet. The tests reach it through
+`accumulateHost`, so both change together below.
 
 ## The code
 
@@ -183,6 +198,15 @@ export function growHeap(m: Machine, code: ServiceCode): HostExit {
 `h` counts the writable pages between a and b. Only the pages a program has are in the
 memory map, so that's a short walk, not a million steps. New pages come from [lesson 15.4](../15-the-pvm/04-memory.md)'s
 `addPages`, zeroed and writable.
+
+> [!NOTE]
+> **The simple road, and a rule on the move.** When growing would cost more gas than is
+> left, Gray Paper 0.8.0 leaves the gas as it was, and so does `growHeap`. The 0.8.0 test
+> vectors already follow a later change to the Gray Paper, its pull request 533: the gas
+> drains to zero, so all of it counts as used. Service 1729 never runs short while
+> growing, so the two agree here. And `h` counts writable pages, which assumes they have
+> no gaps between a and b. Both wait in the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md). The Gray Paper keeps
+> changing, so a client says which version it follows.
 
 **Replace in** `src/host.ts`
 
@@ -233,11 +257,24 @@ const answer = accumulateHost(TINY, code, fromHex(vector.pre_state.entropy), [])
 
 ```sh
 npm test
-# prints: grow_heap: w starts at page 48, and with its heap page the heap ends at 50
-# prints: service 1729 accumulates on exactly the 16,417 gas the test vector says
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (241.1ms)
+...
+✔ grow_heap: w starts at page 48, and with its heap page the heap ends at 50 (0.3ms)
+✔ growing it by 3 pages costs 121 more gas a page, and page 52 is writable now (0.1ms)
+✔ service 1729 accumulates on exactly the 16,417 gas the test vector says (45.7ms)
+...
+ℹ tests 450
+ℹ suites 0
+ℹ pass 450
+ℹ fail 0
+...
+reported 450 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738028819
+...
 ```
 
 ## Watch it
@@ -255,10 +292,19 @@ run.event("stop", { exit: JSON.stringify(exit), gas: Number(machine.gas) });
 
 ```sh
 node bin/host.ts
-# prints: host call 1 (grow_heap): φ₇ = 51, 98728 gas left
-# prints: the service stops: "halt", using 16417 gas
-# prints: the test vector says: 16417
-# prints: reported to Grafana
+```
+
+```text
+host call 2 (fetch): φ₇ = 122, 99367 gas left
+host call 1 (grow_heap): φ₇ = 51, 98728 gas left
+host call 1 (grow_heap): φ₇ = 51, 97953 gas left
+host call 2 (fetch): φ₇ = 122, 96859 gas left
+host call 100 (log, from JIP-1): φ₇ = WHAT, 87377 gas left
+host call 2 (fetch): φ₇ = 1, 86270 gas left
+host call 2 (fetch): φ₇ = 1, 84708 gas left
+the service stops: "halt", using 16417 gas
+the test vector says: 16417
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791738033858
 ```
 
 Now the bin compares its answer with the vector's. There it is: 16,417, to the last unit
@@ -289,6 +335,7 @@ pages. Same answer, more detective work. Your `accumulateHost` simply hands
 ## What you have
 
 A host that answers gas, fetch and grow_heap, and a real service's accumulation that
-matches the test vector to the last unit of gas. Next: the host calls that change things.
+matches the test vector to the last unit of gas. So far the host only answers questions;
+[lesson 16.4](./04-info.md) starts on the host calls about service accounts, with `info`.
 
 Next: [16.4 Info](./04-info.md)

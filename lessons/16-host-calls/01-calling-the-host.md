@@ -6,9 +6,16 @@ the time: how much gas is left? What work came in? What's in my storage? This le
 gives the machine a host that answers, so it can carry on. It answers just one question,
 for now.
 
+## New words
+
+- **Host call.** A program asking the client running it for something it can't do alone:
+  the gas left, an input, a storage read. *Example:* `ecalli 0`, "how much gas is left?".
+
+It's in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
-**Ψ_H** (App. A.6) runs the machine, and on each host call h hands the machine to a host
+**Ψ_H** (App. A.6) runs the machine, and on each *host call* h hands the machine to a host
 function. The host answers by changing the gas, the registers or the memory, and then
 either the machine carries on, at the instruction after the `ecalli`, or it stops: halt,
 panic, or out of gas.
@@ -77,8 +84,23 @@ block leaves 900, and asking leaves 852.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/host.ts' imported from …/client/test/host.test.ts
+...
+✖ test/host.test.ts (166.8ms)
+...
+ℹ tests 439
+ℹ suites 0
+ℹ pass 438
+ℹ fail 1
+...
+```
+
+Red: `src/host.ts` doesn't exist yet. Ψ_H, the charge, `gas` and the answer to an
+unknown call only work together, so they come as one file.
 
 ## The code
 
@@ -159,11 +181,25 @@ it ran out.)
 
 ```sh
 npm test
-# prints: gas: the program asks how much is left, pays 48 to ask, and carries on
-# prints: a host call nobody knows: WHAT, for 1,000 gas
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (339.5ms)
+...
+✔ gas: the program asks how much is left, pays 48 to ask, and carries on (1.9ms)
+✔ a host call nobody knows: WHAT, for 1,000 gas (0.8ms)
+✔ too poor to ask: a host call can run out of gas too (0.2ms)
+✔ 28 host calls, numbered as in the GP: fetch is 2, provide 27 (0.1ms)
+...
+ℹ tests 442
+ℹ suites 0
+ℹ pass 442
+ℹ fail 0
+...
+reported 442 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738006180
+...
 ```
 
 ## Watch it
@@ -220,9 +256,12 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/host.ts
-# prints: host call 2 (fetch): WHAT, 98757 gas left
-# prints: the service stops: "panic"
-# prints: reported to Grafana
+```
+
+```text
+host call 2 (fetch): WHAT, 98757 gas left
+the service stops: "panic", with 98733 gas left
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791738012768
 ```
 
 A real service this time: 1729, from the accumulate test vectors. Its very first host call
@@ -253,6 +292,7 @@ when debugging, it can print the message before saying WHAT.
 ## What you have
 
 A machine that can ask, and a host that answers. One question so far: how much gas is
-left?
+left? The service you watched wanted something else first, `fetch`, and [lesson 16.2](./02-fetch.md)
+answers it.
 
 Next: [16.2 Fetch](./02-fetch.md)
