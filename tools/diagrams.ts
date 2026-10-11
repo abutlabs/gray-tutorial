@@ -163,10 +163,75 @@ ${parts.join("\n")}
 `;
 }
 
+/** Z (GP §6): outside in. The first, the last, the second, the second to last, ... */
+function outsideIn<T>(items: T[]): T[] {
+  const out: T[] = [];
+  for (let i = 0; i < items.length; i++) out.push(i % 2 === 0 ? items[i / 2] : items[items.length - 1 - (i - 1) / 2]);
+  return out;
+}
+
+/** Lesson 8.4's lottery on tiny (E = 12, Y = 10): the close, the winners, their seats, outside in. */
+export function ticketContest(): string {
+  const E = 12, Y = 10, CELL = 46, PITCH = 52, X0 = 21;
+  const x = (i: number) => X0 + i * PITCH;
+  const seats = outsideIn([...Array(E).keys()]); // slot s of the next epoch holds ticket seats[s]
+  const parts: string[] = [
+    `<text class="row" x="${X0}" y="24">this epoch: tickets enter in slots 0 to ${Y - 1}</text>`,
+    `<text class="row" x="${X0}" y="138">the ${E} winners, sorted by id: t0 is the lowest, the best</text>`,
+    `<text class="row" x="${X0}" y="326">the next epoch: each slot's sealer, outside in</text>`,
+  ];
+  for (let i = 0; i < E; i++) {
+    parts.push(
+      `<rect class="${i < Y ? "open" : "closed"}" x="${x(i)}" y="34" width="${CELL}" height="34" rx="5"/>`,
+      `<text x="${x(i) + CELL / 2}" y="56">${i}</text>`,
+      `<rect class="ticket" x="${x(i)}" y="148" width="${CELL}" height="34" rx="5"/>`,
+      `<text x="${x(i) + CELL / 2}" y="170">t${i}</text>`,
+      `<line class="seat" x1="${x(i) + CELL / 2}" y1="182" x2="${x(seats.indexOf(i)) + CELL / 2}" y2="242"/>`,
+      `<rect class="slot" x="${x(i)}" y="242" width="${CELL}" height="34" rx="5"/>`,
+      `<text x="${x(i) + CELL / 2}" y="264">t${seats[i]}</text>`,
+      `<text class="small" x="${x(i) + CELL / 2}" y="294">${i}</text>`,
+    );
+  }
+  const close = x(Y) - (PITCH - CELL) / 2;
+  parts.push(
+    `<line class="close" x1="${close}" y1="28" x2="${close}" y2="76"/>`,
+    `<text class="note" x="${X0}" y="92">at the dashed line, Y = ${Y}, the lottery closes:</text>`,
+    `<text class="note" x="${X0}" y="108">the block that crosses it carries the tickets mark</text>`,
+  );
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 336" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">
+<style>
+  text { fill: #3c3c43; text-anchor: middle; }
+  .row { text-anchor: start; font-size: 13px; fill: #3c3c43; }
+  .note { fill: #c2410c; font-size: 12px; text-anchor: start; }
+  .small { fill: #67676c; font-size: 11px; }
+  .open { fill: #e8f0fe; stroke: #5b8def; stroke-width: 1.5; }
+  .closed { fill: none; stroke: #9a9aa0; stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .ticket { fill: #fdf3e1; stroke: #d39b2a; stroke-width: 1.5; }
+  .slot { fill: #e6f6ef; stroke: #3fa97a; stroke-width: 1.5; }
+  .seat { stroke: #9a9aa0; stroke-width: 1.2; }
+  .close { stroke: #c2410c; stroke-width: 2; stroke-dasharray: 5 3; }
+  @media (prefers-color-scheme: dark) {
+    text, .row { fill: #dfdfd6; }
+    .note { fill: #ff9a5c; }
+    .small { fill: #a8a8a0; }
+    .open { fill: #1e2a44; stroke: #7aa2f7; }
+    .closed { stroke: #6b6b72; }
+    .ticket { fill: #3a2e14; stroke: #e0b04a; }
+    .slot { fill: #1b3329; stroke: #4fc08d; }
+    .seat { stroke: #6b6b72; }
+    .close { stroke: #ff9a5c; }
+  }
+</style>
+${parts.join("\n")}
+</svg>
+`;
+}
+
 /** Every diagram: where it goes, and what draws it. */
 export const DIAGRAMS: Record<string, () => string> = {
   "02-codec/images/06-work-item-bytes.svg": workItemBytes,
   "06-state-and-merklization/images/01-state-trie.svg": stateTrie,
+  "08-safrole/images/04-ticket-contest.svg": ticketContest,
 };
 
 if (import.meta.main) {

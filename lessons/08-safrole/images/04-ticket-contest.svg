@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 336" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">
+<style>
+  text { fill: #3c3c43; text-anchor: middle; }
+  .row { text-anchor: start; font-size: 13px; fill: #3c3c43; }
+  .note { fill: #c2410c; font-size: 12px; text-anchor: start; }
+  .small { fill: #67676c; font-size: 11px; }
+  .open { fill: #e8f0fe; stroke: #5b8def; stroke-width: 1.5; }
+  .closed { fill: none; stroke: #9a9aa0; stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .ticket { fill: #fdf3e1; stroke: #d39b2a; stroke-width: 1.5; }
+  .slot { fill: #e6f6ef; stroke: #3fa97a; stroke-width: 1.5; }
+  .seat { stroke: #9a9aa0; stroke-width: 1.2; }
+  .close { stroke: #c2410c; stroke-width: 2; stroke-dasharray: 5 3; }
+  @media (prefers-color-scheme: dark) {
+    text, .row { fill: #dfdfd6; }
+    .note { fill: #ff9a5c; }
+    .small { fill: #a8a8a0; }
+    .open { fill: #1e2a44; stroke: #7aa2f7; }
+    .closed { stroke: #6b6b72; }
+    .ticket { fill: #3a2e14; stroke: #e0b04a; }
+    .slot { fill: #1b3329; stroke: #4fc08d; }
+    .seat { stroke: #6b6b72; }
+    .close { stroke: #ff9a5c; }
+  }
+</style>
+<text class="row" x="21" y="24">this epoch: tickets enter in slots 0 to 9</text>
+<text class="row" x="21" y="138">the 12 winners, sorted by id: t0 is the lowest, the best</text>
+<text class="row" x="21" y="326">the next epoch: each slot's sealer, outside in</text>
+<rect class="open" x="21" y="34" width="46" height="34" rx="5"/>
+<text x="44" y="56">0</text>
+<rect class="ticket" x="21" y="148" width="46" height="34" rx="5"/>
+<text x="44" y="170">t0</text>
+<line class="seat" x1="44" y1="182" x2="44" y2="242"/>
+<rect class="slot" x="21" y="242" width="46" height="34" rx="5"/>
+<text x="44" y="264">t0</text>
+<text class="small" x="44" y="294">0</text>
+<rect class="open" x="73" y="34" width="46" height="34" rx="5"/>
+<text x="96" y="56">1</text>
+<rect class="ticket" x="73" y="148" width="46" height="34" rx="5"/>
+<text x="96" y="170">t1</text>
+<line class="seat" x1="96" y1="182" x2="148" y2="242"/>
+<rect class="slot" x="73" y="242" width="46" height="34" rx="5"/>
+<text x="96" y="264">t11</text>
+<text class="small" x="96" y="294">1</text>
+<rect class="open" x="125" y="34" width="46" height="34" rx="5"/>
+<text x="148" y="56">2</text>
+<rect class="ticket" x="125" y="148" width="46" height="34" rx="5"/>
+<text x="148" y="170">t2</text>
+<line class="seat" x1="148" y1="182" x2="252" y2="242"/>
+<rect class="slot" x="125" y="242" width="46" height="34" rx="5"/>
+<text x="148" y="264">t1</text>
+<text class="small" x="148" y="294">2</text>
+<rect class="open" x="177" y="34" width="46" height="34" rx="5"/>
+<text x="200" y="56">3</text>
+<rect class="ticket" x="177" y="148" width="46" height="34" rx="5"/>
+<text x="200" y="170">t3</text>
+<line class="seat" x1="200" y1="182" x2="356" y2="242"/>
+<rect class="slot" x="177" y="242" width="46" height="34" rx="5"/>
+<text x="200" y="264">t10</text>
+<text class="small" x="200" y="294">3</text>
+<rect class="open" x="229" y="34" width="46" height="34" rx="5"/>
+<text x="252" y="56">4</text>
+<rect class="ticket" x="229" y="148" width="46" height="34" rx="5"/>
+<text x="252" y="170">t4</text>
+<line class="seat" x1="252" y1="182" x2="460" y2="242"/>
+<rect class="slot" x="229" y="242" width="46" height="34" rx="5"/>
+<text x="252" y="264">t2</text>
+<text class="small" x="252" y="294">4</text>
+<rect class="open" x="281" y="34" width="46" height="34" rx="5"/>
+<text x="304" y="56">5</text>
+<rect class="ticket" x="281" y="148" width="46" height="34" rx="5"/>
+<text x="304" y="170">t5</text>
+<line class="seat" x1="304" y1="182" x2="564" y2="242"/>
+<rect class="slot" x="281" y="242" width="46" height="34" rx="5"/>
+<text x="304" y="264">t9</text>
+<text class="small" x="304" y="294">5</text>
+<rect class="open" x="333" y="34" width="46" height="34" rx="5"/>
+<text x="356" y="56">6</text>
+<rect class="ticket" x="333" y="148" width="46" height="34" rx="5"/>
+<text x="356" y="170">t6</text>
+<line class="seat" x1="356" y1="182" x2="616" y2="242"/>
+<rect class="slot" x="333" y="242" width="46" height="34" rx="5"/>
+<text x="356" y="264">t3</text>
+<text class="small" x="356" y="294">6</text>
+<rect class="open" x="385" y="34" width="46" height="34" rx="5"/>
+<text x="408" y="56">7</text>
+<rect class="ticket" x="385" y="148" width="46" height="34" rx="5"/>
+<text x="408" y="170">t7</text>
+<line class="seat" x1="408" y1="182" x2="512" y2="242"/>
+<rect class="slot" x="385" y="242" width="46" height="34" rx="5"/>
+<text x="408" y="264">t8</text>
+<text class="small" x="408" y="294">7</text>
+<rect class="open" x="437" y="34" width="46" height="34" rx="5"/>
+<text x="460" y="56">8</text>
+<rect class="ticket" x="437" y="148" width="46" height="34" rx="5"/>
+<text x="460" y="170">t8</text>
+<line class="seat" x1="460" y1="182" x2="408" y2="242"/>
+<rect class="slot" x="437" y="242" width="46" height="34" rx="5"/>
+<text x="460" y="264">t4</text>
+<text class="small" x="460" y="294">8</text>
+<rect class="open" x="489" y="34" width="46" height="34" rx="5"/>
+<text x="512" y="56">9</text>
+<rect class="ticket" x="489" y="148" width="46" height="34" rx="5"/>
+<text x="512" y="170">t9</text>
+<line class="seat" x1="512" y1="182" x2="304" y2="242"/>
+<rect class="slot" x="489" y="242" width="46" height="34" rx="5"/>
+<text x="512" y="264">t7</text>
+<text class="small" x="512" y="294">9</text>
+<rect class="closed" x="541" y="34" width="46" height="34" rx="5"/>
+<text x="564" y="56">10</text>
+<rect class="ticket" x="541" y="148" width="46" height="34" rx="5"/>
+<text x="564" y="170">t10</text>
+<line class="seat" x1="564" y1="182" x2="200" y2="242"/>
+<rect class="slot" x="541" y="242" width="46" height="34" rx="5"/>
+<text x="564" y="264">t5</text>
+<text class="small" x="564" y="294">10</text>
+<rect class="closed" x="593" y="34" width="46" height="34" rx="5"/>
+<text x="616" y="56">11</text>
+<rect class="ticket" x="593" y="148" width="46" height="34" rx="5"/>
+<text x="616" y="170">t11</text>
+<line class="seat" x1="616" y1="182" x2="96" y2="242"/>
+<rect class="slot" x="593" y="242" width="46" height="34" rx="5"/>
+<text x="616" y="264">t6</text>
+<text class="small" x="616" y="294">11</text>
+<line class="close" x1="538" y1="28" x2="538" y2="76"/>
+<text class="note" x="21" y="92">at the dashed line, Y = 10, the lottery closes:</text>
+<text class="note" x="21" y="108">the block that crosses it carries the tickets mark</text>
+</svg>
