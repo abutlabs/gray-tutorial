@@ -11,8 +11,10 @@ the outside world, and this lesson fills the two simplest bags.
   *Example:* `attempt` 1, and a 784-byte proof.
 - **Ring VRF proof.** Cryptography that proves *some* validator in a set made something,
   without saying *which*. *Example:* every ticket carries one.
+- **Preimage.** The data behind a hash: if h = H(d), d is h's preimage. Services ask for
+  data by its hash, and blocks deliver it. *Example:* a new version of a service's code.
 
-All three are in the [glossary](../glossary.md).
+All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
@@ -36,7 +38,7 @@ ticket says which of its owner's tries it is (`attempt`, one byte), and carries 
 VRF proof**: 784 bytes of cryptography that prove *some* validator made it without
 revealing *which*. You'll check those proofs in [Part 8](../08-safrole/index.md). Today they're just 784 bytes.
 
-A **preimage** is the data behind a hash. Services can ask for data by its hash, and
+A *preimage* is the data behind a hash. Services can ask for data by its hash, and
 anyone can then deliver it in a block: the requesting service's id (ℰ₄) and the data
 itself, as a blob.
 

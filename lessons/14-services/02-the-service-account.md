@@ -1,10 +1,24 @@
 # The service account
 
-Every service has an **account**: a record of who it is and what it owns. Its code (by
+Every service has an *account*: a record of who it is and what it owns. Its code (by
 hash), its balance, the least gas it'll accept to do work, and a running tally of how
 much state it takes up, because storage on JAM isn't free. A service must keep enough
 balance to cover what it stores, like a deposit. This lesson reads the account out of
 the state, and checks the tally adds up. Then [Part 14](./index.md) is done.
+
+## New words
+
+- **Service.** A program that lives on JAM, with an id, code, a balance and storage. It
+  runs in two stages: refine, on a core, and accumulate, on the chain. *Example:*
+  service 0, in the real state below.
+- **Service account.** A service's record in the state: its code hash, balance, gas
+  minimums, and counts of what it keeps. *Example:* 89 bytes under C(255, s).
+- **Footprint, deposit and minimum balance.** What a service keeps, in items and bytes, is
+  its footprint. Keeping it takes a deposit: the balance must stay at least 100 + 10 per
+  item + 1 per byte, less a free allowance, its minimum balance. *Example:* service 0's
+  footprint is 4 items and 159,534 bytes.
+
+All three are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
@@ -22,12 +36,12 @@ the account's record, 89 bytes:
 | i, items | 4 | things it keeps |
 | r, a, p | 4 + 4 + 4 | created at, last accumulated at, created by (its parent) |
 
-**The footprint**: items is 2 for each request plus 1 for each storage entry; octets is
+*The footprint*: items is 2 for each request plus 1 for each storage entry; octets is
 81 plus the data's length for each request, plus 34 plus the key's and value's lengths
 for each storage entry. (The 81 and the 34 are flat amounts for the bookkeeping around
 each one, on top of the data itself.)
 
-**The minimum balance**, a_t, is max(0, 100 + 10·i + 1·o − f): a base deposit of 100,
+*The minimum balance*, a_t, is max(0, 100 + 10·i + 1·o − f): a base deposit of 100,
 10 per item and 1 per octet, less the free allowance.
 
 ## The tests
