@@ -4,12 +4,14 @@ import { onMounted, watch } from "vue";
 import { listenForKeys, revealActiveLesson } from "./keys.ts";
 import { listenForZoom, makePicturesFocusable } from "./zoom.ts";
 import { listenForResize, placeSideArrows } from "./side-arrows.ts";
+import { reloadOnStaleBuild } from "./stale.ts";
 import "./custom.css";
 
 export default {
   extends: DefaultTheme,
   enhanceApp({ router }) {
     if (typeof window === "undefined") return;
+    reloadOnStaleBuild();
     listenForKeys();
     listenForZoom();
     listenForResize();
