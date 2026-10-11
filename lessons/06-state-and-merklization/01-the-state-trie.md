@@ -58,7 +58,7 @@ second bit to part ways.
 
 Two sets of vectors. The `trie` vectors are made for exactly this: entries in, root out,
 from no entries at all up to ten. (Their keys are 32 bytes, from when the Gray Paper's
-keys were. The trie never looks past byte 31, so the test simply drops the last one.)
+keys were. The trie only ever reads the first 31, so the test simply drops the 32nd.)
 And then real states, from the four traces of [lesson 5.2](../05-hashing-and-signatures/02-the-extrinsic-hash.md): each trace step carries the
 state *before* its block, as key-value entries, and each block's header promises that
 state's root.

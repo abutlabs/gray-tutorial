@@ -7,8 +7,8 @@ one against something completely independent: the blocks themselves.
 
 ## New words
 
-- **Validator key.** Everything the chain knows about one validator: four keys for four
-  jobs, 336 bytes in all. *Example:* its Ed25519 key signs assurances.
+- **Validator key.** Everything the chain knows about one validator: three keys for three
+  jobs, and some metadata, 336 bytes in all. *Example:* its Ed25519 key signs assurances.
 - **Bandersnatch key.** The key a validator uses for the ticket lottery and to seal
   blocks ([Part 8](../08-safrole/index.md)). *Example:* the first 32 of the 336 bytes.
 - **BLS key.** A 144-byte key for signatures that can be combined into one. *Example:*
@@ -26,9 +26,10 @@ Appendix D's T says what each key's value is. Three of them:
 | C(6) | η, entropy: four hashes, newest first, no length in front | `seqN(hash, 4)` |
 | C(8) | κ, this epoch's validators, with their length in front | `seq(ValidatorKey)` |
 
-A *validator key* (§6) is 336 bytes, four keys for four jobs: Bandersnatch (32 bytes),
-Ed25519 (32), BLS (144) and metadata (128). You met the first two in [lesson 4.6](../04-blocks/06-the-header.md), where
-an epoch mark carries just those. The state keeps all four.
+A *validator key* (§6) is 336 bytes: three keys for three jobs, Bandersnatch (32 bytes),
+Ed25519 (32) and BLS (144), then 128 bytes of metadata, which the Gray Paper leaves opaque
+(a validator's network address, say). You met the first two in [lesson 4.6](../04-blocks/06-the-header.md), where an
+epoch mark carries just those. The state keeps all four parts.
 
 And three facts from elsewhere in the Gray Paper, to check your reading against:
 
@@ -211,10 +212,10 @@ with Ed25519 ([Part 5](../05-hashing-and-signatures/index.md)) against keys your
 own codecs ([Part 2](../02-codec/index.md)). And [lesson 6.1](./01-the-state-trie.md) already proved that state is the one the header
 promised. Four parts of the tutorial, in one `assert`.
 
-One honest footnote. The rule says assurances are signed by κ′, the validators *after*
-the block, and your test used κ, *before* it. In these traces the validators never change
-(ι, κ and λ hold the same six), so the two agree. When sets start rotating, in [Part 8](../08-safrole/index.md),
-the difference will matter.
+And the test checks against the right set. The Gray Paper checks an assurance with κ, the
+validators as they were *before* the block (§11: κ, with no prime mark), so the test's choice holds
+even when the sets start rotating, in [Part 8](../08-safrole/index.md). (In these traces they never do: ι, κ
+and λ hold the same six throughout.)
 
 ## Watch it
 
@@ -293,8 +294,9 @@ type validator_keys = {
 
 Ed25519 first, Bandersnatch second: the opposite of the bytes. In lasair that's fine,
 because its decoders are written by hand and read the bytes in their own order. In your
-client the record *is* the byte order ([lesson 2.5](../02-codec/05-sequences-and-records.md)): swap two fields of `ValidatorKey`
-and every key comes out wrong. Try it, and watch the κ test go red.
+client the record *is* the byte order ([lesson 2.5](../02-codec/05-sequences-and-records.md)): swap `bandersnatch` and `ed25519`
+in `ValidatorKey`, and every Ed25519 key comes out wrong. Try it, and watch the κ test go
+red.
 
 </details>
 
