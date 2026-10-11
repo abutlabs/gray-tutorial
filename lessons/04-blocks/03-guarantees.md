@@ -3,7 +3,7 @@
 A work-report doesn't just wander into a block. Somebody has to vouch for it: two or
 three validators from the core that did the work sign it, putting their names (and,
 eventually, their stake) on "this report is correct". A signed report is a
-**guarantee**, and guarantees are how work from the cores reaches the chain.
+*guarantee*, and guarantees are how work from the cores reaches the chain.
 
 ## New words
 
@@ -19,9 +19,9 @@ Both are in the [glossary](../glossary.md).
 
 §11 (*Work Report Guarantees*): a guarantee is three things:
 
-- the **work-report** itself ([lesson 3.3](../03-work-and-reports/03-a-work-report.md));
-- the **timeslot** the guarantors signed it in;
-- a **credential**: two or three signatures, each a validator's index and its Ed25519
+- the *work-report* itself ([lesson 3.3](../03-work-and-reports/03-a-work-report.md));
+- the *timeslot* the guarantors signed it in;
+- a *credential*: two or three signatures, each a validator's index and its Ed25519
   signature.
 
 A block carries at most one guarantee per core, in order of core.

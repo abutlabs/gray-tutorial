@@ -13,8 +13,10 @@ read it too.
   slot of the next epoch. *Example:* 600 tickets on full.
 - **Seal.** The author's signature over the rest of the header. *Example:* 96 bytes, the
   last field.
+- **Offenders mark.** The Ed25519 keys of the validators a block convicts in its
+  disputes. *Example:* empty in almost every block.
 
-All three are in the [glossary](../glossary.md).
+All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 

@@ -3,7 +3,7 @@
 Every system that trusts people needs a way to say "that was wrong". In JAM, if a
 guaranteed work-report turns out to be bad, the validators hold a trial, right in the
 blocks: they vote, a verdict is recorded, and whoever vouched for the bad report is named
-a **culprit**. Validators who voted the wrong way are recorded as **faults**. It's the
+a *culprit*. Validators who voted the wrong way are recorded as *faults*. It's the
 most dramatic part of the extrinsic, and the last one.
 
 ## New words

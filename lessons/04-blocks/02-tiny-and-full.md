@@ -14,8 +14,10 @@ network: the assurance.
   validators, how many cores. *Example:* `TINY` has 6 validators and 2 cores.
 - **Validator.** One of the machines that run JAM: they make blocks, vouch for work, and
   keep data. *Example:* 1,023 on full.
+- **Core.** One of JAM's parallel lanes where work gets done, a few validators at a time.
+  *Example:* 341 on full, 2 on tiny.
 
-Both are in the [glossary](../glossary.md).
+All three are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 

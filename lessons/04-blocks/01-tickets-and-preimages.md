@@ -16,7 +16,7 @@ All three are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
-§4 splits a block into its **header** and its **extrinsic** (the data that comes from
+§4 splits a block into its *header* and its *extrinsic* (the data that comes from
 *outside* the chain's state), and the extrinsic into five parts:
 
 | Part | What it carries | Lesson |
