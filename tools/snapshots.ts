@@ -36,6 +36,20 @@ export function wholeFiles(): Map<string, Snapshot> {
   return out;
 }
 
+/**
+ * Every file snippet's number in its lesson, by "<lesson file>:<label line>": 1, 2, 3... in
+ * the order the lesson gives them, as the Rust Book numbers its listings. On the website a
+ * snippet's tab links to itself as #snippet-N, so text can point at "2.3, snippet 2".
+ */
+export function snippetNumbers(): Map<string, number> {
+  const out = new Map<string, number>();
+  for (const lesson of readLessons()) {
+    let n = 0;
+    for (const step of lesson.steps) if (step.kind === "file") out.set(`${lesson.file}:${step.line}`, ++n);
+  }
+  return out;
+}
+
 /** The lines of `after` that aren't part of a longest common subsequence with `before`. */
 export function changedLines(before: string[], after: string[]): Set<number> {
   const n = before.length, m = after.length;

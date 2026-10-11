@@ -77,6 +77,15 @@
 #keys-help dd { margin: 0; color: var(--vp-c-text-2); }
 
 /* Pictures open full size (theme/zoom.ts) */
+/* A file snippet's number, at the end of its tab: a link to itself (#snippet-2), quiet until
+   hovered, as the Book's listing numbers are. The anchor lands below the top bar. */
+.vp-doc .snippet-label[id] { scroll-margin-top: calc(var(--vp-nav-height) + 24px); }
+.vp-doc .snippet-label .snippet-anchor {
+  margin-left: 0.75em; font-size: 0.8em; font-weight: 400; color: var(--vp-c-text-3);
+  text-decoration: none;
+}
+.vp-doc .snippet-label .snippet-anchor:hover { color: var(--vp-c-brand-1); text-decoration: underline; }
+
 .vp-doc img[role="button"] { cursor: zoom-in; }
 .vp-doc img[role="button"]:focus-visible { outline: 2px solid var(--vp-c-brand-1); outline-offset: 4px; }
 #picture-zoom {

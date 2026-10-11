@@ -180,6 +180,12 @@ The line right above a code block, exactly one of:
 **Run, expect it to fail**
 ```
 
+On the website every file snippet (the first four labels) is numbered in its lesson, and
+its tab links to itself: point at the second with `[snippet 2](#snippet-2)`, as the Book
+cites "Listing 2-1". The numbers follow the lesson's order, so a new snippet renumbers the
+ones after it: check the links then. `tools/urls.test.ts` catches a link that lands
+nowhere, not one that lands on the wrong snippet.
+
 Paths are relative to `client/`. A Run block is ```` ```sh ````, runs in `client/`, and may
 hold `# prints: text` or `# fails with: text` lines: the output must contain that text.
 

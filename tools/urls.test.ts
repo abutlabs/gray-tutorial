@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join, posix } from "node:path";
 import { LESSONS } from "./lessons.ts";
+import { snippetNumbers } from "./snapshots.ts";
 import { LEGEND, MOVED, PUBLISHED } from "../.vitepress/urls.ts";
 
 /** A page's address: its path under lessons/ without ".md", an index by its folder. */
@@ -48,10 +49,18 @@ function anchors(file: string): Set<string> {
     ids.add(id);
   }
   for (const [, id] of text.matchAll(/<a id="([^"]+)"/g)) ids.add(id);
+  for (const [key, n] of numbers) if (key.startsWith(`${file}:`)) ids.add(`snippet-${n}`); // #snippet-2
   return ids;
 }
 
-test("every link to a section lands on a heading", () => {
+const numbers = snippetNumbers();
+
+test("a file snippet has an anchor: #snippet-1 is a lesson's first", () => {
+  assert.ok(anchors("02-codec/03-writer-and-reader.md").has("snippet-1"));
+  assert.ok(!anchors("00-start/01-what-you-will-build.md").has("snippet-1")); // no snippets there
+});
+
+test("every link to a section lands on a heading or a snippet", () => {
   const links: [string, string][] = [["(.vitepress/config.ts)", LEGEND]];
   for (const f of files) {
     const text = readFileSync(join(LESSONS, f), "utf8").replace(/```[\s\S]*?```/g, "");
@@ -63,6 +72,6 @@ test("every link to a section lands on a heading", () => {
     const [path, id] = target.split("#");
     const file = path === "" ? from : path.startsWith("/") ? path.slice(1) : posix.join(dirname(from), path);
     assert.ok(pages.has(address(file)), `${from}: ${target} names no page`);
-    assert.ok(anchors(file).has(id), `${from}: ${target}: ${file} has no heading with the id "${id}"`);
+    assert.ok(anchors(file).has(id), `${from}: ${target}: ${file} has no heading or snippet with the id "${id}"`);
   }
 });

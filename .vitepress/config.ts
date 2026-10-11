@@ -7,12 +7,14 @@ import type MarkdownIt from "markdown-it";
 import type { ShikiTransformer } from "shiki";
 import { readParts } from "../tools/lessons.ts";
 import { LEGEND, writeRedirects } from "./urls.ts";
-import { type Snapshot, wholeFiles } from "../tools/snapshots.ts";
+import { type Snapshot, snippetNumbers, wholeFiles } from "../tools/snapshots.ts";
 
 const parts = readParts();
 // each Add to / Replace in snippet's whole file, worked out once (restart `npm run site` to
 // see a lesson's edits in them)
 const whole = wholeFiles();
+// each file snippet's number in its lesson, for its anchor: #snippet-2 is the lesson's second
+const numbers = snippetNumbers();
 
 export default defineConfig({
   title: "Gray Tutorial",
@@ -59,6 +61,8 @@ export default defineConfig({
 // A ```text block right after a Run block is its output (tools/output.ts): it gets an Output tab.
 // Under an Add to / Replace in snippet, a fold holds the whole file after it, the lines it
 // changed marked: the Book keeps a listing's whole file one click away too.
+// Every file snippet is numbered in its lesson, with an anchor and a link to itself at the
+// end of its tab ("snippet 2", #snippet-2), as the Book numbers its listings.
 function snippetLabels(md: MarkdownIt): void {
   const LABEL = /^\*\*(New file|Add to|Replace in|Rewrite|Run(?:, expect it to fail)?)\*\*(?: `[^`]+`)?$/;
   const KIND: Record<string, string> = {
@@ -81,7 +85,17 @@ function snippetLabels(md: MarkdownIt): void {
         words.splice(close + 1, 0, new state.Token("link_close", "a", -1));
         words.splice(open, 0, link);
       }
-      const snap = whole.get(`${state.env.relativePath}:${(t[i].map?.[0] ?? -1) + 1}`);
+      const at = `${state.env.relativePath}:${(t[i].map?.[0] ?? -1) + 1}`;
+      const n = numbers.get(at);
+      if (n !== undefined) {
+        t[i].attrSet("id", `snippet-${n}`);
+        const self = new state.Token("link_open", "a", 1);
+        self.attrs = [["href", `#snippet-${n}`], ["class", "snippet-anchor"], ["title", "A link to this snippet"]];
+        const words = new state.Token("text", "", 0);
+        words.content = `snippet ${n}`;
+        t[i + 1].children?.push(self, words, new state.Token("link_close", "a", -1));
+      }
+      const snap = whole.get(at);
       if ((m[1] === "Add to" || m[1] === "Replace in") && snap) {
         const fold = new state.Token("html_block", "", 0);
         fold.content = wholeFileFold(snap);
