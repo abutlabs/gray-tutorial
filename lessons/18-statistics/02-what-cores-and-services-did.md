@@ -171,8 +171,23 @@ Accumulation's part was checked against the accumulate vectors in [lesson 17.1](
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/statistics.ts' does not provide an export named 'CoreStats'
+...
+✖ test/statistics.test.ts (196.1ms)
+...
+ℹ tests 562
+ℹ suites 0
+ℹ pass 561
+ℹ fail 1
+...
+```
+
+Red: `src/statistics.ts` doesn't export `CoreStats` yet. The two cards and the two
+functions that fill them come in one snippet.
 
 ## The code
 
@@ -293,7 +308,7 @@ export function serviceStats(
 Both are sums, done once for each core or service. A few things to notice:
 
 - `assuredCount` is [lesson 11.1](../11-assurances/01-available.md)'s, which counted the same bits to decide availability.
-- Gas is a `bigint`, as everywhere since Part 15, so its sums start from `0n`.
+- Gas is a `bigint`, as everywhere since [Part 15](../15-the-pvm/index.md), so its sums start from `0n`.
 - `Math.ceil` on `n * 65 / 64` is exact: dividing by 64, a power of two, never rounds in
   floating point.
 - `active` is a `Set`, so a service that both refined and accumulated gets one card,
@@ -303,10 +318,23 @@ Both are sums, done once for each core or service. A few things to notice:
 
 ```sh
 npm test
-# prints: one big report: its core and its service take on all its work
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (582.3ms)
+...
+✔ one big report: its core and its service take on all its work (0.9ms)
+✔ assured data: each core's load, and how many assurances name it (0.3ms)
+...
+ℹ tests 609
+ℹ suites 0
+ℹ pass 609
+ℹ fail 0
+...
+reported 609 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740899975
+...
 ```
 
 ## Watch it
@@ -362,9 +390,13 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/activity.ts
-# prints: core 0: imports 8, extrinsic_count 8, extrinsic_size 1526, exports 17
-# prints: service 42: refinement_count 2, refinement_gas_used 1518
-# prints: reported to Grafana
+```
+
+```text
+core 0: imports 8, extrinsic_count 8, extrinsic_size 1526, exports 17, bundle_size 17180, gas_used 821
+core 1: imports 1, extrinsic_count 3, extrinsic_size 1926, exports 18, bundle_size 12487, gas_used 697
+service 42: refinement_count 2, refinement_gas_used 1518, imports 9, extrinsic_count 11, extrinsic_size 3452, exports 35
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=activity-1791740914594
 ```
 
 A block of two guarantees, one report for each core, both for service 42. Each core's
@@ -375,8 +407,12 @@ card shows its own report's work. Service 42's card shows both reports' work add
 
 ```sh
 node bin/activity.ts ../vectors/stf/assurances/tiny/some_assurances-1.json
-# prints: core 0: da_load 28761, popularity 5
-# prints: core 1: popularity 4
+```
+
+```text
+core 0: da_load 28761, popularity 5
+core 1: popularity 4
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=activity-1791740914740
 ```
 
 Core 0's report became available, so core 0 carries its data load: 12345 + 4 × 4104.
@@ -407,7 +443,9 @@ only have integers. Try it: 3 segments, (195 + 63) / 64 = 4.
 
 ## What you have
 
-All three scorecards: each validator's for the epoch (18.1), and each core's and each
-service's for the block, matching every reports and preimages vector. Part 18 is done.
+All three scorecards: each validator's for the epoch ([lesson 18.1](./01-who-did-what.md)), and each core's
+and each service's for the block, matching every reports and preimages vector. Part 18 is
+done. Every part so far built one piece of a block's state transition on its own;
+[Part 19](../19-block-import/index.md) starts putting them together, with the order the Gray Paper asks for.
 
 Next: [Part 19 · Block import](../19-block-import/index.md)

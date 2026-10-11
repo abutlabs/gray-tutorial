@@ -115,8 +115,23 @@ in the *old* tally, while its author's block opens the new one.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/statistics.ts' imported from …/client/test/statistics.test.ts
+...
+✖ test/statistics.test.ts (218.1ms)
+...
+ℹ tests 562
+ℹ suites 0
+ℹ pass 561
+ℹ fail 1
+...
+```
+
+Red: `src/statistics.ts` doesn't exist yet. The tally's record and the one function that
+moves it on come together, as a new file.
 
 ## The code
 
@@ -189,14 +204,42 @@ export function updateValidatorStats(
 The three steps, in order. Note the copy at the top: `before`'s tallies stay as they were,
 so a test can still compare with them. `reporters` and `signerKeys` come from [lesson 12.2](../12-guarantees/02-signed-and-counted.md).
 
+> [!NOTE]
+> **The simple road.** The guarantee count looks the guarantors' keys up in κ′. The Gray
+> Paper's reporters 𝐆 come from the guarantee checks instead, and a guarantee from the
+> last rotation is signed with that rotation's keys, which can be λ's. The statistics
+> vectors only use κ′, so this is fine for now; when [Part 19](../19-block-import/index.md) puts the block
+> together, 𝐆 should come straight from [lesson 12.2](../12-guarantees/02-signed-and-counted.md)'s step. The [hardening
+> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) does that.
+
 **Run**
 
 ```sh
 npm test
-# prints: an epoch's first block: assurances close the old tally, the rest opens the new one
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (376.0ms)
+...
+✔ an epoch's first block: assurances close the old tally, the rest opens the new one (0.7ms)
+✔ stf/statistics/tiny/stats_epoch_change_with_set_resize-1.json: every validator's tallies end as the vector says (0.4ms)
+✔ stf/statistics/tiny/stats_with_empty_extrinsic-1.json: every validator's tallies end as the vector says (0.2ms)
+✔ stf/statistics/tiny/stats_with_epoch_change-1.json: every validator's tallies end as the vector says (0.2ms)
+✔ stf/statistics/tiny/stats_with_some_extrinsic-1.json: every validator's tallies end as the vector says (0.4ms)
+✔ stf/statistics/full/stats_epoch_change_with_set_resize-1.json: every validator's tallies end as the vector says (3.6ms)
+✔ stf/statistics/full/stats_with_empty_extrinsic-1.json: every validator's tallies end as the vector says (80.3ms)
+✔ stf/statistics/full/stats_with_epoch_change-1.json: every validator's tallies end as the vector says (14.0ms)
+✔ stf/statistics/full/stats_with_some_extrinsic-1.json: every validator's tallies end as the vector says (51.3ms)
+...
+ℹ tests 571
+ℹ suites 0
+ℹ pass 571
+ℹ fail 0
+...
+reported 571 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740875939
+...
 ```
 
 Eight official vectors, tiny and full: every validator's tallies, before and after.
@@ -250,9 +293,19 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/statistics.ts
-# prints: a new epoch begins
-# prints: validator 1: fresh → 1 2 3 51 1 0
-# prints: reported to Grafana
+```
+
+```text
+slot 123455 → 123456: a new epoch begins
+author: validator 1
+columns: blocks, tickets, preimages, preimage bytes, guarantees, assurances
+validator 0: fresh → 0 0 0 0 1 0
+validator 1: fresh → 1 2 3 51 1 0
+validator 2: fresh → 0 0 0 0 1 0
+validator 3: fresh → 0 0 0 0 1 0
+validator 4: fresh → 0 0 0 0 0 0
+validator 5: fresh → 0 0 0 0 0 0
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=statistics-1791740888363
 ```
 
 The first block of a new epoch: every tally starts fresh, the author, validator 1, gets its
@@ -290,5 +343,7 @@ at a time, with a small function for each.
 ## What you have
 
 Every validator's tally, kept the Gray Paper's way, and matching every statistics vector.
+Validators aren't the only ones who work: [lesson 18.2](./02-what-cores-and-services-did.md) scores the cores and the
+services, block by block.
 
 Next: [18.2 What cores and services did](./02-what-cores-and-services-did.md)
