@@ -117,7 +117,7 @@ little drama when a test goes red. Never at the cost of accuracy, never padding.
 everything"). The Gray Paper is still being improved, and new versions change rules:
 explain why a rule exists, and when one looks odd or likely to change, say so plainly.
 Use the common software-engineering name for a practice (test-driven development), never
-a coined one.
+a coined one such as "test first" (`npm test` checks the lessons for it).
 
 Plain words, no em-dashes. Explain why, not only what. Every claim about lasair, the
 vectors or the Gray Paper is checked against the source before it is written.

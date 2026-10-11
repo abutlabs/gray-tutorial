@@ -270,6 +270,6 @@ def push(cli, job, run_id, net, snapshot):
 A client that reports itself. It has said hello, every `npm test` lands in Grafana, and
 any program can report a run with three calls: `new Run`, `event`, `report`. It reports,
 but it knows nothing about JAM yet: [lesson 0.4](./04-the-jam-clock.md) gives it its first
-rule, the clock, test first.
+rule, the clock, built by test-driven development.
 
 Next: [0.4 The JAM clock](./04-the-jam-clock.md)

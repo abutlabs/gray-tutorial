@@ -147,6 +147,17 @@ test("no word is half code: two `bigint` values, not two `bigint`s", () => {
   assert.deepEqual(mixed, []);
 });
 
+// A practice goes by its common name, test-driven development (WRITING.md). "Write the test
+// first" says what to do, and stays; "test first" or "test-first" as the practice's name goes.
+test("test-driven development is called that, never test-first", () => {
+  const named: string[] = [];
+  for (const md of pages) {
+    const text = readFileSync(join(LESSONS, md), "utf8");
+    for (const [phrase] of text.matchAll(/(?<!\bthe\s+)\btest[-\s]+first\b/gi)) named.push(`${md}: ${phrase}`);
+  }
+  assert.deepEqual(named, []);
+});
+
 // The Book closes a chapter with what you learned, then why the next one comes next.
 test("every lesson closes with What you have", () => {
   for (const file of lessonAt.keys()) {
