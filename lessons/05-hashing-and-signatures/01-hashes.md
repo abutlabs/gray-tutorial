@@ -100,28 +100,23 @@ test("each block names its parent by the hash of the header before it", () => {
 `Block` is both a codec and a type (lessons [2.5](../02-codec/05-sequences-and-records.md) and [4.7](../04-blocks/07-the-block.md)): `traceBlock(n): Block` uses
 the type, `Block(TINY)` the codec. TypeScript tells them apart by where they appear.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-## The code
+The tests import two names that don't exist yet. A stub for the hash, the right size and
+all zeros:
 
 **New file** `src/hash.ts`
 
 ```ts
 // Hashing (GP §3): Blake2b-256, the hash JAM uses almost everywhere.
 
-import { blake2b } from "@noble/hashes/blake2.js";
 import type { Bytes } from "./bytes.ts";
 
 /** H(x): Blake2b with a 32-byte output. */
 export function blake2b256(data: Bytes): Bytes {
-  return blake2b(data);
+  return new Uint8Array(32);
 }
 ```
+
+And the real header hash, which only encodes and hashes:
 
 **Add to** `src/block.ts`
 
@@ -143,7 +138,74 @@ perfect: one wrong byte in the encoding, and the hash is a stranger.
 
 ```sh
 npm test
-# fails with: 0x786a02f742015903
+```
+
+```text
+...
+✖ Blake2b-256 of nothing at all (0.9ms)
+✖ each block names its parent by the hash of the header before it (7.6ms)
+...
+ℹ tests 54
+ℹ suites 0
+ℹ pass 52
+ℹ fail 2
+...
+test at test/hash.test.ts:9:1
+✖ Blake2b-256 of nothing at all (0.9ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + '0x0000000000000000000000000000000000000000000000000000000000000000'
+  - '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
+
+      at TestContext.<anonymous> (…/client/test/hash.test.ts:11:10)
+...
+```
+
+Both tests caught the stub: the hash of nothing isn't 32 zero bytes, and a chain of zero
+hashes links nothing.
+
+## The code
+
+Now the real hash, from the library installed above:
+
+**Replace in** `src/hash.ts`
+
+```ts
+import { blake2b } from "@noble/hashes/blake2.js";
+
+/** H(x): Blake2b with a 32-byte output. */
+export function blake2b256(data: Bytes): Bytes {
+  return blake2b(data);
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ Blake2b-256 of nothing at all (2.8ms)
+✖ each block names its parent by the hash of the header before it (60.3ms)
+...
+ℹ tests 54
+ℹ suites 0
+ℹ pass 52
+ℹ fail 2
+...
+test at test/hash.test.ts:9:1
+✖ Blake2b-256 of nothing at all (2.8ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + '0x786a02f742015903c6c6fd852552d272912f4740e15847618a86e217f71f5419d25e1031afee585313896444934eb04b903a685b1448b755d56f701afe9be2ce'
+  - '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
+
+      at TestContext.<anonymous> (…/client/test/hash.test.ts:11:10)
+...
 ```
 
 ## Bug hunt
@@ -182,10 +244,20 @@ export function blake2b256(data: Bytes): Bytes {
 
 ```sh
 npm test
-# prints: each block names its parent by the hash of the header before it
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ each block names its parent by the hash of the header before it (280.1ms)
+...
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+...
+reported 54 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728700903
+...
 ```
 
 99 links, checked: every one of these blocks really does follow the one before it.
@@ -226,8 +298,11 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/chain.ts
-# prints: 99 of 99 links hold.
-# prints: reported to Grafana
+```
+
+```text
+99 of 99 links hold.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=chain-1791728701859
 ```
 
 On the dashboard, the *Chain* panel lists all hundred blocks: slot, hash, and `linked:
@@ -257,6 +332,8 @@ on a well-tested library here.
 ## What you have
 
 A hash function, and proof that your encoding of headers is exact: if it were off by a
-single byte, not one of those 99 links would hold.
+single byte, not one of those 99 links would hold. A header makes a second promise by
+hash, about everything its block carries: [lesson 5.2](./02-the-extrinsic-hash.md)
+checks it.
 
 Next: [5.2 The extrinsic hash](./02-the-extrinsic-hash.md)

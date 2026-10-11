@@ -130,14 +130,7 @@ test("a forged signature is caught", () => {
 Look at the first test's second check. The same signature, on a message one byte
 different, is worthless. That's the whole point of a signature.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-## The code
+A stub first, and a dangerous one: a check that says yes to everything.
 
 **New file** `src/signature.ts`
 
@@ -145,21 +138,15 @@ npm test
 // Signatures (GP §3): Ed25519, as RFC 8032 defines it. Validators sign most of what they
 // say with it; blocks and tickets use Bandersnatch instead.
 
-import { ed25519 } from "@noble/curves/ed25519.js";
 import type { Bytes } from "./bytes.ts";
 
 /** Is `signature` a valid Ed25519 signature of `message`, by the holder of `key`? */
 export function verifyEd25519(key: Bytes, message: Bytes, signature: Bytes): boolean {
-  return ed25519.verify(signature, message, key);
+  return true;
 }
 ```
 
-A thin wrapper, with the arguments in the order you'd say them: *who* signed *what*, and
-the signature. (The library wants them the other way round; now only one line of your
-client has to remember that.)
-
-Blocks and tickets are signed with a different kind of key, Bandersnatch. That one
-arrives with the ticket lottery.
+And the real assurance check, which only builds the message and asks the stub:
 
 **Add to** `src/block.ts`
 
@@ -184,14 +171,84 @@ export function assuranceSigned(keys: Bytes[], assurance: Assurance): boolean {
 `TextEncoder` turns a string into its UTF-8 bytes, and for plain ASCII text like this
 that's one byte per letter.
 
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ Ed25519: RFC 8032's first example, a signature of no bytes at all (0.9ms)
+✔ every assurance is signed by the validator it names: 6 on tiny, 1023 on full (29.6ms)
+✖ a forged signature is caught (1.3ms)
+...
+ℹ tests 58
+ℹ suites 0
+ℹ pass 56
+ℹ fail 2
+...
+test at test/signature.test.ts:35:1
+✖ a forged signature is caught (1.3ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    [
+      true,
+  -   false,
+      true,
+      true,
+      true,
+      true,
+  +   true
+    ]
+
+      at TestContext.<anonymous> (…/client/test/signature.test.ts:37:10)
+...
+```
+
+Look at what passed: the RFC's genuine signature, and all 1,029 genuine assurances on
+tiny and full. A check that trusts everyone sails through every honest case. Only the two
+checks that try a forgery caught it, which is why every signature test needs one.
+
+## The code
+
+**Replace in** `src/signature.ts`
+
+```ts
+import { ed25519 } from "@noble/curves/ed25519.js";
+
+/** Is `signature` a valid Ed25519 signature of `message`, by the holder of `key`? */
+export function verifyEd25519(key: Bytes, message: Bytes, signature: Bytes): boolean {
+  return ed25519.verify(signature, message, key);
+}
+```
+
+A thin wrapper, with the arguments in the order you'd say them: *who* signed *what*, and
+the signature. (The library wants them the other way round; now only one line of your
+client has to remember that.)
+
+Blocks and tickets are signed with a different kind of key, Bandersnatch. That one
+arrives with the ticket lottery.
+
 **Run**
 
 ```sh
 npm test
-# prints: a forged signature is caught
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ a forged signature is caught (6.9ms)
+...
+ℹ tests 58
+ℹ suites 0
+ℹ pass 58
+ℹ fail 0
+...
+reported 58 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728705670
+...
 ```
 
 Over a thousand genuine signatures checked, and one forgery caught. The full-size check
@@ -236,9 +293,14 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/assurances.ts ../vectors/stf/assurances/tiny/assurances_with_bad_signature-1.json
-# prints: validator 1: FORGED
-# prints: 5 of 6 signatures are valid.
-# prints: reported to Grafana
+```
+
+```text
+...
+validator 1: FORGED
+...
+5 of 6 signatures are valid.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=assurances-1791728707489
 ```
 
 Caught! Validator 1's assurance carries a signature its key never made. The new
@@ -271,5 +333,6 @@ small bridge. Both clients lean on a specialist here, just as with Blake2b.
 Part 5, done. Your client can check a block's links (hashes), its contents (the
 extrinsic hash), and who signed what (Ed25519). Guarantees and dispute votes are signed
 the same way, with their own prefixes; you'll check them in the parts that process them.
+Every header also commits to the whole state, by its root: Part 6 computes that root.
 
 Next: [Part 6 · State and Merklization](../06-state-and-merklization/index.md)

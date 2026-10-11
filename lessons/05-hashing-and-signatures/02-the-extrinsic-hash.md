@@ -86,8 +86,22 @@ That last argument to `deepEqual` is the message for a failure: if block 42 of
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/block.ts' does not provide an export named 'extrinsicHash'
+...
+✖ test/hash.test.ts (307.8ms)
+...
+ℹ tests 53
+ℹ suites 0
+ℹ pass 52
+ℹ fail 1
+...
+```
+
+Red: `src/block.ts` doesn't export `extrinsicHash` yet.
 
 ## The code
 
@@ -143,10 +157,20 @@ nothing else in the client needs them.
 
 ```sh
 npm test
-# prints: every block's header promises its extrinsic by hash
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ every block's header promises its extrinsic by hash (457.8ms)
+...
+ℹ tests 55
+ℹ suites 0
+ℹ pass 55
+ℹ fail 0
+...
+reported 55 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728702707
+...
 ```
 
 400 promises, all kept. Here's a fun one: all 100 `fallback` blocks carry the *same*
@@ -198,9 +222,12 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/chain.ts preimages
-# prints: 99 of 99 links hold.
-# prints: 100 of 100 extrinsics match their headers.
-# prints: reported to Grafana
+```
+
+```text
+99 of 99 links hold.
+100 of 100 extrinsics match their headers.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=chain-1791728703751
 ```
 
 The *Chain* panel now ends each block's line with `extrinsic matches: true`. Try the
