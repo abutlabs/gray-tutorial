@@ -1,17 +1,10 @@
 # Gray Tutorial
 
-lasair and the other JAM Prize clients aim to run as validators on the real JAM network,
-fast enough to keep up with it. This tutorial aims at understanding instead: you build a
-client to learn how JAM works, in TypeScript, simplicity and observability first. It is
-checked against the same official test vectors, but it isn't built for speed.
-
-| | lasair | Your Gray Tutorial client |
-| --- | --- | --- |
-| Language | OCaml | TypeScript |
-| How it runs | compiled to machine code before it runs | Node strips the types and runs the JavaScript: it starts as bytecode, and the busiest parts become machine code as it runs |
-| 64-bit numbers | `Int64`: plain machine arithmetic | `bigint`: exact, but much slower |
-| Several cores | possible (OCaml 5); today threads serve the network, and a block imports on one core | one thread (Node could add worker threads; the tutorial doesn't need them) |
-| Built for | the JAM Prize: conformance, then speed | learning |
+Build a JAM client from an empty folder, one small, tested step at a time, and learn how
+JAM works by building it. JAM is a blockchain protocol, and a *client* is the program that
+checks its blocks and works out the chain's state, the same way every other client does.
+Yours is in TypeScript, simplicity and observability first, and the official test vectors
+check it, byte for byte.
 
 ## Start here
 
@@ -58,6 +51,21 @@ snippets, and has you run it. You assemble the snippets into your own client in
 `client/`, run the tests, and watch it grow, from an empty folder to a program that
 imports JAM blocks and agrees byte for byte with the official test vectors. From
 [lesson 0.3](./00-start/03-watch-your-client.md) on, it reports every run to Grafana, so you can watch what it does.
+
+## Next to a Prize client
+
+lasair, another JAM client, and the other entries to the JAM Prize (a prize for
+independent JAM clients) aim to run as validators on the real network, the machines that
+make and check its blocks, fast enough to keep up. This tutorial aims at understanding
+instead. The same official test vectors check it, but it isn't built for speed.
+
+| | lasair | Your Gray Tutorial client |
+| --- | --- | --- |
+| Language | OCaml | TypeScript |
+| How it runs | compiled to machine code before it runs | Node strips the types and runs the JavaScript: it starts as bytecode, and the busiest parts become machine code as it runs |
+| 64-bit numbers | `Int64`: plain machine arithmetic | `bigint`: exact, but much slower |
+| Several cores | possible (OCaml 5); today threads serve the network, and a block imports on one core | one thread (Node could add worker threads; the tutorial doesn't need them) |
+| Built for | the JAM Prize: conformance, then speed | learning |
 
 ## Lessons
 
