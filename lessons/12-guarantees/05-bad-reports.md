@@ -38,7 +38,7 @@ making fourteen checks, in two groups.
 
 5. A new package: not twice in this block, not in the recent blocks' reported packages,
    not in the pipeline. (`duplicate_package`)
-6. Its anchor is one of the recent blocks (β_H†, Part 9's history after this block's
+6. Its anchor is one of the recent blocks (β_H†, [Part 9](../09-recent-history/index.md)'s history after this block's
    first step). (`anchor_not_recent`)
 7. And matches it: the same state root (`bad_state_root`), belt root
    (`bad_beefy_mmr_root`) and slot (`bad_anchor_slot`).
@@ -56,7 +56,8 @@ name, `segment_root_lookup_invalid`, so your client checks them separately.
 
 Two more rules this lesson leaves out: the report's *lookup* anchor must be at most L slots
 old, and must be one of the last L blocks' headers. Checking the second needs the header
-chain itself, which no state holds, and no vector tests either. They wait in HARDENING.
+chain itself, which no state holds, and no vector tests either. They wait in
+[HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md).
 
 ## The tests
 
@@ -118,17 +119,11 @@ for (const config of [TINY, FULL]) {
 The last test is the whole reports step: [lesson 12.4](./04-bad-guarantees.md)'s rules first, then these. Every
 reports vector, tiny and full, must come out exactly as the vector says, accepted or
 refused for the very same reason. The services come straight from the JSON: a report
-only needs a service's code hash and minimum gas, and Part 14 builds the full service
+only needs a service's code hash and minimum gas, and [Part 14](../14-services/index.md) builds the full service
 account later.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: does not provide an export named
-```
-
-## The code
+A stub that passes every report, with the four limits and `ServiceNeeds` already in
+place:
 
 **Add to** `src/guarantors.ts`
 
@@ -148,6 +143,50 @@ const REPORT_GAS = 10_000_000n;
 /** What a report needs of a service: its code hash, and the least gas it accumulates on. */
 export type ServiceNeeds = { code_hash: Bytes; min_item_gas: bigint };
 
+export function reportError(
+  reports: WorkReport[], // 𝐈
+  history: RecentBlock[],
+  known: Set<string>,
+  services: Map<number, ServiceNeeds>,
+): string | null {
+  return null;
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ a report anchored on a block nobody remembers is refused (1.3ms)
+...
+ℹ tests 378
+ℹ suites 0
+ℹ pass 345
+ℹ fail 33
+...
+test at test/guarantors.test.ts:198:1
+✖ a report anchored on a block nobody remembers is refused (1.3ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + null
+  - 'anchor_not_recent'
+...
+```
+
+Thirty-three reds this time: the anchor test, and the sixteen vectors at each size whose
+guarantees are fine but whose reports aren't. [Lesson 12.4](./04-bad-guarantees.md)'s refusals are green
+already, because the full check asks the guarantee rules first.
+
+## The code
+
+**Replace in** `src/guarantors.ts`
+
+```ts
 /**
  * Are a block's reports valid (GP §11)? The first rule they break, under the test vectors'
  * name for it, or null if they keep every rule. `history` is the recent blocks (β_H†),
@@ -221,10 +260,22 @@ a lookup the right one. The four limits get names, so the numbers say what they 
 
 ```sh
 npm test
-# prints: a report anchored on a block nobody remembers is refused
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (1169.6ms)
+...
+✔ a report anchored on a block nobody remembers is refused (0.6ms)
+...
+ℹ tests 378
+ℹ suites 0
+ℹ pass 378
+ℹ fail 0
+...
+reported 378 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734631104
+...
 ```
 
 ## Watch it
@@ -288,8 +339,24 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/check-guarantees.ts
-# prints: anchor_not_recent-1: anchor_not_recent
-# prints: segment_root_lookup_invalid-1: segment_root_lookup_invalid
+```
+
+```text
+anchor_not_recent-1: anchor_not_recent
+bad_anchor_slot-1: bad_anchor_slot
+bad_beefy_mmr-1: bad_beefy_mmr_root
+bad_code_hash-1: bad_code_hash
+bad_core_index-1: bad_core_index
+bad_erasure_shards-1: bad_erasure_shards
+bad_service_id-1: bad_service_id
+bad_signature-1: bad_signature
+bad_state_root-1: bad_state_root
+bad_validator_index-1: bad_validator_index
+banned_validator_guarantee-1: banned_validator
+big_work_report_output-1: accepted
+core_engaged-1: core_engaged
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=guarantee-check-1791734639549
 ```
 
 Forty-four vectors, and not one "the vector says": your client's reports step agrees with
@@ -319,7 +386,8 @@ the same block, which is how a gap like this can sit unnoticed.
 ## What you have
 
 The whole reports step, checked: thirteen checks on the guarantees, fourteen on the reports,
-and every reports vector accepted or refused exactly as it should be. Parts 10 to 12's
-validity rules are done.
+and every reports vector accepted or refused exactly as it should be. Part 12 is done.
+One rule leaned on something you haven't built: [lesson 12.4](./04-bad-guarantees.md)'s authorizer pools.
+[Part 13](../13-authorization/index.md) keeps them moving, block by block.
 
 Next: [Part 13 · Authorization](../13-authorization/index.md)

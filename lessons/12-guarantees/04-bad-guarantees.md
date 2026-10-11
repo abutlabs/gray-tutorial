@@ -53,8 +53,8 @@ slots 12 to 15), a guarantee from slot 8 is fine and one from slot 7 is too old.
 ## The tests
 
 The vectors keep the pools too, so the test vector type grows a field. A pool is just a
-list of hashes, one list per core, so the test reads them straight from the JSON (Part 13
-gives them a codec of their own):
+list of hashes, one list per core, so the test reads them straight from the JSON ([Part
+13](../13-authorization/index.md) gives them a codec of their own):
 
 **Replace in** `test/guarantors.test.ts`
 
@@ -126,14 +126,8 @@ The thirteen error names are this lesson's alone: [lesson 12.5](./05-bad-reports
 own. So each vector's expected answer is its error if that's one of these thirteen, and
 "pass" otherwise.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: does not provide an export named
-```
-
-## The code
+A stub that passes every guarantee, with `BLANK`, the mark Φ leaves on an offender's key,
+already in place:
 
 **Add to** `src/guarantors.ts`
 
@@ -143,6 +137,54 @@ import type { PendingReport } from "./cores.ts";
 /** An offender's key, as Φ leaves it in an assignment: blanked to zeros (lesson 8.2). */
 const BLANK = toHex(new Uint8Array(32));
 
+export function guaranteeError(
+  config: Config,
+  guarantees: ReportGuarantee[],
+  slot: number, // τ′
+  assignments: { current: Assignment; last: Assignment },
+  cores: (PendingReport | null)[],
+  pools: Bytes[][],
+  validators: number,
+): string | null {
+  return null;
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ a guarantee signed by an offender is refused (1.6ms)
+...
+ℹ tests 285
+ℹ suites 0
+ℹ pass 254
+ℹ fail 31
+...
+test at test/guarantors.test.ts:169:1
+✖ a guarantee signed by an offender is refused (1.6ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + null
+  - 'banned_validator'
+...
+```
+
+Thirty-one reds: the offender test, and the thirty vectors that break a guarantee rule,
+fourteen tiny and sixteen full (full has two that tiny can't, below). Each one reads like the first: the vector names a rule (`-`), and the
+stub, passing everything, says `null` (`+`). The vectors refused for their *reports*
+stay green, since this lesson's rules have nothing to say about them.
+
+## The code
+
+**Replace in** `src/guarantors.ts`
+
+```ts
 /**
  * Are a block's guarantees valid (GP §11)? The first rule they break, under the test
  * vectors' name for it, or null if they keep every rule. `assignments` is M and M*,
@@ -208,10 +250,21 @@ way [lesson 12.1](./01-who-guarantees-what.md)'s `assignmentFor` does.
 
 ```sh
 npm test
-# prints: a guarantee signed by an offender is refused
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (2656.3ms)
+✔ a guarantee signed by an offender is refused (4.8ms)
+...
+ℹ tests 285
+ℹ suites 0
+ℹ pass 285
+ℹ fail 0
+...
+reported 285 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734610469
+...
 ```
 
 ## Watch it
@@ -259,15 +312,34 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/check-guarantees.ts
-# prints: banned_validator_guarantee-1: banned_validator (the vector: banned_validator)
-# prints: anchor_not_recent-1: guarantees pass (the vector: anchor_not_recent)
+```
+
+```text
+anchor_not_recent-1: guarantees pass (the vector: anchor_not_recent)
+bad_anchor_slot-1: guarantees pass (the vector: bad_anchor_slot)
+bad_beefy_mmr-1: guarantees pass (the vector: bad_beefy_mmr_root)
+bad_code_hash-1: guarantees pass (the vector: bad_code_hash)
+bad_core_index-1: bad_core_index (the vector: bad_core_index)
+bad_erasure_shards-1: bad_erasure_shards (the vector: bad_erasure_shards)
+bad_service_id-1: guarantees pass (the vector: bad_service_id)
+bad_signature-1: bad_signature (the vector: bad_signature)
+bad_state_root-1: guarantees pass (the vector: bad_state_root)
+bad_validator_index-1: bad_validator_index (the vector: bad_validator_index)
+banned_validator_guarantee-1: banned_validator (the vector: banned_validator)
+big_work_report_output-1: guarantees pass (the vector: accepted)
+core_engaged-1: core_engaged (the vector: core_engaged)
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=guarantee-check-1791734622303
 ```
 
 Wherever the rules refuse a guarantee, the vector agrees. Where the guarantees pass but the
 vector refuses the block, the reason is in the report itself: [lesson 12.5](./05-bad-reports.md)'s job. The full
-vectors have two cases tiny can't have, where the validator set has shrunk from 1,023 to
-6: `node bin/check-guarantees.ts full` shows one refused for an inactive core, and one
-accepted, signed by validators 24, 578 and 603 of the old set. The *Guarantee checks* panel
+vectors have four that tiny can't have, where the validator set has shrunk from 1,023 to
+6. `node bin/check-guarantees.ts full` shows two refused: a guarantee for core 340,
+active last rotation but not now (`bad_core_index`), and one signed this rotation by
+validators 16, 450 and 1014, when only 6 exist (`bad_validator_index`). And two
+accepted: one from the last rotation, signed by validators 24, 578 and 603 of the old
+set, and one signed by validators 1, 4 and 5 of the new. The *Guarantee checks* panel
 keeps the list.
 
 ![Guarantee checks panel](./images/04-guarantee-checks.png)
@@ -292,6 +364,7 @@ each signer's key up in the offenders list, where your client spots the blank th
 ## What you have
 
 Guarantees that are checked, not trusted: thirteen rules, and every reports vector's
-guarantees, tiny and full, passed or refused as they should be.
+guarantees, tiny and full, passed or refused as they should be. The guarantees can be
+perfect and the report inside them still wrong: [lesson 12.5](./05-bad-reports.md) checks the reports.
 
 Next: [12.5 Bad reports](./05-bad-reports.md)
