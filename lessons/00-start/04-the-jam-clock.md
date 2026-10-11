@@ -1,7 +1,10 @@
 # The JAM clock
 
 Your first piece of real JAM. It's tiny, and it is everywhere: every block in JAM says
-*when* it belongs, and that "when" comes from this clock.
+*when* it belongs, and that "when" comes from this clock. By the end of this lesson your
+client can tell what slot it is, with tests to prove it, and keeps a clock that reports
+every slot to Grafana as it begins. On the way you'll write your first test before its
+code, and hunt down your first bug.
 
 ## New words
 
