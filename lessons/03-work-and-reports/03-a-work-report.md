@@ -64,8 +64,8 @@ npm test
 ...
 SyntaxError: The requested module '../src/work.ts' does not provide an export named 'WorkReport'
 ...
-✖ test/work.test.ts (151.8ms)
-✔ a reader reads back what a writer wrote, in the same order (1.0ms)
+✖ test/work.test.ts (219.1ms)
+...
 ℹ tests 20
 ℹ suites 0
 ℹ pass 19

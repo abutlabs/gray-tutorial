@@ -65,8 +65,22 @@ testCodecVector("disputes_extrinsic", DisputesExtrinsic);
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/block.ts' does not provide an export named 'DisputesExtrinsic'
+...
+✖ test/block.test.ts (192.3ms)
+...
+ℹ tests 33
+ℹ suites 0
+ℹ pass 32
+ℹ fail 1
+...
+```
+
+Red: `src/block.ts` doesn't export `DisputesExtrinsic` yet.
 
 ## The code
 
@@ -124,10 +138,21 @@ length, so `DisputesExtrinsic` is a plain codec, not a function of the config.
 
 ```sh
 npm test
-# prints: disputes_extrinsic (full)
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ disputes_extrinsic (tiny) (0.7ms)
+✔ disputes_extrinsic (full) (12.7ms)
+...
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+...
+reported 42 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728272265
+...
 ```
 
 ## Watch it
@@ -156,8 +181,14 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 
 ```sh
 node bin/decode.ts disputes_extrinsic ../vectors/codec/full/disputes_extrinsic.bin
-# prints: verdicts.0.votes.length        0x82ab
-# prints: reported to Grafana
+```
+
+```text
+    0..1     verdicts.length                0x02
+...
+   37..39    verdicts.0.votes.length        0x82ab
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728272718
 ```
 
 `0x82ab` is a two-byte compact natural ([lesson 2.2](../02-codec/02-compact-naturals.md)): the first byte's leading `1` says
@@ -193,6 +224,8 @@ are, and that trap is gone. Specs evolve, and sometimes they make your life easi
 ## What you have
 
 All five parts of a block's extrinsic: tickets, preimages, assurances, guarantees and
-disputes, each matching the official vectors at both sizes.
+disputes, each matching the official vectors at both sizes. The header still needs two
+shapes the codec doesn't have: a value that may be missing, and a list of exactly n.
+[Lesson 4.5](./05-maybe-and-exactly-n.md) adds both.
 
 Next: [4.5 Maybe, and exactly n](./05-maybe-and-exactly-n.md)

@@ -125,10 +125,21 @@ testCodecVector("assurances_extrinsic", AssurancesExtrinsic);
 
 ```sh
 npm test
-# prints: assurances_extrinsic (full)
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ assurances_extrinsic (tiny) (0.7ms)
+✔ assurances_extrinsic (full) (1.5ms)
+...
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+...
+reported 38 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728269567
+...
 ```
 
 ## Watch both sizes
@@ -166,10 +177,20 @@ if (!codec || !file) {
 
 ```sh
 node bin/decode.ts assurances_extrinsic ../vectors/codec/tiny/assurances_extrinsic.bin
-# prints: 33..34    0.bitfield                     0x01
 node bin/decode.ts assurances_extrinsic ../vectors/codec/full/assurances_extrinsic.bin
-# prints: 33..76    0.bitfield
-# prints: reported to Grafana
+```
+
+```text
+    0..1     length                         0x02
+...
+   33..34    0.bitfield                     0x01
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728270087
+    0..1     length                         0x02
+...
+   33..76    0.bitfield                     0x55555555555555555555555555555555555555555555555555555555555555555555555555555555555515
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728270298
 ```
 
 Same assurance, two sizes. On tiny the bitfield is one byte, `0x01`: core 0, available.
@@ -203,6 +224,7 @@ Your `Assurance(config)` takes the size as an argument every time, so it can't f
 ## What you have
 
 A client that knows JAM comes in two sizes, and codecs that change shape to match.
-Three of the five extrinsic parts done.
+Three of the five extrinsic parts done. [Lesson 4.3](./03-guarantees.md) adds the fourth:
+guarantees, Part 3's reports with signatures behind them.
 
 Next: [4.3 Guarantees](./03-guarantees.md)

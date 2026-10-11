@@ -55,8 +55,8 @@ npm test
 ...
 SyntaxError: The requested module '../src/work.ts' does not provide an export named 'WorkPackage'
 ...
-✖ test/work.test.ts (173.5ms)
-✔ a reader reads back what a writer wrote, in the same order (1.5ms)
+✖ test/work.test.ts (226.8ms)
+...
 ℹ tests 20
 ℹ suites 0
 ℹ pass 19

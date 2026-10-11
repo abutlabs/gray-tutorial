@@ -79,8 +79,22 @@ Four tests in two lines.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/block.ts' imported from …/client/test/block.test.ts
+...
+✖ test/block.test.ts (167.1ms)
+...
+ℹ tests 33
+ℹ suites 0
+ℹ pass 32
+ℹ fail 1
+...
+```
+
+Red: there's no `src/block.ts` yet.
 
 ## The code
 
@@ -120,10 +134,21 @@ surprise is how *big* a ticket is. Those 784 bytes are the price of anonymity.
 
 ```sh
 npm test
-# prints: preimages_extrinsic (full)
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ preimages_extrinsic (tiny) (1.8ms)
+✔ preimages_extrinsic (full) (0.9ms)
+...
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+...
+reported 36 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728268478
+...
 ```
 
 ## Watch it
@@ -149,8 +174,13 @@ const CODECS: Record<string, Codec<unknown>> = {
 
 ```sh
 node bin/decode.ts preimages_extrinsic ../vectors/codec/tiny/preimages_extrinsic.bin
-# prints: 0.requester                    0x04030201
-# prints: reported to Grafana
+```
+
+```text
+    0..1     length                         0x03
+    1..5     0.requester                    0x04030201
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728269291
 ```
 
 A list of three preimages: `length 0x03`, then each requester and its blob. The blob's
@@ -176,6 +206,7 @@ changed nothing for it, and your `u8` is right from the start.
 
 ## What you have
 
-Two of the five parts of a block's extrinsic.
+Two of the five parts of a block's extrinsic. The next part's size depends on the network:
+[lesson 4.2](./02-tiny-and-full.md) meets JAM's two sizes, tiny and full.
 
 Next: [4.2 Tiny and full](./02-tiny-and-full.md)

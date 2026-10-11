@@ -43,8 +43,22 @@ testCodecVector("guarantees_extrinsic", GuaranteesExtrinsic);
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/block.ts' does not provide an export named 'GuaranteesExtrinsic'
+...
+✖ test/block.test.ts (181.0ms)
+...
+ℹ tests 33
+ℹ suites 0
+ℹ pass 32
+ℹ fail 1
+...
+```
+
+Red: `src/block.ts` doesn't export `GuaranteesExtrinsic` yet.
 
 ## The code
 
@@ -83,10 +97,21 @@ a plain codec, not a function of the config.
 
 ```sh
 npm test
-# prints: guarantees_extrinsic (full)
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ guarantees_extrinsic (tiny) (1.1ms)
+✔ guarantees_extrinsic (full) (0.6ms)
+...
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+...
+reported 40 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728271225
+...
 ```
 
 ## Watch it
@@ -114,9 +139,16 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 
 ```sh
 node bin/decode.ts guarantees_extrinsic ../vectors/codec/tiny/guarantees_extrinsic.bin
-# prints: 0.slot                         0x2a000000
-# prints: 0.signatures.1.validator_index 0x0100
-# prints: reported to Grafana
+```
+
+```text
+    0..1     length                         0x01
+...
+  484..488   0.slot                         0x2a000000
+...
+  555..557   0.signatures.1.validator_index 0x0100
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728271657
 ```
 
 Scroll the trace: the whole work-report goes by first (`0.report.package_spec...` down

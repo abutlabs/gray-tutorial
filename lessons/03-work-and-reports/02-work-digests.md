@@ -82,8 +82,8 @@ npm test
 ...
 SyntaxError: The requested module '../src/work.ts' does not provide an export named 'WorkDigest'
 ...
-✖ test/work.test.ts (165.6ms)
-✔ a reader reads back what a writer wrote, in the same order (1.4ms)
+✖ test/work.test.ts (171.3ms)
+...
 ℹ tests 20
 ℹ suites 0
 ℹ pass 19

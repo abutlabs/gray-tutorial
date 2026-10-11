@@ -33,8 +33,22 @@ testCodecVector("block", Block);
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/block.ts' does not provide an export named 'Block'
+...
+✖ test/block.test.ts (124.5ms)
+...
+ℹ tests 35
+ℹ suites 0
+ℹ pass 34
+ℹ fail 1
+...
+```
+
+Red: `src/block.ts` doesn't export `Block` yet.
 
 ## The code
 
@@ -70,10 +84,21 @@ are: the assurances' bitfield (4.2) and the header's tickets mark (4.6).
 
 ```sh
 npm test
-# prints: block (full)
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ block (tiny) (0.8ms)
+✔ block (full) (7.4ms)
+...
+ℹ tests 52
+ℹ suites 0
+ℹ pass 52
+ℹ fail 0
+...
+reported 52 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728275436
+...
 ```
 
 `block (tiny)` and `block (full)`: your client decodes complete JAM blocks, byte for
@@ -108,9 +133,14 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 
 ```sh
 node bin/decode.ts block ../vectors/codec/tiny/block.bin
-# prints: header.parent
-# prints: extrinsic.disputes.faults.0.signature
-# prints: reported to Grafana
+```
+
+```text
+    0..32    header.parent                  0x5c743dbc514284b2ea57798787c5a155ef9d7ac1e9499ec65910a7a3d65897b7
+   32..64    header.parent_state_root       0x2591ebd047489f1006361a4254731466a946174af02fe1d86681d254cfd4a00b
+...
+ 5086..5150  extrinsic.disputes.faults.0.signature 0x557e5ee3660be9247c4908c74a46c91eebd713925dd7f2ede3ef4900ba277039f7d46ec15432116176cce8ce39d8ae21eabafdf71796eeb724ee7e4ff1dd1fd7
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728275906
 ```
 
 145 fields, from `header.parent` at byte 0 to the last fault's signature ending at byte

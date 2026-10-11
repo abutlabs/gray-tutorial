@@ -64,7 +64,7 @@ npm test
 ...
 Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/codec/reader.ts' imported from …/client/test/writer-reader.test.ts
 ...
-✖ test/writer-reader.test.ts (121.1ms)
+✖ test/writer-reader.test.ts (81.3ms)
 ℹ tests 12
 ℹ suites 0
 ℹ pass 11

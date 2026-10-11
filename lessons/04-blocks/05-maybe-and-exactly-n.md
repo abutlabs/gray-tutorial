@@ -56,8 +56,22 @@ Compare `seqN(u16, 3)` with [lesson 2.5](../02-codec/05-sequences-and-records.md
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/codec/codec.ts' does not provide an export named 'option'
+...
+✖ test/codec.test.ts (151.3ms)
+...
+ℹ tests 38
+ℹ suites 0
+ℹ pass 37
+ℹ fail 1
+...
+```
+
+Red: the codec doesn't have `option` yet, nor its partner for exactly n.
 
 ## The code
 
@@ -100,9 +114,21 @@ and a fixed sequence's items as `0`, `1`, `2`, just like `seq`'s, minus the `len
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ an option is 0, or 1 and the value (0.1ms)
+✔ a fixed-length sequence has no length in front (0.1ms)
+...
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+...
+reported 44 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728308105
+...
 ```
 
 <details>
@@ -130,6 +156,7 @@ value.
 ## What you have
 
 Every kind of codec a JAM block needs: integers, bytes, sequences, records, either-or,
-maybe, and exactly n.
+maybe, and exactly n. [Lesson 4.6](./06-the-header.md) puts the last two to work in a
+block's header.
 
 Next: [4.6 The header](./06-the-header.md)

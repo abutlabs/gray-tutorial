@@ -93,8 +93,22 @@ The two vectors show both markers: `header_0` starts an epoch (epoch mark, no ti
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/block.ts' does not provide an export named 'Header'
+...
+✖ test/block.test.ts (149.9ms)
+...
+ℹ tests 35
+ℹ suites 0
+ℹ pass 34
+ℹ fail 1
+...
+```
+
+Red: `src/block.ts` doesn't export `Header` yet.
 
 ## The code
 
@@ -151,10 +165,21 @@ it, so the header can travel light.
 
 ```sh
 npm test
-# prints: header_1 (full)
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ header_1 (tiny) (0.7ms)
+✔ header_1 (full) (2.0ms)
+...
+ℹ tests 48
+ℹ suites 0
+ℹ pass 48
+ℹ fail 0
+...
+reported 48 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728274365
+...
 ```
 
 ## Watch it
@@ -184,10 +209,17 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 
 ```sh
 node bin/decode.ts header ../vectors/codec/tiny/header_1.bin
-# prints: epoch_mark.present             0x00
-# prints: tickets_mark.present           0x01
-# prints: tickets_mark.11.attempt
-# prints: reported to Grafana
+```
+
+```text
+    0..32    parent                         0x5c743dbc514284b2ea57798787c5a155ef9d7ac1e9499ec65910a7a3d65897b7
+...
+  100..101   epoch_mark.present             0x00
+  101..102   tickets_mark.present           0x01
+...
+  497..498   tickets_mark.11.attempt        0x03
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728274814
 ```
 
 Read it top to bottom: no epoch mark (`0x00`), a tickets mark (`0x01`), and then twelve
@@ -223,6 +255,7 @@ encoder, the decoder and the JSON reader at once.
 
 ## What you have
 
-A client that can read the cover page of any JAM block, at either size.
+A client that can read the cover page of any JAM block, at either size. Cover page and
+contents together make a block: [lesson 4.7](./07-the-block.md).
 
 Next: [4.7 The block](./07-the-block.md)

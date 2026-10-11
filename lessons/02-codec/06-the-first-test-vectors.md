@@ -167,8 +167,8 @@ npm test
 ...
 Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/work.ts' imported from …/client/test/work.test.ts
 ...
-✖ test/work.test.ts (150.8ms)
-✔ a reader reads back what a writer wrote, in the same order (1.1ms)
+✖ test/work.test.ts (155.9ms)
+...
 ℹ tests 18
 ℹ suites 0
 ℹ pass 17
