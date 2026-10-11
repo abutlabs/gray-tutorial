@@ -3,7 +3,8 @@
 //
 //   - its lines are the real output's lines, in order and one after another (blank lines
 //     and npm's warnings aside), from the first line to the last;
-//   - a line "..." marks a cut: any lines may come there (also at the start or the end);
+//   - a line "..." (at its start) marks a cut: any lines may come there (also at the
+//     start or the end);
 //   - "…" inside a line stands for anything (a slot number, a hash that changes);
 //   - times, durations, run ids, the client's name in links and paths into the client are
 //     masked on both sides, so real output can be pasted as it is (verify saves every
@@ -36,7 +37,7 @@ export function checkOutput(shown: string, real: string): string | null {
   let at = 0;
   let cut = false;
   for (const line of want) {
-    if (line.trim() === "...") {
+    if (line === "...") { // at the start of the line; an indented "..." is output (Node prints some)
       cut = true;
       continue;
     }

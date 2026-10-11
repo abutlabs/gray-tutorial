@@ -102,6 +102,20 @@ reported 7 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=yo
 All green on the first try, because these tests pin down how JavaScript already
 behaves. Seven tests on the dashboard now.
 
+Want to poke at the trap yourself? Put a breakpoint on line 5 of
+`test/js-numbers.test.ts`, pick *Tests: js-numbers (1.2)* in *Run and Debug*, and press
+<kbd>F5</kbd>. While it's paused, the *Debug Console* runs any JavaScript you type:
+`2 ** 64 - 70` gives `18446744073709552000`, already rounded, and `2n ** 64n - 70n` gives
+`18446744073709551546n`, exact.
+
+> [!NOTE]
+> **From here on, the debug configurations are yours.** This is the last lesson with one
+> of its own in `.vscode/launch.json`; the lessons after it won't mention them.
+> *Tests: the open file* and *Program: the open file* cover anything new. And when you
+> build something you'll run again and again, give it a configuration of its own: copy
+> one, then change its `name` and `program`. It's a good habit on any system you build:
+> the next time something goes wrong, you're one keypress away from watching it happen.
+
 ## The same trap, in another language
 
 lasair, written in OCaml, keeps 64-bit values in OCaml's `int64`, which is *signed*: from

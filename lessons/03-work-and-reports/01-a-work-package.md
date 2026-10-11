@@ -49,8 +49,23 @@ for (const spec of ["tiny", "full"]) {
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/work.ts' does not provide an export named 'WorkPackage'
+...
+✖ test/work.test.ts (173.5ms)
+✔ a reader reads back what a writer wrote, in the same order (1.5ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 19
+ℹ fail 1
+...
+```
+
+Red: `src/work.ts` doesn't export `WorkPackage` yet. (No stub, as in [lesson 2.6](../02-codec/06-the-first-test-vectors.md): an empty record would
+fool half the check. The vectors judge the real codec.)
 
 ## The code
 
@@ -80,10 +95,21 @@ nests them. Records inside records inside a list: it's bricks all the way down.
 
 ```sh
 npm test
-# prints: work_package (full)
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ work_package (tiny) (4.8ms)
+✔ work_package (full) (2.2ms)
+...
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+...
+reported 25 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791727153621
+...
 ```
 
 ## Watch it
@@ -107,9 +133,23 @@ const CODECS: Record<string, Codec<unknown>> = {
 
 ```sh
 node bin/decode.ts work_package ../vectors/codec/tiny/work_package.bin
-# prints: context.lookup_anchor_slot
-# prints: items.1.extrinsic.0.hash
-# prints: reported to Grafana
+```
+
+```text
+    0..4     auth_code_host                 0x78563412
+    4..36    auth_code_hash                 0x022e5e165cc8bd586404257f5cd6f5a31177b5c951eb076c7c10174f90006eef
+   36..68    context.anchor                 0xc0564c5e0de0942589df4343ad1956da66797240e2a2f2d6f8116b5047768986
+   68..72    context.anchor_slot            0x0b000000
+   72..104   context.state_root             0xf6967658df626fa39cbfb6014b50196d23bc2cfbfa71a7591ca7715472dd2b48
+  104..136   context.beefy_root             0x9329de635d4bbb8c47cdccbbc1285e48bf9dbad365af44b205343e99dea298f3
+  136..168   context.lookup_anchor          0x60751ab5b251361fbfd3ad5b0e84f051ccece6b00830aed31a5354e00b20b9ed
+  168..172   context.lookup_anchor_slot     0x21000000
+...
+  550..552   items.1.import_segments.0.index 0x0000
+...
+  587..619   items.1.extrinsic.0.hash       0x80b628780612e8928705018d1ced53b2f76607ad026a86e4f36c99ac0491f8eb
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791727189774
 ```
 
 The trace paths show the nesting: `context.anchor_slot`, `items.1.import_segments.0.index`.
@@ -156,6 +196,7 @@ reader at once, in the encoding's order.
 
 ## What you have
 
-The parcel that carries work into JAM, encoded byte for byte.
+The parcel that carries work into JAM, encoded byte for byte. A core turns each of its
+items into a result, and [lesson 3.2](./02-work-digests.md) encodes what comes back.
 
 Next: [3.2 Work digests](./02-work-digests.md)

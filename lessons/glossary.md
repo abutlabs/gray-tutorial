@@ -104,6 +104,14 @@ it got. *Example:* `assert.equal(slot, 600)`. ([0.4](./00-start/04-the-jam-clock
 **Test-driven development (TDD).** Writing a test before the code it tests, watching it
 fail, then writing the code that makes it pass. *Example:* [lesson 0.4](./00-start/04-the-jam-clock.md)'s `slotAt`. ([0.4](./00-start/04-the-jam-clock.md))
 
+**Debugger.** A tool that pauses a running program so you can read its variables, then
+lets it go on. In VS Code, *Run and Debug*, with the configurations in
+`.vscode/launch.json`. *Example:* *Tests: time (0.4)*. ([0.4](./00-start/04-the-jam-clock.md))
+
+**Breakpoint.** A line where the debugger pauses the program: click left of the line's
+number, and a red dot appears. *Example:* line 12 of `src/time.ts`, where `slotAt`
+rounds. ([0.4](./00-start/04-the-jam-clock.md))
+
 **Reporter.** A plug-in for Node's test runner that receives every test's result; yours
 sends them to Grafana. *Example:* `test/grafana.ts`. ([0.3](./00-start/03-watch-your-client.md))
 

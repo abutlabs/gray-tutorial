@@ -18,6 +18,10 @@ Your first piece of real JAM. It's tiny, and it is everywhere: every block in JA
   fail, then writing the code that makes it pass. *Example:* this lesson's `slotAt`.
 - **Assertion.** One check inside a test: if the value isn't what it should be, the test
   fails and says what it got. *Example:* `assert.equal(at("2025-01-01T13:00:00Z"), 600)`.
+- **Debugger.** A tool that pauses a running program so you can read its variables, then
+  lets it go on. *Example:* VS Code's *Run and Debug*.
+- **Breakpoint.** A line where the debugger pauses the program. *Example:* the red dot
+  left of line 12 in `src/time.ts`.
 
 ## What the Gray Paper says
 
@@ -164,7 +168,7 @@ test at test/time.test.ts:7:1
 
 Red again, and this time the code is real. Something in it is wrong. (On purpose: every
 so often a lesson hands you a bug, so that finding one becomes a habit before it matters.)
-Three places tell you what happened:
+Four places tell you what happened:
 
 1. **The test output.** One test failed, `slot 0 is the first six seconds of the JAM
    Common Era`, and below it: `1 !== 0`. Your code said 1 where the test wanted 0. The
@@ -179,6 +183,22 @@ Three places tell you what happened:
    5.999 / 6 = 0.9998, and `Math.round` turns 0.9998 into 1. But slot 1 doesn't start
    until the sixth second. A slot number counts the *whole* slots that have gone by, so
    it must round *down*.
+4. **The debugger.** Step 3 worked it out; a *debugger* lets you watch it happen. In
+   `src/time.ts`, click just left of line 12's number, the `return` line. A red dot
+   appears: a *breakpoint*. Open *Run and Debug* (<kbd>⇧⌘D</kbd>, or
+   <kbd>Ctrl+Shift+D</kbd> on Windows and Linux), pick *Tests: time (0.4)* at the top,
+   and press <kbd>F5</kbd>. The test pauses on line 12, and the debugger's *Variables* list
+   shows `ms: 0`: the first assertion, 12:00:00 sharp. Press <kbd>F5</kbd> to go on, and it
+   pauses again with `ms: 5999`, the second. In the *Debug Console* (next to the
+   terminal), type `ms / (SLOT_SECONDS * 1000)` and press Enter: `0.9998333333333334`,
+   a hair under 1, and `Math.round` is about to make it 1. Press <kbd>⇧F5</kbd> to stop,
+   and click the red dot to remove it.
+
+> [!NOTE]
+> *Tests: time (0.4)* comes from `.vscode/launch.json`, which the tutorial ships. It has
+> a configuration for each test file and program up to [lesson 1.2](../01-bytes-and-numbers/02-numbers.md) (the later ones fail
+> with "Cannot find module" until you get there), plus three that work for any lesson:
+> *Tests: all (npm test)*, *Tests: the open file* and *Program: the open file*.
 
 The fix is one word:
 

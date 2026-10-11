@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
-import { LESSONS, ROOT, readParts } from "./lessons.ts";
+import { LESSONS, ROOT, lessonsThrough, readParts } from "./lessons.ts";
 
 const parts = readParts();
 const home = readFileSync(join(LESSONS, "index.md"), "utf8");
@@ -121,4 +121,24 @@ test("every lesson closes with What you have", () => {
       .matchAll(/^## (.+)$/gm)].map((m) => m[1]);
     assert.equal(sections.at(-1), "What you have", `${file} closes with "## What you have"`);
   }
+});
+
+// .vscode/launch.json hands the debugger over in 1.2 (WRITING.md): each test file and
+// program made up to then has a configuration, named for the lesson that makes it.
+test("every test file and program up to 1.2 has a debug configuration, named for its lesson", () => {
+  const launch = JSON.parse(readFileSync(join(ROOT, ".vscode", "launch.json"), "utf8").replace(/^\s*\/\/.*$/gm, ""));
+  const madeIn = new Map<string, string>();
+  for (const l of lessonsThrough("1.2")) {
+    for (const s of l.steps) if (s.kind === "file" && s.op === "new") madeIn.set(s.path, l.id);
+  }
+  const named: string[] = [];
+  for (const c of launch.configurations as { name: string; program?: string }[]) {
+    const lesson = /\((\d+\.\d+)\)$/.exec(c.name)?.[1];
+    if (!lesson) continue; // one for any file, such as "Tests: the open file"
+    const path = (c.program ?? "").replace("${workspaceFolder}/client/", "");
+    assert.equal(madeIn.get(path), lesson, `"${c.name}" runs ${path}, which lesson ${lesson} makes`);
+    named.push(path);
+  }
+  const runnable = [...madeIn.keys()].filter((p) => /^(test\/.+\.test\.ts|bin\/.+\.ts)$/.test(p));
+  assert.deepEqual(named.sort(), runnable.sort());
 });

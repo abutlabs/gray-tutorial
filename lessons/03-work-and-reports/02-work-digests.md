@@ -76,8 +76,22 @@ panicked.
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/work.ts' does not provide an export named 'WorkDigest'
+...
+✖ test/work.test.ts (165.6ms)
+✔ a reader reads back what a writer wrote, in the same order (1.4ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 19
+ℹ fail 1
+...
+```
+
+Red: `src/work.ts` doesn't export `WorkDigest` yet, nor the codecs that go with it.
 
 ## The code
 
@@ -158,7 +172,32 @@ The tour:
 
 ```sh
 npm test
-# fails with: bad_exports
+```
+
+```text
+...
+test at test/work.test.ts:27:3
+✖ work_result_1 (tiny) (1.5ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+
+    {
+      accumulate_gas: 33n,
+      code_hash: Uint8Array(32) [
+        252,
+        252,
+  ...
+      result: {
+  +     error: 'bad_exports'
+  -     error: 'panic'
+      },
+      service_id: 84281096
+    }
+
+      at checkCodecVector (…/client/test/vectors.ts:26:10)
+      at TestContext.<anonymous> (…/client/test/work.test.ts:27:41)
+...
 ```
 
 ## Bug hunt
@@ -220,10 +259,23 @@ export const WorkResult: Codec<WorkResult> = {
 
 ```sh
 npm test
-# prints: work_result_1 (full)
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ work_result_0 (tiny) (0.2ms)
+✔ work_result_1 (tiny) (0.2ms)
+✔ work_result_0 (full) (0.2ms)
+✔ work_result_1 (full) (0.1ms)
+...
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+...
+reported 30 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791727155485
+...
 ```
 
 ## Watch it
@@ -246,9 +298,20 @@ const CODECS: Record<string, Codec<unknown>> = {
 
 ```sh
 node bin/decode.ts work_result ../vectors/codec/tiny/work_result_1.bin
-# prints: result                         0x02
-# prints: refine_load.exports
-# prints: reported to Grafana
+```
+
+```text
+    0..4     service_id                     0x08070605
+    4..36    code_hash                      0xfcfc857dab216daf41f409c2012685846e4d34aedfeacaf84d9adfebda73fae6
+   36..68    payload_hash                   0xd55e07438aeeeb0d6509ab28af8a758d1fb70424db6b27c7e1ef6473e721c328
+   68..76    accumulate_gas                 0x2100000000000000
+   76..77    result                         0x02
+   77..78    refine_load.gas_used           0x00
+   78..79    refine_load.imports            0x00
+   79..80    refine_load.extrinsic_count    0x00
+   80..81    refine_load.extrinsic_size     0x00
+   81..82    refine_load.exports            0x00
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791727155961
 ```
 
 There it is, the whole sad story of `work_result_1` in one byte: `result 0x02`, a panic.
@@ -295,6 +358,8 @@ one where yours count along the `ERRORS` list.
 ## What you have
 
 The summary card a core sends back for every work item, including the first value in
-your client that can be one thing *or* another.
+your client that can be one thing *or* another. The chain doesn't take a core's results
+on its word: [lesson 3.3](./03-a-work-report.md) wraps them in the work-report that
+guarantors sign.
 
 Next: [3.3 A work-report](./03-a-work-report.md)

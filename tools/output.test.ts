@@ -33,6 +33,11 @@ test("npm's warnings don't count: they come from each machine's npm settings", (
   assert.equal(checkOutput("...\nfound 0 vulnerabilities", "added 1 package\nfound 0 vulnerabilities\nnpm warn Unknown env config"), null);
 });
 
+test("an indented ... is output to match, not a cut (Node prints some in its diffs)", () => {
+  assert.equal(checkOutput("a\n  ...\nb", "a\n  ...\nb"), null);
+  assert.match(checkOutput("a\n  ...\nb", "a\nx\nb")!, /expected here/);
+});
+
 test("… stands for anything inside a line", () => {
   assert.equal(checkOutput("It is JAM timeslot …, reported", "It is JAM timeslot 5,233,107, reported"), null);
   assert.match(checkOutput("It is JAM timeslot …, sent", "It is JAM timeslot 5,233,107, reported")!, /not right|expected here/);

@@ -58,8 +58,23 @@ for (const spec of ["tiny", "full"]) {
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/work.ts' does not provide an export named 'WorkReport'
+...
+✖ test/work.test.ts (151.8ms)
+✔ a reader reads back what a writer wrote, in the same order (1.0ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 19
+ℹ fail 1
+...
+```
+
+Red: `src/work.ts` doesn't export `WorkReport` yet. (No stub, as in [lesson 2.6](../02-codec/06-the-first-test-vectors.md): an empty record would
+fool half the check. The vectors judge the real codec.)
 
 ## The code
 
@@ -110,10 +125,21 @@ Once more the encoding's order beats the definition's: §11 lists the authorizer
 
 ```sh
 npm test
-# prints: work_report (full)
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ work_report (tiny) (0.9ms)
+✔ work_report (full) (0.7ms)
+...
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+...
+reported 32 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791727156593
+...
 ```
 
 ## Watch it
@@ -137,9 +163,19 @@ const CODECS: Record<string, Codec<unknown>> = {
 
 ```sh
 node bin/decode.ts work_report ../vectors/codec/full/work_report.bin
-# prints: package_spec.erasure_shards    0xff03
-# prints: core_index                     0x03
-# prints: reported to Grafana
+```
+
+```text
+    0..32    package_spec.hash              0x30466e0ae1b05dde5249872475f6beeac368fd014b5a3413ceb32d3872143284
+   32..36    package_spec.length            0x2a000000
+   36..68    package_spec.erasure_root      0x7af11fdaa717c398e223211842b41392f18df4bbc4ea0f4cfb972f19c7a64949
+   68..70    package_spec.erasure_shards    0xff03
+   70..102   package_spec.exports_root      0xe8e52949f6e4fb1d943248df48c3f2b538200fddfea22388e5e061be8ebf21a7
+  102..104   package_spec.exports_count     0x4500
+...
+  273..274   core_index                     0x03
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791727157021
 ```
 
 `0xff03`, little end first, is `0x03ff`: 1,023 shards, one per validator on the full
@@ -175,6 +211,8 @@ it. That's why you test both.
 ## What you have
 
 Part 3's paperwork, complete: package in, digests out, and the report that binds them,
-all byte for byte with the official vectors at both sizes.
+all byte for byte with the official vectors at both sizes. Reports reach the chain
+inside blocks, along with tickets, preimages, assurances and disputes: Part 4 encodes a
+whole block.
 
 Next: [Part 4 · Blocks](../04-blocks/index.md)
