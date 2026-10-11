@@ -36,15 +36,21 @@ things of type T") is just its items, one after another, no length in front.
 import { option, seqN } from "../src/codec/codec.ts";
 
 test("an option is 0, or 1 and the value", () => {
-  assert.equal(toHex(encode(option(u32), null)), "0x00");
-  assert.equal(toHex(encode(option(u32), 7)), "0x0107000000");
-  assert.equal(decode(option(u32), fromHex("0x00")), null);
-  assert.equal(decode(option(u32), fromHex("0x0107000000")), 7);
+  const noneHex: string = toHex(encode(option(u32), null));
+  assert.equal(noneHex, "0x00");
+  const someHex: string = toHex(encode(option(u32), 7));
+  assert.equal(someHex, "0x0107000000");
+  const none: number | null = decode(option(u32), fromHex("0x00"));
+  assert.equal(none, null);
+  const some: number | null = decode(option(u32), fromHex("0x0107000000"));
+  assert.equal(some, 7);
 });
 
 test("a fixed-length sequence has no length in front", () => {
-  assert.equal(toHex(encode(seqN(u16, 3), [1, 2, 3])), "0x010002000300");
-  assert.deepEqual(decode(seqN(u16, 3), fromHex("0x010002000300")), [1, 2, 3]);
+  const fixedHex: string = toHex(encode(seqN(u16, 3), [1, 2, 3]));
+  assert.equal(fixedHex, "0x010002000300");
+  const fixedDecoded: number[] = decode(seqN(u16, 3), fromHex("0x010002000300"));
+  assert.deepEqual(fixedDecoded, [1, 2, 3]);
 });
 ```
 

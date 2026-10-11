@@ -144,6 +144,22 @@ teaching. What we take from it, each with its reason. "Checked" means a test enf
   (the function exists and answers wrongly), so the first red is the rule failing, not a
   missing file. *Why:* "Cannot find module" proves only that a file is missing; a failed
   assertion proves the test tests the rule.
+- **Tests show their steps.** In a test, every value the code under test produces gets a
+  `const` with a name and a type (`const hex: string = toHex(encode(u16, 4807));`), and an
+  assertion compares names with expected values (`assert.equal(hex, "0xc712");`). An
+  expected value that is computed, such as one read from a vector, gets a name too; a
+  literal one stays in the assertion, and so do literal inputs. Each step goes on the line
+  above the first assertion that needs it, so the test runs in the same order as before
+  and the same assertion fails first. Names say what the value is (`decoded`, `root`), and
+  types use the client's names (`Bytes`, `Header`); where the client has no name for a
+  type (a helper's inferred return, a value read from a vector's JSON), the type is left
+  to TypeScript. Bytes the test compares as hex are named as their hex (`u16Hex`), so the
+  debugger shows `"0xc712"`, not an array. A type a test names before a later lesson
+  imports it needs its import in the snippet that first uses it.
+  `assert.throws(() => ...)` stays as it is: there is no value to name. *Why:* this is a tutorial, not production code. With a
+  breakpoint on an assertion, the debugger's *Variables* list shows every step so far,
+  and the reader sees what the test compares instead of decoding one dense line
+  (1.2's `test/js-numbers.test.ts` is the model).
 - **Steps in words before code.** When a rule has several steps, number them in plain
   English between *What the Gray Paper says* and the code. *Why:* the reader holds the plan
   while reading the code.

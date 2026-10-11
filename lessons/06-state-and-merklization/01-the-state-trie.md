@@ -94,6 +94,7 @@ import assert from "node:assert/strict";
 import { fromHex, toHex } from "../src/bytes.ts";
 import { stateRoot } from "../src/trie.ts";
 import { traceState, vectorJson } from "./vectors.ts";
+import type { KeyValue } from "../src/trie.ts";
 
 test("the trie vectors: from no entries at all to ten", () => {
   const vectors = vectorJson("trie/trie.json") as {
@@ -101,11 +102,13 @@ test("the trie vectors: from no entries at all to ten", () => {
     output: string;
   }[];
   for (const { input, output } of vectors) {
-    const entries = Object.entries(input).map(([key, value]) => ({
+    const entries: KeyValue[] = Object.entries(input).map(([key, value]) => ({
       key: fromHex(`0x${key}`).subarray(0, 31), // these vectors' keys are 32 bytes; a key is 31
       value: fromHex(`0x${value}`),
     }));
-    assert.equal(toHex(stateRoot(entries)), `0x${output}`);
+    const root: string = toHex(stateRoot(entries));
+    const expected: string = `0x${output}`;
+    assert.equal(root, expected);
   }
 });
 
@@ -113,7 +116,8 @@ test("each header promises the state before its block, by its root: 400 real sta
   for (const family of ["fallback", "safrole", "preimages", "storage"]) {
     for (let n = 1; n <= 100; n++) {
       const { entries, promised } = traceState(family, n);
-      assert.equal(toHex(stateRoot(entries)), promised, `${family} ${n}`);
+      const root: string = toHex(stateRoot(entries));
+      assert.equal(root, promised, `${family} ${n}`);
     }
   }
 });
@@ -154,7 +158,7 @@ npm test
 ℹ pass 58
 ℹ fail 2
 ...
-test at test/trie.test.ts:7:1
+test at test/trie.test.ts:8:1
 ✖ the trie vectors: from no entries at all to ten (1.5ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected
@@ -162,7 +166,7 @@ test at test/trie.test.ts:7:1
   + '0x0000000000000000000000000000000000000000000000000000000000000000'
   - '0x99ecb1509d2cbc16bab389714e5933932977e742472fcd9277d67f45699e076a'
 
-      at TestContext.<anonymous> (…/client/test/trie.test.ts:17:12)
+      at TestContext.<anonymous> (…/client/test/trie.test.ts:20:12)
 ...
 ```
 

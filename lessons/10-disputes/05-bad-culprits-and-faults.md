@@ -66,13 +66,16 @@ function disputesVerdict(config: typeof TINY, name: string) {
 
 test("a fault must have voted against the verdict", () => {
   const name = "stf/disputes/tiny/progress_with_faults-7.json";
-  assert.equal(disputesVerdict(TINY, name), "fault_verdict_wrong");
+  const broken: string | null = disputesVerdict(TINY, name);
+  assert.equal(broken, "fault_verdict_wrong");
 });
 
 for (const { config, name } of VERDICT_VECTORS) {
   test(`${name}: accepted or refused, as the vector says`, () => {
     const { output } = vectorJson(name) as DisputesVector;
-    assert.equal(disputesVerdict(config, name), output.err ?? null);
+    const broken: string | null = disputesVerdict(config, name);
+    const expected: string | null = output.err ?? null;
+    assert.equal(broken, expected);
   });
 }
 ```
@@ -129,7 +132,7 @@ npm test
 ℹ pass 146
 ℹ fail 11
 ...
-test at test/disputes.test.ts:205:1
+test at test/disputes.test.ts:231:1
 ✖ a fault must have voted against the verdict (75.0ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected

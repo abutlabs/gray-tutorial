@@ -51,10 +51,15 @@ import { FULL, TINY } from "../src/config.ts";
 import { entropyHistory, epochOf, phaseOf } from "../src/epoch.ts";
 import { readEntropy, readTime } from "../src/state.ts";
 import { traceState } from "./vectors.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("an epoch is E slots: 12 on tiny, 600 on full", () => {
-  assert.deepEqual([epochOf(TINY, 25), phaseOf(TINY, 25)], [2, 1]);
-  assert.deepEqual([epochOf(FULL, 1234), phaseOf(FULL, 1234)], [2, 34]);
+  const tinyEpoch: number = epochOf(TINY, 25);
+  const tinyPhase: number = phaseOf(TINY, 25);
+  assert.deepEqual([tinyEpoch, tinyPhase], [2, 1]);
+  const fullEpoch: number = epochOf(FULL, 1234);
+  const fullPhase: number = phaseOf(FULL, 1234);
+  assert.deepEqual([fullEpoch, fullPhase], [2, 34]);
 });
 
 /** Block n of the tiny "safrole" trace, the time before it, and whether it starts an epoch. */
@@ -70,7 +75,8 @@ test("an epoch mark is in exactly the blocks that start a new epoch", () => {
   let marks = 0;
   for (let n = 1; n <= 100; n++) {
     const { header, newEpoch } = step(n);
-    assert.equal(header.epoch_mark !== null, newEpoch, `block ${n}`);
+    const hasMark: boolean = header.epoch_mark !== null;
+    assert.equal(hasMark, newEpoch, `block ${n}`);
     if (newEpoch) marks++;
   }
   assert.equal(marks, 8);
@@ -79,8 +85,10 @@ test("an epoch mark is in exactly the blocks that start a new epoch", () => {
 test("at a new epoch the entropy history moves along one; otherwise it stays", () => {
   for (let n = 1; n < 100; n++) {
     const { entries, newEpoch } = step(n);
-    const after = readEntropy(traceState("safrole", n + 1).entries); // the state after block n
-    assert.deepEqual(after.slice(1), entropyHistory(readEntropy(entries), newEpoch), `block ${n}`);
+    const after: Bytes[] = readEntropy(traceState("safrole", n + 1).entries); // after block n
+    const afterHistory: Bytes[] = after.slice(1);
+    const moved: Bytes[] = entropyHistory(readEntropy(entries), newEpoch);
+    assert.deepEqual(afterHistory, moved, `block ${n}`);
   }
 });
 ```
@@ -131,15 +139,15 @@ npm test
 ℹ pass 66
 ℹ fail 3
 ...
-test at test/epoch.test.ts:23:1
+test at test/epoch.test.ts:28:1
 ✖ an epoch mark is in exactly the blocks that start a new epoch (28.6ms)
   AssertionError [ERR_ASSERTION]: block 12
 
   true !== false
 
-      at TestContext.<anonymous> (…/client/test/epoch.test.ts:27:12)
+      at TestContext.<anonymous> (…/client/test/epoch.test.ts:33:12)
 ...
-test at test/epoch.test.ts:33:1
+test at test/epoch.test.ts:39:1
 ✖ at a new epoch the entropy history moves along one; otherwise it stays (97.1ms)
   AssertionError [ERR_ASSERTION]: block 12
 ...

@@ -83,26 +83,35 @@ const BLOCK_CASES = [
 ```ts
 import { accumulateRound } from "../src/accumulate.ts";
 import { toHex } from "../src/bytes.ts";
+import type { Account, AccountJson } from "../src/services.ts";
+import type { AccumulationState } from "../src/accumulate.ts";
+import type { AccumulationStats } from "../src/accumulate.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("the gift arrives a round later: the money first, then service 1 runs", () => {
   const vector = vectorJson("stf/accumulate/tiny/transfer_for_live_service-1.json") as BlockVector;
-  const before = accumulationStateFromJson(vector.pre_state);
+  const before: AccumulationState = accumulationStateFromJson(vector.pre_state);
   const { state, statistics } = accumulateBlock(TINY, before, vector.input.slot, reportsOf(vector));
-  const receiver = state.accounts.get(1)!;
-  assert.equal(receiver.info.balance, 227_714n + 100n); // the gift arrived
-  assert.deepEqual(statistics.get(1), { count: 0, transfers: 1, gasUsed: 61_711n });
-  const note = receiver.storage.get(toHex(new TextEncoder().encode("transfer0")))!;
-  assert.equal(new TextDecoder().decode(note.subarray(12, 16)), "gift"); // it read the memo
+  const receiver: Account = state.accounts.get(1)!;
+  const received: bigint = receiver.info.balance; // the gift arrived
+  assert.equal(received, 227_714n + 100n);
+  const stats: AccumulationStats | undefined = statistics.get(1);
+  assert.deepEqual(stats, { count: 0, transfers: 1, gasUsed: 61_711n });
+  const note: Bytes = receiver.storage.get(toHex(new TextEncoder().encode("transfer0")))!;
+  const memo: string = new TextDecoder().decode(note.subarray(12, 16)); // it read the memo
+  assert.equal(memo, "gift");
 });
 
 test("a transfer to a service with no code: the money arrives, and nothing runs", () => {
   const vector = vectorJson("stf/accumulate/tiny/transfer_for_live_service-1.json") as BlockVector;
   const { accounts, entropy } = accumulationStateFromJson(vector.pre_state);
   accounts.get(1)!.preimages.clear(); // service 1 can't find its code now
-  const gift = { source: 0, dest: 1, amount: 100n, memo: new Uint8Array(128), gas: 10n };
+  const gift: Transfer = { source: 0, dest: 1, amount: 100n, memo: new Uint8Array(128), gas: 10n };
   const round = accumulateRound(TINY, accounts, new Map(), entropy, 43, [], [gift]);
-  assert.equal(round.accounts.get(1)!.info.balance, 227_714n + 100n); // the money, still
-  assert.equal(round.used.get(1), 0n); // no code: no gas
+  const balance: bigint = round.accounts.get(1)!.info.balance; // the money, still
+  assert.equal(balance, 227_714n + 100n);
+  const used: bigint | undefined = round.used.get(1); // no code: no gas
+  assert.equal(used, 0n);
   assert.deepEqual(round.transfers, []); // and nothing sent on
 });
 ```
@@ -131,7 +140,7 @@ npm test
 ℹ pass 526
 ℹ fail 3
 ...
-test at test/accumulate.test.ts:177:1
+test at test/accumulate.test.ts:184:1
 ✖ the gift arrives a round later: the money first, then service 1 runs (80.8ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected

@@ -109,14 +109,17 @@ function guaranteeVerdict(config: Config, name: string) {
 
 test("a guarantee signed by an offender is refused", () => {
   const name = "stf/reports/tiny/banned_validator_guarantee-1.json";
-  assert.equal(guaranteeVerdict(TINY, name), "banned_validator");
+  const broken: string | null = guaranteeVerdict(TINY, name);
+  assert.equal(broken, "banned_validator");
 });
 
 for (const config of [TINY, FULL]) {
   for (const name of vectorFiles(`stf/reports/${config.name}`)) {
     test(`${name}: its guarantees pass, or break the rule the vector names`, () => {
       const { err } = (vectorJson(name) as ReportsVector).output;
-      assert.equal(guaranteeVerdict(config, name), err && GUARANTEE_RULES.has(err) ? err : null);
+      const broken: string | null = guaranteeVerdict(config, name);
+      const expected: string | null = err && GUARANTEE_RULES.has(err) ? err : null;
+      assert.equal(broken, expected);
     });
   }
 }
@@ -165,7 +168,7 @@ npm test
 ℹ pass 254
 ℹ fail 31
 ...
-test at test/guarantors.test.ts:169:1
+test at test/guarantors.test.ts:177:1
 ✖ a guarantee signed by an offender is refused (1.6ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected

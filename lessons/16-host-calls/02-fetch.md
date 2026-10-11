@@ -42,6 +42,9 @@ didn't have yet.
 import { accumulateHost, NONE, protocolConstants } from "../src/host.ts";
 import { TINY } from "../src/config.ts";
 import { addPages, readMemory } from "../src/pvm/memory.ts";
+import type { Bytes } from "../src/bytes.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
+import type { MemoryError } from "../src/pvm/memory.ts";
 
 /** Accumulation's host, with an entropy of 32 sevens and no inputs. */
 const accumulating = accumulateHost(TINY, new Uint8Array(32).fill(7), []);
@@ -55,38 +58,45 @@ function fetching(o: bigint, from: bigint, length: bigint, item: bigint) {
 }
 
 test("item 0: the protocol constants, 122 bytes, and tiny has 2 cores", () => {
-  const constants = protocolConstants(TINY);
+  const constants: Bytes = protocolConstants(TINY);
   assert.equal(constants.length, 122);
-  assert.deepEqual([...constants.subarray(24, 26)], [2, 0]); // C, after three 8-byte deposits
+  const cores: number[] = [...constants.subarray(24, 26)]; // C, after three 8-byte deposits
+  assert.deepEqual(cores, [2, 0]);
 });
 
 test("fetch copies an item into memory, and says how long it is", () => {
-  const machine = fetching(0x20000n, 0n, 122n, 0n);
-  assert.equal(runWithHost(machine, accumulating), "halt");
+  const machine: Machine = fetching(0x20000n, 0n, 122n, 0n);
+  const exit: Exit = runWithHost(machine, accumulating);
+  assert.equal(exit, "halt");
   assert.equal(machine.registers[7], 122n);
-  assert.deepEqual(readMemory(machine.memory, 0x20000n, 122), protocolConstants(TINY));
+  const copied: Bytes | MemoryError = readMemory(machine.memory, 0x20000n, 122);
+  const constants: Bytes = protocolConstants(TINY);
+  assert.deepEqual(copied, constants);
   assert.equal(machine.gas, 10_000n - 100n - 390n); // the block, then fetch's item 0
 });
 
 test("asking for no bytes at all: just the length", () => {
-  const machine = fetching(0x20000n, 0n, 0n, 0n);
+  const machine: Machine = fetching(0x20000n, 0n, 0n, 0n);
   runWithHost(machine, accumulating);
   assert.equal(machine.registers[7], 122n);
-  assert.deepEqual(readMemory(machine.memory, 0x20000n, 1), Uint8Array.of(0)); // untouched
+  const untouched: Bytes | MemoryError = readMemory(machine.memory, 0x20000n, 1);
+  assert.deepEqual(untouched, Uint8Array.of(0));
 });
 
 test("part of an item: from byte φ₈, and at most φ₉ bytes of it", () => {
-  const machine = fetching(0x20000n, 30n, 10n, 1n); // the entropy, from byte 30: 2 bytes left
+  const machine: Machine = fetching(0x20000n, 30n, 10n, 1n); // the entropy, from byte 30: 2 left
   runWithHost(machine, accumulating);
   assert.equal(machine.registers[7], 32n);
-  assert.deepEqual(readMemory(machine.memory, 0x20000n, 3), Uint8Array.of(7, 7, 0));
+  const copied: Bytes | MemoryError = readMemory(machine.memory, 0x20000n, 3);
+  assert.deepEqual(copied, Uint8Array.of(7, 7, 0));
 });
 
 test("an item accumulation doesn't have: NONE; nowhere to put it: panic", () => {
-  const missing = fetching(0x20000n, 0n, 10n, 7n); // a work-package: refinement only
+  const missing: Machine = fetching(0x20000n, 0n, 10n, 7n); // a work-package: refinement only
   runWithHost(missing, accumulating);
   assert.equal(missing.registers[7], NONE);
-  assert.equal(runWithHost(fetching(0x50000n, 0n, 122n, 0n), accumulating), "panic");
+  const nowhere: Exit = runWithHost(fetching(0x50000n, 0n, 122n, 0n), accumulating);
+  assert.equal(nowhere, "panic");
 });
 ```
 

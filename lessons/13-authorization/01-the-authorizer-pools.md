@@ -120,21 +120,25 @@ import { traceState, vectorFiles, vectorJson } from "./vectors.ts";
 import { Block } from "../src/block.ts";
 import { usedAuthorizers } from "../src/authorization.ts";
 import { readAuthPools, readAuthQueues } from "../src/state.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 /** An authorizer hash made of one repeated byte, so the test reads like letters. */
 const auth = (byte: number) => new Uint8Array(32).fill(byte);
 const [A, B, C] = [auth(0xaa), auth(0xbb), auth(0xcc)];
 
 test("the used authorizer leaves, the queue's next one joins", () => {
-  const queue = Array.from({ length: 80 }, (_, i) => (i === 3 ? C : A)); // C waits at 3
-  assert.deepEqual(nextPools([[A, B]], [queue], [{ core: 0, auth_hash: B }], 3), [[A, C]]);
-  assert.deepEqual(nextPools([[A, B]], [queue], [], 83), [[A, B, C]]); // 83 mod 80 = 3
+  const queue: Bytes[] = Array.from({ length: 80 }, (_, i) => (i === 3 ? C : A)); // C waits at 3
+  const afterUse: Bytes[][] = nextPools([[A, B]], [queue], [{ core: 0, auth_hash: B }], 3);
+  assert.deepEqual(afterUse, [[A, C]]);
+  const nextRound: Bytes[][] = nextPools([[A, B]], [queue], [], 83); // 83 mod 80 = 3
+  assert.deepEqual(nextRound, [[A, B, C]]);
 });
 
 test("a full pool keeps its newest eight", () => {
-  const full = [A, A, A, A, A, A, A, B]; // eight already
-  const queue = Array.from({ length: 80 }, () => C);
-  assert.deepEqual(nextPools([full], [queue], [], 0), [[A, A, A, A, A, A, B, C]]);
+  const full: Bytes[] = [A, A, A, A, A, A, A, B]; // eight already
+  const queue: Bytes[] = Array.from({ length: 80 }, () => C);
+  const after: Bytes[][] = nextPools([full], [queue], [], 0);
+  assert.deepEqual(after, [[A, A, A, A, A, A, B, C]]);
 });
 
 test("α′ on the authorizations vectors", () => {
@@ -146,11 +150,12 @@ test("α′ on the authorizations vectors", () => {
         pre_state: { auth_pools: unknown; auth_queues: unknown };
         post_state: { auth_pools: unknown };
       };
-      const pools = AuthPools(config).fromJson(pre_state.auth_pools);
-      const queues = AuthQueues(config).fromJson(pre_state.auth_queues);
-      const used = input.auths.map((a) => UsedAuthorizer.fromJson(a));
-      const after = nextPools(pools, queues, used, input.slot);
-      assert.deepEqual(after, AuthPools(config).fromJson(post_state.auth_pools), name);
+      const pools: Bytes[][] = AuthPools(config).fromJson(pre_state.auth_pools);
+      const queues: Bytes[][] = AuthQueues(config).fromJson(pre_state.auth_queues);
+      const used: UsedAuthorizer[] = input.auths.map((a) => UsedAuthorizer.fromJson(a));
+      const after: Bytes[][] = nextPools(pools, queues, used, input.slot);
+      const expected: Bytes[][] = AuthPools(config).fromJson(post_state.auth_pools);
+      assert.deepEqual(after, expected, name);
       checked++;
     }
   }
@@ -162,12 +167,13 @@ test("α′ through 99 real blocks, with the authorizers their own guarantees us
   for (let n = 1; n < 100; n++) {
     const before = traceState("preimages", n);
     const after = traceState("preimages", n + 1); // the state after block n
-    const block = Block(TINY).fromJson(before.block);
-    const auths = usedAuthorizers(block.extrinsic.guarantees);
-    const pools = readAuthPools(TINY, before.entries);
-    const queues = readAuthQueues(TINY, after.entries); // ϕ′: the queues after the block
-    const next = nextPools(pools, queues, auths, block.header.slot);
-    assert.deepEqual(next, readAuthPools(TINY, after.entries), `block ${n}`);
+    const block: Block = Block(TINY).fromJson(before.block);
+    const auths: UsedAuthorizer[] = usedAuthorizers(block.extrinsic.guarantees);
+    const pools: Bytes[][] = readAuthPools(TINY, before.entries);
+    const queues: Bytes[][] = readAuthQueues(TINY, after.entries); // ϕ′: after the block
+    const next: Bytes[][] = nextPools(pools, queues, auths, block.header.slot);
+    const expected: Bytes[][] = readAuthPools(TINY, after.entries);
+    assert.deepEqual(next, expected, `block ${n}`);
     used += auths.length;
   }
   assert.equal(used, 85);

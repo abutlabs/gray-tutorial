@@ -52,6 +52,9 @@ the accounts: queues ϕ, privileges χ, in both X and Y.
 ```ts
 import type { Privileges } from "../src/host.ts";
 import { assign, collapsePowers, CORE, startPowers } from "../src/host.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
+import type { Bytes } from "../src/bytes.ts";
+import type { Powers, Privileged } from "../src/host.ts";
 
 /** Service 0 holds every privilege, on both of tiny's cores. */
 const ZERO_HOLDS_ALL: Privileges = { bless: 0, assign: [0, 0], designate: 0, register: 0 };
@@ -66,27 +69,34 @@ function assigning(c: bigint, to: bigint) {
 }
 
 test("assign: the assigner hands a core on, and a checkpoint keeps the change", () => {
-  const powers = startPowers(ZERO_HOLDS_ALL);
-  const machine = assigning(0n, 1n); // core 0, to service 1
-  assert.equal(assign(machine, 0, powers, 2), "continue");
+  const powers: Powers = startPowers(ZERO_HOLDS_ALL);
+  const machine: Machine = assigning(0n, 1n); // core 0, to service 1
+  const exit: HostExit = assign(machine, 0, powers, 2);
+  assert.equal(exit, "continue");
   assert.equal(machine.registers[7], OK);
   assert.equal(machine.gas, 10_000n - 1818n);
   assert.deepEqual(powers.now.privileges.assign, [1, 0]); // core 0 is service 1's now
-  assert.deepEqual(powers.now.queues.get(0)![79], new Uint8Array(32).fill(7)); // its new queue
-  assert.deepEqual(collapsePowers(powers, "panic").privileges.assign, [0, 0]); // undone
+  const lastInQueue: Bytes = powers.now.queues.get(0)![79]; // its new queue
+  assert.deepEqual(lastInQueue, new Uint8Array(32).fill(7));
+  const undone: Privileged = collapsePowers(powers, "panic");
+  assert.deepEqual(undone.privileges.assign, [0, 0]);
   checkpoint(storing(), bundle(), { transfers: [], kept: [] }, powers);
-  assert.deepEqual(collapsePowers(powers, "panic").privileges.assign, [1, 0]); // kept
+  const kept: Privileged = collapsePowers(powers, "panic");
+  assert.deepEqual(kept.privileges.assign, [1, 0]);
 });
 
 test("assign refuses: no such core, not the core's assigner, not a service id", () => {
-  const powers = startPowers(ZERO_HOLDS_ALL);
+  const powers: Powers = startPowers(ZERO_HOLDS_ALL);
   const answer = (machine: ReturnType<typeof assigning>, s: number) => {
     assign(machine, s, powers, 2);
     return machine.registers[7];
   };
-  assert.equal(answer(assigning(2n, 1n), 0), CORE); // tiny has cores 0 and 1
-  assert.equal(answer(assigning(0n, 1n), 5), HUH); // service 5 isn't core 0's assigner
-  assert.equal(answer(assigning(0n, 2n ** 32n), 0), WHO); // no service has that id
+  const noSuchCore: bigint = answer(assigning(2n, 1n), 0); // tiny has cores 0 and 1
+  assert.equal(noSuchCore, CORE);
+  const notTheAssigner: bigint = answer(assigning(0n, 1n), 5); // service 5 isn't core 0's
+  assert.equal(notTheAssigner, HUH);
+  const noSuchService: bigint = answer(assigning(0n, 2n ** 32n), 0); // no service has that id
+  assert.equal(noSuchService, WHO);
   assert.deepEqual(powers.now.privileges.assign, [0, 0]); // nothing changed
 });
 ```
@@ -191,8 +201,10 @@ const CASES: [string, number][] = [
 ```ts
 test("the assigner hands core 0 to service 1", () => {
   const { result } = runVector("assign_from_non_assigner-3", 0);
-  assert.deepEqual(result.privileged.privileges.assign, [1, 0]); // as the vector's χ_A ends
-  assert.equal(result.privileged.queues.get(0)!.length, 80); // and core 0 has a new queue
+  const assigned: number[] = result.privileged.privileges.assign; // as the vector's χ_A ends
+  assert.deepEqual(assigned, [1, 0]);
+  const queueLength: number = result.privileged.queues.get(0)!.length; // core 0's new queue
+  assert.equal(queueLength, 80);
 });
 ```
 

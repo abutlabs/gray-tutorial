@@ -78,14 +78,17 @@ function verdict(config: Config, name: string) {
 
 test("an assurance for a core with nothing on it is refused", () => {
   const name = "stf/assurances/tiny/assurance_for_not_engaged_core-1.json";
-  assert.equal(verdict(TINY, name), "core_not_engaged");
+  const broken: string | null = verdict(TINY, name);
+  assert.equal(broken, "core_not_engaged");
 });
 
 for (const config of [TINY, FULL]) {
   for (const name of vectorFiles(`stf/assurances/${config.name}`)) {
     test(`${name}: accepted or refused, as the vector says`, () => {
       const { output } = vectorJson(name) as AssurancesVector;
-      assert.equal(verdict(config, name), output.err ?? null);
+      const broken: string | null = verdict(config, name);
+      const expected: string | null = output.err ?? null;
+      assert.equal(broken, expected);
     });
   }
 }
@@ -143,7 +146,7 @@ npm test
 ℹ pass 172
 ℹ fail 13
 ...
-test at test/assurances.test.ts:96:1
+test at test/assurances.test.ts:104:1
 ✖ an assurance for a core with nothing on it is refused (0.8ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected

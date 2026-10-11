@@ -60,23 +60,32 @@ const made = (ws: Step[][]) => ws.map((w) => w.flatMap((s) => s.makes));
 
 test("the Gray Paper's list isn't a recipe: γ′ comes before η′, which it's made from", () => {
   const at = (x: string) => STEPS.findIndex((s) => s.makes.includes(x));
-  assert.ok(at("γ′") < at("η′"));
-  assert.ok(STEPS[at("γ′")].from.includes("η′"));
+  const gammaAt: number = at("γ′");
+  const etaAt: number = at("η′");
+  assert.ok(gammaAt < etaAt);
+  const madeFromEta: boolean = STEPS[gammaAt].from.includes("η′");
+  assert.ok(madeFromEta);
 });
 
 test("four waves: the first needs only the block and the state before it", () => {
-  const ws = made(waves(STEPS));
+  const ws: string[][] = made(waves(STEPS));
   assert.equal(ws.length, 4);
   assert.deepEqual(ws[0], ["τ′", "β_H†", "η′", "κ′", "λ′", "ψ′", "ρ†"]);
-  assert.ok(ws[1].includes("γ′")); // Safrole waits for the new entropy, keys and offenders
+  const safroleWaits: boolean = ws[1].includes("γ′"); // for the new entropy, keys and offenders
+  assert.ok(safroleWaits);
   assert.deepEqual(ws[3], ["β_H′", "δ′", "α′", "π′"]); // all waiting for accumulation
 });
 
 test("every step comes after everything it's made from", () => {
-  const ws = waves(STEPS);
+  const ws: Step[][] = waves(STEPS);
   const madeBy = new Map(ws.flatMap((w, i) => w.flatMap((s) => s.makes.map((x) => [x, i]))));
   ws.forEach((wave, i) => {
-    for (const step of wave) for (const x of step.from) assert.ok((madeBy.get(x) ?? -1) < i, x);
+    for (const step of wave) {
+      for (const x of step.from) {
+        const madeIn: number = madeBy.get(x) ?? -1;
+        assert.ok(madeIn < i, x);
+      }
+    }
   });
 });
 
@@ -164,7 +173,7 @@ npm test
 ℹ pass 610
 ℹ fail 3
 ...
-test at test/import.test.ts:15:1
+test at test/import.test.ts:18:1
 ✖ four waves: the first needs only the block and the state before it (0.6ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
 

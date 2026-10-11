@@ -113,11 +113,12 @@ test("ρ‡: a core lets go of a report once available, timed out, or the set re
       const { input, pre_state, post_state } = vector;
       const cores = PendingReports(config).fromJson(pre_state.avail_assignments);
       const assurances = input.assurances.map((a) => Assurance(config).fromJson(a));
-      const validators = pre_state.curr_validators.length;
-      const available = availableCores(cores, assurances, validators);
-      const resized = validators !== pre_state.post_validators.length;
-      const after = clearCores(cores, available, input.slot, resized);
-      assert.deepEqual(after, PendingReports(config).fromJson(post_state.avail_assignments), name);
+      const validators: number = pre_state.curr_validators.length;
+      const available: number[] = availableCores(cores, assurances, validators);
+      const resized: boolean = validators !== pre_state.post_validators.length;
+      const after: (PendingReport | null)[] = clearCores(cores, available, input.slot, resized);
+      const expected = PendingReports(config).fromJson(post_state.avail_assignments);
+      assert.deepEqual(after, expected, name);
       released += cores.filter((p) => p !== null).length - after.filter((p) => p !== null).length;
     }
   }
@@ -127,9 +128,11 @@ test("ρ‡: a core lets go of a report once available, timed out, or the set re
 test("a report registered at slot 7 may wait through slot 11, and times out at 12", () => {
   const vector = vectorJson("stf/assurances/tiny/no_assurances-1.json") as AssurancesVector;
   const cores = PendingReports(TINY).fromJson(vector.pre_state.avail_assignments);
-  const pending = { ...(cores[0] as PendingReport), registered_slot: 7 };
-  assert.deepEqual(clearCores([pending], [], 11, false), [pending]);
-  assert.deepEqual(clearCores([pending], [], 12, false), [null]); // 12 ≥ 7 + 5
+  const pending: PendingReport = { ...(cores[0] as PendingReport), registered_slot: 7 };
+  const atEleven: (PendingReport | null)[] = clearCores([pending], [], 11, false);
+  assert.deepEqual(atEleven, [pending]);
+  const atTwelve: (PendingReport | null)[] = clearCores([pending], [], 12, false);
+  assert.deepEqual(atTwelve, [null]); // 12 ≥ 7 + 5
 });
 ```
 
@@ -172,7 +175,7 @@ npm test
 ℹ pass 160
 ℹ fail 2
 ...
-test at test/assurances.test.ts:75:1
+test at test/assurances.test.ts:81:1
 ✖ a report registered at slot 7 may wait through slot 11, and times out at 12 (15.4ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
   + actual - expected

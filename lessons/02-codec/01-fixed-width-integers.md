@@ -46,15 +46,22 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fromHex } from "../src/bytes.ts";
 import { decodeFixed, encodeFixed } from "../src/codec/numbers.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("ℰ_l writes the least significant byte first", () => {
-  assert.deepEqual(encodeFixed(4807n, 2), fromHex("0xc712"));
-  assert.deepEqual(encodeFixed(1n, 4), fromHex("0x01000000"));
+  const twoBytes: Bytes = encodeFixed(4807n, 2);
+  assert.deepEqual(twoBytes, fromHex("0xc712"));
+  const fourBytes: Bytes = encodeFixed(1n, 4);
+  assert.deepEqual(fourBytes, fromHex("0x01000000"));
 });
 
 test("decoding reads the bytes back", () => {
-  assert.equal(decodeFixed(fromHex("0xc712")), 4807n);
-  assert.equal(decodeFixed(encodeFixed(2n ** 64n - 70n, 8)), 2n ** 64n - 70n);
+  const decoded: bigint = decodeFixed(fromHex("0xc712"));
+  assert.equal(decoded, 4807n);
+  const big: bigint = 2n ** 64n - 70n;
+  const encoded: Bytes = encodeFixed(big, 8);
+  const back: bigint = decodeFixed(encoded);
+  assert.equal(back, big);
 });
 ```
 
@@ -91,7 +98,7 @@ npm test
 ℹ pass 7
 ℹ fail 2
 ...
-test at test/numbers.test.ts:6:1
+test at test/numbers.test.ts:7:1
 ✖ ℰ_l writes the least significant byte first (1.2ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
   + actual - expected
@@ -103,7 +110,7 @@ test at test/numbers.test.ts:6:1
   -   18
     ]
 
-      at TestContext.<anonymous> (…/client/test/numbers.test.ts:7:10)
+      at TestContext.<anonymous> (…/client/test/numbers.test.ts:9:10)
 ...
 ```
 

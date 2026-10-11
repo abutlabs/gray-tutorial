@@ -9,8 +9,9 @@ one rule your client follows from here on.
 - **Floating point.** How a JavaScript `number` is stored: about 16 significant digits
   and an exponent, so a huge whole number gets rounded. *Example:* `2 ** 64 - 70` and
   `2 ** 64` come out equal.
-- **`bigint`.** A JavaScript whole number with no size limit, written with an `n`.
-  *Example:* `2n ** 64n - 70n` is exactly 18446744073709551546n.
+- **`bigint`.** A JavaScript whole number with no size limit, written with an `n` after
+  its digits. *Example:* `2n` is the `bigint` two, and `2n ** 64n - 70n` is exactly
+  18446744073709551546n.
 - **Unsigned integer (u8, u16, u32, u64).** A whole number that is never negative, kept in
   a fixed number of bits. *Example:* a u32 goes from 0 to 2^32 − 1, which is 4294967295.
 - **Bitwise operator.** One that works on a number's bits: `|` (or), `&` (and), `^`
@@ -28,6 +29,16 @@ that, it quietly rounds. So 2^64 − 70, a perfectly good JAM gas amount, comes 
 
 A `bigint` is exact at any size. It's slower, and you can't mix it with plain numbers,
 but it never rounds.
+
+The only difference you see is one letter: an `n` after the digits makes a `bigint`.
+`2` is the `number` two, `2n` the `bigint` two, and `typeof 2n` says `"bigint"`. A
+calculation takes one kind or the other, never both, so every value in it needs its `n`:
+2^64 − 70 as a `bigint` is `2n ** 64n - 70n`. Mixing them, as in `1n + 1`, stops with
+`TypeError: Cannot mix BigInt and other types`.
+
+One more trap while we're here: in JavaScript, `**` raises to a power, and `^` doesn't.
+`^` is *xor*, one of the bitwise operators below, so `2 ** 53` is 9007199254740992 and
+`2 ^ 53` is 55.
 
 ## What the Gray Paper says
 
@@ -59,23 +70,34 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 test("a number rounds above 2^53: 2^64 - 70 and 2^64 are the same float", () => {
-  assert.equal(2 ** 64 - 70, 2 ** 64);
+  const twoTo64Minus70: number = 2 ** 64 - 70;
+  const twoTo64: number = 2 ** 64;
+  assert.equal(twoTo64Minus70, twoTo64);
 });
 
 test("a bigint never rounds", () => {
-  assert.notEqual(2n ** 64n - 70n, 2n ** 64n);
-  assert.equal(2n ** 64n - 70n, 18446744073709551546n);
+  const twoTo64Minus70: bigint = 2n ** 64n - 70n;
+  const twoTo64: bigint = 2n ** 64n;
+  assert.notEqual(twoTo64Minus70, twoTo64);
+  assert.equal(twoTo64Minus70, 18446744073709551546n);
 });
 
 test("bitwise operators work on signed 32-bit integers", () => {
-  assert.equal(0xffffffff | 0, -1);
-  assert.equal((0xffffffff | 0) >>> 0, 0xffffffff);
+  const allOnes: number = 0xffffffff;
+  const signed: number = allOnes | 0;
+  assert.equal(signed, -1);
+  const unsigned: number = signed >>> 0;
+  assert.equal(unsigned, 0xffffffff);
 });
 ```
 
-The third one is a trap for later. `|`, `&`, `^`, `<<` and `>>` treat numbers as
-*signed* 32-bit integers, so all 32 bits set reads as −1. `>>> 0` turns it back into the
-unsigned value. JAM's virtual machine will lean on that.
+Every value gets a name and says its kind, `: number` or `: bigint`, so each test reads
+as what it's about: the same two values, once as `number` and once as `bigint`. (The names
+pay off again in the debugger, below.)
+
+The third test is a trap for later. `|`, `&`, `^`, `<<` and `>>` treat numbers as
+*signed* 32-bit integers, so `allOnes`, all 32 bits set, comes out of `| 0` as −1.
+`>>> 0` turns it back into the unsigned value. JAM's virtual machine will lean on that.
 
 **Run**
 
@@ -102,19 +124,27 @@ reported 7 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=yo
 All green on the first try, because these tests pin down how JavaScript already
 behaves. Seven tests on the dashboard now.
 
-Want to poke at the trap yourself? Put a breakpoint on line 5 of
-`test/js-numbers.test.ts`, and with that file open, pick *Tests: the open file* in *Run
-and Debug* and press <kbd>F5</kbd>. While it's paused, the *Debug Console* runs any
-JavaScript you type: `2 ** 64 - 70` gives `18446744073709552000`, already rounded, and
-`2n ** 64n - 70n` gives `18446744073709551546n`, exact.
+Want to watch the trap spring? In `test/js-numbers.test.ts`, put a breakpoint on each
+test's last `assert`: lines 7, 14 and 22. With that file open, pick *Tests: the open
+file* in *Run and Debug* and press <kbd>F5</kbd>, then <kbd>F5</kbd> again at each stop.
+The debugger's *Variables* list shows:
+
+1. `twoTo64Minus70` and `twoTo64` both 18446744073709552000: two different numbers,
+   rounded to one.
+2. The same two as `bigint` values, 18446744073709551546n and 18446744073709551616n:
+   70 apart, as they should be.
+3. `allOnes` 4294967295, `signed` −1 and `unsigned` 4294967295 again.
+
+While it's paused, the *Debug Console* runs any JavaScript you type. Try
+`twoTo64Minus70 === twoTo64` at the first stop.
 
 > [!NOTE]
 > **From here on, the debug configurations are yours.** The lessons after this one won't
 > mention `.vscode/launch.json`. *Tests: the open file* and *Program: the open file*
-> cover anything new. And when you
-> build something you'll run again and again, give it a configuration of its own: copy
-> one, then change its `name` and `program`. It's a good habit on any system you build:
-> the next time something goes wrong, you're one keypress away from watching it happen.
+> cover anything new. And when you build something you'll run again and again, give it a
+> configuration of its own: copy one, then change its `name` and `program`. It's a good
+> habit on any system you build: the next time something goes wrong, you're one keypress
+> away from watching it happen.
 
 ## The same trap, in another language
 

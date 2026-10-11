@@ -84,10 +84,12 @@ import { toHex } from "../src/bytes.ts";
 import { TINY } from "../src/config.ts";
 import { blake2b256 } from "../src/hash.ts";
 import { vectorJson } from "./vectors.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("Blake2b-256 of nothing at all", () => {
-  const empty = "0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8";
-  assert.equal(toHex(blake2b256(new Uint8Array(0))), empty);
+  const empty: string = "0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8";
+  const hashed: string = toHex(blake2b256(new Uint8Array(0)));
+  assert.equal(hashed, empty);
 });
 
 /** Block n of the tiny "fallback" trace: a chain of 100 real blocks. */
@@ -99,7 +101,9 @@ function traceBlock(n: number): Block {
 
 test("each block names its parent by the hash of the header before it", () => {
   for (let n = 2; n <= 100; n++) {
-    assert.deepEqual(traceBlock(n).header.parent, headerHash(TINY, traceBlock(n - 1).header));
+    const parent: Bytes = traceBlock(n).header.parent;
+    const previousHeaderHash: Bytes = headerHash(TINY, traceBlock(n - 1).header);
+    assert.deepEqual(parent, previousHeaderHash);
   }
 });
 ```
@@ -157,7 +161,7 @@ npm test
 ℹ pass 52
 ℹ fail 2
 ...
-test at test/hash.test.ts:9:1
+test at test/hash.test.ts:10:1
 ✖ Blake2b-256 of nothing at all (0.9ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected
@@ -165,7 +169,7 @@ test at test/hash.test.ts:9:1
   + '0x0000000000000000000000000000000000000000000000000000000000000000'
   - '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
 
-      at TestContext.<anonymous> (…/client/test/hash.test.ts:11:10)
+      at TestContext.<anonymous> (…/client/test/hash.test.ts:13:10)
 ...
 ```
 
@@ -203,7 +207,7 @@ npm test
 ℹ pass 52
 ℹ fail 2
 ...
-test at test/hash.test.ts:9:1
+test at test/hash.test.ts:10:1
 ✖ Blake2b-256 of nothing at all (2.8ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected
@@ -211,7 +215,7 @@ test at test/hash.test.ts:9:1
   + '0x786a02f742015903c6c6fd852552d272912f4740e15847618a86e217f71f5419d25e1031afee585313896444934eb04b903a685b1448b755d56f701afe9be2ce'
   - '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
 
-      at TestContext.<anonymous> (…/client/test/hash.test.ts:11:10)
+      at TestContext.<anonymous> (…/client/test/hash.test.ts:13:10)
 ...
 ```
 

@@ -51,6 +51,7 @@ The merge on its own first, with the example from the top of the lesson:
 
 ```ts
 import { mergePrivileges } from "../src/accumulate.ts";
+import type { Privileged } from "../src/host.ts";
 
 test("who wins: the manager's change over the holder's, the holder's over nobody's", () => {
   const before: Privileges = { bless: 0, assign: [1, 1], designate: 0, register: 0 };
@@ -63,7 +64,7 @@ test("who wins: the manager's change over the holder's, the holder's over nobody
     [0, left([5, 1])], // the manager gives core 0 to service 5, and leaves core 1 alone
     [1, left([7, 7], new Map([[1, queue]]))], // service 1 gives both cores to service 7
   ]);
-  const after = mergePrivileges(before, runs);
+  const after: Privileged = mergePrivileges(before, runs);
   assert.deepEqual(after.privileges.assign, [5, 7]); // core 0: the manager's; core 1: its own
   assert.deepEqual([...after.queues], [[1, queue]]); // the queue its assigner set
 });
@@ -74,13 +75,14 @@ Then whole blocks. `checkBlock` compares the privileges too now:
 **Replace in** `test/accumulate.test.ts`
 
 ```ts
+import type { AccumulationState } from "../src/accumulate.ts";
 /** Checks the whole block of test vector `name`: accounts, privileges, statistics, queue
  * and history. */
 function checkBlock(name: string) {
   const vector = vectorJson(`stf/accumulate/tiny/${name}.json`) as BlockVector;
-  const before = accumulationStateFromJson(vector.pre_state);
+  const before: AccumulationState = accumulationStateFromJson(vector.pre_state);
   const { state, statistics } = accumulateBlock(TINY, before, vector.input.slot, reportsOf(vector));
-  const expected = accumulationStateFromJson(vector.post_state);
+  const expected: AccumulationState = accumulationStateFromJson(vector.post_state);
   assert.deepEqual(state.accounts, expected.accounts);
   assert.deepEqual(state.privileges, expected.privileges);
   assert.deepEqual(state.ready, expected.ready);
@@ -121,12 +123,14 @@ And one block where a core changes hands:
 **Add to** `test/accumulate.test.ts`
 
 ```ts
+import type { AccumulationState } from "../src/accumulate.ts";
 test("a core changes hands for the whole block, with a new queue", () => {
   const vector = vectorJson("stf/accumulate/tiny/assign_from_non_assigner-3.json") as BlockVector;
-  const before = accumulationStateFromJson(vector.pre_state);
+  const before: AccumulationState = accumulationStateFromJson(vector.pre_state);
   const { state, queues } = accumulateBlock(TINY, before, vector.input.slot, reportsOf(vector));
   assert.deepEqual([before.privileges.assign, state.privileges.assign], [[0, 0], [1, 0]]);
-  assert.equal(queues.get(0)!.length, 80); // for Part 13's ϕ
+  const queueLength: number = queues.get(0)!.length; // for Part 13's ϕ
+  assert.equal(queueLength, 80);
 });
 ```
 

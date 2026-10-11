@@ -57,6 +57,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { HALT_ADDRESS, newMachine, run, step } from "../src/pvm/machine.ts";
 import { assemble } from "../src/pvm/program.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
+import type { Program } from "../src/pvm/program.ts";
 
 /** Adds 10 + 9 + … + 1 into r2, then returns through r0. */
 const SUM = assemble([
@@ -70,25 +72,29 @@ const SUM = assemble([
 ]);
 
 test("a loop adds 10 + 9 + … + 1, and returning through r0 halts", () => {
-  const machine = newMachine(SUM, [HALT_ADDRESS]);
-  assert.equal(run(machine), "halt");
+  const machine: Machine = newMachine(SUM, [HALT_ADDRESS]);
+  const exit: Exit = run(machine);
+  assert.equal(exit, "halt");
   assert.equal(machine.registers[2], 55n);
   assert.equal(machine.registers[3], 0n);
 });
 
 test("a jump must land at the start of a basic block, or the machine panics", () => {
-  const toTheStart = newMachine(assemble([[51, 0x02, 1], [40, 0xfd]])); // the jump goes to 0
-  assert.deepEqual([step(toTheStart), step(toTheStart)], ["continue", "continue"]);
+  const toTheStart: Machine = newMachine(assemble([[51, 0x02, 1], [40, 0xfd]])); // jumps to 0
+  const twoSteps: Exit[] = [step(toTheStart), step(toTheStart)];
+  assert.deepEqual(twoSteps, ["continue", "continue"]);
   assert.equal(toTheStart.pc, 0); // 0 always starts a block
-  const program = assemble([[51, 0x02, 1], [51, 0x03, 2], [40, 0xfd]]); // the jump goes to 3
-  const intoTheMiddle = newMachine(program);
-  const steps = [step(intoTheMiddle), step(intoTheMiddle), step(intoTheMiddle)];
+  const program: Program = assemble([[51, 0x02, 1], [51, 0x03, 2], [40, 0xfd]]); // jumps to 3
+  const intoTheMiddle: Machine = newMachine(program);
+  const steps: Exit[] = [step(intoTheMiddle), step(intoTheMiddle), step(intoTheMiddle)];
   assert.deepEqual(steps, ["continue", "continue", "panic"]); // 3 follows a load_imm
 });
 
 test("trap panics; jump_ind to anything else than the halt address, without a table, too", () => {
-  assert.equal(step(newMachine(assemble([[0]]))), "panic");
-  assert.equal(run(newMachine(assemble([[50, 0x00]]), [8n])), "panic"); // r0 = 8, no table
+  const trapped: Exit = step(newMachine(assemble([[0]])));
+  assert.equal(trapped, "panic");
+  const jumped: Exit = run(newMachine(assemble([[50, 0x00]]), [8n])); // r0 = 8, no table
+  assert.equal(jumped, "panic");
 });
 ```
 

@@ -29,30 +29,37 @@ it's in been paid for yet?
 import { runWithGas } from "../src/pvm/gas.ts";
 import { newMachine } from "../src/pvm/machine.ts";
 import { standardProgram } from "../src/pvm/standard.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
+import type { Program, ServiceCode } from "../src/pvm/program.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("an endless loop runs out of gas: each lap pays 15, until there's too little", () => {
-  const machine = newMachine(assemble([[40, 0]]), [], new Map(), 100n); // jump to itself
-  assert.equal(runWithGas(machine), "oog");
+  const machine: Machine = newMachine(assemble([[40, 0]]), [], new Map(), 100n); // jump to itself
+  const exit: Exit = runWithGas(machine);
+  assert.equal(exit, "oog");
   assert.equal(machine.gas, 10n); // six laps paid for, and 10 isn't enough for a seventh
 });
 
 test("a block is paid for in full before any of it runs", () => {
-  const block = assemble([[51, 0x02, 7], [0]]); // load_imm r2, 7; trap: 2 gas
-  const poor = newMachine(block, [], new Map(), 1n);
-  assert.equal(runWithGas(poor), "oog");
+  const block: Program = assemble([[51, 0x02, 7], [0]]); // load_imm r2, 7; trap: 2 gas
+  const poor: Machine = newMachine(block, [], new Map(), 1n);
+  const poorExit: Exit = runWithGas(poor);
+  assert.equal(poorExit, "oog");
   assert.equal(poor.registers[2], 0n); // not even the load_imm ran
-  const rich = newMachine(block, [], new Map(), 2n);
-  assert.equal(runWithGas(rich), "panic"); // the trap
+  const rich: Machine = newMachine(block, [], new Map(), 2n);
+  const richExit: Exit = runWithGas(rich); // the trap
+  assert.equal(richExit, "panic");
   assert.deepEqual([rich.registers[2], rich.gas], [7n, 0n]);
 });
 
 test("the bootstrap service spends 243 gas to reach its first host call", () => {
-  const code = unpackCode(bootstrapCode());
-  const args = Uint8Array.from([1, 0, 0]); // slot 1, service 0, no inputs: each one byte
+  const code: ServiceCode = unpackCode(bootstrapCode());
+  const args: Bytes = Uint8Array.from([1, 0, 0]); // slot 1, service 0, no inputs: each one byte
   const { memory, registers } = standardProgram(code, args);
-  const machine = newMachine(deblob(code.program), registers, memory, 1000n);
+  const machine: Machine = newMachine(deblob(code.program), registers, memory, 1000n);
   machine.pc = 5; // accumulation
-  assert.deepEqual(runWithGas(machine), { host: 2 });
+  const exit: Exit = runWithGas(machine);
+  assert.deepEqual(exit, { host: 2 });
   assert.equal(machine.gas, 1000n - 243n);
 });
 ```

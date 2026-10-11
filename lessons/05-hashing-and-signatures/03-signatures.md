@@ -98,15 +98,18 @@ import type { Config } from "../src/config.ts";
 import { FULL, TINY } from "../src/config.ts";
 import { verifyEd25519 } from "../src/signature.ts";
 import { vectorJson } from "./vectors.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("Ed25519: RFC 8032's first example, a signature of no bytes at all", () => {
-  const key = fromHex("0xd75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a");
-  const signature = fromHex(
+  const key: Bytes = fromHex("0xd75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a");
+  const signature: Bytes = fromHex(
     "0xe5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e06522490155" +
       "5fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b",
   );
-  assert.equal(verifyEd25519(key, new Uint8Array(0), signature), true);
-  assert.equal(verifyEd25519(key, fromHex("0x00"), signature), false); // another message
+  const valid: boolean = verifyEd25519(key, new Uint8Array(0), signature);
+  assert.equal(valid, true);
+  const forAnotherMessage: boolean = verifyEd25519(key, fromHex("0x00"), signature);
+  assert.equal(forAnotherMessage, false);
 });
 
 /** For each assurance in an assurances test vector: is it signed by the validator it names? */
@@ -120,12 +123,14 @@ function signedAssurances(config: Config, name: string): boolean[] {
 }
 
 test("every assurance is signed by the validator it names: 6 on tiny, 1023 on full", () => {
-  assert.deepEqual(signedAssurances(TINY, "some_assurances-1"), Array(6).fill(true));
-  assert.deepEqual(signedAssurances(FULL, "some_assurances-1"), Array(1023).fill(true));
+  const tiny: boolean[] = signedAssurances(TINY, "some_assurances-1");
+  assert.deepEqual(tiny, Array(6).fill(true));
+  const full: boolean[] = signedAssurances(FULL, "some_assurances-1");
+  assert.deepEqual(full, Array(1023).fill(true));
 });
 
 test("a forged signature is caught", () => {
-  const signed = signedAssurances(TINY, "assurances_with_bad_signature-1");
+  const signed: boolean[] = signedAssurances(TINY, "assurances_with_bad_signature-1");
   assert.deepEqual(signed, [true, false, true, true, true, true]);
 });
 ```
@@ -191,7 +196,7 @@ npm test
 ℹ pass 56
 ℹ fail 2
 ...
-test at test/signature.test.ts:35:1
+test at test/signature.test.ts:40:1
 ✖ a forged signature is caught (1.3ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
   + actual - expected
@@ -206,7 +211,7 @@ test at test/signature.test.ts:35:1
   +   true
     ]
 
-      at TestContext.<anonymous> (…/client/test/signature.test.ts:37:10)
+      at TestContext.<anonymous> (…/client/test/signature.test.ts:42:10)
 ...
 ```
 

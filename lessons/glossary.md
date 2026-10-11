@@ -128,7 +128,8 @@ see only its events. ([0.3](./00-start/03-watch-your-client.md))
 (nothing to do with a JAM epoch). *Example:* the JAM Common Era is 1,735,732,800 seconds
 after it. ([0.4](./00-start/04-the-jam-clock.md))
 
-**`bigint`.** A JavaScript whole number with no size limit, written with an `n`.
+**`bigint`.** A JavaScript whole number with no size limit, written with an `n` after its
+digits: `2n` is the `bigint` two, `2` the `number` two, and one calculation can't mix them.
 Ordinary numbers lose precision past about 9 quadrillion (2^53); JAM's 64-bit numbers
 need `bigint`. *Example:* `2n ** 64n - 1n`. ([1.2](./01-bytes-and-numbers/02-numbers.md))
 

@@ -161,26 +161,38 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fromHex, toHex } from "../src/bytes.ts";
 import { blob, decode, encode, hash, natural, natural32, u16, u32, u64, u8 } from "../src/codec/codec.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("integers encode as ℰ_l and ℰ", () => {
-  assert.equal(toHex(encode(u8, 7)), "0x07");
-  assert.equal(toHex(encode(u16, 4807)), "0xc712");
-  assert.equal(toHex(encode(u32, 16909060)), "0x04030201");
-  assert.equal(toHex(encode(u64, 42n)), "0x2a00000000000000");
-  assert.equal(toHex(encode(natural, 128n)), "0x8080");
-  assert.equal(decode(natural32, fromHex("0xc00040")), 16384);
+  const u8Hex: string = toHex(encode(u8, 7));
+  assert.equal(u8Hex, "0x07");
+  const u16Hex: string = toHex(encode(u16, 4807));
+  assert.equal(u16Hex, "0xc712");
+  const u32Hex: string = toHex(encode(u32, 16909060));
+  assert.equal(u32Hex, "0x04030201");
+  const u64Hex: string = toHex(encode(u64, 42n));
+  assert.equal(u64Hex, "0x2a00000000000000");
+  const naturalHex: string = toHex(encode(natural, 128n));
+  assert.equal(naturalHex, "0x8080");
+  const decoded: number = decode(natural32, fromHex("0xc00040"));
+  assert.equal(decoded, 16384);
 });
 
 test("from the vectors' JSON: u32s stay numbers, u64s become bigints", () => {
-  assert.equal(u32.fromJson(16909060), 16909060);
-  assert.equal(u64.fromJson(42), 42n);
+  const fromU32: number = u32.fromJson(16909060);
+  assert.equal(fromU32, 16909060);
+  const fromU64: bigint = u64.fromJson(42);
+  assert.equal(fromU64, 42n);
 });
 
 test("a hash is 32 bytes as they are; a blob has its length in front", () => {
-  const h = new Uint8Array(32).fill(0xab);
-  assert.deepEqual(encode(hash, h), h);
-  assert.equal(toHex(encode(blob, fromHex("0x0102030405"))), "0x050102030405");
-  assert.deepEqual(decode(blob, fromHex("0x050102030405")), fromHex("0x0102030405"));
+  const h: Bytes = new Uint8Array(32).fill(0xab);
+  const hashEncoded: Bytes = encode(hash, h);
+  assert.deepEqual(hashEncoded, h);
+  const blobHex: string = toHex(encode(blob, fromHex("0x0102030405")));
+  assert.equal(blobHex, "0x050102030405");
+  const blobDecoded: Bytes = decode(blob, fromHex("0x050102030405"));
+  assert.deepEqual(blobDecoded, fromHex("0x0102030405"));
 });
 ```
 

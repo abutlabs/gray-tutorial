@@ -43,6 +43,7 @@ type ReportsVector = {
 
 ```ts
 import { PendingReports, placeReports, reportedPackages } from "../src/cores.ts";
+import type { PendingReport } from "../src/cores.ts";
 
 /** The accepted reports vectors of a size: a rejected block changes nothing. */
 function acceptedVectors(config: Config): { name: string; vector: ReportsVector }[] {
@@ -58,8 +59,9 @@ test("ρ′: each guaranteed report takes its core, registered at the block's sl
       const { input, pre_state, post_state } = vector;
       const before = PendingReports(config).fromJson(pre_state.avail_assignments);
       const guarantees = GuaranteesExtrinsic.fromJson(input.guarantees);
-      const after = placeReports(before, guarantees, input.slot);
-      assert.deepEqual(after, PendingReports(config).fromJson(post_state.avail_assignments), name);
+      const after: (PendingReport | null)[] = placeReports(before, guarantees, input.slot);
+      const expected = PendingReports(config).fromJson(post_state.avail_assignments);
+      assert.deepEqual(after, expected, name);
       placed += guarantees.length;
     }
   }

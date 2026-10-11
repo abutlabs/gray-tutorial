@@ -41,6 +41,7 @@ import { opcodeInfo } from "../src/pvm/instructions.ts";
 import { HALT_ADDRESS, newMachine, run, step } from "../src/pvm/machine.ts";
 import type { Program } from "../src/pvm/program.ts";
 import { assemble } from "../src/pvm/program.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
 
 const MAX = 2n ** 64n - 1n; // all 64 bits set: −1, read as signed
 
@@ -54,16 +55,22 @@ function jumps(branch: number[], p: bigint, q = 0n): boolean {
 
 // A branch on two registers is [opcode, A + 16·B, offset]: here A = r0, B = r1, offset 5.
 test("signed or unsigned: −1 is the biggest number there is, or less than 1", () => {
-  assert.equal(jumps([172, 0x10, 5], MAX, 1n), false); // branch_lt_u: 2^64 − 1 < 1? no
-  assert.equal(jumps([173, 0x10, 5], MAX, 1n), true); // branch_lt_s: −1 < 1? yes
+  const unsignedLess: boolean = jumps([172, 0x10, 5], MAX, 1n); // branch_lt_u: 2^64 − 1 < 1? no
+  assert.equal(unsignedLess, false);
+  const signedLess: boolean = jumps([173, 0x10, 5], MAX, 1n); // branch_lt_s: −1 < 1? yes
+  assert.equal(signedLess, true);
 });
 
 // With an immediate it's [opcode, A + 16·l_X, X, offset]: here A = r0 and X is one byte.
 test("an immediate branch compares with ν_X, sign-extended like every immediate", () => {
-  assert.equal(jumps([84, 0x10, 3, 5], 3n), true); // branch_le_u_imm: 3 ≤ 3
-  assert.equal(jumps([83, 0x10, 3, 5], 3n), false); // branch_lt_u_imm: 3 < 3? no
-  assert.equal(jumps([86, 0x10, 0xff, 5], 3n), false); // branch_gt_u_imm: 3 > 2^64 − 1? no
-  assert.equal(jumps([90, 0x10, 0xff, 5], 3n), true); // branch_gt_s_imm: 3 > −1? yes
+  const lessOrEqual: boolean = jumps([84, 0x10, 3, 5], 3n); // branch_le_u_imm: 3 ≤ 3
+  assert.equal(lessOrEqual, true);
+  const less: boolean = jumps([83, 0x10, 3, 5], 3n); // branch_lt_u_imm: 3 < 3? no
+  assert.equal(less, false);
+  const overMax: boolean = jumps([86, 0x10, 0xff, 5], 3n); // branch_gt_u_imm: 3 > 2^64 − 1? no
+  assert.equal(overMax, false);
+  const overMinusOne: boolean = jumps([90, 0x10, 0xff, 5], 3n); // branch_gt_s_imm: 3 > −1? yes
+  assert.equal(overMinusOne, true);
 });
 
 /** A function that doubles r2, at 6, and a call to it at 0: `call` must leave 2 in r0. */
@@ -78,22 +85,26 @@ function withCall(call: number[]): Program {
 }
 
 test("a call: load_imm_jump leaves the way back in r0, and the function returns by it", () => {
-  const machine = newMachine(withCall([80, 0x10, 2, 6]), [0n, HALT_ADDRESS, 21n]);
-  assert.equal(run(machine), "halt");
-  assert.deepEqual(machine.registers.slice(0, 3), [2n, HALT_ADDRESS, 42n]);
+  const machine: Machine = newMachine(withCall([80, 0x10, 2, 6]), [0n, HALT_ADDRESS, 21n]);
+  const exit: Exit = run(machine);
+  assert.equal(exit, "halt");
+  const registers: bigint[] = machine.registers.slice(0, 3);
+  assert.deepEqual(registers, [2n, HALT_ADDRESS, 42n]);
 });
 
 // load_imm_jump_ind is [opcode, A + 16·B, l_X, X, Y]: here A = r0, B = r3, X = 2, no Y.
 test("a call through a register: load_imm_jump_ind jumps to φ_B + ν_Y", () => {
-  const registers = [0n, HALT_ADDRESS, 21n, 4n]; // r3 = 4: the function's address
-  const machine = newMachine(withCall([180, 0x30, 0x01, 2]), registers);
-  assert.equal(run(machine), "halt");
+  const registers: bigint[] = [0n, HALT_ADDRESS, 21n, 4n]; // r3 = 4: the function's address
+  const machine: Machine = newMachine(withCall([180, 0x30, 0x01, 2]), registers);
+  const exit: Exit = run(machine);
+  assert.equal(exit, "halt");
   assert.equal(machine.registers[2], 42n);
 });
 
 test("unlikely does nothing but move on", () => {
-  const machine = newMachine(assemble([[2], [0]]));
-  assert.equal(step(machine), "continue");
+  const machine: Machine = newMachine(assemble([[2], [0]]));
+  const exit: Exit = step(machine);
+  assert.equal(exit, "continue");
   assert.equal(machine.pc, 1);
 });
 
@@ -137,7 +148,7 @@ npm test
 ℹ pass 408
 ℹ fail 6
 ...
-test at test/branches.test.ts:19:1
+test at test/branches.test.ts:20:1
 ✖ signed or unsigned: −1 is the biggest number there is, or less than 1 (4.6ms)
   Error: branch_lt_u isn't built yet
 ...

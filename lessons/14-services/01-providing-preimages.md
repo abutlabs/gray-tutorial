@@ -42,10 +42,13 @@ import { providePreimages, RequestHistory } from "../src/services.ts";
 import { preimageKey, requestKey } from "../src/state.ts";
 import type { KeyValue } from "../src/trie.ts";
 import { traceState, vectorFiles, vectorJson } from "./vectors.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("a request's history: [] waiting, [x] provided at slot x", () => {
-  assert.equal(toHex(encode(RequestHistory, [])), "0x00");
-  assert.equal(toHex(encode(RequestHistory, [5])), "0x0105000000");
+  const waiting: string = toHex(encode(RequestHistory, []));
+  assert.equal(waiting, "0x00");
+  const provided: string = toHex(encode(RequestHistory, [5]));
+  assert.equal(provided, "0x0105000000");
 });
 
 /** The value under a key in a state's entries, as hex, or undefined. */
@@ -60,13 +63,17 @@ test("67 real preimages: stored, and their requests marked with the block's slot
     const { entries, block } = traceState("preimages", n);
     const { header, extrinsic } = Block(TINY).fromJson(block);
     if (extrinsic.preimages.length === 0) continue;
-    const after = providePreimages(entries, extrinsic.preimages, header.slot);
-    const expected = traceState("preimages", n + 1).entries; // the state after block n
+    const after: KeyValue[] = providePreimages(entries, extrinsic.preimages, header.slot);
+    const expected: KeyValue[] = traceState("preimages", n + 1).entries; // after block n
     for (const { requester, blob } of extrinsic.preimages) {
-      const request = requestKey(requester, blake2b256(blob), blob.length);
-      assert.equal(valueAt(after, request), valueAt(expected, request), `block ${n}`);
-      const stored = preimageKey(requester, blob);
-      assert.equal(valueAt(after, stored), valueAt(expected, stored), `block ${n}`);
+      const request: Bytes = requestKey(requester, blake2b256(blob), blob.length);
+      const requestAfter: string | undefined = valueAt(after, request);
+      const requestExpected: string | undefined = valueAt(expected, request);
+      assert.equal(requestAfter, requestExpected, `block ${n}`);
+      const stored: Bytes = preimageKey(requester, blob);
+      const storedAfter: string | undefined = valueAt(after, stored);
+      const storedExpected: string | undefined = valueAt(expected, stored);
+      assert.equal(storedAfter, storedExpected, `block ${n}`);
       provided++;
     }
   }
@@ -108,10 +115,12 @@ test("the preimages vectors, as state entries", () => {
         output: { err?: string };
       };
       if (output.err) continue; // a rejected block changes nothing
-      const preimages = input.preimages.map((p) => Preimage.fromJson(p));
-      const after = providePreimages(accountEntries(pre_state.accounts), preimages, input.slot);
-      const sorted = after.sort((a, b) => toHex(a.key).localeCompare(toHex(b.key)));
-      assert.deepEqual(sorted, accountEntries(post_state.accounts), name);
+      const preimages: Preimage[] = input.preimages.map((p) => Preimage.fromJson(p));
+      const before: KeyValue[] = accountEntries(pre_state.accounts);
+      const after: KeyValue[] = providePreimages(before, preimages, input.slot);
+      const sorted: KeyValue[] = after.sort((a, b) => toHex(a.key).localeCompare(toHex(b.key)));
+      const expected: KeyValue[] = accountEntries(post_state.accounts);
+      assert.deepEqual(sorted, expected, name);
       accepted++;
     }
   }
@@ -173,7 +182,7 @@ npm test
 ℹ pass 383
 ℹ fail 2
 ...
-test at test/services.test.ts:24:1
+test at test/services.test.ts:27:1
 ✖ 67 real preimages: stored, and their requests marked with the block's slot (37.4ms)
   AssertionError [ERR_ASSERTION]: block 8
   + actual - expected

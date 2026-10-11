@@ -121,8 +121,8 @@ type AssurancesVector = {
 test("assured data: each core's load, and how many assurances name it", () => {
   const v = vectorJson("stf/assurances/tiny/some_assurances-1.json") as AssurancesVector;
   const assurances = v.input.assurances.map((a) => Assurance(TINY).fromJson(a));
-  const available = v.output.ok.reported.map((r) => WorkReport.fromJson(r));
-  const cores = coreStats(TINY, [], available, assurances);
+  const available: WorkReport[] = v.output.ok.reported.map((r) => WorkReport.fromJson(r));
+  const cores: CoreStats[] = coreStats(TINY, [], available, assurances);
   // core 0's report became available: a 12345-byte bundle, and 3 segments plus 1 proof page
   assert.deepEqual([cores[0].da_load, cores[0].popularity], [12345 + 4104 * 4, 5]);
   assert.deepEqual([cores[1].da_load, cores[1].popularity], [0, 4]); // 4 of 6 isn't enough
@@ -147,9 +147,10 @@ for (const config of [TINY, FULL]) {
   for (const name of validVectors(`stf/preimages/${config.name}`)) {
     test(`${name}: every service's provided preimages end as the vector says`, () => {
       const v = vectorJson(name) as PreimagesVector;
-      const preimages = v.input.preimages.map((p) => Preimage.fromJson(p));
-      const services = serviceStats([], preimages, new Map());
-      assert.deepEqual(services, serviceTallies(v.post_state.statistics));
+      const preimages: Preimage[] = v.input.preimages.map((p) => Preimage.fromJson(p));
+      const services: Map<number, ServiceStats> = serviceStats([], preimages, new Map());
+      const expected: Map<number, ServiceStats> = serviceTallies(v.post_state.statistics);
+      assert.deepEqual(services, expected);
     });
   }
 }

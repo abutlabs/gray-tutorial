@@ -56,7 +56,7 @@ import { TINY } from "../src/config.ts";
 import type { Accumulation } from "../src/host.ts";
 import { accumulate } from "../src/host.ts";
 import { unpackCode } from "../src/pvm/program.ts";
-import type { AccountJson } from "../src/services.ts";
+import type { Account, AccountJson } from "../src/services.ts";
 import { accountFromJson, copyAccounts } from "../src/services.ts";
 import { WorkReport } from "../src/work.ts";
 import { vectorJson } from "./vectors.ts";
@@ -89,7 +89,8 @@ test("an operand: a 0, the report's three hashes, the payload's, the gas, result
   const [report] = reportsOf(vector);
   const { inputs, gas } = serviceInputs([report], 1729);
   assert.equal(inputs.length, 1); // one digest for service 1729
-  assert.equal(inputs[0][0], 0); // an operand, not a transfer
+  const kind: number = inputs[0][0];
+  assert.equal(kind, 0); // an operand, not a transfer
   const operand = decode(Operand, inputs[0].subarray(1));
   assert.deepEqual(operand.package_hash, report.package_spec.hash);
   assert.equal(gas, report.results[0].accumulate_gas); // the digest's gas, and no more
@@ -135,7 +136,7 @@ const CASES: [string, number][] = [
 function checkVector(name: string, s: number) {
   const { result, gas, after } = runVector(name, s);
   assert.equal(result.gasUsed, gas);
-  const mine = result.accounts.get(s)!;
+  const mine: Account = result.accounts.get(s)!;
   assert.deepEqual(mine.storage, after.storage);
 }
 

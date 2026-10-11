@@ -45,6 +45,7 @@ import type { Host } from "../src/host.ts";
 import { gas, HOST_CALLS, runWithHost, unknown, WHAT } from "../src/host.ts";
 import { HALT_ADDRESS, newMachine } from "../src/pvm/machine.ts";
 import { assemble } from "../src/pvm/program.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
 
 /** A host that answers gas, and nothing else. */
 const host: Host = (call, m) => (HOST_CALLS[call] === "gas" ? gas(m) : unknown(m));
@@ -54,25 +55,30 @@ const calling = (call: number, budget: bigint) =>
   newMachine(assemble([[10, call], [50, 0x00]]), [HALT_ADDRESS], new Map(), budget);
 
 test("gas: the program asks how much is left, pays 48 to ask, and carries on", () => {
-  const machine = calling(0, 1000n);
-  assert.equal(runWithHost(machine, host), "halt"); // the return after the ecalli ran
+  const machine: Machine = calling(0, 1000n);
+  const exit: Exit = runWithHost(machine, host);
+  assert.equal(exit, "halt"); // the return after the ecalli ran
   assert.equal(machine.registers[7], 1000n - 100n - 48n); // the block, then the question
 });
 
 test("a host call nobody knows: WHAT, for 1,000 gas", () => {
-  const machine = calling(99, 2000n);
-  assert.equal(runWithHost(machine, host), "halt");
+  const machine: Machine = calling(99, 2000n);
+  const exit: Exit = runWithHost(machine, host);
+  assert.equal(exit, "halt");
   assert.deepEqual([machine.registers[7], machine.gas], [WHAT, 900n]);
 });
 
 test("too poor to ask: a host call can run out of gas too", () => {
-  const machine = calling(0, 147n); // 100 for the block leaves 47, and gas costs 48
-  assert.equal(runWithHost(machine, host), "oog");
+  const machine: Machine = calling(0, 147n); // 100 for the block leaves 47, and gas costs 48
+  const exit: Exit = runWithHost(machine, host);
+  assert.equal(exit, "oog");
   assert.equal(machine.registers[7], 0n); // no answer
 });
 
 test("28 host calls, numbered as in the GP: fetch is 2, provide 27", () => {
-  assert.deepEqual([HOST_CALLS[2], HOST_CALLS[27], HOST_CALLS.length], ["fetch", "provide", 28]);
+  const fetch: string = HOST_CALLS[2];
+  const provide: string = HOST_CALLS[27];
+  assert.deepEqual([fetch, provide, HOST_CALLS.length], ["fetch", "provide", 28]);
 });
 ```
 

@@ -74,6 +74,8 @@ function vectorService() {
 
 ```ts
 import { forget, HUH, OK, query, solicit } from "../src/host.ts";
+import type { HostExit } from "../src/host.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
 
 const HASH = new Uint8Array(32).fill(5);
 
@@ -87,39 +89,43 @@ function requesting(length: bigint) {
 }
 
 test("solicit: a request with no slots yet, and 2 items and 81 + 100 bytes more to pay for", () => {
-  const a = bundle();
-  const machine = requesting(100n);
-  assert.equal(solicit(machine, a, 7), "continue");
+  const a: Accumulation = bundle();
+  const machine: Machine = requesting(100n);
+  const exit: HostExit = solicit(machine, a, 7);
+  assert.equal(exit, "continue");
   assert.equal(machine.registers[7], OK);
-  const account = a.accounts.get(0)!;
-  assert.deepEqual(account.requests.get(`${toHex(HASH)}:100`), []);
+  const account: Account = a.accounts.get(0)!;
+  const request: number[] | undefined = account.requests.get(`${toHex(HASH)}:100`);
+  assert.deepEqual(request, []);
   assert.deepEqual([account.info.items, account.info.bytes], [4, 50n + 81n + 100n]);
-  const asking = requesting(100n);
+  const asking: Machine = requesting(100n);
   query(asking, a);
-  assert.deepEqual(asking.registers.slice(7, 9), [0n, 0n]); // asked for, no slots yet
+  const slots: bigint[] = asking.registers.slice(7, 9); // asked for, no slots yet
+  assert.deepEqual(slots, [0n, 0n]);
 });
 
 test("asking twice is HUH, and so is a length no preimage can have", () => {
-  const a = bundle();
+  const a: Accumulation = bundle();
   solicit(requesting(100n), a, 7);
-  const again = requesting(100n);
+  const again: Machine = requesting(100n);
   solicit(again, a, 8);
   assert.equal(again.registers[7], HUH);
-  const huge = requesting(2n ** 32n);
+  const huge: Machine = requesting(2n ** 32n);
   solicit(huge, a, 8);
   assert.equal(huge.registers[7], HUH);
 });
 
 test("forget: a request never provided just goes; one provided at x becomes [x, t]", () => {
-  const a = bundle();
+  const a: Accumulation = bundle();
   solicit(requesting(100n), a, 7);
   forget(requesting(100n), a, 9, TINY.expunge_period);
   assert.equal(a.accounts.get(0)!.requests.size, 0);
   a.accounts.get(0)!.requests.set(`${toHex(HASH)}:100`, [3]); // provided at slot 3
   forget(requesting(100n), a, 9, TINY.expunge_period);
-  const asking = requesting(100n);
+  const asking: Machine = requesting(100n);
   query(asking, a);
-  assert.deepEqual(asking.registers.slice(7, 9), [2n + 3n * 2n ** 32n, 9n]); // 2 slots: 3, 9
+  const slots: bigint[] = asking.registers.slice(7, 9); // 2 slots: 3, 9
+  assert.deepEqual(slots, [2n + 3n * 2n ** 32n, 9n]);
 });
 ```
 
@@ -129,11 +135,12 @@ in `preimage_len_bound`, service 0 solicits and queries around the length bound.
 **Replace in** `test/accumulate.test.ts`
 
 ```ts
+import type { Account } from "../src/services.ts";
 /** Checks service s's accumulation in test vector `name` against the vector's post-state. */
 function checkVector(name: string, s: number) {
   const { result, gas, after } = runVector(name, s);
   assert.equal(result.gasUsed, gas);
-  const mine = result.accounts.get(s)!;
+  const mine: Account = result.accounts.get(s)!;
   assert.deepEqual(mine.storage, after.storage);
   assert.deepEqual(mine.requests, after.requests);
   assert.deepEqual([mine.info.items, mine.info.bytes], [after.info.items, after.info.bytes]);

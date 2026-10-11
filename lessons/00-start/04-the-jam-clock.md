@@ -19,7 +19,7 @@ Your first piece of real JAM. It's tiny, and it is everywhere: every block in JA
 - **Test-driven development (TDD).** Writing a test before the code it tests, watching it
   fail, then writing the code that makes it pass. *Example:* this lesson's `slotAt`.
 - **Assertion.** One check inside a test: if the value isn't what it should be, the test
-  fails and says what it got. *Example:* `assert.equal(at("2025-01-01T13:00:00Z"), 600)`.
+  fails and says what it got. *Example:* `assert.equal(anHourIn, 600)`.
 - **Debugger.** A tool that pauses a running program so you can read its variables, then
   lets it go on. *Example:* VS Code's *Run and Debug*.
 - **Breakpoint.** A line where the debugger pauses the program. *Example:* the red dot
@@ -54,18 +54,28 @@ import { slotAt } from "../src/time.ts";
 const at = (iso: string) => slotAt(new Date(iso));
 
 test("slot 0 is the first six seconds of the JAM Common Era", () => {
-  assert.equal(at("2025-01-01T12:00:00Z"), 0);
-  assert.equal(at("2025-01-01T12:00:05.999Z"), 0);
-  assert.equal(at("2025-01-01T12:00:06Z"), 1);
+  const eraStart: number = at("2025-01-01T12:00:00Z");
+  assert.equal(eraStart, 0);
+  const lastMoment: number = at("2025-01-01T12:00:05.999Z");
+  assert.equal(lastMoment, 0);
+  const sixSecondsIn: number = at("2025-01-01T12:00:06Z");
+  assert.equal(sixSecondsIn, 1);
 });
 
 test("an hour is 600 slots", () => {
-  assert.equal(at("2025-01-01T13:00:00Z"), 600);
+  const anHourIn: number = at("2025-01-01T13:00:00Z");
+  assert.equal(anHourIn, 600);
 });
 ```
 
 `node:test` gives you `test(name, fn)`. `node:assert/strict` gives you assertions that
 compare exactly, so `assert.equal(1, "1")` fails, as it should.
+
+Every test in this tutorial is written in steps: each value the code works out gets a
+name and a type (`const lastMoment: number = ...`), and the assertion below it checks the
+name. That's longer than `assert.equal(at("..."), 0)` on one line, and it's on purpose:
+you can read what each test compares, and when you stop a test in the debugger (you'll
+learn how in this lesson's bug hunt), every step's value is right there with its name.
 
 The test imports `slotAt` from a file that doesn't exist yet. Give it the smallest file
 that runs: the era's two numbers, and a `slotAt` that always says 0. Wrong on purpose. A
@@ -104,13 +114,13 @@ npm test
 ℹ pass 0
 ℹ fail 2
 ...
-test at test/time.test.ts:13:1
+test at test/time.test.ts:16:1
 ✖ an hour is 600 slots (0.1ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
 
   0 !== 600
 
-      at TestContext.<anonymous> (…/client/test/time.test.ts:14:10)
+      at TestContext.<anonymous> (…/client/test/time.test.ts:18:10)
 ...
     actual: 0,
     expected: 600,
@@ -120,7 +130,7 @@ reported 2 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=yo
 
 Red, for the right reason: both tests ran, and both caught the stub. Here is how to read a
 failure. `0 !== 600` is *actual !== expected*: the test wanted 600 and got 0, as the
-`actual` and `expected` lines below it say in words. `time.test.ts:14` is the assertion
+`actual` and `expected` lines below it say in words. `time.test.ts:18` is the assertion
 that failed. Now you know the tests really check the clock.
 
 Over in Grafana, this failed run is already there: *Tests failed* is no longer 0, and
@@ -164,7 +174,7 @@ test at test/time.test.ts:7:1
 
   1 !== 0
 
-      at TestContext.<anonymous> (…/client/test/time.test.ts:9:10)
+      at TestContext.<anonymous> (…/client/test/time.test.ts:11:10)
 ...
 ```
 
@@ -183,9 +193,9 @@ Four places tell you what happened:
 
    ![Failed tests panel](./images/04-failed-tests.png)
 3. **The line.** The failing test has three assertions; the output points at the second,
-   `at("2025-01-01T12:00:05.999Z")`: 5.999 seconds into the era. In slots that's
-   5.999 / 6 = 0.9998, and `Math.round` turns 0.9998 into 1. But slot 1 doesn't start
-   until the sixth second. A slot number counts the *whole* slots that have gone by, so
+   `assert.equal(lastMoment, 0)`. `lastMoment` is `at("2025-01-01T12:00:05.999Z")`: 5.999
+   seconds into the era. In slots that's 5.999 / 6 = 0.9998, and `Math.round` turns
+   0.9998 into 1. But slot 1 doesn't start until the sixth second. A slot number counts the *whole* slots that have gone by, so
    it must round *down*.
 4. **The debugger.** Step 3 worked it out; a *debugger* lets you watch it happen. In
    `src/time.ts`, click just left of line 12's number, the `return` line. A red dot

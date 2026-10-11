@@ -36,6 +36,10 @@ function tinyAccounts(): Map<number, Account> {
 import { toHex } from "../src/bytes.ts";
 import { lookup } from "../src/host.ts";
 import { blake2b256 } from "../src/hash.ts";
+import type { Bytes } from "../src/bytes.ts";
+import type { HostExit } from "../src/host.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
+import type { MemoryError } from "../src/pvm/memory.ts";
 
 /** A machine about to look up `data` by its hash, which sits in memory at 0x20000. */
 function lookingUp(who: bigint, data: Uint8Array) {
@@ -47,22 +51,24 @@ function lookingUp(who: bigint, data: Uint8Array) {
 }
 
 test("lookup: a preimage the service keeps, found by its hash", () => {
-  const data = new TextEncoder().encode("hello, JAM");
-  const accounts = tinyAccounts();
+  const data: Bytes = new TextEncoder().encode("hello, JAM");
+  const accounts: Map<number, Account> = tinyAccounts();
   accounts.get(0)!.preimages.set(toHex(blake2b256(data)), data);
-  const machine = lookingUp(2n ** 64n - 1n, data);
-  assert.equal(lookup(machine, accounts, 0), "continue");
+  const machine: Machine = lookingUp(2n ** 64n - 1n, data);
+  const exit: HostExit = lookup(machine, accounts, 0);
+  assert.equal(exit, "continue");
   assert.equal(machine.registers[7], 10n);
-  assert.deepEqual(readMemory(machine.memory, 0x20100n, 10), data);
+  const found: Bytes | MemoryError = readMemory(machine.memory, 0x20100n, 10);
+  assert.deepEqual(found, data);
   assert.equal(machine.gas, 10_000n - 600n - 25n); // and 248 per KiB of the 100 bytes asked for
 });
 
 test("lookup of a hash the service doesn't keep, or of a service that isn't there: NONE", () => {
-  const data = new TextEncoder().encode("nobody provided this");
-  const missing = lookingUp(2n ** 64n - 1n, data);
+  const data: Bytes = new TextEncoder().encode("nobody provided this");
+  const missing: Machine = lookingUp(2n ** 64n - 1n, data);
   lookup(missing, tinyAccounts(), 0);
   assert.equal(missing.registers[7], NONE);
-  const nobody = lookingUp(42n, data);
+  const nobody: Machine = lookingUp(42n, data);
   lookup(nobody, tinyAccounts(), 0);
   assert.equal(nobody.registers[7], NONE);
 });

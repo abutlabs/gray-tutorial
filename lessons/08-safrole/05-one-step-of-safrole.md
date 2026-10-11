@@ -46,21 +46,26 @@ type SafroleVector = {
 ```ts
 import { safroleFromJson, safroleStep } from "../src/safrole.ts";
 import { EpochMark } from "../src/block.ts";
+import type { Bytes } from "../src/bytes.ts";
+import type { Safrole } from "../src/safrole.ts";
 
 test("a whole step of Safrole: the state and both marks, for each block without tickets", () => {
   let steps = 0;
   for (const { config, name, vector } of acceptedVectors()) {
     const { input, pre_state, post_state, output } = vector;
     if (input.extrinsic.length > 0) continue; // reading tickets needs Bandersnatch
-    const vrfOutput = fromHex(input.entropy);
-    const offenders = pre_state.post_offenders.map(fromHex);
-    const before = safroleFromJson(pre_state);
+    const vrfOutput: Bytes = fromHex(input.entropy);
+    const offenders: Bytes[] = pre_state.post_offenders.map(fromHex);
+    const before: Safrole = safroleFromJson(pre_state);
     const step = safroleStep(config, before, input.slot, vrfOutput, offenders);
-    assert.deepEqual(step.after, safroleFromJson(post_state), name);
-    const epochMark = output.ok?.epoch_mark;
-    const ticketsMark = output.ok?.tickets_mark;
-    assert.deepEqual(step.epochMark, epochMark ? EpochMark.fromJson(epochMark) : null, name);
-    assert.deepEqual(step.ticketsMark, ticketsMark ? tickets(ticketsMark) : null, name);
+    const after: Safrole = safroleFromJson(post_state);
+    assert.deepEqual(step.after, after, name);
+    const epochMarkJson = output.ok?.epoch_mark;
+    const ticketsMarkJson = output.ok?.tickets_mark;
+    const epochMark: EpochMark | null = epochMarkJson ? EpochMark.fromJson(epochMarkJson) : null;
+    assert.deepEqual(step.epochMark, epochMark, name);
+    const ticketsMark: TicketBody[] | null = ticketsMarkJson ? tickets(ticketsMarkJson) : null;
+    assert.deepEqual(step.ticketsMark, ticketsMark, name);
     steps++;
   }
   assert.equal(steps, 22); // 10 tiny, 12 full

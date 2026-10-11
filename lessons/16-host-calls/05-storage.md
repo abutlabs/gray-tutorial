@@ -41,6 +41,10 @@ function tinyAccounts(): Map<number, Account> {
 
 ```ts
 import { FULL, read, write } from "../src/host.ts";
+import type { Bytes } from "../src/bytes.ts";
+import type { HostExit } from "../src/host.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
+import type { MemoryError } from "../src/pvm/memory.ts";
 
 /** φ₇ on as given, and a writable page at 0x20000: the key "last" there, 1, 2, 3 at 0x20010. */
 function storing(...r7on: bigint[]) {
@@ -52,32 +56,36 @@ function storing(...r7on: bigint[]) {
 }
 
 test("write stores a value under a key, and the footprint grows", () => {
-  const accounts = tinyAccounts();
-  const machine = storing(0x20000n, 4n, 0x20010n, 3n); // the key "last", the value 1, 2, 3
-  assert.equal(write(machine, accounts, 0), "continue");
+  const accounts: Map<number, Account> = tinyAccounts();
+  const machine: Machine = storing(0x20000n, 4n, 0x20010n, 3n); // the key "last", the value 1, 2, 3
+  const exit: HostExit = write(machine, accounts, 0);
+  assert.equal(exit, "continue");
   assert.equal(machine.registers[7], NONE); // nothing was there before
-  const { info, storage } = accounts.get(0)!;
-  assert.deepEqual(storage.get("0x6c617374"), Uint8Array.of(1, 2, 3)); // "last", in hex
+  const { info, storage }: Account = accounts.get(0)!;
+  const stored: Bytes | undefined = storage.get("0x6c617374"); // "last", in hex
+  assert.deepEqual(stored, Uint8Array.of(1, 2, 3));
   assert.deepEqual([info.items, info.bytes], [3, 50n + 34n + 4n + 3n]); // lesson 14.2's sums
   assert.equal(machine.gas, 10_000n - 2442n - 14n - 1n); // and per KiB of key and of value
 });
 
 test("read finds it again; writing an empty value deletes it", () => {
-  const accounts = tinyAccounts();
+  const accounts: Map<number, Account> = tinyAccounts();
   write(storing(0x20000n, 4n, 0x20010n, 3n), accounts, 0);
-  const reader = storing(2n ** 64n - 1n, 0x20000n, 4n, 0x20100n, 0n, 10n); // its own storage
-  assert.equal(read(reader, accounts, 0), "continue");
+  const reader: Machine = storing(2n ** 64n - 1n, 0x20000n, 4n, 0x20100n, 0n, 10n); // its own
+  const exit: HostExit = read(reader, accounts, 0);
+  assert.equal(exit, "continue");
   assert.equal(reader.registers[7], 3n);
-  assert.deepEqual(readMemory(reader.memory, 0x20100n, 3), Uint8Array.of(1, 2, 3));
-  const eraser = storing(0x20000n, 4n, 0n, 0n); // no value at all
+  const value: Bytes | MemoryError = readMemory(reader.memory, 0x20100n, 3);
+  assert.deepEqual(value, Uint8Array.of(1, 2, 3));
+  const eraser: Machine = storing(0x20000n, 4n, 0n, 0n); // no value at all
   write(eraser, accounts, 0);
   assert.equal(eraser.registers[7], 3n); // the old value's length
   assert.equal(accounts.get(0)!.storage.size, 0);
 });
 
 test("FULL: a service can't keep more than its balance covers", () => {
-  const accounts = tinyAccounts(); // a balance of 1,000
-  const machine = storing(0x20000n, 4n, 0x20010n, 1000n); // 1,000 bytes: a_t would be 1,218
+  const accounts: Map<number, Account> = tinyAccounts(); // a balance of 1,000
+  const machine: Machine = storing(0x20000n, 4n, 0x20010n, 1000n); // 1,000 bytes: a_t, 1,218
   write(machine, accounts, 0);
   assert.equal(machine.registers[7], FULL);
   assert.equal(accounts.get(0)!.storage.size, 0); // nothing changed

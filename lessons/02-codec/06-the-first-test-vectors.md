@@ -103,10 +103,12 @@ export function vectorBytes(name: string): Bytes {
 
 /** A codec vector: the .bin decodes to the .json's value, which encodes back to the .bin. */
 export function checkCodecVector<T>(codec: Codec<T>, name: string): void {
-  const bytes = vectorBytes(`${name}.bin`);
-  const value = codec.fromJson(vectorJson(`${name}.json`));
-  assert.deepEqual(decode(codec, bytes), value);
-  assert.deepEqual(encode(codec, value), bytes);
+  const bytes: Bytes = vectorBytes(`${name}.bin`);
+  const expected: T = codec.fromJson(vectorJson(`${name}.json`));
+  const decoded: T = decode(codec, bytes);
+  assert.deepEqual(decoded, expected);
+  const encoded: Bytes = encode(codec, expected);
+  assert.deepEqual(encoded, bytes);
 }
 ```
 

@@ -69,11 +69,14 @@ export function traceState(family: string, n: number) {
 import { Block, assuranceSigned } from "../src/block.ts";
 import { TINY } from "../src/config.ts";
 import { readEntropy, readTime, readValidators } from "../src/state.ts";
+import type { Bytes } from "../src/bytes.ts";
+import type { EpochMark } from "../src/block.ts";
 
 test("τ: the time before each block is the slot of the block before it", () => {
   for (let n = 2; n <= 100; n++) {
-    const before = Block(TINY).fromJson(traceState("fallback", n - 1).block);
-    assert.equal(readTime(traceState("fallback", n).entries), before.header.slot);
+    const before: Block = Block(TINY).fromJson(traceState("fallback", n - 1).block);
+    const time: number = readTime(traceState("fallback", n).entries);
+    assert.equal(time, before.header.slot);
   }
 });
 
@@ -81,10 +84,12 @@ test("η: each epoch mark carries η₀ and η₁ from the state before its bloc
   let marks = 0;
   for (let n = 1; n <= 100; n++) {
     const { entries, block } = traceState("safrole", n);
-    const mark = Block(TINY).fromJson(block).header.epoch_mark;
+    const mark: EpochMark | null = Block(TINY).fromJson(block).header.epoch_mark;
     if (mark === null) continue;
-    const entropy = readEntropy(entries);
-    assert.deepEqual([mark.entropy, mark.tickets_entropy], [entropy[0], entropy[1]]);
+    const entropy: Bytes[] = readEntropy(entries);
+    const marked: Bytes[] = [mark.entropy, mark.tickets_entropy];
+    const fromState: Bytes[] = [entropy[0], entropy[1]];
+    assert.deepEqual(marked, fromState);
     marks++;
   }
   assert.ok(marks > 0);
@@ -94,9 +99,10 @@ test("κ: real assurances check out with the validators' keys from the state", (
   let checked = 0;
   for (let n = 1; n <= 100; n++) {
     const { entries, block } = traceState("preimages", n);
-    const keys = readValidators(entries).map((v) => v.ed25519);
+    const keys: Bytes[] = readValidators(entries).map((v) => v.ed25519);
     for (const assurance of Block(TINY).fromJson(block).extrinsic.assurances) {
-      assert.ok(assuranceSigned(keys, assurance), `block ${n}`);
+      const signed: boolean = assuranceSigned(keys, assurance);
+      assert.ok(signed, `block ${n}`);
       checked++;
     }
   }

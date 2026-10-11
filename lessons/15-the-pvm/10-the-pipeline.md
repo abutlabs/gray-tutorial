@@ -42,39 +42,53 @@ can, else stop if everything is retired, else tick.
 import { blockCost } from "../src/pvm/gas.ts";
 import { deblob, unpackCode } from "../src/pvm/program.ts";
 import { bootstrapCode } from "./vectors.ts";
+import type { Program, ServiceCode } from "../src/pvm/program.ts";
 
 /** The gas a hand-made block costs, from its first instruction. */
 const gas = (...instructions: number[][]) => blockCost(assemble(instructions), 0);
 
 // load_ind_u64 is [130, A + 16·B]: φ_A from memory at φ_B. trap ends each block.
 test("one instruction on its own costs its cycles: the 3 is the pipeline's overhead", () => {
-  assert.equal(gas([0]), 2); // trap
-  assert.equal(gas([40, 0]), 15); // jump
+  const trap: number = gas([0]); // trap
+  assert.equal(trap, 2);
+  const jump: number = gas([40, 0]); // jump
+  assert.equal(jump, 15);
 });
 
 test("independent loads run side by side: four cost no more than one, a fifth waits", () => {
-  assert.equal(gas([130, 0x12], [0]), 25); // r2 = [r1]
-  assert.equal(gas([130, 0x12], [130, 0x13], [130, 0x14], [130, 0x15], [0]), 25);
-  assert.equal(gas([130, 0x12], [130, 0x13], [130, 0x14], [130, 0x15], [130, 0x16], [0]), 50);
+  const oneLoad: number = gas([130, 0x12], [0]); // r2 = [r1]
+  assert.equal(oneLoad, 25);
+  const fourLoads: number = gas([130, 0x12], [130, 0x13], [130, 0x14], [130, 0x15], [0]);
+  assert.equal(fourLoads, 25);
+  const fiveLoads: number = gas(
+    [130, 0x12], [130, 0x13], [130, 0x14], [130, 0x15], [130, 0x16], [0],
+  );
+  assert.equal(fiveLoads, 50);
 });
 
 test("a load that needs another's answer waits for it", () => {
-  assert.equal(gas([130, 0x12], [130, 0x23], [0]), 50); // r2 = [r1], then r3 = [r2]
-  assert.equal(gas([130, 0x12], [130, 0x23], [130, 0x34], [0]), 75);
+  const chainOfTwo: number = gas([130, 0x12], [130, 0x23], [0]); // r2 = [r1], then r3 = [r2]
+  assert.equal(chainOfTwo, 50);
+  const chainOfThree: number = gas([130, 0x12], [130, 0x23], [130, 0x34], [0]);
+  assert.equal(chainOfThree, 75);
 });
 
 test("move_reg is free, and the wait follows the value through it", () => {
-  assert.equal(gas([130, 0x12], [100, 0x25], [130, 0x53], [0]), 50); // r5 = r2, r3 = [r5]
+  const throughMove: number = gas([130, 0x12], [100, 0x25], [130, 0x53], [0]); // r5 = r2, r3 = [r5]
+  assert.equal(throughMove, 50);
 });
 
 test("there's one divide unit: two divides take turns", () => {
-  assert.equal(gas([203, 0x10, 2], [0]), 60); // div_u_64 r2 = r0 ÷ r1
-  assert.equal(gas([203, 0x10, 2], [203, 0x10, 3], [0]), 120);
+  const oneDivide: number = gas([203, 0x10, 2], [0]); // div_u_64 r2 = r0 ÷ r1
+  assert.equal(oneDivide, 60);
+  const twoDivides: number = gas([203, 0x10, 2], [203, 0x10, 3], [0]);
+  assert.equal(twoDivides, 120);
 });
 
 test("a real block: the bootstrap service's first costs 26, not the 91 its cycles add to", () => {
-  const program = deblob(unpackCode(bootstrapCode()).program);
-  assert.equal(blockCost(program, 92078), 26);
+  const program: Program = deblob(unpackCode(bootstrapCode()).program);
+  const first: number = blockCost(program, 92078);
+  assert.equal(first, 26);
 });
 ```
 

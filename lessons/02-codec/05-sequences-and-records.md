@@ -110,10 +110,13 @@ field list, TypeScript writes the type.
 ```ts
 import { record, seq } from "../src/codec/codec.ts";
 import type { Value } from "../src/codec/codec.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("a sequence has its length in front", () => {
-  assert.equal(toHex(encode(seq(u16), [1, 2, 3])), "0x03010002000300");
-  assert.deepEqual(decode(seq(u16), fromHex("0x03010002000300")), [1, 2, 3]);
+  const seqHex: string = toHex(encode(seq(u16), [1, 2, 3]));
+  assert.equal(seqHex, "0x03010002000300");
+  const seqDecoded: number[] = decode(seq(u16), fromHex("0x03010002000300"));
+  assert.deepEqual(seqDecoded, [1, 2, 3]);
 });
 
 const Pair = record({ slot: u32, gas: u64 });
@@ -121,9 +124,13 @@ type Pair = Value<typeof Pair>;
 
 test("a record encodes its fields in the order written", () => {
   const p: Pair = { slot: 1, gas: 2n };
-  assert.equal(toHex(encode(Pair, p)), "0x010000000200000000000000");
-  assert.deepEqual(decode(Pair, encode(Pair, p)), p);
-  assert.deepEqual(Pair.fromJson({ slot: 1, gas: 2 }), p);
+  const encoded: Bytes = encode(Pair, p);
+  const pairHex: string = toHex(encoded);
+  assert.equal(pairHex, "0x010000000200000000000000");
+  const decoded: Pair = decode(Pair, encoded);
+  assert.deepEqual(decoded, p);
+  const fromJson: Pair = Pair.fromJson({ slot: 1, gas: 2 });
+  assert.deepEqual(fromJson, p);
 });
 ```
 

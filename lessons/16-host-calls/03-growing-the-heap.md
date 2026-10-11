@@ -54,6 +54,9 @@ import { standardProgram } from "../src/pvm/standard.ts";
 import { fromHex } from "../src/bytes.ts";
 import { encodeNatural } from "../src/codec/numbers.ts";
 import { vectorJson } from "./vectors.ts";
+import type { HostExit } from "../src/host.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
+import type { MemoryError } from "../src/pvm/memory.ts";
 
 /** A tiny standard program's parts: 3 bytes of o, 2 of w, a heap page, a 100-byte stack. */
 function tinyCode(): ServiceCode {
@@ -75,16 +78,19 @@ function growing(want: bigint) {
 }
 
 test("grow_heap: w starts at page 48, and with its heap page the heap ends at 50", () => {
-  const machine = growing(0n); // asking for no more than it has: just the answer
-  assert.equal(growHeap(machine, tinyCode()), "continue");
+  const machine: Machine = growing(0n); // asking for no more than it has: just the answer
+  const exit: HostExit = growHeap(machine, tinyCode());
+  assert.equal(exit, "continue");
   assert.deepEqual([machine.registers[7], machine.gas], [50n, 10_000n - 275n]);
 });
 
 test("growing it by 3 pages costs 121 more gas a page, and page 52 is writable now", () => {
-  const machine = growing(53n);
-  assert.equal(growHeap(machine, tinyCode()), "continue");
+  const machine: Machine = growing(53n);
+  const exit: HostExit = growHeap(machine, tinyCode());
+  assert.equal(exit, "continue");
   assert.deepEqual([machine.registers[7], machine.gas], [53n, 10_000n - 275n - 3n * 121n]);
-  assert.equal(writeMemory(machine.memory, 52n * 4096n, Uint8Array.of(1)), null);
+  const written: MemoryError | null = writeMemory(machine.memory, 52n * 4096n, Uint8Array.of(1));
+  assert.equal(written, null);
 });
 
 /** The parts of an accumulate test vector this test reads. */
@@ -118,8 +124,10 @@ function vectorService() {
 
 test("service 1729 accumulates on exactly the 16,417 gas the test vector says", () => {
   const { machine, host, expected } = vectorService();
-  assert.equal(runWithHost(machine, host), "halt");
-  assert.equal(100_000n - machine.gas, expected);
+  const exit: Exit = runWithHost(machine, host);
+  assert.equal(exit, "halt");
+  const used: bigint = 100_000n - machine.gas;
+  assert.equal(used, expected);
 });
 ```
 

@@ -53,6 +53,9 @@ joins the accounts after the round.
 
 ```ts
 import { newIds, newService, NO_PRIVILEGES } from "../src/host.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
+import type { NewIds } from "../src/host.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 /** A machine about to create a service: code HASH, `length` bytes, `gratis`, id `wanted`. */
 function creating(length: bigint, gratis = 0n, wanted = 0n) {
@@ -64,16 +67,17 @@ function creating(length: bigint, gratis = 0n, wanted = 0n) {
 }
 
 test("new: a service pays for another, which gets the next id, or the registrar's choice", () => {
-  const a = bundle(); // service 0: 1000, of which 170 must stay
-  const ids = { next: 70_000, taken: new Set([0]) };
-  const machine = creating(20n); // 20 bytes of code: 81 + 20 bytes, 2 items
-  assert.equal(newService(machine, a, 7, ids, NO_PRIVILEGES), "continue");
+  const a: Accumulation = bundle(); // service 0: 1000, of which 170 must stay
+  const ids: NewIds = { next: 70_000, taken: new Set([0]) };
+  const machine: Machine = creating(20n); // 20 bytes of code: 81 + 20 bytes, 2 items
+  const exit: HostExit = newService(machine, a, 7, ids, NO_PRIVILEGES);
+  assert.equal(exit, "continue");
   assert.equal(machine.registers[7], 70_000n); // its id
   assert.equal(a.accounts.get(70_000)!.info.balance, 221n); // 100 + 2 × 10 + 101
   assert.equal(a.accounts.get(0)!.info.balance, 1000n - 221n); // paid by service 0
   assert.equal(ids.next, 70_042); // the next one: 42 further on
-  const registrar = { ...NO_PRIVILEGES, register: 0 };
-  const chosen = creating(20n, 0n, 5n); // service 0, the registrar, asks for id 5
+  const registrar: Privileges = { ...NO_PRIVILEGES, register: 0 };
+  const chosen: Machine = creating(20n, 0n, 5n); // service 0, the registrar, asks for id 5
   newService(chosen, a, 7, ids, registrar);
   assert.equal(chosen.registers[7], 5n);
   assert.equal(ids.next, 70_042); // a chosen id doesn't move the next one
@@ -84,16 +88,20 @@ test("new refuses: gratis from a non-manager, not enough money, a registrar's id
     newService(machine, bundle(), 7, { next: 70_000, taken: new Set([0]) }, privileges);
     return machine.registers[7];
   };
-  assert.equal(answer(creating(20n, 5n)), HUH); // only the manager gives gratis storage
-  assert.equal(answer(creating(900n)), CASH); // 1101 for it would leave too little
-  assert.equal(answer(creating(20n, 0n, 0n), { ...NO_PRIVILEGES, register: 0 }), FULL);
+  const gratis: bigint = answer(creating(20n, 5n)); // only the manager gives gratis storage
+  assert.equal(gratis, HUH);
+  const tooPoor: bigint = answer(creating(900n)); // 1101 for it would leave too little
+  assert.equal(tooPoor, CASH);
+  const taken: bigint = answer(creating(20n, 0n, 0n), { ...NO_PRIVILEGES, register: 0 });
+  assert.equal(taken, FULL);
 });
 
 test("a run's first new id is public, and skips ids already taken", () => {
-  const entropy = new Uint8Array(32);
-  const { next } = newIds(0, entropy, 7, new Set());
+  const entropy: Bytes = new Uint8Array(32);
+  const { next }: NewIds = newIds(0, entropy, 7, new Set());
   assert.ok(next >= 2 ** 16);
-  assert.equal(newIds(0, entropy, 7, new Set([next])).next, next + 1); // taken: one up
+  const skipped: NewIds = newIds(0, entropy, 7, new Set([next])); // taken: one up
+  assert.equal(skipped.next, next + 1);
 });
 ```
 
@@ -138,14 +146,17 @@ const BLOCK_CASES = [
 **Add to** `test/accumulate.test.ts`
 
 ```ts
+import type { AccumulationState } from "../src/accumulate.ts";
+import type { ServiceInfo } from "../src/services.ts";
 test("the registrar creates service 5, which gets its endowment a round later", () => {
   const vector = vectorJson("stf/accumulate/tiny/create_service-1.json") as BlockVector;
-  const before = accumulationStateFromJson(vector.pre_state);
+  const before: AccumulationState = accumulationStateFromJson(vector.pre_state);
   const { state, statistics } = accumulateBlock(TINY, before, vector.input.slot, reportsOf(vector));
-  const made = state.accounts.get(5)!.info;
+  const made: ServiceInfo = state.accounts.get(5)!.info;
   assert.deepEqual([made.parent_service, made.creation_slot], [0, 43]); // service 0, this block
   assert.equal(made.balance, 1201n + 500n); // its minimum (100 + 2 × 10 + 1081), and a gift
-  assert.equal(statistics.get(5)!.transfers, 1); // the gift, delivered in round 2
+  const delivered: number = statistics.get(5)!.transfers; // the gift, delivered in round 2
+  assert.equal(delivered, 1);
 });
 ```
 

@@ -53,17 +53,21 @@ type SafroleState = {
 
 ```ts
 import { fallbackKeys } from "../src/safrole.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("F: an epoch without a full lottery is sealed by keys picked from κ′ by hash", () => {
   let fallbacks = 0;
   for (const { config, name, vector, newEpoch } of acceptedVectors()) {
     const { input, pre_state, post_state } = vector;
     if (!newEpoch || !post_state.gamma_s.keys) continue; // not a fallback epoch
-    const eta = nextEntropy(pre_state.eta.map(fromHex), fromHex(input.entropy), newEpoch);
-    const offenders = pre_state.post_offenders.map(fromHex);
-    const { active } = rotateValidators(validatorSets(pre_state), offenders); // κ′
-    const sealers = fallbackKeys(config, eta[2], active); // F(η′₂, κ′)
-    assert.deepEqual(sealers.map(toHex), post_state.gamma_s.keys, name);
+    const vrfOutput: Bytes = fromHex(input.entropy);
+    const eta: Bytes[] = nextEntropy(pre_state.eta.map(fromHex), vrfOutput, newEpoch);
+    const offenders: Bytes[] = pre_state.post_offenders.map(fromHex);
+    const before: ValidatorSets = validatorSets(pre_state);
+    const { active }: ValidatorSets = rotateValidators(before, offenders); // κ′
+    const sealers: Bytes[] = fallbackKeys(config, eta[2], active); // F(η′₂, κ′)
+    const sealersHex: string[] = sealers.map(toHex);
+    assert.deepEqual(sealersHex, post_state.gamma_s.keys, name);
     fallbacks++;
   }
   assert.equal(fallbacks, 12); // 5 tiny, 7 full
@@ -102,7 +106,7 @@ npm test
 ℹ pass 73
 ℹ fail 1
 ...
-test at test/safrole.test.ts:82:1
+test at test/safrole.test.ts:86:1
 ✖ F: an epoch without a full lottery is sealed by keys picked from κ′ by hash (201.1ms)
   AssertionError [ERR_ASSERTION]: stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
   + actual - expected

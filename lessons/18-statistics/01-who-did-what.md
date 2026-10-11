@@ -86,14 +86,16 @@ function runStats(config: Config, name: string) {
 
 test("an empty block: its author makes one more block, and that's all", () => {
   const { before, after } = runStats(TINY, "stf/statistics/tiny/stats_with_empty_extrinsic-1.json");
-  assert.equal(after.current[1].blocks, before.current[1].blocks + 1); // validator 1 made it
+  const authorBlocks: number = after.current[1].blocks; // validator 1 made it
+  assert.equal(authorBlocks, before.current[1].blocks + 1);
   assert.deepEqual(after.current[0], before.current[0]); // validator 0 did nothing
 });
 
 test("an epoch's first block: assurances close the old tally, the rest opens the new one", () => {
   const name = "stf/statistics/tiny/stats_with_epoch_change-1.json";
   const { before, after } = runStats(TINY, name);
-  assert.equal(after.last[0].assurances, before.current[0].assurances + 1); // into the old one
+  const closed: number = after.last[0].assurances; // into the old one
+  assert.equal(closed, before.current[0].assurances + 1);
   assert.deepEqual([after.current[0].blocks, after.current[0].assurances], [0, 0]); // fresh
   assert.equal(after.current[1].blocks, 1); // the author's block starts the fresh tally
 });

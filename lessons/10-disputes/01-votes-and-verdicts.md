@@ -61,6 +61,7 @@ import { FULL, TINY } from "../src/config.ts";
 import { judges, outcome, PastJudgements, recordVerdicts, votesSigned } from "../src/disputes.ts";
 import { ValidatorKey } from "../src/state.ts";
 import { vectorFiles, vectorJson } from "./vectors.ts";
+import type { Outcome } from "../src/disputes.ts";
 
 /** A verdict with `valid` "valid" votes out of `count`, unsigned: enough for counting. */
 function verdictWith(valid: number, count: number): Verdict {
@@ -73,9 +74,12 @@ function verdictWith(valid: number, count: number): Verdict {
 }
 
 test("V: with 6 judges, 5 valid votes is good, 0 is bad, 2 is wonky", () => {
-  assert.equal(outcome(verdictWith(5, 5), 6), "good"); // ⌊2 × 6 / 3⌋ + 1 = 5
-  assert.equal(outcome(verdictWith(0, 5), 6), "bad");
-  assert.equal(outcome(verdictWith(2, 5), 6), "wonky"); // ⌊6 / 3⌋ = 2
+  const fiveValid: Outcome = outcome(verdictWith(5, 5), 6);
+  assert.equal(fiveValid, "good"); // ⌊2 × 6 / 3⌋ + 1 = 5
+  const noneValid: Outcome = outcome(verdictWith(0, 5), 6);
+  assert.equal(noneValid, "bad");
+  const twoValid: Outcome = outcome(verdictWith(2, 5), 6);
+  assert.equal(twoValid, "wonky"); // ⌊6 / 3⌋ = 2
 });
 
 /** A disputes test vector: the parts of it this lesson uses. */
@@ -107,7 +111,8 @@ function acceptedVectors(config: typeof TINY): { name: string; vector: DisputesV
 test("every vote is signed by its judge (tiny: full verdicts are 683 votes each)", () => {
   for (const { name, vector } of acceptedVectors(TINY)) {
     for (const { verdict, keys } of judgedVerdicts(TINY, vector)) {
-      assert.ok(votesSigned(verdict, keys), name);
+      const signed: boolean = votesSigned(verdict, keys);
+      assert.ok(signed, name);
     }
   }
 });
@@ -120,8 +125,9 @@ test("each judged report joins the set of its verdict's outcome", () => {
         target: verdict.target,
         outcome: outcome(verdict, keys.length),
       }));
-      const after = recordVerdicts(PastJudgements.fromJson(vector.pre_state.psi), outcomes);
-      const { good, bad, wonky } = PastJudgements.fromJson(vector.post_state.psi);
+      const before: PastJudgements = PastJudgements.fromJson(vector.pre_state.psi);
+      const after: PastJudgements = recordVerdicts(before, outcomes);
+      const { good, bad, wonky }: PastJudgements = PastJudgements.fromJson(vector.post_state.psi);
       assert.deepEqual([after.good, after.bad, after.wonky], [good, bad, wonky], name);
       accepted++;
     }
@@ -132,7 +138,8 @@ test("each judged report joins the set of its verdict's outcome", () => {
 test("a forged vote is caught", () => {
   const vector = vectorJson("stf/disputes/tiny/progress_with_bad_signatures-1.json");
   const [{ verdict, keys }] = judgedVerdicts(TINY, vector as DisputesVector);
-  assert.equal(votesSigned(verdict, keys), false);
+  const signed: boolean = votesSigned(verdict, keys);
+  assert.equal(signed, false);
 });
 ```
 

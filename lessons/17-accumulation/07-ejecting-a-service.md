@@ -48,6 +48,7 @@ Two hand-made tests, with a service ready to be ejected:
 
 ```ts
 import { eject } from "../src/host.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
 
 /**
  * Service 0, and service 1 ready to be ejected by it: its code hash names service 0, and
@@ -71,14 +72,15 @@ function ejecting(d: bigint) {
 }
 
 test("eject: a service that named its ejector goes, and its balance goes to the ejector", () => {
-  const a = ejectable();
-  const machine = ejecting(1n);
-  assert.equal(eject(machine, a, 100, TINY.expunge_period), "continue");
+  const a: Accumulation = ejectable();
+  const machine: Machine = ejecting(1n);
+  const exit: HostExit = eject(machine, a, 100, TINY.expunge_period);
+  assert.equal(exit, "continue");
   assert.equal(machine.registers[7], OK);
   assert.equal(machine.gas, 10_000n - 458n);
   assert.equal(a.accounts.has(1), false); // gone
   assert.equal(a.accounts.get(0)!.info.balance, 2000n); // its 1000 and the other's 1000
-  const again = ejecting(1n);
+  const again: Machine = ejecting(1n);
   eject(again, a, 100, TINY.expunge_period);
   assert.equal(again.registers[7], WHO); // gone means gone: no second helping
   assert.equal(a.accounts.get(0)!.info.balance, 2000n);
@@ -90,9 +92,12 @@ test("eject refuses: itself, a stranger, or a preimage forgotten too recently", 
     eject(machine, ejectable(), t, TINY.expunge_period);
     return machine.registers[7];
   };
-  assert.equal(answer(0n, 100), WHO); // a service can't eject itself
-  assert.equal(answer(5n, 100), WHO); // there's no service 5
-  assert.equal(answer(1n, 10 + TINY.expunge_period), HUH); // forgotten at 10: not long enough
+  const itself: bigint = answer(0n, 100); // a service can't eject itself
+  assert.equal(itself, WHO);
+  const stranger: bigint = answer(5n, 100); // there's no service 5
+  assert.equal(stranger, WHO);
+  const tooRecent: bigint = answer(1n, 10 + TINY.expunge_period); // forgotten at 10: too soon
+  assert.equal(tooRecent, HUH);
 });
 ```
 
@@ -138,12 +143,15 @@ const BLOCK_CASES = [
 **Add to** `test/accumulate.test.ts`
 
 ```ts
+import type { AccumulationState } from "../src/accumulate.ts";
 test("an ejected service is gone, and its ejector has its balance", () => {
   const vector = vectorJson("stf/accumulate/tiny/work_for_ejected_service-2.json") as BlockVector;
-  const before = accumulationStateFromJson(vector.pre_state);
+  const before: AccumulationState = accumulationStateFromJson(vector.pre_state);
   const { state } = accumulateBlock(TINY, before, vector.input.slot, reportsOf(vector));
-  assert.equal(state.accounts.has(2), false); // service 2 named service 0 as its ejector
-  assert.equal(state.accounts.get(0)!.info.balance, 227_714n + 227_714n); // and 0 ejected it
+  const stillThere: boolean = state.accounts.has(2); // service 2 named service 0 as its ejector
+  assert.equal(stillThere, false);
+  const ejectorBalance: bigint = state.accounts.get(0)!.info.balance; // and 0 ejected it
+  assert.equal(ejectorBalance, 227_714n + 227_714n);
 });
 ```
 

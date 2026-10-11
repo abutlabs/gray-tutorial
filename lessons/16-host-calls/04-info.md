@@ -88,6 +88,10 @@ function vectorService() {
 import { info } from "../src/host.ts";
 import type { Account, AccountJson } from "../src/services.ts";
 import { accountFromJson, ServiceInfo } from "../src/services.ts";
+import type { Bytes } from "../src/bytes.ts";
+import type { HostExit } from "../src/host.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
+import type { MemoryError } from "../src/pvm/memory.ts";
 
 /** A service's record, made up: a balance of 1,000, 2 items in 50 bytes, created at slot 5. */
 function tinyInfo(): ServiceInfo {
@@ -120,22 +124,24 @@ function asking(who: bigint) {
 }
 
 test("info: a service's record, 96 bytes, starting with its code hash", () => {
-  const machine = asking(2n ** 64n - 1n); // 2^64 − 1: itself
-  assert.equal(info(machine, tinyAccounts(), 0), "continue");
+  const machine: Machine = asking(2n ** 64n - 1n); // 2^64 − 1: itself
+  const exit: HostExit = info(machine, tinyAccounts(), 0);
+  assert.equal(exit, "continue");
   assert.equal(machine.registers[7], 96n);
-  const start = readMemory(machine.memory, 0x20000n, 33);
+  const start: Bytes | MemoryError = readMemory(machine.memory, 0x20000n, 33);
   assert.deepEqual(start, Uint8Array.of(...Array(32).fill(9), 232)); // then 1,000's low byte
   assert.equal(machine.gas, 10_000n - 703n);
 });
 
 test("its minimum balance comes worked out: 100 + 10 per item + 1 per byte = 170", () => {
-  const machine = asking(0n); // service 0, by number this time
+  const machine: Machine = asking(0n); // service 0, by number this time
   info(machine, tinyAccounts(), 0);
-  assert.deepEqual(readMemory(machine.memory, 0x20000n + 40n, 2), Uint8Array.of(170, 0));
+  const minimum: Bytes | MemoryError = readMemory(machine.memory, 0x20000n + 40n, 2);
+  assert.deepEqual(minimum, Uint8Array.of(170, 0));
 });
 
 test("info about a service that isn't there: NONE", () => {
-  const machine = asking(42n);
+  const machine: Machine = asking(42n);
   info(machine, tinyAccounts(), 0);
   assert.equal(machine.registers[7], NONE);
 });

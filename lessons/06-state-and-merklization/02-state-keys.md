@@ -78,26 +78,31 @@ import { toHex } from "../src/bytes.ts";
 import { blake2b256 } from "../src/hash.ts";
 import { accountKey, componentKey, preimageKey, requestKey } from "../src/state.ts";
 import { traceState } from "./vectors.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("C(i): a component's key is its number, then 30 zero bytes", () => {
-  assert.equal(toHex(componentKey(11)), "0x0b" + "00".repeat(30));
+  const key: string = toHex(componentKey(11));
+  assert.equal(key, "0x0b" + "00".repeat(30));
 });
 
 test("C(255, s): an account's key spreads the service id out, with zeros between", () => {
-  assert.equal(toHex(accountKey(0x04030201)), "0xff0100020003000400" + "00".repeat(22));
+  const key: string = toHex(accountKey(0x04030201));
+  assert.equal(key, "0xff0100020003000400" + "00".repeat(22));
 });
 
 test("every key of a real state, named: 16 components, an account, preimages, requests", () => {
   const { entries } = traceState("fallback", 1);
-  const keys = entries.map((e) => toHex(e.key));
-  const named = [accountKey(0)];
+  const keys: string[] = entries.map((e) => toHex(e.key));
+  const named: Bytes[] = [accountKey(0)];
   for (let i = 1; i <= 16; i++) named.push(componentKey(i));
   for (const { value } of entries) {
-    const key = preimageKey(0, value);
+    const key: Bytes = preimageKey(0, value);
     if (!keys.includes(toHex(key))) continue; // not a preimage of service 0
     named.push(key, requestKey(0, blake2b256(value), value.length)); // and its request
   }
-  assert.deepEqual(named.map(toHex).sort(), keys.sort());
+  const namedHex: string[] = named.map(toHex).sort();
+  const keysHex: string[] = keys.sort();
+  assert.deepEqual(namedHex, keysHex);
 });
 ```
 
@@ -157,7 +162,7 @@ npm test
 ℹ pass 60
 ℹ fail 3
 ...
-test at test/state.test.ts:8:1
+test at test/state.test.ts:9:1
 ✖ C(i): a component's key is its number, then 30 zero bytes (1.9ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected
@@ -165,7 +170,7 @@ test at test/state.test.ts:8:1
   + '0x00000000000000000000000000000000000000000000000000000000000000'
   - '0x0b000000000000000000000000000000000000000000000000000000000000'
 
-      at TestContext.<anonymous> (…/client/test/state.test.ts:9:10)
+      at TestContext.<anonymous> (…/client/test/state.test.ts:11:10)
 ...
 ```
 

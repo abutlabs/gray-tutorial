@@ -49,11 +49,14 @@ import { FULL, TINY } from "../src/config.ts";
 import { PendingReports } from "../src/cores.ts";
 import { WorkReport } from "../src/work.ts";
 import { vectorFiles, vectorJson } from "./vectors.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("bits are packed least significant first: 0x05 is cores 0 and 2", () => {
-  const bitfield = fromHex("0x05"); // 0000 0101
-  assert.deepEqual([0, 1, 2, 3].map((c) => bitAt(bitfield, c)), [true, false, true, false]);
-  assert.equal(bitAt(fromHex("0x0001"), 8), true); // core 8: the lowest bit of byte 1
+  const bitfield: Bytes = fromHex("0x05"); // 0000 0101
+  const bits: boolean[] = [0, 1, 2, 3].map((c) => bitAt(bitfield, c));
+  assert.deepEqual(bits, [true, false, true, false]);
+  const core8: boolean = bitAt(fromHex("0x0001"), 8); // core 8: the lowest bit of byte 1
+  assert.equal(core8, true);
 });
 
 /** An assurances test vector: the parts of it this lesson uses. */
@@ -77,8 +80,9 @@ test("𝐑: a report becomes available when more than two thirds of κ hold its 
       const { input, pre_state, output } = vector;
       const cores = PendingReports(config).fromJson(pre_state.avail_assignments);
       const assurances = input.assurances.map((a) => Assurance(config).fromJson(a));
-      const reports = nowAvailable(cores, assurances, pre_state.curr_validators.length);
-      const expected = (output.ok?.reported ?? []).map((r) => WorkReport.fromJson(r));
+      const validators: number = pre_state.curr_validators.length;
+      const reports: WorkReport[] = nowAvailable(cores, assurances, validators);
+      const expected: WorkReport[] = (output.ok?.reported ?? []).map((r) => WorkReport.fromJson(r));
       assert.deepEqual(reports, expected, name);
       available += reports.length;
     }
@@ -90,7 +94,8 @@ test("on tiny, 5 of 6 validators make a report available, and 4 don't", () => {
   // 3 × 5 = 15 > 12 = 2 × 6, but 3 × 4 = 12 is not
   const vector = vectorJson("stf/assurances/tiny/some_assurances-1.json") as AssurancesVector;
   const assurances = vector.input.assurances.map((a) => Assurance(TINY).fromJson(a));
-  assert.deepEqual([0, 1].map((core) => assuredCount(assurances, core)), [5, 4]);
+  const counts: number[] = [0, 1].map((core) => assuredCount(assurances, core));
+  assert.deepEqual(counts, [5, 4]);
 });
 ```
 

@@ -68,12 +68,14 @@ Then check every block's promise, in all four traces:
 
 ```ts
 import { extrinsicHash } from "../src/block.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("every block's header promises its extrinsic by hash", () => {
   for (const family of ["fallback", "safrole", "preimages", "storage"]) {
     for (let n = 1; n <= 100; n++) {
-      const { header, extrinsic } = traceBlock(n, family);
-      assert.deepEqual(extrinsicHash(TINY, extrinsic), header.extrinsic_hash, `${family} ${n}`);
+      const { header, extrinsic }: Block = traceBlock(n, family);
+      const hashed: Bytes = extrinsicHash(TINY, extrinsic);
+      assert.deepEqual(hashed, header.extrinsic_hash, `${family} ${n}`);
     }
   }
 });

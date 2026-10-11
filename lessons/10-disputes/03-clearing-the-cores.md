@@ -75,6 +75,7 @@ import type { PendingReport } from "../src/cores.ts";
 import { encode } from "../src/codec/codec.ts";
 import { blake2b256 } from "../src/hash.ts";
 import { WorkReport } from "../src/work.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("ρ†: a report judged bad or wonky is taken off its core", () => {
   let cleared = 0;
@@ -84,9 +85,11 @@ test("ρ†: a report judged bad or wonky is taken off its core", () => {
         target: verdict.target,
         outcome: outcome(verdict, keys.length),
       }));
-      const before = PendingReports(config).fromJson(vector.pre_state.rho);
-      const after = clearJudged(before, judged);
-      assert.deepEqual(after, PendingReports(config).fromJson(vector.post_state.rho), name);
+      const cores = PendingReports(config);
+      const before: (PendingReport | null)[] = cores.fromJson(vector.pre_state.rho);
+      const after: (PendingReport | null)[] = clearJudged(before, judged);
+      const expected: (PendingReport | null)[] = cores.fromJson(vector.post_state.rho);
+      assert.deepEqual(after, expected, name);
       cleared += before.filter((p) => p !== null).length - after.filter((p) => p !== null).length;
     }
   }
@@ -95,11 +98,15 @@ test("ρ†: a report judged bad or wonky is taken off its core", () => {
 
 test("ρ†: wonky clears a core too, and good leaves it be", () => {
   const vector = vectorJson("stf/disputes/tiny/progress_invalidates_avail_assignments-1.json");
-  const cores = PendingReports(TINY).fromJson((vector as DisputesVector).pre_state.rho);
-  const pending = cores[0] as PendingReport; // core 0 holds a report
-  const target = blake2b256(encode(WorkReport, pending.guarantee.report));
-  assert.equal(clearJudged(cores, [{ target, outcome: "wonky" }])[0], null);
-  assert.equal(clearJudged(cores, [{ target, outcome: "good" }])[0], pending);
+  const cores: (PendingReport | null)[] = PendingReports(TINY).fromJson(
+    (vector as DisputesVector).pre_state.rho,
+  );
+  const pending: PendingReport = cores[0] as PendingReport; // core 0 holds a report
+  const target: Bytes = blake2b256(encode(WorkReport, pending.guarantee.report));
+  const afterWonky: PendingReport | null = clearJudged(cores, [{ target, outcome: "wonky" }])[0];
+  assert.equal(afterWonky, null);
+  const afterGood: PendingReport | null = clearJudged(cores, [{ target, outcome: "good" }])[0];
+  assert.equal(afterGood, pending);
 });
 ```
 
@@ -138,7 +145,7 @@ npm test
 ℹ pass 91
 ℹ fail 2
 ...
-test at test/disputes.test.ts:121:1
+test at test/disputes.test.ts:138:1
 ✖ ρ†: a report judged bad or wonky is taken off its core (35.0ms)
   AssertionError [ERR_ASSERTION]: stf/disputes/tiny/progress_invalidates_avail_assignments-1.json
   + actual - expected

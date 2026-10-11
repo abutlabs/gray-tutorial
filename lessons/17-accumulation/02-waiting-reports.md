@@ -97,6 +97,7 @@ const BLOCK_CASES = [
 ```ts
 import type { AccumulationStateJson } from "../src/accumulate.ts";
 import { accumulationStateFromJson } from "../src/accumulate.ts";
+import type { AccumulationState } from "../src/accumulate.ts";
 
 /** A whole accumulate test vector: the input, the state before and after. */
 type BlockVector = {
@@ -107,12 +108,15 @@ type BlockVector = {
 
 test("a report waiting for package A goes in the same block as A", () => {
   const vector = vectorJson("stf/accumulate/tiny/enqueue_and_unlock_simple-2.json") as BlockVector;
-  const before = accumulationStateFromJson(vector.pre_state);
-  assert.equal(before.ready.flat().length, 1); // D waits for A
+  const before: AccumulationState = accumulationStateFromJson(vector.pre_state);
+  const waiting: number = before.ready.flat().length; // D waits for A
+  assert.equal(waiting, 1);
   const [a] = reportsOf(vector); // the block brings A, which waits for nothing
   const { state } = accumulateBlock(TINY, before, vector.input.slot, [a]);
-  assert.equal(state.ready.flat().length, 0); // D has gone
-  assert.equal(state.accumulated.at(-1)!.size, 2); // A and D, both accumulated now
+  const stillWaiting: number = state.ready.flat().length; // D has gone
+  assert.equal(stillWaiting, 0);
+  const accumulated: number = state.accumulated.at(-1)!.size; // A and D, both accumulated now
+  assert.equal(accumulated, 2);
 });
 ```
 

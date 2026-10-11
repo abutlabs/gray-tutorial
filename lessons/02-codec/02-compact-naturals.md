@@ -69,13 +69,17 @@ const NATURALS: [bigint, string][] = [
 
 test("ℰ, the compact natural, at different lengths", () => {
   for (const [x, hex] of NATURALS) {
-    assert.equal(toHex(encodeNatural(x)), hex, `ℰ(${x})`);
-    assert.deepEqual(decodeNatural(fromHex(hex)), { value: x, length: (hex.length - 2) / 2 });
+    const encodedHex: string = toHex(encodeNatural(x));
+    assert.equal(encodedHex, hex, `ℰ(${x})`);
+    const decoded: { value: bigint; length: number } = decodeNatural(fromHex(hex));
+    const expected: { value: bigint; length: number } = { value: x, length: (hex.length - 2) / 2 };
+    assert.deepEqual(decoded, expected);
   }
 });
 
 test("decodeNatural can start in the middle of the bytes", () => {
-  assert.deepEqual(decodeNatural(fromHex("0xaa8080"), 1), { value: 128n, length: 2 });
+  const decoded: { value: bigint; length: number } = decodeNatural(fromHex("0xaa8080"), 1);
+  assert.deepEqual(decoded, { value: 128n, length: 2 });
 });
 ```
 
@@ -113,7 +117,7 @@ npm test
 ℹ pass 9
 ℹ fail 2
 ...
-test at test/numbers.test.ts:24:1
+test at test/numbers.test.ts:31:1
 ✖ ℰ, the compact natural, at different lengths (0.6ms)
   AssertionError [ERR_ASSERTION]: ℰ(0)
 
@@ -192,7 +196,7 @@ npm test
 
 ```text
 ...
-test at test/numbers.test.ts:24:1
+test at test/numbers.test.ts:31:1
 ✖ ℰ, the compact natural, at different lengths (0.8ms)
   AssertionError [ERR_ASSERTION]: ℰ(128)
 

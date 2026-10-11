@@ -185,20 +185,27 @@ function traced(bytes: Bytes): Field[] {
 }
 
 test("a decode trace names every innermost field, with where its bytes are", () => {
-  const fields = traced(vectorBytes("codec/tiny/work_item.bin"));
-  const service = { field: "service", from: 0, to: 4, bytes: Uint8Array.of(4, 3, 2, 1) };
-  assert.deepEqual(fields[0], service);
-  const names = fields.map((f) => f.field);
+  const fields: Field[] = traced(vectorBytes("codec/tiny/work_item.bin"));
+  const first: Field = fields[0];
+  const service: Field = { field: "service", from: 0, to: 4, bytes: Uint8Array.of(4, 3, 2, 1) };
+  assert.deepEqual(first, service);
+  const names: string[] = fields.map((f) => f.field);
   for (const name of ["code_hash", "payload", "import_segments.length", "extrinsic.1.len"]) {
-    assert.ok(names.includes(name), name);
+    const named: boolean = names.includes(name);
+    assert.ok(named, name);
   }
 });
 
 test("the trace covers every byte, once, in order", () => {
-  const bytes = vectorBytes("codec/tiny/work_item.bin");
-  const fields = traced(bytes);
-  for (let i = 1; i < fields.length; i++) assert.equal(fields[i].from, fields[i - 1].to);
-  assert.deepEqual(concatBytes(...fields.map((f) => f.bytes)), bytes);
+  const bytes: Bytes = vectorBytes("codec/tiny/work_item.bin");
+  const fields: Field[] = traced(bytes);
+  for (let i = 1; i < fields.length; i++) {
+    const from: number = fields[i].from;
+    const previousTo: number = fields[i - 1].to;
+    assert.equal(from, previousTo);
+  }
+  const joined: Bytes = concatBytes(...fields.map((f) => f.bytes));
+  assert.deepEqual(joined, bytes);
 });
 ```
 

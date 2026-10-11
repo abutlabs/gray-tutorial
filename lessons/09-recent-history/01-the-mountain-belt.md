@@ -75,20 +75,24 @@ import type { Belt } from "../src/belt.ts";
 import { fromHex, toHex } from "../src/bytes.ts";
 import { keccak256 } from "../src/hash.ts";
 import { vectorFiles, vectorJson } from "./vectors.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("Keccak-256 of nothing at all", () => {
-  const empty = "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470";
-  assert.equal(toHex(keccak256(new Uint8Array(0))), empty);
+  const empty: string = "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470";
+  const hashed: string = toHex(keccak256(new Uint8Array(0)));
+  assert.equal(hashed, empty);
 });
 
 test("appending is counting in binary: mountains of 1, 2, 4...", () => {
-  const a = new Uint8Array(32).fill(1);
+  const a: Bytes = new Uint8Array(32).fill(1);
   let belt: Belt = [];
   belt = appendToBelt(belt, a); // 1 item:  [a]
   belt = appendToBelt(belt, a); // 2 items: [-, H(a ⌢ a)]
-  assert.deepEqual(belt, [null, keccak256(new Uint8Array(64).fill(1))]);
+  const aa: Bytes = keccak256(new Uint8Array(64).fill(1)); // H(a ⌢ a)
+  assert.deepEqual(belt, [null, aa]);
   belt = appendToBelt(belt, a); // 3 items: [a, H(a ⌢ a)]
-  assert.deepEqual(belt[0], a);
+  const lowest: Bytes | null = belt[0];
+  assert.deepEqual(lowest, a);
 });
 
 /** A history test vector: the parts of it this lesson uses. */
@@ -105,10 +109,13 @@ test("the belt after each block of the history vectors, and its super-peak", () 
   for (const size of ["tiny", "full"]) {
     for (const name of vectorFiles(`stf/history/${size}`)) {
       const { input, pre_state, post_state } = vectorJson(name) as HistoryVector;
-      const after = appendToBelt(belt(pre_state.beta.mmr.peaks), fromHex(input.accumulate_root));
-      assert.deepEqual(after, belt(post_state.beta.mmr.peaks), name);
+      const before: Belt = belt(pre_state.beta.mmr.peaks);
+      const after: Belt = appendToBelt(before, fromHex(input.accumulate_root));
+      const expected: Belt = belt(post_state.beta.mmr.peaks);
+      assert.deepEqual(after, expected, name);
       const newest = post_state.beta.history[post_state.beta.history.length - 1];
-      assert.equal(toHex(superPeak(after)), newest.beefy_root, name);
+      const peak: string = toHex(superPeak(after));
+      assert.equal(peak, newest.beefy_root, name);
       checked++;
     }
   }
@@ -162,7 +169,7 @@ npm test
 ℹ pass 80
 ℹ fail 2
 ...
-test at test/belt.test.ts:14:1
+test at test/belt.test.ts:16:1
 ✖ appending is counting in binary: mountains of 1, 2, 4... (1.9ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
   + actual - expected

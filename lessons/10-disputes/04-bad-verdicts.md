@@ -67,7 +67,8 @@ const BAD_VERDICTS = new Map([
 
 test("a split that's neither good, bad nor wonky is refused", () => {
   const name = "stf/disputes/tiny/progress_with_verdicts-5.json";
-  assert.equal(verdictVerdict(TINY, name), "bad_vote_split");
+  const broken: string | null = verdictVerdict(TINY, name);
+  assert.equal(broken, "bad_vote_split");
 });
 
 /**
@@ -85,7 +86,9 @@ const VERDICT_VECTORS = [
 for (const { config, name } of VERDICT_VECTORS) {
   const short = name.split("/").at(-1)!.replace(".json", "");
   test(`${name}: its verdicts pass, or break the rule the vector names`, () => {
-    assert.equal(verdictVerdict(config, name), BAD_VERDICTS.get(short) ?? null);
+    const broken: string | null = verdictVerdict(config, name);
+    const expected: string | null = BAD_VERDICTS.get(short) ?? null;
+    assert.equal(broken, expected);
   });
 }
 ```
@@ -133,7 +136,7 @@ npm test
 ℹ pass 114
 ℹ fail 11
 ...
-test at test/disputes.test.ts:171:1
+test at test/disputes.test.ts:194:1
 ✖ a split that's neither good, bad nor wonky is refused (1.6ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected

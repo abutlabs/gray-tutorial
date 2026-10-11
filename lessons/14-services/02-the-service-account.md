@@ -39,11 +39,14 @@ import { footprint, minimumBalance, readService, ServiceInfo, serviceCode } from
 
 test("service 0 in real state: its code beside it, and its footprint adding up", () => {
   const { entries } = traceState("fallback", 1);
-  const service = readService(entries, 0);
-  assert.equal(serviceCode(entries, 0)?.length, 159322); // its code: lesson 6.1's giant
-  const preimages = entries.filter((e) => toHex(e.key) === toHex(preimageKey(0, e.value)));
+  const service: ServiceInfo = readService(entries, 0);
+  const codeLength: number | undefined = serviceCode(entries, 0)?.length;
+  assert.equal(codeLength, 159322); // its code: lesson 6.1's giant
+  const isPreimage = (e: KeyValue) => toHex(e.key) === toHex(preimageKey(0, e.value));
+  const preimages: KeyValue[] = entries.filter(isPreimage);
   const requests = preimages.map((p) => ({ length: p.value.length })); // all provided
-  assert.deepEqual(footprint([], requests), { items: service.items, bytes: service.bytes });
+  const used = footprint([], requests);
+  assert.deepEqual(used, { items: service.items, bytes: service.bytes });
 });
 
 /** An account in the accumulate vectors: its record, its storage, its requests. */
@@ -64,11 +67,16 @@ test("footprints and minimum balances: 510 accounts in the accumulate vectors", 
         post_state: { accounts: VectorAccount[] };
       };
       for (const { data } of [...pre_state.accounts, ...post_state.accounts]) {
-        const info = ServiceInfo.fromJson(data.service);
-        const storage = data.storage.map((e) => ({ key: fromHex(e.key), value: fromHex(e.value) }));
+        const info: ServiceInfo = ServiceInfo.fromJson(data.service);
+        const storage: KeyValue[] = data.storage.map((e) => ({
+          key: fromHex(e.key),
+          value: fromHex(e.value),
+        }));
         const requests = data.preimage_requests.map((r) => r.key);
-        assert.deepEqual(footprint(storage, requests), { items: info.items, bytes: info.bytes });
-        assert.ok(info.balance >= minimumBalance(info), name);
+        const used = footprint(storage, requests);
+        assert.deepEqual(used, { items: info.items, bytes: info.bytes });
+        const minimum: bigint = minimumBalance(info);
+        assert.ok(info.balance >= minimum, name);
         accounts++;
       }
     }

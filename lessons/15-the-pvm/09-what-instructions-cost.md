@@ -53,38 +53,52 @@ function costOf(...instructions: number[][]): Cost {
 
 test("which registers an instruction reads and writes", () => {
   const used = (bytes: number[]) => registersUsed(decodeInstruction(assemble([bytes]), 0));
-  assert.deepEqual(used([200, 0x10, 2]), { reads: [0, 1], writes: [2] }); // add_64 r2 = r0 + r1
-  assert.deepEqual(used([130, 0x10]), { reads: [1], writes: [0] }); // load_ind_u64 r0, [r1]
-  assert.deepEqual(used([123, 0x10]), { reads: [0, 1], writes: [] }); // store_ind_u64 r0, [r1]
-  assert.deepEqual(used([218, 0x10, 2]), { reads: [0, 1, 2], writes: [2] }); // cmov_iz
+  const add = used([200, 0x10, 2]); // add_64 r2 = r0 + r1
+  assert.deepEqual(add, { reads: [0, 1], writes: [2] });
+  const load = used([130, 0x10]); // load_ind_u64 r0, [r1]
+  assert.deepEqual(load, { reads: [1], writes: [0] });
+  const store = used([123, 0x10]); // store_ind_u64 r0, [r1]
+  assert.deepEqual(store, { reads: [0, 1], writes: [] });
+  const cmov = used([218, 0x10, 2]); // cmov_iz
+  assert.deepEqual(cmov, { reads: [0, 1, 2], writes: [2] });
 });
 
 test("a row from the GP's table: add_64 is 1 cycle, and 1 or 2 decode slots", () => {
-  assert.deepEqual(costOf([200, 0x10, 2]), { cycles: 1, slots: 2, units: [1, 0, 0, 0, 0] });
-  assert.equal(costOf([200, 0x10, 0]).slots, 1); // r0 = r0 + r1: writes a register it reads
+  const add: Cost = costOf([200, 0x10, 2]);
+  assert.deepEqual(add, { cycles: 1, slots: 2, units: [1, 0, 0, 0, 0] });
+  const addInPlace: Cost = costOf([200, 0x10, 0]); // r0 = r0 + r1: writes a register it reads
+  assert.equal(addInPlace.slots, 1);
 });
 
 test("memory is slow: a load or a store takes 25 cycles, and a load unit or a store unit", () => {
-  assert.deepEqual(costOf([130, 0x10]), { cycles: 25, slots: 1, units: [1, 1, 0, 0, 0] });
-  assert.deepEqual(costOf([123, 0x10]), { cycles: 25, slots: 1, units: [1, 0, 1, 0, 0] });
+  const load: Cost = costOf([130, 0x10]);
+  assert.deepEqual(load, { cycles: 25, slots: 1, units: [1, 1, 0, 0, 0] });
+  const store: Cost = costOf([123, 0x10]);
+  assert.deepEqual(store, { cycles: 25, slots: 1, units: [1, 0, 1, 0, 0] });
 });
 
 test("dividing takes 60 cycles; ecalli takes 100", () => {
-  assert.equal(costOf([203, 0x10, 2]).cycles, 60); // div_u_64
-  assert.equal(costOf([10, 0]).cycles, 100);
+  const divide: Cost = costOf([203, 0x10, 2]); // div_u_64
+  assert.equal(divide.cycles, 60);
+  const ecalli: Cost = costOf([10, 0]);
+  assert.equal(ecalli.cycles, 100);
 });
 
 test("a branch costs 20, or 1 if either way leads to trap or unlikely", () => {
-  assert.equal(costOf([170, 0x10, 4], [1], [1]).cycles, 20); // both ways: fallthrough
-  assert.equal(costOf([170, 0x10, 4], [1], [0]).cycles, 1); // the target is a trap
-  assert.equal(costOf([170, 0x10, 4], [2], [1]).cycles, 1); // the next one is unlikely
+  const eitherWay: Cost = costOf([170, 0x10, 4], [1], [1]); // both ways: fallthrough
+  assert.equal(eitherWay.cycles, 20);
+  const toTrap: Cost = costOf([170, 0x10, 4], [1], [0]); // the target is a trap
+  assert.equal(toTrap.cycles, 1);
+  const nextUnlikely: Cost = costOf([170, 0x10, 4], [2], [1]); // the next one is unlikely
+  assert.equal(nextUnlikely.cycles, 1);
 });
 
 test("every instruction has a row in the cost table: 139 of them", () => {
   let rows = 0;
   for (let opcode = 0; opcode < 256; opcode++) {
     if (!opcodeInfo(opcode)) continue;
-    assert.ok(costOf([opcode], [0]).cycles >= 0, opcodeInfo(opcode)!.name);
+    const cost: Cost = costOf([opcode], [0]);
+    assert.ok(cost.cycles >= 0, opcodeInfo(opcode)!.name);
     rows++;
   }
   assert.equal(rows, 139);

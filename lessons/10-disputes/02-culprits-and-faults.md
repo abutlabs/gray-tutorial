@@ -51,13 +51,20 @@ type DisputesVector = {
 ```ts
 import { culpritSigned, faultSigned, offendersMark, recordOffenders } from "../src/disputes.ts";
 import { toHex } from "../src/bytes.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("every culprit's guarantee and every fault's vote is really theirs", () => {
   for (const config of [TINY, FULL]) {
     for (const { name, vector } of acceptedVectors(config)) {
       const { culprits, faults } = DisputesExtrinsic.fromJson(vector.input.disputes);
-      for (const culprit of culprits) assert.ok(culpritSigned(culprit), name);
-      for (const fault of faults) assert.ok(faultSigned(fault), name);
+      for (const culprit of culprits) {
+        const signed: boolean = culpritSigned(culprit);
+        assert.ok(signed, name);
+      }
+      for (const fault of faults) {
+        const signed: boolean = faultSigned(fault);
+        assert.ok(signed, name);
+      }
     }
   }
 });
@@ -65,18 +72,21 @@ test("every culprit's guarantee and every fault's vote is really theirs", () => 
 test("a forged guarantee is caught", () => {
   const vector = vectorJson("stf/disputes/tiny/progress_with_bad_signatures-2.json");
   const { culprits } = DisputesExtrinsic.fromJson((vector as DisputesVector).input.disputes);
-  assert.deepEqual(culprits.map(culpritSigned), [true, false]);
+  const signed: boolean[] = culprits.map(culpritSigned);
+  assert.deepEqual(signed, [true, false]);
 });
 
 test("the offenders mark names this block's offenders, and ψ′_O keeps them all", () => {
   let offenders = 0;
   for (const config of [TINY, FULL]) {
     for (const { name, vector } of acceptedVectors(config)) {
-      const disputes = DisputesExtrinsic.fromJson(vector.input.disputes);
-      const mark = offendersMark(disputes);
-      assert.deepEqual(mark.map(toHex), vector.output.ok?.offenders_mark, name);
-      const after = recordOffenders(PastJudgements.fromJson(vector.pre_state.psi), disputes);
-      const expected = PastJudgements.fromJson(vector.post_state.psi);
+      const disputes: DisputesExtrinsic = DisputesExtrinsic.fromJson(vector.input.disputes);
+      const mark: Bytes[] = offendersMark(disputes);
+      const markHex: string[] = mark.map(toHex);
+      assert.deepEqual(markHex, vector.output.ok?.offenders_mark, name);
+      const before: PastJudgements = PastJudgements.fromJson(vector.pre_state.psi);
+      const after: PastJudgements = recordOffenders(before, disputes);
+      const expected: PastJudgements = PastJudgements.fromJson(vector.post_state.psi);
       assert.deepEqual(after.offenders, expected.offenders, name);
       offenders += mark.length;
     }

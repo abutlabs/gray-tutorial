@@ -58,6 +58,7 @@ import type { ValidatorSets } from "../src/safrole.ts";
 import { nextEntropy, rotateValidators } from "../src/safrole.ts";
 import { ValidatorKey } from "../src/state.ts";
 import { vectorFiles, vectorJson } from "./vectors.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 /** The parts of a safrole vector's state the lessons use so far. */
 type SafroleState = {
@@ -96,11 +97,13 @@ function acceptedVectors(): Accepted[] {
 }
 
 test("η′: each block stirs its VRF output into η₀, and a new epoch moves the history", () => {
-  const accepted = acceptedVectors();
+  const accepted: Accepted[] = acceptedVectors();
   for (const { name, vector, newEpoch } of accepted) {
     const { input, pre_state, post_state } = vector;
-    const eta = nextEntropy(pre_state.eta.map(fromHex), fromHex(input.entropy), newEpoch);
-    assert.deepEqual(eta.map(toHex), post_state.eta, name);
+    const vrfOutput: Bytes = fromHex(input.entropy);
+    const eta: Bytes[] = nextEntropy(pre_state.eta.map(fromHex), vrfOutput, newEpoch);
+    const etaHex: string[] = eta.map(toHex);
+    assert.deepEqual(etaHex, post_state.eta, name);
   }
   assert.equal(accepted.length, 33); // 15 tiny, 18 full
 });
@@ -119,10 +122,11 @@ function validatorSets(state: SafroleState): ValidatorSets {
 test("at a new epoch the validator sets move along one, with offenders zeroed", () => {
   let rotations = 0;
   for (const { name, vector, newEpoch } of acceptedVectors()) {
-    const before = validatorSets(vector.pre_state);
-    const offenders = vector.pre_state.post_offenders.map(fromHex);
-    const expected = newEpoch ? rotateValidators(before, offenders) : before;
-    assert.deepEqual(validatorSets(vector.post_state), expected, name);
+    const before: ValidatorSets = validatorSets(vector.pre_state);
+    const offenders: Bytes[] = vector.pre_state.post_offenders.map(fromHex);
+    const expected: ValidatorSets = newEpoch ? rotateValidators(before, offenders) : before;
+    const after: ValidatorSets = validatorSets(vector.post_state);
+    assert.deepEqual(after, expected, name);
     if (newEpoch) rotations++;
   }
   assert.equal(rotations, 14); // 6 tiny, 8 full

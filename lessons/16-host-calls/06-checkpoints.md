@@ -66,6 +66,8 @@ function vectorService() {
 import type { Accumulation } from "../src/host.ts";
 import { accumulate, checkpoint, collapse } from "../src/host.ts";
 import { copyAccounts } from "../src/services.ts";
+import type { Accumulated, HostExit } from "../src/host.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
 
 /** always_accumulate-1's service 1729 as an accumulation, its slot, and its gas to use. */
 function vectorAccumulation() {
@@ -99,25 +101,30 @@ function bundle(): Accumulation {
 }
 
 test("a panic undoes every write since the last checkpoint", () => {
-  const a = bundle();
+  const a: Accumulation = bundle();
   write(storing(0x20000n, 4n, 0x20010n, 3n), a.accounts, 0); // "last" → 1, 2, 3
-  assert.equal(collapse(a, "halt").get(0)!.storage.size, 1); // a halt keeps it
-  assert.equal(collapse(a, "panic").get(0)!.storage.size, 0); // a panic doesn't
+  const afterHalt: Map<number, Account> = collapse(a, "halt"); // a halt keeps it
+  assert.equal(afterHalt.get(0)!.storage.size, 1);
+  const afterPanic: Map<number, Account> = collapse(a, "panic"); // a panic doesn't
+  assert.equal(afterPanic.get(0)!.storage.size, 0);
 });
 
 test("checkpoint: what's done before it survives a panic after it", () => {
-  const a = bundle();
+  const a: Accumulation = bundle();
   write(storing(0x20000n, 4n, 0x20010n, 3n), a.accounts, 0); // "last"
-  const machine = storing();
-  assert.equal(checkpoint(machine, a), "continue");
+  const machine: Machine = storing();
+  const exit: HostExit = checkpoint(machine, a);
+  assert.equal(exit, "continue");
   assert.equal(machine.registers[7], 10_000n - 103n); // the gas left, after paying 103
   write(storing(0x20001n, 3n, 0x20010n, 3n), a.accounts, 0); // "ast", after the checkpoint
-  assert.deepEqual([...collapse(a, "panic").get(0)!.storage.keys()], ["0x6c617374"]);
+  const afterPanic: Map<number, Account> = collapse(a, "panic");
+  const keys: string[] = [...afterPanic.get(0)!.storage.keys()];
+  assert.deepEqual(keys, ["0x6c617374"]);
 });
 
 test("accumulate, Ψ_A: service 1729 halts on 16,417 gas, its accounts kept", () => {
   const { a, slot, expected } = vectorAccumulation();
-  const { exit, accounts, gasUsed } = accumulate(TINY, a, slot, 100_000n);
+  const { exit, accounts, gasUsed }: Accumulated = accumulate(TINY, a, slot, 100_000n);
   assert.deepEqual([exit, gasUsed], ["halt", expected]);
   assert.equal(accounts, a.accounts); // the halt kept what it did (nothing, this time)
 });

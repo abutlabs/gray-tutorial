@@ -110,27 +110,37 @@ import { outsideIn, sealedByTickets, ticketsMark } from "../src/safrole.ts";
 import { TicketBody } from "../src/block.ts";
 
 test("Z: outside in, from both ends to the middle", () => {
-  assert.deepEqual(outsideIn([1, 2, 3, 4, 5]), [1, 5, 2, 4, 3]);
-  assert.deepEqual(outsideIn([1, 2, 3, 4]), [1, 4, 2, 3]);
+  const odd: number[] = outsideIn([1, 2, 3, 4, 5]);
+  assert.deepEqual(odd, [1, 5, 2, 4, 3]);
+  const even: number[] = outsideIn([1, 2, 3, 4]);
+  assert.deepEqual(even, [1, 4, 2, 3]);
 });
 
 /** Tickets from a vector's JSON. */
 const tickets = (json: unknown[]) => json.map((ticket) => TicketBody.fromJson(ticket));
 
 test("the lottery closes as phase Y is reached: slot 9 → 10 on tiny, but not 10 → 11", () => {
-  const full = Array.from({ length: 12 }, () => ({ id: new Uint8Array(32), attempt: 0 }));
-  assert.notEqual(ticketsMark(TINY, 9, 10, full), null);
-  assert.equal(ticketsMark(TINY, 10, 11, full), null); // closed already
-  assert.equal(ticketsMark(TINY, 9, 10, full.slice(1)), null); // not full
+  const full: TicketBody[] = Array.from({ length: 12 }, () => ({
+    id: new Uint8Array(32),
+    attempt: 0,
+  }));
+  const closing: TicketBody[] | null = ticketsMark(TINY, 9, 10, full);
+  assert.notEqual(closing, null);
+  const closedAlready: TicketBody[] | null = ticketsMark(TINY, 10, 11, full);
+  assert.equal(closedAlready, null);
+  const notFull: TicketBody[] | null = ticketsMark(TINY, 9, 10, full.slice(1));
+  assert.equal(notFull, null);
 });
 
 test("the tickets mark: in the block that closes a full lottery, and in no other", () => {
   let marks = 0;
   for (const { config, name, vector } of acceptedVectors()) {
     const { input, pre_state, output } = vector;
-    const mark = ticketsMark(config, pre_state.tau, input.slot, tickets(pre_state.gamma_a));
-    const expected = output.ok?.tickets_mark;
-    assert.deepEqual(mark, expected ? tickets(expected) : null, name);
+    const accumulator: TicketBody[] = tickets(pre_state.gamma_a);
+    const mark: TicketBody[] | null = ticketsMark(config, pre_state.tau, input.slot, accumulator);
+    const markJson = output.ok?.tickets_mark;
+    const expected: TicketBody[] | null = markJson ? tickets(markJson) : null;
+    assert.deepEqual(mark, expected, name);
     if (mark) marks++;
   }
   assert.equal(marks, 2); // 1 tiny, 1 full
@@ -141,9 +151,12 @@ test("γ′_S: a new epoch is sealed by the winners, outside in, if the lottery 
   for (const { config, name, vector, newEpoch } of acceptedVectors()) {
     if (!newEpoch) continue;
     const { input, pre_state, post_state } = vector;
-    const accumulator = tickets(pre_state.gamma_a);
-    if (sealedByTickets(config, pre_state.tau, input.slot, accumulator)) {
-      assert.deepEqual(tickets(post_state.gamma_s.tickets ?? []), outsideIn(accumulator), name);
+    const accumulator: TicketBody[] = tickets(pre_state.gamma_a);
+    const closedFull: boolean = sealedByTickets(config, pre_state.tau, input.slot, accumulator);
+    if (closedFull) {
+      const sealers: TicketBody[] = tickets(post_state.gamma_s.tickets ?? []);
+      const winners: TicketBody[] = outsideIn(accumulator);
+      assert.deepEqual(sealers, winners, name);
       ticketed++;
     } else {
       assert.ok(post_state.gamma_s.keys, name); // the fallback, as in lesson 8.3

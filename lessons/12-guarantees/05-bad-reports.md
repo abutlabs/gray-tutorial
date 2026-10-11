@@ -103,14 +103,17 @@ function reportVerdict(name: string) {
 }
 
 test("a report anchored on a block nobody remembers is refused", () => {
-  assert.equal(reportVerdict("stf/reports/tiny/anchor_not_recent-1.json"), "anchor_not_recent");
+  const broken: string | null = reportVerdict("stf/reports/tiny/anchor_not_recent-1.json");
+  assert.equal(broken, "anchor_not_recent");
 });
 
 for (const config of [TINY, FULL]) {
   for (const name of vectorFiles(`stf/reports/${config.name}`)) {
     test(`${name}: accepted or refused, as the vector says`, () => {
       const { err } = (vectorJson(name) as ReportsVector).output;
-      assert.equal(guaranteeVerdict(config, name) ?? reportVerdict(name), err ?? null);
+      const broken: string | null = guaranteeVerdict(config, name) ?? reportVerdict(name);
+      const expected: string | null = err ?? null;
+      assert.equal(broken, expected);
     });
   }
 }
@@ -168,7 +171,7 @@ npm test
 ℹ pass 345
 ℹ fail 33
 ...
-test at test/guarantors.test.ts:198:1
+test at test/guarantors.test.ts:209:1
 ✖ a report anchored on a block nobody remembers is refused (1.3ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
   + actual - expected

@@ -60,9 +60,12 @@ import { encode } from "../src/codec/codec.ts";
 import { WorkDigest, WorkResult } from "../src/work.ts";
 
 test("a result is tag 0 and the output, or just an error's tag", () => {
-  assert.equal(toHex(encode(WorkResult, { ok: fromHex("0xaabbcc") })), "0x0003aabbcc");
-  assert.equal(toHex(encode(WorkResult, { error: "out_of_gas" })), "0x01");
-  assert.equal(toHex(encode(WorkResult, { error: "panic" })), "0x02");
+  const okHex: string = toHex(encode(WorkResult, { ok: fromHex("0xaabbcc") }));
+  assert.equal(okHex, "0x0003aabbcc");
+  const outOfGasHex: string = toHex(encode(WorkResult, { error: "out_of_gas" }));
+  assert.equal(outOfGasHex, "0x01");
+  const panicHex: string = toHex(encode(WorkResult, { error: "panic" }));
+  assert.equal(panicHex, "0x02");
 });
 
 for (const spec of ["tiny", "full"]) {
@@ -180,7 +183,7 @@ npm test
 
 ```text
 ...
-test at test/work.test.ts:27:3
+test at test/work.test.ts:30:3
 ✖ work_result_1 (tiny) (1.5ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
   + actual - expected
@@ -199,8 +202,8 @@ test at test/work.test.ts:27:3
       service_id: 84281096
     }
 
-      at checkCodecVector (…/client/test/vectors.ts:26:10)
-      at TestContext.<anonymous> (…/client/test/work.test.ts:27:41)
+      at checkCodecVector (…/client/test/vectors.ts:27:10)
+      at TestContext.<anonymous> (…/client/test/work.test.ts:30:41)
 ...
 ```
 

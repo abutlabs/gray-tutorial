@@ -50,6 +50,8 @@ the accounts.
 ```ts
 import type { Outbox } from "../src/host.ts";
 import { CASH, checkpoint, collapseTransfers, LOW, OK, transfer, WHO } from "../src/host.ts";
+import type { Exit, Machine } from "../src/pvm/machine.ts";
+import type { Transfer } from "../src/host.ts";
 
 /** A machine about to send `amount` to service `dest` with `gas`, and the memo "gift". */
 function sending(dest: bigint, amount: bigint, gas: bigint) {
@@ -61,31 +63,37 @@ function sending(dest: bigint, amount: bigint, gas: bigint) {
 }
 
 test("transfer: the money leaves at once, and a checkpoint keeps what was sent", () => {
-  const a = bundle();
+  const a: Accumulation = bundle();
   a.accounts.set(1, copyAccounts(a.accounts).get(0)!); // a second service, to send to
   const outbox: Outbox = { transfers: [], kept: [] };
-  const machine = sending(1n, 30n, 25n); // 30 to service 1, with 25 gas for it
-  assert.equal(transfer(machine, a, outbox), "continue");
+  const machine: Machine = sending(1n, 30n, 25n); // 30 to service 1, with 25 gas for it
+  const exit: HostExit = transfer(machine, a, outbox);
+  assert.equal(exit, "continue");
   assert.equal(machine.registers[7], OK);
   assert.equal(machine.gas, 10_000n - 575n - 25n); // the call, and the transfer's gas
   assert.equal(a.accounts.get(0)!.info.balance, 970n); // gone from the sender now
   assert.equal(a.accounts.get(1)!.info.balance, 1000n); // not there yet: next round
   checkpoint(storing(), a, outbox); // the first transfer is kept now
   transfer(sending(1n, 40n, 25n), a, outbox); // and a second one, after the checkpoint
-  assert.equal(collapseTransfers(outbox, "halt").length, 2); // a halt sends both
-  assert.equal(collapseTransfers(outbox, "panic").length, 1); // a panic, only the kept one
+  const afterHalt: Transfer[] = collapseTransfers(outbox, "halt"); // a halt sends both
+  assert.equal(afterHalt.length, 2);
+  const afterPanic: Transfer[] = collapseTransfers(outbox, "panic"); // only the kept one
+  assert.equal(afterPanic.length, 1);
 });
 
 test("transfer refuses: no such service, too little gas, too little money", () => {
-  const a = bundle();
+  const a: Accumulation = bundle();
   const outbox: Outbox = { transfers: [], kept: [] };
   const answer = (machine: ReturnType<typeof sending>) => {
     transfer(machine, a, outbox);
     return machine.registers[7];
   };
-  assert.equal(answer(sending(5n, 30n, 25n)), WHO); // there's no service 5
-  assert.equal(answer(sending(0n, 30n, 10n)), LOW); // service 0 wants at least 20 gas
-  assert.equal(answer(sending(0n, 900n, 25n)), CASH); // 1000 − 900 is below its 170
+  const toNobody: bigint = answer(sending(5n, 30n, 25n)); // there's no service 5
+  assert.equal(toNobody, WHO);
+  const tooLittleGas: bigint = answer(sending(0n, 30n, 10n)); // service 0 wants at least 20 gas
+  assert.equal(tooLittleGas, LOW);
+  const tooLittleMoney: bigint = answer(sending(0n, 900n, 25n)); // 1000 − 900 is below its 170
+  assert.equal(tooLittleMoney, CASH);
   assert.deepEqual(outbox.transfers, []); // nothing was sent
 });
 ```
@@ -129,12 +137,15 @@ const CASES: [string, number][] = [
 **Add to** `test/accumulate.test.ts`
 
 ```ts
+import type { Transfer } from "../src/host.ts";
 test("a gift: service 0 sends service 1 a hundred, with a memo", () => {
   const { result, after } = runVector("transfer_for_live_service-1", 0);
-  const [gift] = result.transfers;
+  const [gift]: Transfer[] = result.transfers;
   assert.deepEqual([gift.source, gift.dest, gift.amount, gift.gas], [0, 1, 100n, 80_000n]);
-  assert.equal(new TextDecoder().decode(gift.memo.subarray(0, 4)), "gift");
-  assert.equal(result.accounts.get(0)!.info.balance, after.info.balance); // 227,714 − 100
+  const memo: string = new TextDecoder().decode(gift.memo.subarray(0, 4));
+  assert.equal(memo, "gift");
+  const balance: bigint = result.accounts.get(0)!.info.balance; // 227,714 − 100
+  assert.equal(balance, after.info.balance);
 });
 ```
 

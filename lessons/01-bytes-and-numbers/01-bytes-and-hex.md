@@ -53,16 +53,22 @@ Test-driven development, as always: the test first.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fromHex, toHex } from "../src/bytes.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 test("hex there and back", () => {
-  const bytes = Uint8Array.of(1, 2, 255);
-  assert.equal(toHex(bytes), "0x0102ff");
-  assert.deepEqual(fromHex("0x0102ff"), bytes);
+  const bytes: Bytes = Uint8Array.of(1, 2, 255);
+  const hex: string = toHex(bytes);
+  assert.equal(hex, "0x0102ff");
+  const back: Bytes = fromHex("0x0102ff");
+  assert.deepEqual(back, bytes);
 });
 
 test("no bytes at all is just 0x", () => {
-  assert.equal(toHex(new Uint8Array(0)), "0x");
-  assert.deepEqual(fromHex("0x"), new Uint8Array(0));
+  const empty: Bytes = new Uint8Array(0);
+  const hex: string = toHex(empty);
+  assert.equal(hex, "0x");
+  const back: Bytes = fromHex("0x");
+  assert.deepEqual(back, empty);
 });
 ```
 
@@ -111,7 +117,7 @@ npm test
 ℹ pass 2
 ℹ fail 2
 ...
-test at test/bytes.test.ts:5:1
+test at test/bytes.test.ts:6:1
 ✖ hex there and back (0.9ms)
   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
 
@@ -149,12 +155,12 @@ npm test
 
 ```text
 ...
-test at test/bytes.test.ts:5:1
+test at test/bytes.test.ts:6:1
 ✖ hex there and back (0.5ms)
   SyntaxError [Error]: Input string must contain hex characters in even length
       at Uint8Array.fromHex (<anonymous>)
       at fromHex (…/client/src/bytes.ts:13:21)
-      at TestContext.<anonymous> (…/client/test/bytes.test.ts:8:20)
+      at TestContext.<anonymous> (…/client/test/bytes.test.ts:10:23)
 ...
 ```
 

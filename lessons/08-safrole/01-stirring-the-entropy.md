@@ -63,6 +63,7 @@ import { FULL, TINY } from "../src/config.ts";
 import { epochOf } from "../src/epoch.ts";
 import { nextEntropy } from "../src/safrole.ts";
 import { vectorFiles, vectorJson } from "./vectors.ts";
+import type { Bytes } from "../src/bytes.ts";
 
 /** A safrole test vector: the parts of it the lessons use so far. */
 type SafroleVector = {
@@ -78,9 +79,11 @@ test("η′: each block stirs its VRF output into η₀, and a new epoch moves t
     for (const name of vectorFiles(`stf/safrole/${config.name}`)) {
       const { input, pre_state, post_state, output } = vectorJson(name) as SafroleVector;
       if (output.err) continue; // a rejected block changes nothing
-      const newEpoch = epochOf(config, input.slot) > epochOf(config, pre_state.tau);
-      const eta = nextEntropy(pre_state.eta.map(fromHex), fromHex(input.entropy), newEpoch);
-      assert.deepEqual(eta.map(toHex), post_state.eta, name);
+      const newEpoch: boolean = epochOf(config, input.slot) > epochOf(config, pre_state.tau);
+      const vrfOutput: Bytes = fromHex(input.entropy);
+      const eta: Bytes[] = nextEntropy(pre_state.eta.map(fromHex), vrfOutput, newEpoch);
+      const etaHex: string[] = eta.map(toHex);
+      assert.deepEqual(etaHex, post_state.eta, name);
       checked++;
     }
   }
@@ -122,7 +125,7 @@ npm test
 ℹ pass 71
 ℹ fail 1
 ...
-test at test/safrole.test.ts:17:1
+test at test/safrole.test.ts:18:1
 ✖ η′: each block stirs its VRF output into η₀, and a new epoch moves the history (2.3ms)
   AssertionError [ERR_ASSERTION]: stf/safrole/tiny/enact-epoch-change-with-no-tickets-1.json
   + actual - expected
@@ -135,7 +138,7 @@ test at test/safrole.test.ts:17:1
       '0xe88bd757ad5b9bedf372d8d3f0cf6c962a469db61a265f6418e1ffed86da29ec'
     ]
 
-      at TestContext.<anonymous> (…/client/test/safrole.test.ts:25:14)
+      at TestContext.<anonymous> (…/client/test/safrole.test.ts:28:14)
 ...
 ```
 

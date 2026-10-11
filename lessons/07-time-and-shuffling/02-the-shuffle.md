@@ -49,7 +49,8 @@ import { shuffle, shuffleWithHash } from "../src/shuffle.ts";
 import { vectorJson } from "./vectors.ts";
 
 test("a shuffle by hand: four letters, four numbers", () => {
-  assert.deepEqual(shuffle(["a", "b", "c", "d"], [1, 1, 0, 0]), ["b", "d", "a", "c"]);
+  const shuffled: string[] = shuffle(["a", "b", "c", "d"], [1, 1, 0, 0]);
+  assert.deepEqual(shuffled, ["b", "d", "a", "c"]);
 });
 
 test("the shuffle vectors: 0 to 341 items, shuffled by a hash", () => {
@@ -59,8 +60,9 @@ test("the shuffle vectors: 0 to 341 items, shuffled by a hash", () => {
     output: number[];
   }[];
   for (const { input, entropy, output } of vectors) {
-    const items = Array.from({ length: input }, (_, i) => i);
-    assert.deepEqual(shuffleWithHash(items, fromHex(`0x${entropy}`)), output);
+    const items: number[] = Array.from({ length: input }, (_, i) => i);
+    const shuffled: number[] = shuffleWithHash(items, fromHex(`0x${entropy}`));
+    assert.deepEqual(shuffled, output);
   }
 });
 ```
@@ -122,7 +124,7 @@ test at test/shuffle.test.ts:7:1
   -   'c'
     ]
 
-      at TestContext.<anonymous> (…/client/test/shuffle.test.ts:8:10)
+      at TestContext.<anonymous> (…/client/test/shuffle.test.ts:9:10)
 ...
     actual: [ 'a', 'b', 'c', 'd' ],
     expected: [ 'b', 'd', 'a', 'c' ],
