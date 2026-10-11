@@ -7,6 +7,13 @@ node**, or they'd all disagree about who's allowed to do what. Random, and yet
 everybody gets the same answer: that's a shuffle driven by a hash everyone shares. This
 lesson builds it.
 
+## New words
+
+- **Fisher-Yates shuffle.** Shuffling by picking items one at a time, each pick from the
+  items still left. *Example:* a b c d with the numbers 1, 1, 0, 0 gives b d a c, below.
+
+It's in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 Appendix F defines F, a Fisher-Yates shuffle, in two layers.
@@ -67,9 +74,10 @@ test("the shuffle vectors: 0 to 341 items, shuffled by a hash", () => {
 });
 ```
 
-The first test is the table above. The vectors give just a length and a hash; the items
-are always 0, 1, 2 and so on, so the test builds them. 341 items is the full network's
-core count.
+The first test is the table above. The eight vectors give just a length (0, 8, 16, 20,
+50, 100, 200 or 341) and a hash; the items are always 0, 1, 2 and so on, so the test
+builds them. 341 is the full network's core count, though the deal in [lesson
+12.1](../12-guarantees/01-who-guarantees-what.md) shuffles 1,023 seats, one per validator.
 
 A stub that doesn't shuffle at all: every list comes back as it went in.
 
@@ -276,8 +284,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 
 That's the second shuffle vector, worked out step by step. Look at the third pick: the
 number lands on index 2, and the item there is 6, not 2. The first two picks moved items
-7 and 6 into their gaps. The *Shuffle* panel has every pick and the final order; try a
-hash of your own, and a longer list.
+7 and 6 into their gaps. The *Shuffle* panel, on the **3 · Consensus** dashboard, has every
+pick and the final order; try a hash of your own, and a longer list.
 
 ![Shuffle panel](./images/02-shuffle.png)
 
@@ -305,7 +313,9 @@ last item into the gap exactly as yours does: `work.(index) <- work.(remaining -
 ## What you have
 
 A shuffle every node agrees on: give it a list and a hash, and every JAM client in the
-world deals the same hand. [Part 8](../08-safrole/index.md) puts epochs, entropy and shuffles to work in
-Safrole, the lottery that picks who makes each block.
+world deals the same hand. [Part 8](../08-safrole/index.md) puts epochs and entropy to work in Safrole, the
+lottery that picks who makes each block, and borrows this lesson's way of reading numbers
+out of a hash. The shuffle itself comes back in [lesson 12.1](../12-guarantees/01-who-guarantees-what.md), to deal guarantors to
+cores.
 
 Next: [Part 8 · Safrole](../08-safrole/index.md)

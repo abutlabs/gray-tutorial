@@ -296,6 +296,11 @@ network. Validators and the block-making lottery change at epoch boundaries.
 **Phase.** m. Where a slot falls within its epoch, counted from 0: the slot mod E.
 *Example:* on tiny, slot 13 is epoch 1, phase 1. ([7.1](./07-time-and-shuffling/01-epochs.md))
 
+**Fisher-Yates shuffle.** F (Appendix F). Shuffling by picking items one at a time, each
+pick from the items still left, with the numbers for the picks read from a hash everyone
+shares. *Example:* a b c d with the numbers 1, 1, 0, 0 gives b d a c.
+([7.2](./07-time-and-shuffling/02-the-shuffle.md))
+
 **Entropy accumulator.** η₀. The randomness every block stirs a little more into; at each
 new epoch its value moves along to η₁. *Example:* the first of η's four hashes.
 ([7.1](./07-time-and-shuffling/01-epochs.md))
