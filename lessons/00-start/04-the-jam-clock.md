@@ -22,6 +22,8 @@ Your first piece of real JAM. It's tiny, and it is everywhere: every block in JA
   lets it go on. *Example:* VS Code's *Run and Debug*.
 - **Breakpoint.** A line where the debugger pauses the program. *Example:* the red dot
   left of line 12 in `src/time.ts`.
+- **Command-line argument.** A word you type after a program's name, which the program
+  reads from `process.argv`. *Example:* the `3` in `node bin/now.ts 3`.
 
 ## What the Gray Paper says
 
@@ -277,8 +279,80 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 ```
 
 A number in the millions: every six-second slot since the start of 2025. On the
-dashboard, *JAM timeslot* shows the same number. Run it again after six seconds and
-watch it tick up by one. That's JAM's heartbeat.
+dashboard, *JAM timeslot (last reported)* shows the same number, and there it stays.
+`bin/now.ts` read the clock once, reported, and quit: the panel shows the last slot
+anyone reported, and nobody is reporting any more.
+
+## Start the clock
+
+A JAM node never stops keeping time, so neither should yours. Give `bin/now.ts` a loop:
+wait for each slot to begin, then report it.
+
+**Rewrite** `bin/now.ts`
+
+```ts
+// The JAM clock: prints each timeslot as it begins, and reports it to the observability
+// stack. `node bin/now.ts 3` keeps time for three slots; with no number, until Ctrl+C.
+
+import { setTimeout as sleep } from "node:timers/promises";
+import { Run } from "../src/obs.ts";
+import { JAM_COMMON_ERA, SLOT_SECONDS, slotAt } from "../src/time.ts";
+
+const slots = Number(process.argv[2] ?? Infinity);
+const first = slotAt(new Date());
+
+for (let slot = first; slot < first + slots; slot++) {
+  await sleep(untilSlot(slot));
+  const run = new Run("now");
+  console.log(`It is JAM timeslot ${slot}.`);
+  run.event("slot", { slot });
+  run.number("slot", slot);
+  const link = await run.report();
+  if (link) console.log(`reported to Grafana: ${link}`);
+}
+
+/** Milliseconds until a slot begins: 0 for the slot we're in, which has begun already. */
+function untilSlot(slot: number): number {
+  return Math.max(0, (JAM_COMMON_ERA + slot * SLOT_SECONDS) * 1000 - Date.now());
+}
+```
+
+Three things are new:
+
+- **How long to run.** `process.argv[2]` is the first *command-line argument*, the word
+  after the file's name. `node bin/now.ts 3` means three slots. With no number, `slots`
+  is `Infinity`, and the loop never ends.
+- **Waiting.** `sleep` is Node's `setTimeout` in a form you can `await`. `untilSlot` works
+  out how long until a slot begins: the slot's first second, counted from the JAM Common
+  Era, minus now. The slot you're in has begun already, so for that one it's 0, and the
+  first line prints at once.
+- **A run per slot.** A run reports its numbers once (the stack refuses the same number
+  twice in one report), so a clock that reports every slot makes a `Run` for each.
+
+**Run**
+
+```sh
+node bin/now.ts 3
+```
+
+```text
+It is JAM timeslot ….
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=now-1791731852333
+It is JAM timeslot ….
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=now-1791731856001
+It is JAM timeslot ….
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=now-1791731862002
+```
+
+Three slots, one after the other: the first at once, the next two six seconds apart,
+each as its slot begins. Every slot is a run of its own, with its own link.
+
+Now start the clock for real, with no number: `node bin/now.ts`. On the dashboard, set
+the refresh (top right) to 5s and watch *JAM timeslot (last reported)* tick up by one
+every six seconds, with each slot's event arriving in *Everything your client reported*.
+The panel runs a few seconds behind your terminal, and now and then skips a slot: the
+stack collects numbers every five seconds, and slots come every six. That's JAM's
+heartbeat. When you've seen enough, press <kbd>Ctrl+C</kbd> to stop the clock.
 
 <details>
 <summary>lasair: the same clock, in <code>lib/overview.ml</code></summary>
@@ -307,8 +381,8 @@ clock, without sending a single message.
 
 ## What you have
 
-Your first JAM rule, its tests, and a program that reports what it found. From here on,
-every lesson's `npm test` lands in Grafana. The clock was a single number; nearly
+Your first JAM rule, its tests, and a clock that reports every slot as it begins. From
+here on, every lesson's `npm test` lands in Grafana. The clock was a single number; nearly
 everything else in JAM is bytes, and numbers too big for JavaScript's own. Part 1 starts
 there.
 

@@ -112,6 +112,10 @@ lets it go on. In VS Code, *Run and Debug*, with the configurations in
 number, and a red dot appears. *Example:* line 12 of `src/time.ts`, where `slotAt`
 rounds. ([0.4](./00-start/04-the-jam-clock.md))
 
+**Command-line argument.** A word you type after a program's name, which the program reads
+from `process.argv` (`process.argv[2]` is the first). *Example:* the `3` in
+`node bin/now.ts 3`. ([0.4](./00-start/04-the-jam-clock.md))
+
 **Reporter.** A plug-in for Node's test runner that receives every test's result; yours
 sends them to Grafana. *Example:* `test/grafana.ts`. ([0.3](./00-start/03-watch-your-client.md))
 
