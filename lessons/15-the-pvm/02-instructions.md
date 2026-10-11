@@ -14,7 +14,7 @@ one **layout**, the way its arguments sit in the bytes after the opcode:
 | Layout | Opcodes | Arguments |
 | --- | --- | --- |
 | no arguments | 0 to 2 | `trap`, `fallthrough`, `unlikely` |
-| one immediate | 10 | `ecalli`, a host call (Part 16) |
+| one immediate | 10 | `ecalli`, a host call ([Part 16](../16-host-calls/index.md)) |
 | register, 8-byte immediate | 20 | `load_imm_64` |
 | two immediates | 30 to 33 | `store_imm_…` |
 | one offset | 40 | `jump` |
@@ -99,8 +99,23 @@ Get the sign of an offset wrong, or its length, and they'd land in the middle of
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/instructions.ts' imported from …/client/test/instructions.test.ts
+...
+✖ test/instructions.test.ts (114.4ms)
+...
+ℹ tests 391
+ℹ suites 0
+ℹ pass 390
+ℹ fail 1
+...
+```
+
+Red: `src/pvm/instructions.ts` doesn't exist yet. It's the opcode table and one decoder
+for all thirteen layouts, too long to grow a piece at a time, so it comes whole.
 
 ## The code
 
@@ -344,11 +359,24 @@ forever.
 
 ```sh
 npm test
-# prints: three instructions by hand: load_imm, add_64, and a jump back
-# prints: the bootstrap service: 39,849 instructions, all known, every jump on target
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (226.5ms)
+...
+✔ immediates: sign-extended to 64 bits, or read as signed (0.5ms)
+✔ three instructions by hand: load_imm, add_64, and a jump back (0.7ms)
+✔ the bootstrap service: 39,849 instructions, all known, every jump on target (84.8ms)
+...
+ℹ tests 393
+ℹ suites 0
+ℹ pass 393
+ℹ fail 0
+...
+reported 393 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736324569
+...
 ```
 
 ## Watch it
@@ -406,9 +434,14 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/disassemble.ts ../vectors/traces/fallback/00000001.json 0 4
-# prints: 0  jump             → 80282
-# prints: 5  jump             → 92078
-# prints: reported to Grafana
+```
+
+```text
+      0  jump             → 80282
+      5  jump             → 92078
+      9  add_imm_64       r1, r1, -96
+     12  store_ind_u64    r0, r1, 88
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=disassemble-1791736329537
 ```
 
 The very first two instructions are jumps, and that's no accident: the PVM starts
@@ -451,6 +484,7 @@ runs, where yours works out the target straight away.
 ## What you have
 
 A disassembler: any JAM service's code, read instruction by instruction, every
-argument decoded and every jump checked against the real thing.
+argument decoded and every jump checked against the real thing. Reading a program isn't
+running it: [lesson 15.3](./03-the-machine.md) builds the machine that steps through one.
 
 Next: [15.3 The machine](./03-the-machine.md)

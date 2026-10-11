@@ -6,21 +6,32 @@ and a rulebook for each instruction. This lesson builds the machine and teaches 
 first seventeen instructions, enough to run a loop. Memory comes next lesson, and gas
 after that.
 
+## New words
+
+- **Register.** One of the PVM's 13 little 64-bit boxes for numbers, named r0 to r12.
+  Instructions work on registers. *Example:* `add_64` adds two registers into a third.
+- **Basic block.** A run of instructions with one way in, its first instruction, and one
+  way out, a jump or branch (or a stop) at its end. *Example:* a loop's body.
+- **Halt and panic.** The ways a program stops on its own: halt is finishing on purpose,
+  panic is a crash. *Example:* jumping to an address that starts no basic block panics.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 Appendix A.
 
-**The state**: ı, the instruction counter, and φ, thirteen registers of 64 bits each. (A
+**The state**: ı, the instruction counter, and φ, thirteen *registers* of 64 bits each. (A
 curly phi: the straight ϕ of [lesson 6.2](../06-state-and-merklization/02-state-keys.md) is the authorizer queue. Memory and a gas counter
 are coming soon.)
 
 **One step, Ψ₁**: run the instruction at ı. Unless it says otherwise, an instruction
 moves ı on to the next one, ı + 1 + skip(ı), and the step ends with ε = ▸, carry on. A
-step can also end with **halt** (finished well) or **panic** (finished badly).
+step can also end with *halt* (finished well) or *panic* (finished badly).
 
 **Ψ** steps until ε is anything but ▸.
 
-**Basic blocks** (A.3): a basic block starts at 0, and right after every **terminator**:
+**Basic blocks** (A.3): a *basic block* starts at 0, and right after every **terminator**:
 `trap`, `fallthrough`, jumps and branches. These are the instructions that can send ı
 somewhere other than the next instruction. The rule that matters: **a jump or branch
 may only land at the start of a basic block**, or the machine panics. A branch checks
@@ -91,8 +102,24 @@ it the branch back to 6 would panic.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/machine.ts' imported from …/client/test/machine.test.ts
+...
+✖ test/machine.test.ts (101.6ms)
+...
+ℹ tests 394
+ℹ suites 0
+ℹ pass 393
+ℹ fail 1
+...
+```
+
+Red: there's no machine yet. The registers, a step and its first family of
+instructions only work together, so they come as one file, with a tiny assembler before
+it for the hand-written programs.
 
 ## The code
 
@@ -258,7 +285,7 @@ export function run(m: Machine): Exit {
 
 The machine is a plain object that `step` *changes*. Most of your client works on values
 it doesn't change, but a machine is exactly something that changes as it runs (like
-Part 2's `Writer` and `Reader`, which move along as they go). `step` decodes
+[lesson 2.3](../02-codec/03-writer-and-reader.md)'s `Writer` and `Reader`, which move along as they go). `step` decodes
 the instruction ([lesson 15.2](./02-instructions.md)), moves ı on, and then offers it to each *family* of
 instructions in turn. This lesson has one family, `basics`; later lessons add more to
 `FAMILIES` without touching `step`. Inside a family, each instruction can override the
@@ -267,15 +294,33 @@ the layout, as [lesson 15.2](./02-instructions.md)'s comments said: `add_64` wri
 `add_imm_64` its *first*. Instructions not built yet throw an `Error`, which is your
 bug, not the program's: a panic is the program's fault, a thrown `Error` is yours.
 
+> [!NOTE]
+> **The simple road.** `step` moves ı on *before* running the instruction, so a jump that
+> panics leaves ı at the next instruction, not where it was. And `run` doesn't reset ı
+> after the machine stops, as the Gray Paper's Ψ does. Nothing reads ı after a stop until
+> [Part 16](../16-host-calls/index.md)'s host calls, and the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) puts both right.
+
 **Run**
 
 ```sh
 npm test
-# prints: a loop adds 10 + 9 + … + 1, and returning through r0 halts
-# prints: a jump must land at the start of a basic block, or the machine panics
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (235.9ms)
+...
+✔ a loop adds 10 + 9 + … + 1, and returning through r0 halts (1.3ms)
+✔ a jump must land at the start of a basic block, or the machine panics (0.6ms)
+...
+ℹ tests 396
+ℹ suites 0
+ℹ pass 396
+ℹ fail 0
+...
+reported 396 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736334899
+...
 ```
 
 ### Break it on purpose
@@ -332,13 +377,30 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/run.ts
-# prints: step  4  at  6  add_64         r2 = 10
-# prints: the machine stops: halt, with r2 = 55
-# prints: reported to Grafana
+```
+
+```text
+step  1  at  0  load_imm
+step  2  at  2  load_imm       r3 = 10
+step  3  at  5  fallthrough
+step  4  at  6  add_64         r2 = 10
+step  5  at  9  add_imm_64     r3 = 9
+step  6  at 12  branch_ne_imm
+step  7  at  6  add_64         r2 = 19
+step  8  at  9  add_imm_64     r3 = 8
+step  9  at 12  branch_ne_imm
+step 10  at  6  add_64         r2 = 27
+...
+step 33  at 12  branch_ne_imm
+step 34  at 15  jump_ind
+the machine stops: halt, with r2 = 55
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=run-1791736339857
 ```
 
 34 steps: two loads, the fallthrough, ten trips round the loop at three instructions
-each, and the return. Watch r2 climb, 10, 19, 27…, and r3 count down to 0. The *PVM run*
+each, and the return. Each step shows only the registers it changed, which is why step 1
+shows none: it loads 0 into r2, which already held 0. Watch r2 climb, 10, 19, 27…, and
+r3 count down to 0. The *PVM run*
 panel has every step, with the registers each one changed.
 
 ![PVM run panel](./images/03-pvm-run.png)
@@ -366,6 +428,7 @@ read. `logand … 0xFFFFFFFFL` is the `mod 2^32`.
 ## What you have
 
 A running PVM: registers, an instruction counter, seventeen instructions, basic blocks,
-and the two ways a program ends.
+and the two ways a program ends. Everything so far lives in registers, and a real
+program needs more room than 13 numbers: [lesson 15.4](./04-memory.md) gives the machine memory.
 
 Next: [15.4 Memory](./04-memory.md)

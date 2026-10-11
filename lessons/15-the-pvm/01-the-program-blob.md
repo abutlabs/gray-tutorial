@@ -6,6 +6,18 @@ has to *unpack* it. A service's code arrives as one long preimage ([lesson 14.1]
 inside it, like nesting dolls, are a label, a memory layout, and finally the program the
 PVM steps through. This lesson opens all the dolls, on a real service's real code.
 
+## New words
+
+- **PVM.** The Polkadot Virtual Machine: a small, made-up computer, based on RISC-V, that
+  runs every service's code exactly the same way on every validator. *Example:* a
+  service's accumulate code, run in every block that has work for it.
+- **Instruction and opcode.** An instruction is one small step (add, load, jump...); its
+  opcode is the number that says which. *Example:* opcode 200 is `add_64`.
+- **Program blob.** A service's code as bytes: the instructions, a bitmask saying where
+  each starts, and a jump table. *Example:* the 149,274-byte blob inside service 0's code.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 Three layers, from the outside in.
@@ -20,13 +32,13 @@ starts with. Four sizes, ℰ₃(|o|) ⌢ ℰ₃(|w|) ⌢ ℰ₂(z) ⌢ ℰ₃(s)
 - w, **read-write data**, followed by z pages of zeroed heap;
 - s, the **stack** size;
 
-and then ℰ₄(|p|) ⌢ p, the PVM program blob itself. (A later lesson lays these out in
+and then ℰ₄(|p|) ⌢ p, the *program blob* itself. ([Lesson 15.4](./04-memory.md) lays these out in
 memory.)
 
 **3. The PVM blob** (App. A, deblob): ℰ(|j|) ⌢ ℰ₁(z) ⌢ ℰ(|c|), then:
 
 - j, the **jump table**: |j| entries of z bytes each, the places an indirect jump may land;
-- c, the **code**: the instructions, byte after byte;
+- c, the **code**: the *instructions*, byte after byte;
 - k, the **opcode bitmask**: one bit per byte of c, saying which bytes *start* an
   instruction. Instructions take 1 to 16 bytes, so without k you couldn't tell an
   opcode from an argument. Bits are packed least significant first, like [lesson 11.1](../11-assurances/01-available.md)'s
@@ -97,8 +109,23 @@ at the end of the preimage, every jump landing on an instruction.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/program.ts' imported from …/client/test/program.test.ts
+...
+✖ test/program.test.ts (173.8ms)
+...
+ℹ tests 388
+ℹ suites 0
+ℹ pass 387
+ℹ fail 1
+...
+```
+
+Red: `src/pvm/program.ts` doesn't exist yet. Unpacking is a few small readers, one per
+layer, so they come as one file, and the next Run turns all the new tests green.
 
 ## The code
 
@@ -158,19 +185,39 @@ export function startsInstruction(program: Program, i: number): boolean {
 ```
 
 The PVM gets a folder of its own, `src/pvm/`, since several files are coming. All of
-this is Part 2's `Reader`: `fixed(3)` for ℰ₃, `natural()` for ℰ, `bytes(n)` for the
+this is [lesson 2.3](../02-codec/03-writer-and-reader.md)'s `Reader`: `fixed(3)` for ℰ₃, `natural()` for ℰ, `bytes(n)` for the
 data. `startsInstruction` reuses [lesson 11.1](../11-assurances/01-available.md)'s `bitAt`: the same packing, so the same
 function.
+
+> [!NOTE]
+> **The simple road.** `unpackCode` and `deblob` trust the sizes they read. A blob
+> shorter than its own sizes, a giant jump table, or a jump target off the end of the
+> code all slip through, and a program comes from any service, so from anyone. The
+> real service's code is well formed, so this is fine for now; the [hardening
+> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) checks every size.
 
 **Run**
 
 ```sh
 npm test
-# prints: deblob by hand: one jump, three bytes of code, two instructions
-# prints: its PVM blob: 39,849 instructions, and all 1,601 jumps land on one
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (275.3ms)
+...
+✔ deblob by hand: one jump, three bytes of code, two instructions (1.6ms)
+✔ a real service's code: metadata, then a standard program that ends it exactly (12.7ms)
+✔ its PVM blob: 39,849 instructions, and all 1,601 jumps land on one (22.6ms)
+...
+ℹ tests 390
+ℹ suites 0
+ℹ pass 390
+ℹ fail 0
+...
+reported 390 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736314079
+...
 ```
 
 ## Watch it
@@ -232,9 +279,18 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/program.ts ../vectors/traces/fallback/00000001.json
-# prints: metadata: 80 bytes
-# prints: code: 128413 bytes, 39849 instructions
-# prints: reported to Grafana
+```
+
+```text
+the code preimage: 159322 bytes
+  metadata: 80 bytes
+  read-only data 9904, read-write 48, heap pages 2, stack 8192
+  the PVM blob: 149274 bytes
+    jump table: 1601 entries
+    code: 128413 bytes, 39849 instructions
+    bitmask: 16052 bytes
+most common opcodes: 130 (6871×), 123 (4950×), 51 (3474×), 149 (3021×), 151 (2021×)
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=program-1791736319548
 ```
 
 159,322 bytes: 80 of metadata (it calls itself `jam-bootstrap-service`, version 0.1.29,
@@ -266,14 +322,15 @@ The same three layers of sizes, plus the hardening: limits on the jump table and
 code, and a refusal when the blob is shorter than its own sizes promise. A program blob
 comes from a service, so from anyone, and a client must survive a hostile one. A few
 lines further down, lasair also *expands* the bitmask into a byte per code byte, trading
-memory for a faster "does this byte start an instruction?". Both are for the hardening
-pass; your `deblob` shows the shape.
+memory for a faster "does this byte start an instruction?". Both are hardening (the note
+above); your `deblob` shows the shape.
 
 </details>
 
 ## What you have
 
 A real service's code, unpacked down to its instructions: metadata, memory layout, jump
-table, code and bitmask, every byte accounted for.
+table, code and bitmask, every byte accounted for. So far they're only opcode numbers,
+though: [lesson 15.2](./02-instructions.md) reads each one, name and arguments.
 
 Next: [15.2 Instructions](./02-instructions.md)

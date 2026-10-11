@@ -737,14 +737,14 @@ bundle, plus its segments and their proof pages. *Example:* 12345 + 4 × 4104 = 
 
 **PVM.** The Polkadot Virtual Machine: a small, made-up computer, based on RISC-V, that
 runs every service's code exactly the same way on every validator.
-([15.3](./15-the-pvm/03-the-machine.md))
+([15.1](./15-the-pvm/01-the-program-blob.md))
 
 **Register.** One of the PVM's 13 little 64-bit boxes for numbers, named r0 to r12.
 Instructions work on registers. ([15.3](./15-the-pvm/03-the-machine.md))
 
 **Instruction and opcode.** An instruction is one small step (add, load, jump...); its
 opcode is the number that says which. *Example:* opcode 200 is `add_64`.
-([15.2](./15-the-pvm/02-instructions.md))
+([15.1](./15-the-pvm/01-the-program-blob.md))
 
 **Memory and page.** The PVM's memory is 2^32 bytes, handed out in pages of 4,096. Touch a
 page you don't have, and the machine stops. ([15.4](./15-the-pvm/04-memory.md))
