@@ -45,7 +45,7 @@ the number 5 are different creatures in JAM. Your client keeps them apart from t
 
 ## The tests
 
-The test first, as always:
+Test-driven development, as always: the test first.
 
 **New file** `test/bytes.test.ts`
 

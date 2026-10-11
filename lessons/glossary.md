@@ -15,7 +15,8 @@ cores. *Example:* in Part 15 you run a real service's code.
 ([0.1](./00-start/01-what-you-will-build.md))
 
 **Gray Paper (GP).** JAM's specification: the document that defines every rule, mostly in
-maths. This tutorial follows version 0.8.0. *Example:* "§4" is its section 4.
+maths. It is still being improved, and new versions change rules; this tutorial follows
+version 0.8.0. *Example:* "§4" is its section 4.
 ([0.1](./00-start/01-what-you-will-build.md))
 
 **Client.** A program that follows a protocol's rules. A JAM client reads blocks and works
@@ -35,7 +36,7 @@ anything. *Example:* `const slot: number = 42`. ([0.2](./00-start/02-set-up-the-
 *Example:* `npm test` runs every test. ([0.2](./00-start/02-set-up-the-project.md))
 
 **Test.** A small program that checks one thing your code should do, and fails loudly if
-it doesn't. This tutorial writes the test first, watches it fail, then writes the code.
+it doesn't. This tutorial uses test-driven development: the test first, then the code.
 *Example:* "slot 0 is the first six seconds of the JAM Common Era".
 ([0.4](./00-start/04-the-jam-clock.md))
 
@@ -59,8 +60,8 @@ command. *Example:* `./obs up`. ([0.2](./00-start/02-set-up-the-project.md))
 **Assertion.** One check inside a test: if the value is wrong, the test fails and says what
 it got. *Example:* `assert.equal(slot, 600)`. ([0.4](./00-start/04-the-jam-clock.md))
 
-**Test-first.** Writing a test before the code it tests, watching it fail, then making it
-pass. *Example:* lesson 0.4's `slotAt`. ([0.4](./00-start/04-the-jam-clock.md))
+**Test-driven development (TDD).** Writing a test before the code it tests, watching it
+fail, then writing the code that makes it pass. *Example:* lesson 0.4's `slotAt`. ([0.4](./00-start/04-the-jam-clock.md))
 
 **Reporter.** A plug-in for Node's test runner that receives every test's result; yours
 sends them to Grafana. *Example:* `test/grafana.ts`. ([0.3](./00-start/03-watch-your-client.md))

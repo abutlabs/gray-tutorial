@@ -62,7 +62,8 @@ lesson. `npm test` checks those links, and that each lesson ends with a link to 
    A word used before it's defined is a bug.
 1. **What the Gray Paper says**: the rule, quoted or paraphrased, with its section
    (§11, *Refinement Context*; Appendix C). Check every quote against the 0.8.0 tex.
-2. **The code**: tests first where it helps, then the code, each in a labelled snippet.
+2. **The code**: test-driven development where it helps (the test, then the code), each
+   in a labelled snippet. Call it that, test-driven development, never "test-first".
 3. **Run**: the tests pass, the types check.
 4. **lasair**, folded in `<details>`: the same rule in lasair's OCaml, quoted from the
    source (say when comments are trimmed), with a sentence on reading it.

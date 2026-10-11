@@ -14,8 +14,8 @@ Your first piece of real JAM. It's tiny, and it is everywhere: every block in JA
   Common Era is 1,735,732,800 seconds after it.
 - **Header.** A block's cover page; among other things, it names the block's slot
   (lesson 4.6). *Example:* a header saying slot 43.
-- **Test-first.** Writing a test before the code it tests, watching it fail, then making it
-  pass. *Example:* this lesson's `slotAt`.
+- **Test-driven development (TDD).** Writing a test before the code it tests, watching it
+  fail, then writing the code that makes it pass. *Example:* this lesson's `slotAt`.
 - **Assertion.** One check inside a test: if the value isn't what it should be, the test
   fails and says what it got. *Example:* `assert.equal(at("2025-01-01T13:00:00Z"), 600)`.
 
@@ -28,14 +28,13 @@ seconds of the era, slot 1 the next six, and slot 600 starts exactly one hour in
 
 Every block header names its slot, and a block may not come from the future: its slot
 times P can't be later than the current time (§5). Why midday? So that all the major
-time zones share the same date at every whole day of the era. The Gray Paper thinks of
-everything.
+time zones share the same date at every whole day of the era.
 
 ## The test comes first
 
 You are about to write a test for a function that doesn't exist yet. That's the plan,
-not a typo: the test says what `slotAt` must do, and then you write `slotAt` to make it
-true.
+not a typo: this is test-driven development. The test says what `slotAt` must do, and
+then you write `slotAt` to make it true.
 
 **New file** `test/time.test.ts`
 

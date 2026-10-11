@@ -15,7 +15,8 @@ read most of the Gray Paper, one rule at a time, with code running beside it. Sn
   many *cores*. The name comes from "join-accumulate", part of its model of computing.
   *Example:* in Part 15 you'll run a real JAM service's code.
 - **Gray Paper (GP).** JAM's specification: the document that defines every rule, mostly
-  in maths. This tutorial follows version 0.8.0. *Example:* "§4" means its section 4.
+  in maths. It is still being improved, and new versions change rules; this tutorial
+  follows version 0.8.0. *Example:* "§4" means its section 4.
 - **Client.** A program that follows a protocol's rules. A JAM client reads blocks and
   works out the chain's state, the same way every other JAM client does. *Example:*
   lasair is a JAM client, and so will yours be.
@@ -79,9 +80,9 @@ above each snippet says what to do with it:
   same name, its comment included.
 - **Rewrite** `package.json`: replace the whole file.
 - **Run**: type it in a terminal in `client/`. It should work.
-- **Run, expect it to fail**: it should fail, the way the lesson says. We often write a
-  test first and watch it go red, because a test that has never failed has never proved
-  anything.
+- **Run, expect it to fail**: it should fail, the way the lesson says. This tutorial uses
+  test-driven development: we often write the test first and watch it go red, because a
+  test that has never failed has never proved anything.
 
 Paths are inside `client/`. A code block with no label above it is for reading.
 
