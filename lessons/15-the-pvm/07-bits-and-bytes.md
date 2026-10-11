@@ -84,8 +84,23 @@ test("every two-register instruction after move_reg has an operation: 10 of them
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/bits.ts' imported from …/client/test/bits.test.ts
+...
+✖ test/bits.test.ts (275.0ms)
+...
+ℹ tests 415
+ℹ suites 0
+ℹ pass 414
+ℹ fail 1
+...
+```
+
+Red: `src/pvm/bits.ts` doesn't exist yet. It's one table, a line per instruction, so it
+comes whole, and the machine's new family is a few lines after it.
 
 ## The code
 
@@ -128,7 +143,7 @@ drop the 0s and count what's left, or let `/^0*/` match the run of 0s at the sta
 are the whole thing.
 
 `reverse_bytes` is the Gray Paper's own definition, almost word for word: encode in 8
-bytes (ℰ₈, from Part 2), reverse them, decode.
+bytes (ℰ₈, from [lesson 2.1](../02-codec/01-fixed-width-integers.md)), reverse them, decode.
 
 A family to run them, and a place in the line-up:
 
@@ -158,11 +173,26 @@ const FAMILIES: Family[] = [basics, memoryInstructions, arithmetic, decisions, b
 
 ```sh
 npm test
-# prints: reverse_bytes turns little-endian into big-endian
-# prints: every two-register instruction after move_reg has an operation: 10 of them
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ counting bits: the 1s, the 0s before the first 1, the 0s after the last (1.2ms)
+✔ the 32-bit counts see only the low 32 bits, and zero is all zeros (0.2ms)
+✔ extending: the lowest byte or two, read as signed or unsigned (0.2ms)
+✔ reverse_bytes turns little-endian into big-endian (0.1ms)
+✔ every two-register instruction after move_reg has an operation: 10 of them (0.1ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (266.6ms)
+...
+ℹ tests 419
+ℹ suites 0
+ℹ pass 419
+ℹ fail 0
+...
+reported 419 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736873566
+...
 ```
 
 ## Watch it
@@ -201,10 +231,22 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/bits.ts
-# prints: 0000000000000000000000000000000000000000000000000000000111110000
-# prints: leading_zero_bits_64   0x0000000000000037 = 55
-# prints: sign_extend_8          0xfffffffffffffff0 = -16
-# prints: reported to Grafana
+```
+
+```text
+r0 = 0x00000000000001f0, in bits:
+0000000000000000000000000000000000000000000000000000000111110000
+count_set_bits_64      0x0000000000000005 = 5
+count_set_bits_32      0x0000000000000005 = 5
+leading_zero_bits_64   0x0000000000000037 = 55
+leading_zero_bits_32   0x0000000000000017 = 23
+trailing_zero_bits_64  0x0000000000000004 = 4
+trailing_zero_bits_32  0x0000000000000004 = 4
+sign_extend_8          0xfffffffffffffff0 = -16
+sign_extend_16         0x00000000000001f0 = 496
+zero_extend_16         0x00000000000001f0 = 496
+reverse_bytes          0xf001000000000000 = -1152640029630136320
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=bits-1791736879612
 ```
 
 0x1f0 is five 1s with four 0s below them, and you can count each answer off the string
@@ -239,6 +281,7 @@ with no shifts, no masks and no special case.
 ## What you have
 
 Every instruction in the Gray Paper's tables, bar one: `ecalli`, the door out of the
-machine to the host. That's next.
+machine to the host. [Lesson 15.8](./08-a-real-program.md) builds it, and runs a real service up to its first
+`ecalli`.
 
 Next: [15.8 A real program](./08-a-real-program.md)

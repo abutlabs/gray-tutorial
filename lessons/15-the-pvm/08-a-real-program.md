@@ -13,7 +13,8 @@ ask its first question.
 ν_X says which one. The machine hands back ı pointing *at* the `ecalli`, with registers and
 memory as they were. The host answers, by changing registers or memory, and the machine
 carries on from the next instruction (Ψ_H, App. A.6). The host calls are numbered in App.
-B: `gas` is 0, `grow_heap` 1, `fetch` 2, and so on up to `provide`, 27. Part 16 builds them.
+B: `gas` is 0, `grow_heap` 1, `fetch` 2, and so on up to `provide`, 27. [Part 16](../16-host-calls/index.md) builds
+them.
 
 **Y** (App. A.7) turns a standard program ([lesson 15.1](./01-the-program-blob.md) unpacked its parts: o, w, z, s and
 the code) and some argument bytes a into a starting memory and registers. Memory is laid
@@ -109,8 +110,23 @@ real thing: the bootstrap service, entered at 5 with slot 1, service 0 and no in
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/standard.ts' imported from …/client/test/standard.test.ts
+...
+✖ test/standard.test.ts (186.7ms)
+...
+ℹ tests 420
+ℹ suites 0
+ℹ pass 419
+ℹ fail 1
+...
+```
+
+Red: `src/pvm/standard.ts` doesn't exist yet. Y is one function, a line per row of the
+table, with two constants and two small helpers, so it comes whole.
 
 ## The code
 
@@ -168,6 +184,14 @@ export function standardProgram(code: ServiceCode, args: Bytes) {
 Y, a line of code for each row of the table. `place` writes bytes in without asking the
 pages' permission: o is read only *for the program*, not for whoever sets it up.
 
+> [!NOTE]
+> **The simple road.** Y has an answer only if every section fits: the zones, o, w with
+> its heap, the stack and the arguments must add up to no more than 2^32 bytes, and the
+> arguments must fit in Z_I. If not, the machine panics without running anything.
+> `standardProgram` lays out whatever it's given, which is fine for the real service
+> here; the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the check, since a service's code comes from
+> anyone.
+
 Now the machine learns its last instruction. A host call is a new way to stop:
 
 **Replace in** `src/pvm/machine.ts`
@@ -222,10 +246,25 @@ say(`load from 0x30005, where there's no page: ${shown}`);
 
 ```sh
 npm test
-# prints: a real service starts: the bootstrap service runs until it calls fetch
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (206.8ms)
+...
+✔ Y lays out memory: o a zone up, w a zone after it, the stack and arguments up top (1.2ms)
+✔ Y's registers: the halt address, the stack pointer, and where the arguments are (0.2ms)
+✔ ecalli stops the machine to call the host, and stays on the ecalli (0.6ms)
+✔ a real service starts: the bootstrap service runs until it calls fetch (50.1ms)
+...
+ℹ tests 423
+ℹ suites 0
+ℹ pass 423
+ℹ fail 0
+...
+reported 423 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736885963
+...
 ```
 
 ## Watch it
@@ -302,11 +341,35 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/start.ts
-# prints: 0x00010000 to 0x00012fff  R  3 page(s)
-# prints: registers: r0 = 0xffff0000, r1 = 0xfefe0000, r7 = 0xfeff0000, r8 = 3
-# prints: step 38  at 121489  ecalli
-# prints: the machine stops: {"host":2}, with r10 = 0
-# prints: reported to Grafana
+```
+
+```text
+memory, as Y lays it out:
+  0x00010000 to 0x00012fff  R  3 page(s)
+  0x00030000 to 0x00032fff  W  3 page(s)
+  0xfefde000 to 0xfefdffff  W  2 page(s)
+  0xfeff0000 to 0xfeff0fff  R  1 page(s)
+registers: r0 = 0xffff0000, r1 = 0xfefe0000, r7 = 0xfeff0000, r8 = 3
+step  1  at      5  jump
+step  2  at  92078  add_imm_64
+step  3  at  92082  store_ind_u64
+step  4  at  92086  store_ind_u64
+step  5  at  92090  store_ind_u64
+step  6  at  92094  move_reg
+step  7  at  92096  move_reg
+step  8  at  92098  load_imm_jump
+step  9  at 123687  add_imm_64
+step 10  at 123691  store_ind_u64
+step 11  at 123695  store_ind_u64
+step 12  at 123699  store_ind_u64
+step 13  at 123703  store_imm_ind_u64
+step 14  at 123707  add_imm_64
+step 15  at 123711  add_imm_64
+step 16  at 123715  load_imm_jump
+...
+step 38  at 121489  ecalli
+the machine stops: {"host":2}, with r10 = 0
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=start-1791736891343
 ```
 
 Four sections, with empty zones between them, just as the table said. Then 38 steps of
@@ -335,14 +398,16 @@ let init_registers (args : bytes) : int64 array =
 
 RA, SP, A0, A1: lasair's comments use the register names from RISC-V, the instruction set
 the PVM is based on. The return address, the stack pointer, the first two arguments: the
-same jobs your registers 0, 1, 7 and 8 do. lasair also checks Y's size rule, the one this
-lesson left for `HARDENING.md`.
+same jobs your registers 0, 1, 7 and 8 do. lasair also checks Y's size rule, the one the
+note above leaves for the hardening pass.
 
 </details>
 
 ## What you have
 
 A machine that runs every instruction in the Gray Paper, and a real service started on
-it, right up to its first question for the host. Answering that question is Part 16.
+it, right up to its first question for the host. Answering that question is [Part 16](../16-host-calls/index.md).
+Before that, the machine needs to charge for its work, or a program could run forever:
+[lesson 15.9](./09-what-instructions-cost.md) prices every instruction.
 
 Next: [15.9 What instructions cost](./09-what-instructions-cost.md)

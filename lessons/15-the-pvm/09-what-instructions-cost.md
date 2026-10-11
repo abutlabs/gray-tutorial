@@ -95,8 +95,23 @@ test("every instruction has a row in the cost table: 139 of them", () => {
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/gas.ts' imported from …/client/test/gas.test.ts
+...
+✖ test/gas.test.ts (94.0ms)
+...
+ℹ tests 424
+ℹ suites 0
+ℹ pass 423
+ℹ fail 1
+...
+```
+
+Red: `src/pvm/gas.ts` doesn't exist yet. It's the Gray Paper's cost table, row by row,
+and the few helpers that read an instruction's registers, so it comes whole.
 
 ## The code
 
@@ -237,10 +252,27 @@ the end of the code there is nothing, and the Gray Paper's ζ says nothing reads
 
 ```sh
 npm test
-# prints: every instruction has a row in the cost table: 139 of them
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ which registers an instruction reads and writes (8.4ms)
+✔ a row from the GP's table: add_64 is 1 cycle, and 1 or 2 decode slots (0.3ms)
+✔ memory is slow: a load or a store takes 25 cycles, and a load unit or a store unit (0.1ms)
+✔ dividing takes 60 cycles; ecalli takes 100 (0.1ms)
+✔ a branch costs 20, or 1 if either way leads to trap or unlikely (0.1ms)
+✔ every instruction has a row in the cost table: 139 of them (0.9ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (229.1ms)
+...
+ℹ tests 429
+ℹ suites 0
+ℹ pass 429
+ℹ fail 0
+...
+reported 429 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736897027
+...
 ```
 
 ## Watch it
@@ -292,16 +324,24 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/costs.ts
-# prints: the basic block at 92078:
-# prints: store_ind_u64    cycles  25  slots 1  ALU+store
-# prints: load_imm_jump    cycles  15  slots 1  none
-# prints: reported to Grafana
+```
+
+```text
+the basic block at 92078:
+add_imm_64       cycles   1  slots 1  ALU
+store_ind_u64    cycles  25  slots 1  ALU+store
+store_ind_u64    cycles  25  slots 1  ALU+store
+store_ind_u64    cycles  25  slots 1  ALU+store
+move_reg         cycles   0  slots 1  none
+move_reg         cycles   0  slots 1  none
+load_imm_jump    cycles  15  slots 1  none
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=costs-1791736902016
 ```
 
 You met this block in [lesson 15.8](./08-a-real-program.md): a function getting started. It makes room on the
 stack, saves three registers there, and calls another function. Add up its cycles and you
 get 91. But a real CPU doesn't wait for one store to finish before starting the next: the
-model has four store units, and they can all work at once. The next lesson builds that
+model has four store units, and they can all work at once. [Lesson 15.10](./10-the-pipeline.md) builds that
 CPU, and this block comes out far cheaper than 91. The *Costs* panel has the sheet.
 
 ![Costs panel](./images/09-costs.png)
@@ -325,6 +365,8 @@ your table matches on names.
 
 ## What you have
 
-A price for every instruction the PVM knows. Next, the CPU that adds them up.
+A price for every instruction the PVM knows. A price list doesn't say what a block costs,
+though, because a CPU runs instructions side by side: [lesson 15.10](./10-the-pipeline.md) builds the CPU that
+adds them up.
 
 Next: [15.10 The pipeline](./10-the-pipeline.md)
