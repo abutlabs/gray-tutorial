@@ -1,17 +1,17 @@
 # Onto the cores
 
-The guarantors are the right ones (12.1), their signatures are real (12.2). Time to
-seat the report: each guaranteed report takes its core and starts waiting for its data
-to become available, which is where Part 11 picks it up next block. And the block makes
-a note of the packages it reported, for the recent history (Part 9) to remember. Then
-Part 12 is done.
+The guarantors are the right ones ([lesson 12.1](./01-who-guarantees-what.md)), their signatures are real ([lesson
+12.2](./02-signed-and-counted.md)). Time to seat the report: each guaranteed report takes its core and starts waiting
+for its data to become available, which is where [Part 11](../11-assurances/index.md) picks it up next block.
+And the block makes a note of the packages it reported, for the recent history ([Part
+9](../09-recent-history/index.md)) to remember.
 
 ## What the Gray Paper says
 
 §11. ρ′, the cores after the guarantees: each guarantee's report goes on the core it
 names, as a pending report: the whole guarantee, registered at τ′, this block's slot. A
-core can only take a report if it's free, after the disputes (10.3) and the assurances
-(11.2) have done their clearing. Every other core keeps what it had.
+core can only take a report if it's free, after the disputes ([lesson 10.3](../10-disputes/03-clearing-the-cores.md)) and the
+assurances ([lesson 11.2](../11-assurances/02-timeouts.md)) have done their clearing. Every other core keeps what it had.
 
 **The reported packages** are a dictionary: each reported work-package's hash, mapped to
 the root of the segments it exports. [Lesson 9.2](../09-recent-history/02-recent-blocks.md)'s `recordBlock` takes exactly these, as
@@ -88,8 +88,23 @@ picks one pair of names, and the test translates.
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/cores.ts' does not provide an export named 'placeReports'
+...
+✖ test/guarantors.test.ts (315.7ms)
+...
+ℹ tests 186
+ℹ suites 0
+ℹ pass 185
+ℹ fail 1
+...
+```
+
+Red: `src/cores.ts` doesn't export `placeReports` or `reportedPackages` yet. Both are
+short, so they come together, and the sort gets its own moment after the green.
 
 ## The code
 
@@ -129,11 +144,21 @@ export function reportedPackages(guarantees: ReportGuarantee[]): ReportedPackage
 
 ```sh
 npm test
-# prints: ρ′: each guaranteed report takes its core, registered at the block's slot
-# prints: the reported packages: each one's hash and exports root, sorted by hash
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ ρ′: each guaranteed report takes its core, registered at the block's slot (682.3ms)
+✔ the reported packages: each one's hash and exports root, sorted by hash (218.4ms)
+...
+ℹ tests 192
+ℹ suites 0
+ℹ pass 192
+ℹ fail 0
+...
+reported 192 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734328669
+...
 ```
 
 44 reports seated, and every reported list in order. Take the `.sort(…)` away and run
@@ -187,9 +212,15 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/placed.ts ../vectors/stf/reports/tiny/high_work_report_gas-1.json
-# prints: core 0 (empty): now holds package 0x63c03371…, since 14
-# prints: reported: package 0x316504b8…
-# prints: reported to Grafana
+```
+
+```text
+core 0 (empty): now holds package 0x63c03371…, since 14
+core 1 (empty): now holds package 0x316504b8…, since 14
+cores holding a report now: 2 of 2
+reported: package 0x316504b8…, exports root 0x5c9dca80…
+reported: package 0x63c03371…, exports root 0x5c9dca80…
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=placed-1791734334389
 ```
 
 Core 0 gets `0x63c0…` and core 1 gets `0x3165…`, but the reported list starts with
@@ -221,7 +252,8 @@ noticed: the adapter only counts the reported packages.
 
 ## What you have
 
-Part 12, done: guarantors dealt, signatures checked, reporters counted, and every good
-report seated on its core with its package noted for the history.
+Guarantors dealt, signatures checked, reporters counted, and every good report seated
+on its core with its package noted for the history. So far, though, every guarantee in
+a block has been taken at its word. [Lesson 12.4](./04-bad-guarantees.md) writes the rules that refuse a bad one.
 
 Next: [12.4 Bad guarantees](./04-bad-guarantees.md)

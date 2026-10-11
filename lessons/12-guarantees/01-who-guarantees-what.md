@@ -7,15 +7,26 @@ out: three validators per core, shuffled with randomness nobody could steer ([le
 7.2](../07-time-and-shuffling/02-the-shuffle.md)), and reshuffled along every few slots so nobody stays on one core for long. This
 lesson deals the hand.
 
+## New words
+
+- **Guarantor.** A validator who runs a work-package and signs the report, vouching for
+  it with its stake. *Example:* three guarantors per core.
+- **Rotation.** Every R slots, the guarantors move on to the next core: 4 slots on tiny,
+  10 on full. *Example:* on tiny, slots 12 to 15 are one rotation.
+- **Active core.** One of the cores the current validators can staff, three guarantors
+  apiece: the first |κ′|/3 of them. *Example:* 6 validators keep 2 cores active.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §11 (*Guarantor Assignments*). With v validators, only the first v/3 cores are
-**active**: three guarantors each. P(v, e, t), the core of each validator at slot t:
+*active cores*: three *guarantors* each. P(v, e, t), the core of each validator at slot t:
 
 1. Start with the seats: validator i gets core ⌊i/3⌋, so `0 0 0 1 1 1 2 2 2 …`.
 2. **Shuffle** them ([lesson 7.2](../07-time-and-shuffling/02-the-shuffle.md)) with entropy e.
-3. **Rotate**: every R slots, everyone moves on one core, wrapping round the active
-   cores. At slot t, that's ⌊(t mod E)/R⌋ moves since the epoch began.
+3. **Rotate**: every R slots, a new *rotation*: everyone moves on one core, wrapping
+   round the active cores. At slot t, that's ⌊(t mod E)/R⌋ moves since the epoch began.
 
 **M**, this rotation's assignment, is P(|κ′|, η′₂, τ′) with the keys of κ′, offenders
 zeroed by [lesson 8.2](../08-safrole/02-rotating-the-validators.md)'s Φ. η′₂, not η′₁, says the Gray Paper: randomness from two epochs
@@ -149,8 +160,24 @@ every accepted guarantee, 130 of them, against M or M\*.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/guarantors.ts' imported from …/client/test/guarantors.test.ts
+...
+✖ test/guarantors.test.ts (335.0ms)
+...
+ℹ tests 186
+ℹ suites 0
+ℹ pass 185
+ℹ fail 1
+...
+```
+
+Red: `src/guarantors.ts` doesn't exist yet. P, M and M\*, and the choice between them
+lean on one another, so they come as one file, and the next Run turns all three tests
+green.
 
 ## The code
 
@@ -212,8 +239,15 @@ export function assignmentFor(
 }
 ```
 
-`assignCores` is the Gray Paper's P in three lines: seats, shuffle, rotate. The rotation
-is `% activeCores`, not `% C`: on a network with fewer validators than usual, guarantors
+`assignCores` is the Gray Paper's P in three lines, seats, shuffle, rotate:
+
+```ts
+  const seats = Array.from({ length: v }, (_, i) => Math.floor(i / 3)); // 0 0 0 1 1 1 2 …
+  const shuffled = shuffleWithHash(seats, e);
+  return shuffled.map((core) => (core + turns) % activeCores); // R: everyone moves on
+```
+
+The rotation is `% activeCores`, not `% C`: on a network with fewer validators than usual, guarantors
 only ever rotate among the cores that have any. `guarantorAssignments` builds both M and
 M\* at once, and `assignmentFor` picks the one a guarantee answers to.
 
@@ -221,12 +255,22 @@ M\* at once, and `assignmentFor` picks the one a guarantee answers to.
 
 ```sh
 npm test
-# prints: P: three guarantors per core, and every R slots they all move on one core
-# prints: every guarantor of every accepted report is assigned to that report's core
-# prints: a guarantor from another core is caught
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ P: three guarantors per core, and every R slots they all move on one core (6.9ms)
+✔ every guarantor of every accepted report is assigned to that report's core (2296.7ms)
+✔ a guarantor from another core is caught (0.9ms)
+...
+ℹ tests 188
+ℹ suites 0
+ℹ pass 188
+ℹ fail 0
+...
+reported 188 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734292556
+...
 ```
 
 ## Watch it
@@ -290,10 +334,15 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/guarantors.ts ../vectors/stf/reports/tiny/report_prev_rotation-1.json
-# prints: this rotation: core 0: 1 4 5 | core 1: 0 2 3
-# prints: the last one:  core 0: 1 2 5 | core 1: 0 3 4
-# prints: all assigned to core 0? true
-# prints: reported to Grafana
+```
+
+```text
+slot 14, rotation 3
+  this rotation: core 0: 1 4 5 | core 1: 0 2 3
+  the last one:  core 0: 1 2 5 | core 1: 0 3 4
+guarantee for core 0, made at slot 10 (the last rotation):
+  signed by 1, 2, 5: all assigned to core 0? true
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=guarantors-1791734301753
 ```
 
 The block is at slot 14, but the guarantee was made at slot 10, in the last rotation.
@@ -327,6 +376,7 @@ guarantees and a client that makes them had better deal the same hand.
 ## What you have
 
 The guarantor deal: who may vouch for which core, this rotation and the last, checked
-against every guarantee in the vectors.
+against every guarantee in the vectors. Being assigned isn't the same as having signed,
+though: [lesson 12.2](./02-signed-and-counted.md) checks the signatures.
 
 Next: [12.2 Signed and counted](./02-signed-and-counted.md)

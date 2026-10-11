@@ -9,14 +9,11 @@ checks the reports themselves.
 
 ## New words
 
-- **Rotation.** Every R slots, the guarantors move on to the next core: 4 slots on tiny,
-  10 on full. *Example:* on tiny, slots 12 to 15 are one rotation.
-- **Active core.** One of the cores the current validators can staff, three guarantors
-  apiece: the first |κ′|/3 of them. *Example:* 6 validators keep 2 cores active.
 - **Authorizer pool.** The authorizers a core accepts right now ([lesson 13.1](../13-authorization/01-the-authorizer-pools.md)'s α).
   *Example:* a report whose authorizer isn't in its core's pool is refused.
 
-All three are in the [glossary](../glossary.md).
+It's in the [glossary](../glossary.md), with *rotation* and *active core*, the words from
+[lesson 12.1](./01-who-guarantees-what.md) the rules below lean on.
 
 ## What the Gray Paper says
 

@@ -3,7 +3,7 @@
 A guarantee is a promise with signatures on it: "we ran this work, and this is the
 report". This lesson checks that every signature is real and made by a guarantor of the
 right core. Then it writes down who signed: the **reporters**, which the statistics
-(Part 18) will credit for the work.
+([Part 18](../18-statistics/index.md)) will credit for the work.
 
 ## What the Gray Paper says
 
@@ -41,6 +41,32 @@ export function culpritSigned(culprit: Culprit): boolean {
   return verifyEd25519(culprit.key, guaranteeMessage(culprit.target), culprit.signature);
 }
 ```
+
+`culpritSigned` builds the same message as before, through its new home, so Part 10's
+tests should all still pass:
+
+**Run**
+
+```sh
+npm test
+```
+
+```text
+...
+✔ every culprit's guarantee and every fault's vote is really theirs (790.7ms)
+✔ a forged guarantee is caught (7.8ms)
+✔ the offenders mark names this block's offenders, and ψ′_O keeps them all (319.2ms)
+...
+ℹ tests 188
+ℹ suites 0
+ℹ pass 188
+ℹ fail 0
+...
+reported 188 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734301991
+```
+
+Green, Part 10's offender tests among them: the message has a new home, and nothing else
+changed.
 
 ## The tests
 
@@ -128,8 +154,23 @@ JavaScript lifts ("hoists") function declarations to the top of their file.
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/guarantors.ts' does not provide an export named 'guaranteeSigned'
+...
+✖ test/guarantors.test.ts (259.6ms)
+...
+ℹ tests 186
+ℹ suites 0
+ℹ pass 185
+ℹ fail 1
+...
+```
+
+The new tests ask `src/guarantors.ts` for three functions it doesn't have yet. They work
+together (the keys, the check, the set), so they come in one snippet.
 
 ## The code
 
@@ -169,11 +210,21 @@ repeats, sort, and turn the hex back into bytes.
 
 ```sh
 npm test
-# prints: every accepted guarantee is signed by its guarantors, and 𝐆 lists them once each
-# prints: a forged guarantee signature is caught
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ every accepted guarantee is signed by its guarantors, and 𝐆 lists them once each (726.5ms)
+✔ a forged guarantee signature is caught (1.6ms)
+...
+ℹ tests 190
+ℹ suites 0
+ℹ pass 190
+ℹ fail 0
+...
+reported 190 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734316847
+...
 ```
 
 44 accepted guarantees, every signature real, and 𝐆 right in every vector.
@@ -234,8 +285,16 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/reporters.ts ../vectors/stf/reports/tiny/different_core_same_guarantors-1.json
-# prints: 𝐆, the reporters: 3 of 6 signatures' keys
-# prints: reported to Grafana
+```
+
+```text
+core 0: signed by 0xad93247b…, 0x8b8c5d43…, 0xab0084d0…; all real: true
+core 1: signed by 0xad93247b…, 0x8b8c5d43…, 0xab0084d0…; all real: true
+𝐆, the reporters: 3 of 6 signatures' keys
+  0x8b8c5d436f92ecf605421e873a99ec528761eb52a88a2f9a057b3b3003e6f32a
+  0xab0084d01534b31c1dd87c81645fd762482a90027754041ca1b56133d0466c06
+  0xad93247bd01307550ec7acd757ce6fb805fcf73db364063265b30a949e90d933
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=reporters-1791734322115
 ```
 
 The same three guarantors signed for core 0 *and* core 1: one guarantee from this
@@ -270,6 +329,7 @@ whole set.
 ## What you have
 
 Guarantees you can trust: every signature real, every signer the right guarantor, no
-offender's word accepted, and the reporters counted once each.
+offender's word accepted, and the reporters counted once each. A trusted guarantee puts
+its report on a core, and [lesson 12.3](./03-onto-the-cores.md) does exactly that.
 
 Next: [12.3 Onto the cores](./03-onto-the-cores.md)

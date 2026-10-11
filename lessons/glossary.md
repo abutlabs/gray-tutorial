@@ -505,11 +505,11 @@ a small pool of authorizers. ([13.1](./13-authorization/01-the-authorizer-pools.
 
 **Rotation.** R slots (4 on tiny, 10 on full) after which the guarantors move on to the
 next core. *Example:* on tiny, slots 12 to 15 are one rotation.
-([12.4](./12-guarantees/04-bad-guarantees.md))
+([12.1](./12-guarantees/01-who-guarantees-what.md))
 
 **Active core.** One of the first |κ′|/3 cores, the ones the current validators can staff
 three apiece. *Example:* 6 validators keep 2 cores active.
-([12.4](./12-guarantees/04-bad-guarantees.md))
+([12.1](./12-guarantees/01-who-guarantees-what.md))
 
 **Authorizer pool.** α[c]. The authorizers core c accepts right now; a report's authorizer
 must be in its core's pool. *Example:* refused as `core_unauthorized` if it isn't.
@@ -520,7 +520,7 @@ Ed25519 signature. *Example:* index 3, then 64 bytes. ([4.3](./04-blocks/03-guar
 
 **Guarantee and guarantor.** Two or three validators (the guarantors) sign a work-report
 to vouch that it's right; that bundle is a guarantee, and it puts the report onto its
-core. ([12.2](./12-guarantees/02-signed-and-counted.md))
+core. ([12.1](./12-guarantees/01-who-guarantees-what.md))
 
 **Assurance and availability.** Each validator signs one bit per core: "I hold my piece of
 this core's data". When more than two thirds do, the report is *available*.
