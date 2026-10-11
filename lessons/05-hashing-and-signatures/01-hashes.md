@@ -1,13 +1,20 @@
 # Hashes
 
 A blockchain is called a *chain* because each block holds on to the one before it, and
-what it holds is a **hash**: a 32-byte fingerprint of the previous block's header.
+what it holds is a *hash*: a 32-byte fingerprint of the previous block's header.
 Change one bit of an old block and its fingerprint changes, which breaks the next block's
 grip, and the next, all the way up. This lesson gives your client JAM's hash function,
 and then checks a real chain of a hundred blocks, link by link.
 
 ## New words
 
+- **Hash.** A 32-byte fingerprint of some data: change one bit of the data and the
+  fingerprint changes completely. The Gray Paper writes H(x). *Example:* the hash of no
+  bytes at all starts `0x0e5751c0`.
+- **Parent.** The block before this one. Each header names its parent by hash, which is
+  what makes the blocks a chain. *Example:* block 2's parent is block 1.
+- **Trace.** A recorded run of real blocks, each with the state before and after it, from
+  the test vectors. *Example:* the tiny `fallback` trace has 100 blocks.
 - **Blake2b.** The hash function JAM uses. It can make fingerprints of any size up to 64
   bytes; JAM asks for 32. *Example:* the hash of no bytes at all starts `0e5751c0`.
 - **Library (dependency).** Code someone else wrote and published, which your project
@@ -15,11 +22,11 @@ and then checks a real chain of a hundred blocks, link by link.
 - **Known-answer test.** A test whose expected value comes from somewhere you trust, not
   from your own code. *Example:* the published Blake2b-256 of nothing at all.
 
-All three are in the [glossary](../glossary.md).
+All six are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
-§3 (*Notational Conventions*): H(m) is **Blake2b** with a 256-bit (32-byte) output, as
+§3 (*Notational Conventions*): H(m) is *Blake2b* with a 256-bit (32-byte) output, as
 defined in RFC 7693. JAM hashes *encodings*: to hash a value, encode it ([Part 2](../02-codec/index.md)), then
 hash the bytes.
 

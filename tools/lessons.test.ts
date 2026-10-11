@@ -174,7 +174,7 @@ test("the next lesson and the hardening pass are links, to the right place", () 
 // before the lesson its entry links (the one that builds it). An entry may join words
 // ("Trie, leaf and branch"); each word counts on its own. Parts are checked as they're
 // brought in line (backlog 25), until every part is.
-const NEW_WORDS_CHECKED = new Set([0, 1, 2, 3, 4]);
+const NEW_WORDS_CHECKED = new Set([0, 1, 2, 3, 4, 5]);
 const wordsOf = (term: string) => term.replace(/\s*\([^)]*\)/g, "").split(/,\s*|\s+and\s+/)
   .map((w) => w.trim().toLowerCase()).filter(Boolean);
 const newWords = (text: string) => [...(/^## New words\n([\s\S]*?)(?=^## )/m.exec(text)?.[1] ?? "")

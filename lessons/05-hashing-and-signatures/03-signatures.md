@@ -1,13 +1,16 @@
 # Signatures
 
 A hash says "these bytes haven't changed". It can't say *who*: anyone can hash anything.
-For "who", you need a **signature**. Only the holder of a secret key can make one, and
+For "who", you need a *signature*. Only the holder of a secret key can make one, and
 anyone with the matching public key can check it. JAM validators sign all day long: every
 assurance, every guarantee, every vote in a dispute. This lesson checks real validator
 signatures, a thousand of them, and then catches a forgery red-handed.
 
 ## New words
 
+- **Signature.** Proof that the holder of a secret key approved some bytes; anyone with
+  the matching public key can check it. *Example:* a validator's signature on an
+  assurance.
 - **Secret key and public key.** A pair: the secret one signs, the public one checks. Only
   the holder knows the secret one; everyone may know the public one. *Example:* a
   validator's 32-byte Ed25519 public key.
@@ -16,11 +19,11 @@ signatures, a thousand of them, and then catches a forgery red-handed.
 - **Domain prefix.** A few ASCII bytes in front of a signed message, so a signature for
   one job can't pass for another. *Example:* `jam_available`, `jam_guarantee`.
 
-All three are in the [glossary](../glossary.md).
+All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
-§3 (*Notational Conventions*): JAM's everyday signatures are **Ed25519**, as RFC 8032
+§3 (*Notational Conventions*): JAM's everyday signatures are *Ed25519*, as RFC 8032
 defines them. A public key is 32 bytes, a signature is 64.
 
 §11 (*Reporting and Assurance*): an assurance ([lesson 4.2](../04-blocks/02-tiny-and-full.md)) must be signed by the
