@@ -139,11 +139,13 @@ test("every accepted guarantee is signed by its guarantors, and 𝐆 lists them 
       if (vector.output.err) continue;
       const signers: Bytes[] = [];
       for (const { guarantee, assignment } of assigned(config, vector)) {
-        assert.ok(guaranteeSigned(guarantee, assignment.keys), name);
+        const signed: boolean = guaranteeSigned(guarantee, assignment.keys);
+        assert.ok(signed, name);
         signers.push(...signerKeys(guarantee, assignment.keys));
         checked++;
       }
-      assert.deepEqual(reporters(signers).map(toHex), vector.output.ok?.reporters, name);
+      const reportersHex: string[] = reporters(signers).map(toHex);
+      assert.deepEqual(reportersHex, vector.output.ok?.reporters, name);
     }
   }
   assert.equal(checked, 44); // 21 guarantees on tiny, 23 on full
@@ -152,7 +154,8 @@ test("every accepted guarantee is signed by its guarantors, and 𝐆 lists them 
 test("a forged guarantee signature is caught", () => {
   const vector = vectorJson("stf/reports/tiny/bad_signature-1.json") as ReportsVector;
   const [{ guarantee, assignment }] = assigned(TINY, vector);
-  assert.equal(guaranteeSigned(guarantee, assignment.keys), false);
+  const signed: boolean = guaranteeSigned(guarantee, assignment.keys);
+  assert.equal(signed, false);
 });
 ```
 
