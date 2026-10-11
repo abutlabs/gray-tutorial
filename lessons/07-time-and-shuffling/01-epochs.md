@@ -77,14 +77,8 @@ The `safrole` trace's state after block n is the state before block n + 1, so
 `traceState("safrole", n + 1)` is block n's *after*. And `after.slice(1)` is η′₁ to η′₃:
 η′₀ is left out on purpose, since it changes every block and needs Part 8.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-## The code
+A stub, with a chain where time stands still: every slot in epoch 0, and an entropy
+history that never moves along.
 
 **New file** `src/epoch.ts`
 
@@ -94,6 +88,60 @@ npm test
 
 import type { Bytes } from "./bytes.ts";
 import type { Config } from "./config.ts";
+
+export function epochOf(config: Config, slot: number): number {
+  return 0;
+}
+
+export function phaseOf(config: Config, slot: number): number {
+  return 0;
+}
+
+export function entropyHistory(entropy: Bytes[], newEpoch: boolean): Bytes[] {
+  return entropy.slice(1);
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ an epoch is E slots: 12 on tiny, 600 on full (1.4ms)
+✖ an epoch mark is in exactly the blocks that start a new epoch (28.6ms)
+✖ at a new epoch the entropy history moves along one; otherwise it stays (97.1ms)
+...
+ℹ tests 69
+ℹ suites 0
+ℹ pass 66
+ℹ fail 3
+...
+test at test/epoch.test.ts:23:1
+✖ an epoch mark is in exactly the blocks that start a new epoch (28.6ms)
+  AssertionError [ERR_ASSERTION]: block 12
+
+  true !== false
+
+      at TestContext.<anonymous> (…/client/test/epoch.test.ts:27:12)
+...
+test at test/epoch.test.ts:33:1
+✖ at a new epoch the entropy history moves along one; otherwise it stays (97.1ms)
+  AssertionError [ERR_ASSERTION]: block 12
+...
+```
+
+All three red, and both trace tests stopped at the same block: 12, the first block of
+epoch 1. For blocks 1 to 11 the frozen clock was right, by luck, since nothing changes
+inside an epoch. The first epoch boundary gives it away.
+
+## The code
+
+**Replace in** `src/epoch.ts`
+
+```ts
 
 /** e: the epoch a slot falls in, ⌊slot / E⌋. */
 export function epochOf(config: Config, slot: number): number {
@@ -118,11 +166,21 @@ export function entropyHistory(entropy: Bytes[], newEpoch: boolean): Bytes[] {
 
 ```sh
 npm test
-# prints: an epoch mark is in exactly the blocks that start a new epoch
-# prints: at a new epoch the entropy history moves along one; otherwise it stays
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ an epoch mark is in exactly the blocks that start a new epoch (123.7ms)
+✔ at a new epoch the entropy history moves along one; otherwise it stays (112.7ms)
+...
+ℹ tests 69
+ℹ suites 0
+ℹ pass 69
+ℹ fail 0
+...
+reported 69 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791729464631
+...
 ```
 
 Eight epochs began in those 100 blocks, at slots 12, 24, 36 and so on to 96, and the
@@ -172,9 +230,19 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/epochs.ts
-# prints: slot 12: epoch 1 begins. Epoch mark: true. η₁ is now 0xcf7f084efbeefbda…
-# prints: 8 new epochs in 100 blocks.
-# prints: reported to Grafana
+```
+
+```text
+slot 12: epoch 1 begins. Epoch mark: true. η₁ is now 0xcf7f084efbeefbda…
+slot 24: epoch 2 begins. Epoch mark: true. η₁ is now 0x9624e3672337076c…
+slot 36: epoch 3 begins. Epoch mark: true. η₁ is now 0x9e41bb39cea21929…
+slot 48: epoch 4 begins. Epoch mark: true. η₁ is now 0x27bea4ecb9542b84…
+slot 60: epoch 5 begins. Epoch mark: true. η₁ is now 0x8b313cbbc547b294…
+slot 72: epoch 6 begins. Epoch mark: true. η₁ is now 0x4ae60fe5dd387d08…
+slot 84: epoch 7 begins. Epoch mark: true. η₁ is now 0x76af9e385ba89964…
+slot 96: epoch 8 begins. Epoch mark: true. η₁ is now 0x5a9144b76436afd1…
+8 new epochs in 100 blocks.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=epochs-1791729468062
 ```
 
 `0xcf7f084e…` should look familiar: it's the η₀ that `bin/read-state.ts` showed you in
@@ -209,6 +277,7 @@ with one `slice`. Both work; notice which one you'd rather check at 2 a.m.
 ## What you have
 
 Your client knows what epoch it is, where in the epoch it is, and what has to change when
-a new one begins.
+a new one begins. An epoch also deals jobs out, the same way on every node:
+[lesson 7.2](./02-the-shuffle.md) builds the shuffle that does it.
 
 Next: [7.2 The shuffle](./02-the-shuffle.md)

@@ -67,14 +67,7 @@ The first test is the table above. The vectors give just a length and a hash; th
 are always 0, 1, 2 and so on, so the test builds them. 341 items is the full network's
 core count.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-## The code
+A stub that doesn't shuffle at all: every list comes back as it went in.
 
 **New file** `src/shuffle.ts`
 
@@ -83,6 +76,65 @@ npm test
 // randomness it uses comes from a hash they all share.
 
 import type { Bytes } from "./bytes.ts";
+
+export function shuffle<T>(items: T[], numbers: number[]): T[] {
+  return items;
+}
+
+export function numbersFromHash(h: Bytes, l: number): number[] {
+  return [];
+}
+
+export function shuffleWithHash<T>(items: T[], h: Bytes): T[] {
+  return items;
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ a shuffle by hand: four letters, four numbers (3.9ms)
+✖ the shuffle vectors: 0 to 341 items, shuffled by a hash (1.0ms)
+...
+ℹ tests 71
+ℹ suites 0
+ℹ pass 69
+ℹ fail 2
+...
+test at test/shuffle.test.ts:7:1
+✖ a shuffle by hand: four letters, four numbers (3.9ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    [
+  +   'a',
+      'b',
+  +   'c',
+      'd',
+  -   'a',
+  -   'c'
+    ]
+
+      at TestContext.<anonymous> (…/client/test/shuffle.test.ts:8:10)
+...
+    actual: [ 'a', 'b', 'c', 'd' ],
+    expected: [ 'b', 'd', 'a', 'c' ],
+...
+```
+
+Red: the stub hands every list back as it was, `a b c d`, where the table above says
+`b d a c`.
+
+## The code
+
+**Replace in** `src/shuffle.ts`
+
+```ts
 import { concatBytes } from "./bytes.ts";
 import type { Trace } from "./codec/reader.ts";
 import { decodeFixed, encodeFixed } from "./codec/numbers.ts";
@@ -129,11 +181,21 @@ times; that's wasteful, but it reads exactly like Q.
 
 ```sh
 npm test
-# prints: a shuffle by hand: four letters, four numbers
-# prints: the shuffle vectors: 0 to 341 items, shuffled by a hash
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ a shuffle by hand: four letters, four numbers (0.8ms)
+✔ the shuffle vectors: 0 to 341 items, shuffled by a hash (30.4ms)
+...
+ℹ tests 71
+ℹ suites 0
+ℹ pass 71
+ℹ fail 0
+...
+reported 71 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791729471524
+...
 ```
 
 ### Break it on purpose
@@ -193,9 +255,19 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/shuffle.ts 8 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-# prints: 3180133873 mod   8 = 1: pick 1
-# prints: shuffled: 1, 2, 6, 0, 7, 4, 3, 5
-# prints: reported to Grafana
+```
+
+```text
+3180133873 mod   8 = 1: pick 1
+2874123541 mod   7 = 2: pick 2
+1702679006 mod   6 = 2: pick 6
+3779386820 mod   5 = 0: pick 0
+ 313342713 mod   4 = 1: pick 7
+1075366959 mod   3 = 0: pick 4
+2867850673 mod   2 = 1: pick 3
+ 573291173 mod   1 = 0: pick 5
+shuffled: 1, 2, 6, 0, 7, 4, 3, 5
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=shuffle-1791729474845
 ```
 
 That's the second shuffle vector, worked out step by step. Look at the third pick: the
@@ -229,6 +301,7 @@ last item into the gap exactly as yours does: `work.(index) <- work.(remaining -
 ## What you have
 
 A shuffle every node agrees on: give it a list and a hash, and every JAM client in the
-world deals the same hand.
+world deals the same hand. Part 8 puts epochs, entropy and shuffles to work in
+Safrole, the lottery that picks who makes each block.
 
 Next: [Part 8 · Safrole](../08-safrole/index.md)
