@@ -273,8 +273,26 @@ register being written (only `cmov` looks at it). `bigint` values never overflow
 wrap-around is explicit: `mod` brings every result back into 64 bits, and `ext32` into
 32 bits, sign-extended. One trap with bigint: `%` keeps the sign of the number on its
 left, so `-7n % 2n` is `-1n`. That's wrong for wrapping, which is why `mod` adds n and
-takes `%` again. But it's exactly the Gray Paper's smod, which is why `rem_s` uses `%`
-directly.
+takes `%` again:
+
+```ts
+const mod = (x: bigint, n: bigint) => ((x % n) + n) % n;
+```
+
+But that same sign-keeping `%` is exactly the Gray Paper's smod, so the signed remainders
+use it directly:
+
+```ts
+  rem_s_64: (p, q) => {
+    const [a, b] = [s64(p), s64(q)];
+    if (a === -(2n ** 63n) && b === -1n) return 0n;
+    return u64(b === 0n ? a : a % b);
+  },
+```
+
+−7 rem 2 is −1, the test's answer, and `u64` writes it into the register as 2^64 − 1. The
+line before covers the one remainder whose division would overflow, −2^63 rem −1, which
+the Gray Paper makes 0; and a remainder by 0 is the number itself.
 
 `operationOf` maps the immediate and alt names onto the three-register ones, so one
 table serves 72 instructions. `cmov…_imm` is the odd one out: its immediate is the
