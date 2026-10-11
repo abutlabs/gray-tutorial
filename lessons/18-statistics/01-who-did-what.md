@@ -203,8 +203,34 @@ export function updateValidatorStats(
 }
 ```
 
-The three steps, in order. Note the copy at the top: `before`'s tallies stay as they were,
-so a test can still compare with them. `reporters` and `signerKeys` come from [lesson 12.2](../12-guarantees/02-signed-and-counted.md).
+The three steps, in the Gray Paper's order. Assurances count first, in the tally in
+progress:
+
+```ts
+  for (const a of extrinsic.assurances) current[a.validator_index].assurances += 1;
+```
+
+Then a new epoch turns the page. Because it comes second, the assurances just counted
+stay with the epoch the block's parent was in:
+
+```ts
+  if (epoch(slot) !== epoch(before.slot)) {
+    last = current;
+    current = validators.map(fresh);
+  }
+```
+
+Then the rest go into the tally in progress, fresh or not: the author's block, tickets and
+preimages, and one guarantee for each reporter, found by its Ed25519 key:
+
+```ts
+  validators.forEach((key, v) => {
+    if (signed.has(toHex(key.ed25519))) current[v].guarantees += 1;
+  });
+```
+
+Note the copy at the top: `before`'s tallies stay as they were, so a test can still
+compare with them. `reporters` and `signerKeys` come from [lesson 12.2](../12-guarantees/02-signed-and-counted.md).
 
 > [!NOTE]
 > **The simple road.** The guarantee count looks the guarantors' keys up in κ′. The Gray
