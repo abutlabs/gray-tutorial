@@ -159,6 +159,46 @@ Your code will live in three folders: `src/` for the client, `test/` for its tes
 npm install
 ```
 
+## Troubleshooting
+
+When something here doesn't work, it's almost always one of these:
+
+- **`Could not find '.../test/**/*.test.ts'`, or `ERR_UNKNOWN_FILE_EXTENSION` for a `.ts`
+  file.** This terminal is on an older Node. `nvm use`, then `node --version` should say
+  `v26.` and something. (At the repo root, the tutorial's own commands say it in words:
+  `The Gray Tutorial needs Node 26`.)
+- **`./obs up` says it `failed to connect to the docker API`** (older Docker: `Cannot
+  connect to the Docker daemon`). Docker isn't running. Start Docker Desktop, wait until
+  it's running, and `./obs up` again.
+- **`Bind for 127.0.0.1:3300 failed: port is already allocated`** (or `address already in
+  use`). Another program holds one of the stack's ports, such as 3300 (Grafana) or 3100
+  (Loki). Often it's an older copy of the stack: `docker ps` lists what's running. Stop
+  it, then `./obs up` again.
+- **A run prints `not reported: is the observability stack up?`** The stack isn't
+  running: `../observability/obs up` from the repo root. Your code is fine; it just had
+  no one to tell.
+- **`npm run vectors` fails or stops part way** (a dropped connection, say). Run it again.
+  If it keeps failing, delete the `vectors/` folder and run it once more.
+
+## Working offline
+
+Everything runs on your own machine, so a flight is fine, if you fetch three things
+while you're still online:
+
+1. **The test vectors**: `npm run vectors`, done above.
+2. **The stack's Docker images**: `./obs up` once, done above too. Docker keeps them.
+3. **The two packages later lessons add** ([lessons 5.1](../05-hashing-and-signatures/01-hashes.md)
+   and [5.3](../05-hashing-and-signatures/03-signatures.md)): in `client/`, run the command
+   below. It fills npm's cache without changing your `package.json`.
+
+```sh
+npm install --no-save @noble/hashes@2.4.0 @noble/curves@2.4.0
+```
+
+On the plane, where a lesson says `npm install`, type `npm install --offline`: npm takes
+everything from its cache. The lessons, in VS Code or on the website (`npm run site`),
+need no network at all.
+
 ## What you have
 
 Node 26, the official test vectors, an observability stack waiting for its first word,
