@@ -171,4 +171,10 @@ They make snippets easy to place:
 3. **Field names copy the test vectors** (`anchor_slot`, not `anchorSlot`), so a vector's
    JSON and your values look exactly alike.
 
-Ready? Next: [0.2 Set up the project](./02-set-up-the-project.md)
+## What you have
+
+The map: what JAM is, what your client will do, how a lesson works, and where to turn
+when you're stuck. Nothing to run yet. [Lesson 0.2](./02-set-up-the-project.md) sets up
+the project, because every lesson after this one runs code and watches it.
+
+Next: [0.2 Set up the project](./02-set-up-the-project.md)

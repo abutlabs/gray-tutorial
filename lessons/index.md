@@ -18,7 +18,7 @@ checked against the same official test vectors, but it isn't built for speed.
 1. **Read [0.1 What you will build](./00-start/01-what-you-will-build.md).** A short read
    with nothing to type: what JAM is, what a client does, and where this tutorial goes.
 2. **Set up with [0.2 Set up the project](./00-start/02-set-up-the-project.md).** Node 26,
-   the tools, the dashboard, and your first passing test.
+   the tools, the dashboard, and an empty client ready for its first test.
 3. **Then one lesson at a time, in order.** Each one explains one rule in plain words,
    gives you the code in small snippets, and has you run it.
 

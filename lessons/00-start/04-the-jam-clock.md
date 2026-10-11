@@ -59,25 +59,10 @@ test("an hour is 600 slots", () => {
 `node:test` gives you `test(name, fn)`. `node:assert/strict` gives you assertions that
 compare exactly, so `assert.equal(1, "1")` fails, as it should.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-Red! Node can't find `src/time.ts`, because there isn't one. Good: now you know the test
-really runs, and really fails without the code.
-
-Two small conventions you'll see in every lesson: a line starting with `#` in a **Run**
-block is a note, not a command (don't type it; the website's copy button leaves it out),
-and `# fails with:` or `# prints:` tells you what to look for in the output. The
-tutorial's own checks look for exactly that text.
-
-Over in Grafana, this failed run is already there: *Tests failed* is no longer 0, and
-*Test results* says which test failed and why.
-
-## The code
+The test imports `slotAt` from a file that doesn't exist yet. Give it the smallest file
+that runs: the era's two numbers, and a `slotAt` that always says 0. Wrong on purpose. A
+test that fails because a file is missing proves only that the file is missing; a test
+that fails on its assertions proves it really checks the clock.
 
 **New file** `src/time.ts`
 
@@ -90,6 +75,54 @@ export const JAM_COMMON_ERA = 1_735_732_800;
 /** P: a timeslot lasts six seconds. */
 export const SLOT_SECONDS = 6;
 
+/** The timeslot a moment falls in: whole slots since the JAM Common Era. */
+export function slotAt(date: Date): number {
+  return 0;
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ slot 0 is the first six seconds of the JAM Common Era (2.1ms)
+✖ an hour is 600 slots (0.1ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+...
+test at test/time.test.ts:13:1
+✖ an hour is 600 slots (0.1ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  0 !== 600
+
+      at TestContext.<anonymous> (…/client/test/time.test.ts:14:10)
+...
+    actual: 0,
+    expected: 600,
+...
+reported 2 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791725866613
+```
+
+Red, for the right reason: both tests ran, and both caught the stub. Here is how to read a
+failure. `0 !== 600` is *actual !== expected*: the test wanted 600 and got 0, as the
+`actual` and `expected` lines below it say in words. `time.test.ts:14` is the assertion
+that failed. Now you know the tests really check the clock.
+
+Over in Grafana, this failed run is already there: *Tests failed* is no longer 0, and
+*Test results* says which test failed and why.
+
+## The code
+
+**Replace in** `src/time.ts`
+
+```ts
 /** The timeslot a moment falls in: whole slots since the JAM Common Era. */
 export function slotAt(date: Date): number {
   const ms = date.getTime() - JAM_COMMON_ERA * 1000;
@@ -129,7 +162,7 @@ test at test/time.test.ts:7:1
 
 ## Bug hunt
 
-Red again, and this time the file is there. Something in it is wrong. (On purpose: every
+Red again, and this time the code is real. Something in it is wrong. (On purpose: every
 so often a lesson hands you a bug, so that finding one becomes a habit before it matters.)
 Three places tell you what happened:
 
@@ -216,8 +249,11 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/now.ts
-# prints: It is JAM timeslot
-# prints: reported to Grafana
+```
+
+```text
+It is JAM timeslot ….
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=now-1791725866841
 ```
 
 A number in the millions: every six-second slot since the start of 2025. On the
@@ -252,6 +288,8 @@ clock, without sending a single message.
 ## What you have
 
 Your first JAM rule, its tests, and a program that reports what it found. From here on,
-every lesson's `npm test` lands in Grafana.
+every lesson's `npm test` lands in Grafana. The clock was a single number; nearly
+everything else in JAM is bytes, and numbers too big for JavaScript's own. Part 1 starts
+there.
 
 Next: [Part 1 · Bytes and numbers](../01-bytes-and-numbers/index.md)

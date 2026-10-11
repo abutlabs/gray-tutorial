@@ -117,7 +117,6 @@ test("no word is half code: two `bigint` values, not two `bigint`s", () => {
 // The Book closes a chapter with what you learned. These lessons predate the rule; the
 // part-by-part rewrite adds theirs and takes them off this list.
 const NO_CLOSING_YET = new Set([
-  "00-start/01-what-you-will-build.md",
   "01-bytes-and-numbers/01-bytes-and-hex.md",
   "01-bytes-and-numbers/02-numbers.md",
   "02-codec/01-fixed-width-integers.md",

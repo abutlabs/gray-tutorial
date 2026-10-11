@@ -136,7 +136,10 @@ before it exits.
 
 ```sh
 node bin/hello.ts
-# prints: reported to Grafana
+```
+
+```text
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=hello-1791724085683
 ```
 
 Open the link. In *Everything your client reported* there it is:
@@ -212,9 +215,32 @@ Plug it into `npm test`, next to the usual output (`spec`):
 
 ```sh
 npm test
-# prints: reported 0 tests to Grafana
 npm run typecheck
 ```
+
+```text
+...
+ℹ tests 0
+ℹ suites 0
+ℹ pass 0
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31.6
+reported 0 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791724085928
+
+> typecheck
+> tsc -p .
+...
+```
+
+Your first look at the test runner's summary, so line by line: `tests` is how many ran,
+`pass` and `fail` how they went, `suites` counts groups of tests (you won't need any),
+`cancelled`, `skipped` and `todo` count tests that didn't run to the end, and
+`duration_ms` is how long it all took. The last line is your reporter's, with a link to
+this very run. (Above the summary, cut here, npm first echoes the command it runs.) Then
+`typecheck` prints its own name and nothing more: from `tsc`, no news is good news.
 
 Zero tests, zero failures: a perfect record, technically. On the dashboard, *Tests passed*
 now says 0. The next lesson writes your first real test, and you'll watch that number
@@ -242,6 +268,8 @@ def push(cli, job, run_id, net, snapshot):
 ## What you have
 
 A client that reports itself. It has said hello, every `npm test` lands in Grafana, and
-any program can report a run with three calls: `new Run`, `event`, `report`.
+any program can report a run with three calls: `new Run`, `event`, `report`. It reports,
+but it knows nothing about JAM yet: [lesson 0.4](./04-the-jam-clock.md) gives it its first
+rule, the clock, test first.
 
 Next: [0.4 The JAM clock](./04-the-jam-clock.md)

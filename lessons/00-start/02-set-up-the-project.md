@@ -159,6 +159,11 @@ Your code will live in three folders: `src/` for the client, `test/` for its tes
 npm install
 ```
 
+```text
+...
+found 0 vulnerabilities
+```
+
 ## Troubleshooting
 
 When something here doesn't work, it's almost always one of these:
@@ -202,6 +207,8 @@ need no network at all.
 ## What you have
 
 Node 26, the official test vectors, an observability stack waiting for its first word,
-and an empty client that knows how to test and type-check itself.
+and an empty client that knows how to test and type-check itself. It has nothing to say
+yet, and no one to say it to: [lesson 0.3](./03-watch-your-client.md) connects it to the
+stack, so that every run from then on shows up in Grafana.
 
 Next: [0.3 Watch your client](./03-watch-your-client.md)

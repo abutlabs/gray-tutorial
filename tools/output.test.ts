@@ -29,6 +29,10 @@ test("an unmarked cut, a wrong line, or output left over is caught", () => {
   assert.match(checkOutput("ℹ tests 2\n...", real)!, /expected here/);
 });
 
+test("npm's warnings don't count: they come from each machine's npm settings", () => {
+  assert.equal(checkOutput("...\nfound 0 vulnerabilities", "added 1 package\nfound 0 vulnerabilities\nnpm warn Unknown env config"), null);
+});
+
 test("… stands for anything inside a line", () => {
   assert.equal(checkOutput("It is JAM timeslot …, reported", "It is JAM timeslot 5,233,107, reported"), null);
   assert.match(checkOutput("It is JAM timeslot …, sent", "It is JAM timeslot 5,233,107, reported")!, /not right|expected here/);
@@ -41,4 +45,5 @@ test("masks: times, durations, run ids, paths into the client, colours", () => {
   assert.equal(normalize("Cannot find module '/Users/a/gray-tutorial/.tangled/src/time.ts'"), "Cannot find module '…/client/src/time.ts'");
   assert.equal(normalize("imported from /home/b/jam/gray-tutorial/client/test/x.ts"), "imported from …/client/test/x.ts");
   assert.equal(normalize("\x1b[32m✔ ok\x1b[39m"), "✔ ok");
+  assert.equal(normalize("d/gray-tutorial?var-client=you&var-run_id=x"), normalize("d/gray-tutorial?var-client=tutorial-check&var-run_id=x"));
 });
