@@ -5,11 +5,22 @@ stack for function calls, data to read, places to write results. This lesson giv
 PVM its **memory**, 4 gigabytes of address space of which a program can touch only the
 pages it's been given, and the thirty instructions that load and store.
 
+## New words
+
+- **Memory and page.** The PVM's memory is 2^32 bytes, handed out in pages of 4,096. A
+  program can touch only the pages it has. *Example:* the page at 0x20000 holds the
+  bytes 0x20000 to 0x20fff.
+- **Fault.** The machine stopping because a program touched a page it wasn't given,
+  reporting that page's address so whoever runs it could add the page and go on.
+  *Example:* a load from 0x30005 with no page there faults at 0x30000.
+
+Both are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §4 and Appendix A.
 
-**RAM** is 2^32 bytes, cut into **pages** of Z_P = 4,096 bytes. Each page is *readable*
+**RAM** is 2^32 bytes, cut into *pages* of Z_P = 4,096 bytes. Each page is *readable*
 (R), *writable* (W, which is readable too), or *inaccessible*. A fresh machine has only
 the pages its program needs. Everything else is empty space.
 
@@ -18,7 +29,7 @@ a byte that isn't writable, the machine stops and changes *nothing*:
 
 - if the lowest bad address is below 2^16, that's a **panic**: nothing may live in the
   first 64 kB, so a near-null pointer is always a crash;
-- otherwise it's a **fault**, reporting the address of the bad *page* (the bad address
+- otherwise it's a *fault*, reporting the address of the bad page (the bad address
   rounded down to a multiple of 4,096).
 
 The machine stays on the faulting instruction, so whoever runs it could add the page and
@@ -92,8 +103,23 @@ byte it's −128, which in 64 bits is `0xffffffffffffff80`.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/memory.ts' imported from …/client/test/memory.test.ts
+...
+✖ test/memory.test.ts (178.7ms)
+...
+ℹ tests 397
+ℹ suites 0
+ℹ pass 396
+ℹ fail 1
+...
+```
+
+Red: `src/pvm/memory.ts` doesn't exist yet. Pages, the ε^μ check and reading and
+writing come as one small file, then the machine learns to use them.
 
 ## The code
 
@@ -252,11 +278,23 @@ the width. That's [lesson 15.3](./03-the-machine.md)'s `FAMILIES` paying off: `s
 
 ```sh
 npm test
-# prints: store 8 bytes, load them back, and load one as a signed byte
-# prints: no page there: a fault at the page's address; below 2^16: a panic
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (268.9ms)
+...
+✔ store 8 bytes, load them back, and load one as a signed byte (1.6ms)
+✔ no page there: a fault at the page's address; below 2^16: a panic (0.6ms)
+...
+ℹ tests 399
+ℹ suites 0
+ℹ pass 399
+ℹ fail 0
+...
+reported 399 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736620345
+...
 ```
 
 ## Watch it
@@ -304,10 +342,16 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/memory.ts
-# prints: page 0x20000 after:  0x8077665544332211
-# prints: r4 = 0xffffffffffffff80
-# prints: a fault at 0x30000
-# prints: reported to Grafana
+```
+
+```text
+page 0x20000 before: 0x0000000000000000
+run: halt
+page 0x20000 after:  0x8077665544332211  (little-endian: the lowest byte first)
+r3 = 0x1122334455667780  (all 8 bytes back)
+r4 = 0xffffffffffffff80  (one byte, 0x80, sign-extended: −128)
+load from 0x30005, where there's no page: a fault at 0x30000
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=memory-1791736626608
 ```
 
 Look at the page after the store: `0x8077665544332211`, the register's bytes *backwards*.
@@ -330,7 +374,7 @@ One line per instruction, thirty of them: lasair spells each out where yours rea
 name. And its comment points at a real choice. lasair's fault carries the address it
 tried, where yours carries the start of the page, as the Gray Paper's ε^μ does. Most of
 the time nobody looks: when a service's code runs, any fault simply counts as a panic
-(Ψ_M, Part 16). But one place does look. A machine run *inside* another machine, by the
+(Ψ_M, [Part 16](../16-host-calls/index.md)). But one place does look. A machine run *inside* another machine, by the
 `invoke` host call, hands its fault back to the program that ran it, and there the
 address is part of the answer.
 
@@ -340,5 +384,6 @@ address is part of the answer.
 
 Memory with pages and permissions, and every load and store: the PVM can now hold real
 data, and fails exactly the way the Gray Paper says when a program reaches too far.
+What it still can't do is compute much: [lesson 15.5](./05-arithmetic.md) adds the arithmetic.
 
 Next: [15.5 Arithmetic](./05-arithmetic.md)

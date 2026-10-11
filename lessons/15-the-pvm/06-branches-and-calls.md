@@ -27,7 +27,8 @@ Appendix A.5:
   it was before φ_A changes, which matters when they're the same register.
 - **`unlikely`** (2) changes nothing at all. It marks a path a branch rarely takes, and
   only the gas meter cares: a branch with `unlikely` (or `trap`) at either end costs less.
-  Gas gets its own lessons later.
+  For now, all you need to know is that it does nothing; gas gets its own lessons,
+  [15.9 to 15.11](./09-what-instructions-cost.md).
 
 ## The tests
 
@@ -120,8 +121,31 @@ would save r0 in memory before making a call of its own.)
 
 ```sh
 npm test
-# fails with: isn't built yet
 ```
+
+```text
+...
+✖ signed or unsigned: −1 is the biggest number there is, or less than 1 (4.6ms)
+✖ an immediate branch compares with ν_X, sign-extended like every immediate (0.2ms)
+✖ a call: load_imm_jump leaves the way back in r0, and the function returns by it (0.1ms)
+✖ a call through a register: load_imm_jump_ind jumps to φ_B + ν_Y (0.1ms)
+✖ unlikely does nothing but move on (0.1ms)
+✖ every branch in the GP's tables has a comparison: 16 of them (0.6ms)
+...
+ℹ tests 414
+ℹ suites 0
+ℹ pass 408
+ℹ fail 6
+...
+test at test/branches.test.ts:19:1
+✖ signed or unsigned: −1 is the biggest number there is, or less than 1 (4.6ms)
+  Error: branch_lt_u isn't built yet
+...
+```
+
+Red, and for a reason worth reading: the tests reach branches that no family handles
+yet, so `step` throws "isn't built yet". That's [lesson 15.3](./03-the-machine.md)'s rule of thumb at work:
+a thrown `Error` is your client's gap, not the program's crash.
 
 ## The code
 
@@ -210,16 +234,34 @@ function decisions(m: Machine, ins: Instruction): Exit | undefined {
 comparison it wants (`branch_lt_s_imm` → `lt_s`) and whether its other side is ν_X or
 φ_B. In `load_imm_jump_ind`, the address is worked out *before* φ_A changes: write the
 two lines the other way round and a call through r0 would jump to its own way back.
+No test here calls through the same register it writes, though, so nothing would catch
+that mistake yet: the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the test.
 
 **Run**
 
 ```sh
 npm test
-# prints: a call through a register: load_imm_jump_ind jumps to φ_B + ν_Y
-# prints: every branch in the GP's tables has a comparison: 16 of them
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ signed or unsigned: −1 is the biggest number there is, or less than 1 (1.3ms)
+✔ an immediate branch compares with ν_X, sign-extended like every immediate (0.3ms)
+✔ a call: load_imm_jump leaves the way back in r0, and the function returns by it (0.6ms)
+✔ a call through a register: load_imm_jump_ind jumps to φ_B + ν_Y (0.1ms)
+✔ unlikely does nothing but move on (0.1ms)
+✔ every branch in the GP's tables has a comparison: 16 of them (0.6ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (203.9ms)
+...
+ℹ tests 414
+ℹ suites 0
+ℹ pass 414
+ℹ fail 0
+...
+reported 414 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736644236
+...
 ```
 
 ## Watch it
@@ -259,9 +301,27 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/branches.ts
-# prints: branch_lt_u      falls through
-# prints: branch_lt_s      jumps
-# prints: reported to Grafana
+```
+
+```text
+r0 = −1, against r1 = 1 or ν_X = 1:
+branch_eq_imm    falls through
+branch_ne_imm    jumps
+branch_lt_u_imm  falls through
+branch_le_u_imm  falls through
+branch_ge_u_imm  jumps
+branch_gt_u_imm  jumps
+branch_lt_s_imm  jumps
+branch_le_s_imm  jumps
+branch_ge_s_imm  falls through
+branch_gt_s_imm  falls through
+branch_eq        falls through
+branch_ne        jumps
+branch_lt_u      falls through
+branch_lt_s      jumps
+branch_ge_u      jumps
+branch_ge_s      falls through
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=branches-1791736649004
 ```
 
 Read it in pairs. Every unsigned comparison and its signed twin disagree about −1 and 1:
@@ -292,6 +352,7 @@ writes a `compare_u64` for the `_u` branches, while your `bigint` values are uns
 ## What you have
 
 Every branch, and calls both ways. Your machine now runs every instruction but eleven:
-ten that count and shuffle bits, and `ecalli`, the door out to the host.
+ten that count and shuffle bits, and `ecalli`, the door out to the host. [Lesson
+15.7](./07-bits-and-bytes.md) builds the ten.
 
 Next: [15.7 Bits and bytes](./07-bits-and-bytes.md)

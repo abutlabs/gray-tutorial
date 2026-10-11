@@ -122,8 +122,23 @@ operation, so none can be forgotten.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/arithmetic.ts' imported from …/client/test/arithmetic.test.ts
+...
+✖ test/arithmetic.test.ts (224.2ms)
+...
+ℹ tests 400
+ℹ suites 0
+ℹ pass 399
+ℹ fail 1
+...
+```
+
+Red: `src/pvm/arithmetic.ts` doesn't exist yet. It's one table of operations, a line
+each, so it comes whole, and the machine's new family is a few lines after it.
 
 ## The code
 
@@ -317,11 +332,30 @@ function arithmetic(m: Machine, ins: Instruction): Exit | undefined {
 
 ```sh
 npm test
-# prints: dividing by zero gives all ones; −2^63 ÷ −1 keeps −2^63
-# prints: every arithmetic instruction in the GP's tables has an operation: 72 of them
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ a 32-bit result is sign-extended to 64 bits (2.9ms)
+✔ dividing by zero gives all ones; −2^63 ÷ −1 keeps −2^63 (0.3ms)
+✔ signed division rounds towards zero; the remainder keeps the dividend's sign (0.2ms)
+✔ shifts: arithmetic keeps the sign, logical doesn't (0.1ms)
+✔ rotations carry the bits round (0.2ms)
+✔ immediate forms: φ_B with ν_X, and the alt forms the other way round (0.1ms)
+✔ cmov: move only if the condition register is zero (iz) or not (nz) (0.1ms)
+✔ the upper half of a product, and min/max signed or not (0.1ms)
+✔ every arithmetic instruction in the GP's tables has an operation: 72 of them (0.4ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (211.3ms)
+...
+ℹ tests 408
+ℹ suites 0
+ℹ pass 408
+ℹ fail 0
+...
+reported 408 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736632944
+...
 ```
 
 ## Watch it
@@ -373,9 +407,19 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/alu.ts
-# prints: div_u_64       5 ÷ 0, unsigned
-# prints: 0xfffffffffffffffd = -3
-# prints: reported to Grafana
+```
+
+```text
+add_32         2^31 − 1 + 1, in 32 bits         0xffffffff80000000 = -2147483648
+div_u_64       5 ÷ 0, unsigned                  0xffffffffffffffff = -1
+div_s_64       −2^63 ÷ −1: too big to fit       0x8000000000000000 = -9223372036854775808
+div_s_64       −7 ÷ 2: towards zero             0xfffffffffffffffd = -3
+rem_s_64       −7 rem 2: the dividend's sign    0xffffffffffffffff = -1
+shar_r_64      −8 >> 1, arithmetic              0xfffffffffffffffc = -4
+shlo_r_64      −8 >> 1, logical                 0x7ffffffffffffffc = 9223372036854775804
+rot_r_64       1 rotated right by 1             0x8000000000000000 = -9223372036854775808
+mul_upper_u_u  (2^64 − 1)², upper 64 bits       0xfffffffffffffffe = -2
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=alu-1791736638573
 ```
 
 Every corner from the list above, worked out by your PVM and shown twice, as raw bits
@@ -407,6 +451,7 @@ one half of the job free.
 ## What you have
 
 All 72 arithmetic and logic instructions, in both widths, every corner of the Gray
-Paper's tables written down and tested.
+Paper's tables written down and tested. A program that can only compute in a straight
+line isn't much of one: [lesson 15.6](./06-branches-and-calls.md) adds the rest of the choices, and calls.
 
 Next: [15.6 Branches and calls](./06-branches-and-calls.md)

@@ -759,3 +759,8 @@ way out, a jump or branch (or a stop) at its end. Gas is paid one basic block at
 **Halt, panic and out of gas.** The ways a program stops: halt is finishing on purpose,
 panic is a crash, out of gas (oog) is running out of budget.
 ([15.3](./15-the-pvm/03-the-machine.md), [15.11](./15-the-pvm/11-the-gas-meter.md))
+
+**Fault.** The machine stopping because a program touched a page of memory it wasn't
+given. It reports the page's address, so whoever runs the machine could add the page
+and go on. *Example:* a load from 0x30005 with no page there faults at 0x30000.
+([15.4](./15-the-pvm/04-memory.md))
