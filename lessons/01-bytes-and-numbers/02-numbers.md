@@ -81,8 +81,22 @@ unsigned value. JAM's virtual machine will lean on that.
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported
+```
+
+```text
+...
+✔ hex there and back (0.8ms)
+✔ no bytes at all is just 0x (0.1ms)
+✔ a number rounds above 2^53: 2^64 - 70 and 2^64 are the same float (0.6ms)
+✔ a bigint never rounds (0.1ms)
+✔ bitwise operators work on signed 32-bit integers (0.1ms)
+✔ slot 0 is the first six seconds of the JAM Common Era (1.3ms)
+✔ an hour is 600 slots (0.1ms)
+ℹ tests 7
+...
+ℹ fail 0
+...
+reported 7 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726099568
 ```
 
 All green on the first try, because these tests pin down how JavaScript already
@@ -112,5 +126,11 @@ let ult (a : int64) (b : int64) = Int64.unsigned_compare a b < 0
 `ult` is "unsigned less than", and every comparison in that encoder now goes through it.
 
 </details>
+
+## What you have
+
+One rule for every number in your client, `number` up to 32 bits and `bigint` for 64,
+and three tests that keep JavaScript's quirks in plain sight. Bytes and numbers are the
+raw material. Part 2 builds what turns any JAM value into them and back: the codec.
 
 Next: [Part 2 · The codec](../02-codec/index.md)

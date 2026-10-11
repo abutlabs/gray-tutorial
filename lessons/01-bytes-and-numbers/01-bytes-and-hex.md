@@ -69,16 +69,8 @@ test("no bytes at all is just 0x", () => {
 `assert.deepEqual` compares two arrays byte by byte. (Plain `===` would only ask whether
 they are the very same object, which two separate arrays never are.)
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-Red: there's no `src/bytes.ts` yet. Let's fix that.
-
-## The code
+As in [lesson 0.4](../00-start/04-the-jam-clock.md), give the test the smallest file that
+runs, with answers that are wrong on purpose:
 
 **New file** `src/bytes.ts`
 
@@ -90,6 +82,54 @@ export type Bytes = Uint8Array;
 
 /** The bytes as the test vectors write them: "0x", then two hex digits per byte. */
 export function toHex(bytes: Bytes): string {
+  return "";
+}
+
+/** The bytes back from "0x" hex. */
+export function fromHex(hex: string): Bytes {
+  return new Uint8Array(0);
+}
+```
+
+`type Bytes = Uint8Array` is a *type alias*. It checks nothing extra, but from now on
+every function that takes bytes says so out loud.
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ hex there and back (0.9ms)
+✖ no bytes at all is just 0x (0.1ms)
+✔ slot 0 is the first six seconds of the JAM Common Era (1.3ms)
+✔ an hour is 600 slots (0.1ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+...
+test at test/bytes.test.ts:5:1
+✖ hex there and back (0.9ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  '' !== '0x0102ff'
+
+...
+```
+
+Red, and both tests caught the stub: `'' !== '0x0102ff'`, the empty text the stub gave
+against the hex the test wanted. (Text comes in quotes, so an empty answer still shows.)
+
+## The code
+
+**Replace in** `src/bytes.ts`
+
+```ts
+/** The bytes as the test vectors write them: "0x", then two hex digits per byte. */
+export function toHex(bytes: Bytes): string {
   return "0x" + bytes.toHex();
 }
 
@@ -99,14 +139,23 @@ export function fromHex(hex: string): Bytes {
 }
 ```
 
-`type Bytes = Uint8Array` is a type alias. It checks nothing extra, but from now on every
-function that takes bytes says so out loud.
+Node does the hex, your client does the `0x`.
 
 **Run, expect it to fail**
 
 ```sh
 npm test
-# fails with: Input string must contain hex characters in even length
+```
+
+```text
+...
+test at test/bytes.test.ts:5:1
+✖ hex there and back (0.5ms)
+  SyntaxError [Error]: Input string must contain hex characters in even length
+      at Uint8Array.fromHex (<anonymous>)
+      at fromHex (…/client/src/bytes.ts:13:21)
+      at TestContext.<anonymous> (…/client/test/bytes.test.ts:8:20)
+...
 ```
 
 ## Bug hunt
@@ -115,9 +164,9 @@ Red again, with the file right there. (On purpose: your second planted bug, afte
 Last time the code gave a wrong answer. This time it crashes, and a crash leaves a trail.
 
 1. **The test output.** Both tests failed, with the same message: `SyntaxError: Input
-   string must contain hex characters in even length`. Under it is a stack trace. Skip
+   string must contain hex characters in even length`. Under it is a *stack trace*. Skip
    the lines inside Node and find the first one in your own code: `at fromHex
-   (.../src/bytes.ts:13:21)`. That's line 13, the inside of `fromHex`. The line below
+   (…/client/src/bytes.ts:13:21)`. That's line 13, the inside of `fromHex`. The line below
    it, in `test/bytes.test.ts`, is the test that called it.
 2. **The dashboard.** *Tests failed* says 2, and *Test results* has two `FAIL` lines with
    the same message. Two tests, one cause: both call `fromHex`. And `toHex` is fine: its
@@ -144,9 +193,22 @@ export function fromHex(hex: string): Bytes {
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ hex there and back (1.1ms)
+✔ no bytes at all is just 0x (0.1ms)
+✔ slot 0 is the first six seconds of the JAM Common Era (1.4ms)
+✔ an hour is 600 slots (0.1ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+...
+reported 4 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726098816
+...
 ```
 
 Green. Four tests on the dashboard now. Keep the trick from step 1: when something
@@ -176,5 +238,11 @@ let bytes_to_hex (bs : bytes) : string =
 you, inside Node.
 
 </details>
+
+## What you have
+
+A word for bytes, `Bytes`, and the two functions that turn them into the test vectors'
+hex and back, tested both ways. Bytes are half of what JAM is made of; the other half is
+numbers, and JavaScript has a trap waiting there. [Lesson 1.2](./02-numbers.md) shows it.
 
 Next: [1.2 Numbers](./02-numbers.md)
