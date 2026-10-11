@@ -125,14 +125,8 @@ actually had after each block. (Block 100 has one more, but no next state in the
 to compare against.) The third test turns the `preimages` vectors' accounts into state
 entries with [lesson 6.2](../06-state-and-merklization/02-state-keys.md)'s keys, so the same `providePreimages` runs on both.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-## The code
+A stub that provides nothing. `RequestHistory` is real already, since the first test
+checks its bytes, and the imports are the ones the real code will need:
 
 **New file** `src/services.ts`
 
@@ -153,6 +147,52 @@ import type { KeyValue } from "./trie.ts";
  */
 export const RequestHistory = seq(u32);
 
+export function providePreimages(
+  entries: KeyValue[],
+  preimages: Preimage[],
+  slot: number, // τ′
+): KeyValue[] {
+  return entries;
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✔ a request's history: [] waiting, [x] provided at slot x (1.2ms)
+✖ 67 real preimages: stored, and their requests marked with the block's slot (37.4ms)
+✖ the preimages vectors, as state entries (18.1ms)
+...
+ℹ tests 385
+ℹ suites 0
+ℹ pass 383
+ℹ fail 2
+...
+test at test/services.test.ts:24:1
+✖ 67 real preimages: stored, and their requests marked with the block's slot (37.4ms)
+  AssertionError [ERR_ASSERTION]: block 8
+  + actual - expected
+
+  + '0x00'
+  - '0x0108000000'
+...
+```
+
+The history test is green: `RequestHistory` is real. The other two are red, and the
+first diff reads well once you know the codec. At block 8 the chain wrote `0x0108000000`,
+a list of one slot, `[8]`, where your stub left `0x00`, the empty list, `[]`: the request
+is still waiting.
+
+## The code
+
+**Replace in** `src/services.ts`
+
+```ts
 /**
  * I (GP §12): give each preimage to the service that asked for it, if it's still waiting
  * (Y, "providable"): store the data, and mark the request provided at this slot.
@@ -176,19 +216,46 @@ export function providePreimages(
 }
 ```
 
-`providePreimages` works on the state itself, Part 6's key-value entries, using Part 6's
+`providePreimages` works on the state itself, [Part 6](../06-state-and-merklization/index.md)'s key-value entries, using its
 key recipes. A `Map` keyed by hex finds entries quickly. A request that doesn't exist,
-or isn't waiting, is skipped.
+or isn't waiting, is skipped:
+
+```ts
+    if (history === undefined) continue; // never asked for
+    if (decode(RequestHistory, history.value).length !== 0) continue; // not waiting now
+```
+
+> [!NOTE]
+> **The simple road.** Skipping is right only for a preimage that accumulation made
+> unneeded in this same block. The Gray Paper makes a block invalid if it carries a
+> preimage nobody is waiting for, or if its preimages aren't sorted by service, then
+> data, with no repeats. Five vectors at each size break those rules (both
+> `preimage_not_needed` and three of the four `preimages_order_check`), and the test
+> above skips refused vectors, so your client never meets them. The [hardening
+> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the refusals.
 
 **Run**
 
 ```sh
 npm test
-# prints: 67 real preimages: stored, and their requests marked with the block's slot
-# prints: the preimages vectors, as state entries
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (211.7ms)
+...
+✔ a request's history: [] waiting, [x] provided at slot x (0.7ms)
+✔ 67 real preimages: stored, and their requests marked with the block's slot (295.3ms)
+✔ the preimages vectors, as state entries (19.8ms)
+...
+ℹ tests 385
+ℹ suites 0
+ℹ pass 385
+ℹ fail 0
+...
+reported 385 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736048893
+...
 ```
 
 ## Watch it
@@ -246,9 +313,15 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/preimages.ts ../vectors/traces/preimages/00000008.json
-# prints: block at slot 8: 4 preimages
-# prints: request [] → [8]
-# prints: reported to Grafana
+```
+
+```text
+block at slot 8: 4 preimages
+service 0: 143 bytes, hash 0x6ae18b8b…  request [] → [8]
+service 0: 3 bytes, hash 0xd0c7d4d8…  request [] → [8]
+service 0: 84 bytes, hash 0x70e9dc78…  request [] → [8]
+service 0: 223 bytes, hash 0x35c3078c…  request [] → [8]
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=preimages-1791736053778
 ```
 
 Four pieces of data that service 0 was waiting for, from 3 bytes to 223, each one's
@@ -283,5 +356,6 @@ against the state keeps it short.
 
 Your client can hand services the data they asked for: checked by its hash, stored under
 its key, and the request marked done, the same way the real chain did, 67 times over.
+Who asked, though, and what do they own? [Lesson 14.2](./02-the-service-account.md) reads a service's account.
 
 Next: [14.2 The service account](./02-the-service-account.md)

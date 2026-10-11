@@ -80,7 +80,7 @@ test("footprints and minimum balances: 510 accounts in the accumulate vectors", 
 Two sources again. In the real state, service 0's code is right there beside its
 account: some value whose hash is the code hash, [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md)'s 159,322-byte giant. Its
 footprint is two preimages, each with its request, and nothing in storage: 4 items, and
-81 + 159,322 + 81 + 50 = 159,534 octets. The accumulate vectors (Part 17's) list
+81 + 159,322 + 81 + 50 = 159,534 octets. The accumulate vectors ([Part 17](../17-accumulation/index.md)'s) list
 accounts with storage too, 510 snapshots of them, and every footprint and every balance
 checks out.
 
@@ -88,8 +88,23 @@ checks out.
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/services.ts' does not provide an export named 'ServiceInfo'
+...
+✖ test/services.test.ts (191.3ms)
+...
+ℹ tests 383
+ℹ suites 0
+ℹ pass 382
+ℹ fail 1
+...
+```
+
+Red: `src/services.ts` doesn't export the account record or its helpers yet. They're a
+record and four short functions that read and check it, so they come as one snippet.
 
 ## The code
 
@@ -159,6 +174,12 @@ Gray Paper's letters are in the comments. The 8-byte fields are `u64`, so they'r
 `bigint` values, and so the footprint's `bytes` is a `bigint` too ([lesson 1.2](../01-bytes-and-numbers/02-numbers.md): a `number` would
 lose precision past 2^53).
 
+`minimumBalance` is the Gray Paper's a_t, term by term:
+
+```ts
+  const deposit = 100n + 10n * BigInt(info.items) + info.bytes; // B_S + B_I·i + B_L·o
+```
+
 `serviceCode` finds a service's code the simplest way there is: the state value whose
 hash is the account's code hash. Lessons to come run that code, and they all start here.
 
@@ -166,11 +187,23 @@ hash is the account's code hash. Lessons to come run that code, and they all sta
 
 ```sh
 npm test
-# prints: service 0 in real state: its code beside it, and its footprint adding up
-# prints: footprints and minimum balances: 510 accounts in the accumulate vectors
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (203.5ms)
+...
+✔ service 0 in real state: its code beside it, and its footprint adding up (11.3ms)
+✔ footprints and minimum balances: 510 accounts in the accumulate vectors (294.1ms)
+...
+ℹ tests 387
+ℹ suites 0
+ℹ pass 387
+ℹ fail 0
+...
+reported 387 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736058671
+...
 ```
 
 ## Watch it
@@ -218,10 +251,15 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/service.ts ../vectors/traces/fallback/00000001.json
-# prints: 159322 bytes of code
-# prints: keeps 4 items in 159534 bytes
-# prints: balance 18446744073709551615, of which it must keep 0
-# prints: reported to Grafana
+```
+
+```text
+service 0, created at slot 0 by service 0
+code hash 0x128fc8f0578f393b…: 159322 bytes of code
+keeps 4 items in 159534 bytes
+balance 18446744073709551615, of which it must keep 0
+last accumulated at slot 0
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=service-1791736063580
 ```
 
 That balance is 2^64 − 1, the largest 8-byte number there is, and its free allowance is
@@ -254,6 +292,8 @@ holds 18,446,744,073,709,551,615.
 ## What you have
 
 Part 14, done: services get the data they asked for, and your client can read any
-service's account and check that its footprint and its balance add up.
+service's account and check that its footprint and its balance add up. That code
+`serviceCode` found is a program for a machine you haven't built yet: [Part 15](../15-the-pvm/index.md) builds
+the PVM that runs it.
 
 Next: [Part 15 · The PVM](../15-the-pvm/index.md)
