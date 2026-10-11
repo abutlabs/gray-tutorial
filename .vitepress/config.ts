@@ -7,9 +7,22 @@ import type MarkdownIt from "markdown-it";
 import type { ShikiTransformer } from "shiki";
 import { readParts } from "../tools/lessons.ts";
 import { LEGEND, writeRedirects } from "./urls.ts";
+import { type PrintPage, writePrintPage } from "./print.ts";
 import { type Snapshot, snippetNumbers, wholeFiles } from "../tools/snapshots.ts";
 
 const parts = readParts();
+// every page in reading order, for the whole tutorial on one page (print.ts)
+const printPages: PrintPage[] = [
+  { address: "", title: "Start here" },
+  ...parts.flatMap((p) => [
+    { address: `${p.dir}/`, title: p.title, part: true },
+    ...p.lessons.map((l) => ({
+      address: l.file.replace(/\.md$/, ""),
+      title: `${l.id} ${l.title.replace(/^[\d.]+\s+/, "")}`,
+    })),
+  ]),
+  { address: "glossary", title: "Glossary", part: true },
+];
 // each Add to / Replace in snippet's whole file, worked out once (restart `npm run site` to
 // see a lesson's edits in them)
 const whole = wholeFiles();
@@ -26,13 +39,19 @@ export default defineConfig({
   ignoreDeadLinks: [/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/],
   lastUpdated: false,
   markdown: { config: snippetLabels, codeTransformers: [shellComments()] },
-  // pages that moved keep their old address, as a page that sends the reader on
-  buildEnd: (site) => writeRedirects(site.outDir, site.site.base),
+  // pages that moved keep their old address, as a page that sends the reader on; and the
+  // whole tutorial on one page, print.html, for printing and reading offline
+  buildEnd: (site) => {
+    writeRedirects(site.outDir, site.site.base);
+    writePrintPage(site.outDir, site.site.base, printPages);
+  },
   themeConfig: {
     // every word you type must match, so "ready queue" finds the ready queue first
     search: { provider: "local", options: { miniSearch: { searchOptions: { combineWith: "AND" } } } },
     nav: [
       { text: "Glossary", link: "/glossary" },
+      // a plain page outside the app (print.ts): `target` makes the link load it in full
+      { text: "One page", link: "/print.html", target: "_self" },
       { text: "JAM learning", link: "https://abutlabs.github.io/jam-learning/" },
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/abutlabs/gray-tutorial" }],
