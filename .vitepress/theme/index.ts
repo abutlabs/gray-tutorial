@@ -3,6 +3,7 @@ import { useRoute, type Theme } from "vitepress";
 import { onMounted, watch } from "vue";
 import { listenForKeys, revealActiveLesson } from "./keys.ts";
 import { listenForZoom, makePicturesFocusable } from "./zoom.ts";
+import { listenForResize, placeSideArrows } from "./side-arrows.ts";
 import "./custom.css";
 
 export default {
@@ -11,6 +12,7 @@ export default {
     if (typeof window === "undefined") return;
     listenForKeys();
     listenForZoom();
+    listenForResize();
     router.onAfterRouteChange = () => { revealActiveLesson(); };
   },
   setup() {
@@ -18,8 +20,12 @@ export default {
     onMounted(() => {
       revealActiveLesson();
       makePicturesFocusable();
+      placeSideArrows();
     });
     // after each new page is in the DOM
-    watch(() => route.path, makePicturesFocusable, { flush: "post" });
+    watch(() => route.path, () => {
+      makePicturesFocusable();
+      placeSideArrows();
+    }, { flush: "post" });
   },
 } satisfies Theme;

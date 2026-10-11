@@ -118,3 +118,14 @@
   background: var(--vp-code-line-highlight-color);
   box-shadow: inset 3px 0 var(--vp-c-brand-1);
 }
+
+/* The big arrows in the margins (side-arrows.ts): quiet until hovered, as the Book's are. */
+.side-arrow {
+  position: fixed; top: 50%; transform: translateY(-50%); z-index: 10;
+  width: 56px; height: 112px; display: flex; align-items: center; justify-content: center;
+  font-size: 48px; line-height: 1; color: var(--vp-c-text-3); text-decoration: none;
+  border-radius: 8px; transition: color 0.2s, background-color 0.2s;
+}
+.side-arrow:hover, .side-arrow:focus-visible { color: var(--vp-c-text-1); background: var(--vp-c-default-soft); }
+.side-arrow[hidden] { display: none; }
+@media print { .side-arrow { display: none; } }
