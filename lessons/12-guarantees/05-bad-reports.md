@@ -1,6 +1,6 @@
 # Bad reports
 
-Lesson 12.4 checked who vouched for each report, and when. Now the report itself. Is it a
+[Lesson 12.4](./04-bad-guarantees.md) checked who vouched for each report, and when. Now the report itself. Is it a
 sensible size? Was it built against a block the chain really had, as that block really
 was? Does it lean on work that exists? Does it name real services, with the right code?
 And is it new, or a package the chain has already seen? This lesson writes down those
@@ -115,7 +115,7 @@ for (const config of [TINY, FULL]) {
 }
 ```
 
-The last test is the whole reports step: lesson 12.4's rules first, then these. Every
+The last test is the whole reports step: [lesson 12.4](./04-bad-guarantees.md)'s rules first, then these. Every
 reports vector, tiny and full, must come out exactly as the vector says, accepted or
 refused for the very same reason. The services come straight from the JSON: a report
 only needs a service's code hash and minimum gas, and Part 14 builds the full service

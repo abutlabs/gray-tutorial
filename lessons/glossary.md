@@ -102,7 +102,7 @@ command. *Example:* `./obs up`. ([0.2](./00-start/02-set-up-the-project.md))
 it got. *Example:* `assert.equal(slot, 600)`. ([0.4](./00-start/04-the-jam-clock.md))
 
 **Test-driven development (TDD).** Writing a test before the code it tests, watching it
-fail, then writing the code that makes it pass. *Example:* lesson 0.4's `slotAt`. ([0.4](./00-start/04-the-jam-clock.md))
+fail, then writing the code that makes it pass. *Example:* [lesson 0.4](./00-start/04-the-jam-clock.md)'s `slotAt`. ([0.4](./00-start/04-the-jam-clock.md))
 
 **Reporter.** A plug-in for Node's test runner that receives every test's result; yours
 sends them to Grafana. *Example:* `test/grafana.ts`. ([0.3](./00-start/03-watch-your-client.md))

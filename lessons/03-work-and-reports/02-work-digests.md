@@ -145,7 +145,7 @@ The tour:
 - `ERRORS` lists the failures in tag order, so a tag is just a position in the list (plus
   one, because 0 means success). `as const` tells TypeScript the list will never change,
   which lets `WorkError` be exactly those six names and nothing else.
-- `WorkResult` is a hand-made codec, the first since lesson 2.4. A union doesn't fit
+- `WorkResult` is a hand-made codec, the first since [lesson 2.4](../02-codec/04-codecs.md). A union doesn't fit
   `record` or `seq`, so it gets written out: on the way in, check which shape you hold; on
   the way out, read the tag and build the right shape.
 - In the vectors' JSON a result is `{"ok": "0xaabbcc"}` or `{"panic": null}`: one key,
@@ -252,8 +252,8 @@ node bin/decode.ts work_result ../vectors/codec/tiny/work_result_1.bin
 ```
 
 There it is, the whole sad story of `work_result_1` in one byte: `result 0x02`, a panic.
-Then five compact zeros for the load, one byte each. Small numbers, small bytes: lesson
-2.2 paying off.
+Then five compact zeros for the load, one byte each. Small numbers, small bytes: [lesson
+2.2](../02-codec/02-compact-naturals.md) paying off.
 
 <details>
 <summary>lasair: a variant and a <code>match</code>, in <code>lib/serialization.ml</code></summary>

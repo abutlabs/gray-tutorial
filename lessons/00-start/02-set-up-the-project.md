@@ -17,7 +17,7 @@ VS Code (or any editor) and Docker Desktop.
 - **Docker.** Runs ready-made programs in *containers*, so a whole set of tools starts
   with one command. *Example:* `./obs up` starts the observability stack in Docker.
 - **Module.** A file that shares code with other files through `import` and `export`.
-  *Example:* lesson 0.4's `src/time.ts` exports `slotAt`, and its test imports it.
+  *Example:* [lesson 0.4](./04-the-jam-clock.md)'s `src/time.ts` exports `slotAt`, and its test imports it.
 
 ## Node 26
 
@@ -40,8 +40,8 @@ It should say `v26.` and something.
 Why Node 26? It runs TypeScript files directly: it strips off the type annotations and
 runs what's left. No build step, so the code you type is the code that runs. (The types
 still get checked, by the TypeScript compiler `tsc`, whenever you ask.) Node 26 also has
-the newest JavaScript built-ins, like turning bytes into hex, which you'll meet in lesson
-1.1.
+the newest JavaScript built-ins, like turning bytes into hex, which you'll meet in [lesson
+1.1](../01-bytes-and-numbers/01-bytes-and-hex.md).
 
 ## The tutorial's tools
 
@@ -79,7 +79,7 @@ the top of each links them all. (The stack found them in this repo's
 `observability/dashboards/` because the folders are neighbours. If yours aren't,
 start it with `OBS_PROJECT_DIRS=/path/to/gray-tutorial ./obs up`.)
 
-They're empty. Nothing has said anything yet. Lesson 0.3 fixes that.
+They're empty. Nothing has said anything yet. [Lesson 0.3](./03-watch-your-client.md) fixes that.
 
 Leave the stack running while you work. `./obs down` stops it and keeps your data for the
 next `./obs up`. Curious how it all works? There's a whole course:
@@ -143,7 +143,7 @@ cd client
 }
 ```
 
-Two settings to know: `strict` turns on every check (no forgotten `null`s, no untyped
+Two settings to know: `strict` turns on every check (no forgotten `null` cases, no untyped
 parameters), and `noEmit` means `tsc` only checks, because Node runs the `.ts` files
 itself. The rest make sure Node and `tsc` agree on what your files mean: imports name the
 real file (`./bytes.ts`), type-only imports say `import type`, and no TypeScript feature

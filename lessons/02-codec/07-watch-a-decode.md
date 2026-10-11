@@ -1,6 +1,6 @@
 # Watch a decode
 
-In lesson 2.6 you moved one field and three values went haywire. The test told you
+In [lesson 2.6](./06-the-first-test-vectors.md) you moved one field and three values went haywire. The test told you
 *that* they were wrong. It couldn't tell you *where the bytes went*. Time to give the
 decoder a voice: for every field, which bytes it read and where they sit. The trace goes
 to your terminal and to Grafana, like everything else your client does.
@@ -31,7 +31,7 @@ item by its index, and the Reader reports a field when nothing inside it was nam
 
 The Reader shouldn't depend on the observability stack: it is part of the codec, and the
 codec is part of everything. So it reports to anything with an `event` method. A `Run`
-(lesson 0.3) has one.
+([lesson 0.3](../00-start/03-watch-your-client.md)) has one.
 
 **Add to** `src/codec/reader.ts`
 
@@ -43,7 +43,7 @@ export interface Trace {
 ```
 
 The Reader now takes a trace and has one new method, `field`. Everything else is as in
-lesson 2.3.
+[lesson 2.3](./03-writer-and-reader.md).
 
 **Replace in** `src/codec/reader.ts`
 
@@ -288,7 +288,7 @@ node bin/decode.ts work_item ../vectors/codec/tiny/work_item.bin
 # prints: reported to Grafana
 ```
 
-Read the output against the hex dump from lesson 2.6: `service` is bytes 0 to 4, then
+Read the output against the hex dump from [lesson 2.6](./06-the-first-test-vectors.md): `service` is bytes 0 to 4, then
 `code_hash` 4 to 36, `refine_gas_limit` 36 to 44. On the dashboard, *Decode trace* shows
 the same list for the run.
 
@@ -296,7 +296,7 @@ the same list for the run.
 
 ## Break it again
 
-Now move `export_count` above the gas limits in `WorkItem` again, as in lesson 2.6, and
+Now move `export_count` above the gas limits in `WorkItem` again, as in [lesson 2.6](./06-the-first-test-vectors.md), and
 rerun `bin/decode.ts`:
 
 ```text

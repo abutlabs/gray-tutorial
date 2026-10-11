@@ -1,6 +1,6 @@
 # The pipeline
 
-Lesson 15.9's block from the bootstrap service adds up to 91 cycles. Yet a real CPU would
+[Lesson 15.9](./09-what-instructions-cost.md)'s block from the bootstrap service adds up to 91 cycles. Yet a real CPU would
 run it in far fewer, because it doesn't do one thing at a time. While one instruction
 waits on memory, others start; while a store crawls along, three more crawl beside it.
 The Gray Paper's gas model builds exactly such a CPU, small and made up, and charges a
@@ -11,7 +11,7 @@ basic block the cycles that CPU needs. This lesson builds it.
 App. A.9 describes the model CPU, cycle by cycle:
 
 1. **Decode.** Each cycle, the front end decodes instructions in order, up to 4 decode
-   slots' worth (lesson 15.9's ď), into a *reorder buffer*. At most 32 instructions can
+   slots' worth ([lesson 15.9](./09-what-instructions-cost.md)'s ď), into a *reorder buffer*. At most 32 instructions can
    be in it, not yet retired. Decoding stops at the block's terminator.
 2. **Wait.** The next cycle, a decoded instruction is waiting. It can start once every
    earlier instruction that writes a register it reads has finished its cycles, and once
@@ -90,7 +90,7 @@ npm test
 
 ## The code
 
-The model decodes until the block's terminator, so it needs lesson 15.3's T:
+The model decodes until the block's terminator, so it needs [lesson 15.3](./03-the-machine.md)'s T:
 
 **Replace in** `src/pvm/machine.ts`
 
@@ -282,7 +282,7 @@ node bin/pipeline.ts
 ```
 
 One column per instruction in the buffer: the stack-pointer add, the three stores and the
-call (the two `move_reg`s never get a column). W is waiting, E executing, F finished, and
+call (the two `move_reg` instructions never get a column). W is waiting, E executing, F finished, and
 a dot is retired. (Decoding lasts only until the next tick, so you never catch a D.) Read
 it top down. At cycle 2 the add runs while the
 stores wait: they need its r1. From cycle 3 all three stores run side by side, with the

@@ -1,10 +1,10 @@
 # Bad guarantees
 
 A guarantee is a promise with signatures on it: "we, the validators on this core, vouch
-for this report". Lessons 12.1 to 12.3 believed every one. A real block can carry a
+for this report". Lessons [12.1](./01-who-guarantees-what.md) to [12.3](./03-onto-the-cores.md) believed every one. A real block can carry a
 guarantee signed by the wrong validators, signed too long ago, signed by someone who's
 been banned, or aimed at a core that's busy. This lesson writes down the rules a guarantee
-must keep, the first of two lessons on what makes a reports block invalid. Lesson 12.5
+must keep, the first of two lessons on what makes a reports block invalid. [Lesson 12.5](./05-bad-reports.md)
 checks the reports themselves.
 
 ## New words
@@ -13,7 +13,7 @@ checks the reports themselves.
   10 on full. *Example:* on tiny, slots 12 to 15 are one rotation.
 - **Active core.** One of the cores the current validators can staff, three guarantors
   apiece: the first |κ′|/3 of them. *Example:* 6 validators keep 2 cores active.
-- **Authorizer pool.** The authorizers a core accepts right now (lesson 13.1's α).
+- **Authorizer pool.** The authorizers a core accepts right now ([lesson 13.1](../13-authorization/01-the-authorizer-pools.md)'s α).
   *Example:* a report whose authorizer isn't in its core's pool is refused.
 
 All three are in the [glossary](../glossary.md).
@@ -31,14 +31,14 @@ All three are in the [glossary](../glossary.md).
 
 **Who signed it, and when:**
 
-5. Each signer is a validator of the assignment the guarantee answers to (lesson 12.1's M,
+5. Each signer is a validator of the assignment the guarantee answers to ([lesson 12.1](./01-who-guarantees-what.md)'s M,
    or M* for the rotation before). (`bad_validator_index`)
 6. Not from the future: its slot is at most τ′. (`future_report_slot`)
 7. Recent: from this rotation or the last one. (`report_epoch_before_last`)
-8. No offenders: lesson 8.2's Φ blanks an offender's keys to zeros in the assignment, and
+8. No offenders: [lesson 8.2](../08-safrole/02-rotating-the-validators.md)'s Φ blanks an offender's keys to zeros in the assignment, and
    a blank signer is banned. (`banned_validator`)
 9. Every signer was assigned to this core. (`wrong_assignment`)
-10. Every signature is real (lesson 12.2's `guaranteeSigned`). (`bad_signature`)
+10. Every signature is real ([lesson 12.2](./02-signed-and-counted.md)'s `guaranteeSigned`). (`bad_signature`)
 
 **The core it goes on:**
 
@@ -125,7 +125,7 @@ for (const config of [TINY, FULL]) {
 }
 ```
 
-The thirteen error names are this lesson's alone: lesson 12.5's rules have names of their
+The thirteen error names are this lesson's alone: [lesson 12.5](./05-bad-reports.md)'s rules have names of their
 own. So each vector's expected answer is its error if that's one of these thirteen, and
 "pass" otherwise.
 
@@ -205,7 +205,7 @@ export function guaranteeError(
 
 Thirteen rules, thirteen lines at the end, in the order above, each built from a helper
 that asks one question about one guarantee. `assigned` picks M or M* for a guarantee, the
-way lesson 12.1's `assignmentFor` does.
+way [lesson 12.1](./01-who-guarantees-what.md)'s `assignmentFor` does.
 
 **Run**
 
@@ -267,7 +267,7 @@ node bin/check-guarantees.ts
 ```
 
 Wherever the rules refuse a guarantee, the vector agrees. Where the guarantees pass but the
-vector refuses the block, the reason is in the report itself: lesson 12.5's job. The full
+vector refuses the block, the reason is in the report itself: [lesson 12.5](./05-bad-reports.md)'s job. The full
 vectors have two cases tiny can't have, where the validator set has shrunk from 1,023 to
 6: `node bin/check-guarantees.ts full` shows one refused for an inactive core, and one
 accepted, signed by validators 24, 578 and 603 of the old set. The *Guarantee checks* panel

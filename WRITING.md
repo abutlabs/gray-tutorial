@@ -74,7 +74,8 @@ to the same section. A renamed heading: put `<a id="old-id"></a>` on the line ab
 3. **Run**: the tests pass, the types check.
 4. **lasair**, folded in `<details>`: the same rule in lasair's OCaml, quoted from the
    source (say when comments are trimmed), with a sentence on reading it.
-5. A link to the next lesson.
+5. **What you have**, the last section: what works now and which vectors pass, then one
+   sentence on why the next lesson comes next, then the link to it.
 
 **Foundations before complexity.** A beginner should never meet the hard parts first.
 Inside a lesson: plain English and a concrete example first, the Gray Paper's notation
@@ -98,6 +99,55 @@ a coined one.
 
 Plain words, no em-dashes. Explain why, not only what. Every claim about lasair, the
 vectors or the Gray Paper is checked against the source before it is written.
+
+## Lessons from the Rust Book
+
+*The Rust Programming Language* (the Book, doc.rust-lang.org/book) is our model for
+teaching. What we take from it, each with its reason. "Checked" means a test enforces it.
+
+- **Say where the lesson goes.** The opening paragraph says what the reader will have at
+  the end, and why it's worth having. *Why:* knowing the destination tells you which details
+  matter.
+- **Close the loop.** *What you have* is the last section, and it ends with one sentence on
+  why the next lesson comes next (checked). *Why:* a summary fixes what was learned, and the
+  bridge makes the order feel earned.
+- **Show the real output.** After a **Run**, show what the terminal prints, trimmed to what
+  matters, and say what changes from run to run (ids, times, durations). The first time a
+  tool's output appears, walk through it line by line. *Why:* readers compare their screen
+  with the page, and a description of output can't be compared.
+- **Read the red together.** When a test fails on purpose, show the failure and point at
+  the line to read: which test, expected, actual. *Why:* reading errors is a skill to teach,
+  not to assume.
+- **Red for the right reason.** Where the rule is the point of the lesson, give a stub first
+  (the function exists and answers wrongly), so the first red is the rule failing, not a
+  missing file. *Why:* "Cannot find module" proves only that a file is missing; a failed
+  assertion proves the test tests the rule.
+- **Steps in words before code.** When a rule has several steps, number them in plain
+  English between *What the Gray Paper says* and the code. *Why:* the reader holds the plan
+  while reading the code.
+- **Quote what you explain.** After a long snippet, quote again the two to four lines the
+  text explains, where it explains them. *Why:* nobody has to scroll back to find "the line
+  with `#at`".
+- **Link every reference.** "lesson 2.3" is always a link (checked). When a lesson uses
+  something a later one explains, give the minimum ("for now, all you need to know is ...")
+  and link forward. *Why:* the tutorial reads as one connected whole, and a promise never
+  leaves the reader stuck.
+- **Italics for a new word.** In the body, a term from *New words* is in italics where it's
+  first used. *Why:* the reader can match the use to the definition.
+- **Tangents in a note.** A side story (why `bigint`, how Node strips types) goes in a
+  `> [!NOTE]` box. *Why:* the main line reads straight, and the curious still find it.
+- **Name the simple road.** Where a lesson takes the simple way on purpose, say so, and link
+  where it's revisited (`HARDENING.md`). *Why:* readers trust a tutorial that names its
+  shortcuts.
+- **Refactor in the open.** When the client's structure changes, name what hurts first, then
+  change it in small *Replace in* steps, each followed by a **Run**. *Why:* the reader learns
+  why the shape changes, and is never more than one step from green.
+- **Rules of thumb.** Where judgement matters (a bad block is an error the code returns; a
+  bug in our code throws), state the rule of thumb in a sentence. *Why:* the Book teaches
+  when, not only how.
+- **Words and code stay apart.** Two `bigint` values, never two `bigint`s (checked). A
+  function is named without parentheses: "`slotAt` returns", not "`slotAt()` returns".
+  *Why:* the code font means exactly this code, and `bigint`s isn't code.
 
 ## Labels
 

@@ -51,8 +51,8 @@ test("a reader reads back what a writer wrote, in the same order", () => {
 });
 ```
 
-Three values in, eight bytes out, three values back. `c712` is 4,807 (lesson 2.1),
-`8080` is 128 (lesson 2.2), and `deadbeef` is, well, a classic.
+Three values in, eight bytes out, three values back. `c712` is 4,807 ([lesson 2.1](./01-fixed-width-integers.md)),
+`8080` is 128 ([lesson 2.2](./02-compact-naturals.md)), and `deadbeef` is, well, a classic.
 
 **Run, expect it to fail**
 
@@ -97,7 +97,7 @@ export class Writer {
 }
 ```
 
-A Writer is a list of pieces, and `finish` glues them with lesson 2.2's ⌢. Names
+A Writer is a list of pieces, and `finish` glues them with [lesson 2.2](./02-compact-naturals.md)'s ⌢. Names
 starting with `#` are private: only the class's own methods can touch them, and
 JavaScript itself enforces it.
 

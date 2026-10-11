@@ -8,14 +8,14 @@ finishes Part 10.
 
 ## What the Gray Paper says
 
-§11 defines **ρ** (C(10), lesson 6.2): for each core, either nothing or a *pending
-report*: the guarantee that put it there (lesson 4.3, report, slot and signatures) and
+§11 defines **ρ** (C(10), [lesson 6.2](../06-state-and-merklization/02-state-keys.md)): for each core, either nothing or a *pending
+report*: the guarantee that put it there ([lesson 4.3](../04-blocks/03-guarantees.md), report, slot and signatures) and
 the slot it arrived in.
 
 §10 then clears it (equation *removenonpositive*): ρ†, ρ after the judgments, is ρ with
 every core emptied whose report was judged **bad or wonky** in this block. Which report
 is it? The verdict names a report by its hash, H(ℰ(report)), the very same hash
-lesson 5.2 put in the extrinsic hash. So: hash each pending report, and compare.
+[lesson 5.2](../05-hashing-and-signatures/02-the-extrinsic-hash.md) put in the extrinsic hash. So: hash each pending report, and compare.
 
 A good verdict leaves its report where it is. The ‡ is the Gray Paper's mark for
 "partway through the block": the assurances (Part 11) and guarantees (Part 12) change ρ
@@ -50,7 +50,7 @@ export function PendingReports(config: Config) {
 ```
 
 `seqN(option(…), C)`: exactly one place per core, no length in front, each place a
-pending report or nothing (lessons 4.5 and 4.6 had both tools).
+pending report or nothing (lessons [4.5](../04-blocks/05-maybe-and-exactly-n.md) and [4.6](../04-blocks/06-the-header.md) had both tools).
 
 ## The tests
 

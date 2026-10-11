@@ -1,8 +1,8 @@
 # Lookup
 
-A service can keep *preimages*: blobs of data, each filed under its own hash. Lesson 14.1
-put them into the state when a block provided them, and lesson 14.2 counted what they
-cost. The service's own code is one (lesson 15.1 found it that way). This lesson lets a
+A service can keep *preimages*: blobs of data, each filed under its own hash. [Lesson 14.1](../14-services/01-providing-preimages.md)
+put them into the state when a block provided them, and [lesson 14.2](../14-services/02-the-service-account.md) counted what they
+cost. The service's own code is one ([lesson 15.1](../15-the-pvm/01-the-program-blob.md) found it that way). This lesson lets a
 running service read them, any service's, with `lookup`.
 
 ## What the Gray Paper says
@@ -220,7 +220,7 @@ node bin/accumulate.ts ../vectors/stf/accumulate/tiny/lookup_foreign_preimage-1.
 # prints: reported to Grafana
 ```
 
-The bin from lesson 16.7 needs no change: point it at the new vector, and service 0's gas
+The bin from [lesson 16.7](./07-a-services-inputs.md) needs no change: point it at the new vector, and service 0's gas
 lines up with the vector's. The *Accumulate* panel shows it beside the others.
 
 ![Accumulate panel](./images/08-accumulate.png)

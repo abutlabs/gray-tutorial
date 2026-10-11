@@ -8,13 +8,13 @@ the state, and checks the tally adds up. Then Part 14 is done.
 
 ## What the Gray Paper says
 
-§9 (*Service Accounts*) and Appendix D. Under C(255, s) (lesson 6.2), the state keeps
+§9 (*Service Accounts*) and Appendix D. Under C(255, s) ([lesson 6.2](../06-state-and-merklization/02-state-keys.md)), the state keeps
 the account's record, 89 bytes:
 
 | Field | Bytes | Meaning |
 | --- | --- | --- |
 | version | 1 | 0 |
-| c, code hash | 32 | the service's code, which it keeps as a preimage (lesson 14.1) |
+| c, code hash | 32 | the service's code, which it keeps as a preimage ([lesson 14.1](./01-providing-preimages.md)) |
 | b, balance | 8 | its tokens |
 | g, m | 8 + 8 | the least gas per work-item, and per transfer memo |
 | o, octets | 8 | bytes of state it takes up |
@@ -78,7 +78,7 @@ test("footprints and minimum balances: 510 accounts in the accumulate vectors", 
 ```
 
 Two sources again. In the real state, service 0's code is right there beside its
-account: some value whose hash is the code hash, lesson 6.1's 159,322-byte giant. Its
+account: some value whose hash is the code hash, [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md)'s 159,322-byte giant. Its
 footprint is two preimages, each with its request, and nothing in storage: 4 items, and
 81 + 159,322 + 81 + 50 = 159,534 octets. The accumulate vectors (Part 17's) list
 accounts with storage too, 510 snapshots of them, and every footprint and every balance
@@ -156,7 +156,7 @@ export function minimumBalance(info: ServiceInfo): bigint {
 
 The record uses the vectors' field names, so `fromJson` reads them for free, and the
 Gray Paper's letters are in the comments. The 8-byte fields are `u64`, so they're
-`bigint`s, and so the footprint's `bytes` is a `bigint` too (lesson 1.2: a `number` would
+`bigint` values, and so the footprint's `bytes` is a `bigint` too ([lesson 1.2](../01-bytes-and-numbers/02-numbers.md): a `number` would
 lose precision past 2^53).
 
 `serviceCode` finds a service's code the simplest way there is: the state value whose

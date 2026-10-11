@@ -110,7 +110,7 @@ export const natural32: Codec<number> = {
 
 `fixedNumber` isn't exported: it's a recipe the file uses three times. There are two
 compact codecs because the same encoding carries two kinds of value: amounts that can
-reach 2^64 (`bigint`, lesson 1.2) and counts that never come close (`number`).
+reach 2^64 (`bigint`, [lesson 1.2](../01-bytes-and-numbers/02-numbers.md)) and counts that never come close (`number`).
 
 `json as number` tells TypeScript "trust me, the vectors write a number here". The test
 vectors are well-formed, so the first pass trusts them; checking them is a job for the

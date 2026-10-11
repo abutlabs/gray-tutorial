@@ -3,7 +3,7 @@
 Services can pay each other. In one official vector, service 0 sends service 1 a hundred,
 with a note that says "gift". The money leaves service 0 at once, but it doesn't reach
 service 1 straight away: it arrives when service 1 accumulates next, in a later *round*
-of the same block. This lesson builds the sending half. Lesson 17.4 delivers it.
+of the same block. This lesson builds the sending half. [Lesson 17.4](./04-rounds.md) delivers it.
 
 ## New words
 
@@ -26,7 +26,7 @@ All three are in the [glossary](../glossary.md).
    the memo is the 128 bytes at φ₁₀ (unreadable memory: panic, as always).
 2. **Maybe refuse.** Nothing is sent, and φ₇ says why, if there's no such service
    (`WHO`), if the gas is below the least the receiver asks for a memo (`LOW`, its
-   `min_memo_gas` from lesson 14.2), or if paying would leave the sender below its own
+   `min_memo_gas` from [lesson 14.2](../14-services/02-the-service-account.md)), or if paying would leave the sender below its own
    minimum balance (`CASH`).
 3. **Send.** Take the amount off the sender's balance, right now, and add the transfer to
    the list of transfers this run has sent. φ₇ = `OK`.
@@ -34,7 +34,7 @@ All three are in the [glossary](../glossary.md).
 It costs 575 gas, plus the transfer's own gas when it's sent: the sender pays up front
 for the work the receiver will do with it.
 
-One more rule, from lesson 16.6: a checkpoint keeps *everything* the run has done so far,
+One more rule, from [lesson 16.6](../16-host-calls/06-checkpoints.md): a checkpoint keeps *everything* the run has done so far,
 and the list of transfers is part of it. Send, then panic, and the transfer never
 happened, the money included.
 
@@ -90,7 +90,7 @@ test("transfer refuses: no such service, too little gas, too little money", () =
 });
 ```
 
-`bundle()` from lesson 16.6 has one service, 0, with a balance of 1000 and a minimum
+`bundle()` from [lesson 16.6](../16-host-calls/06-checkpoints.md) has one service, 0, with a balance of 1000 and a minimum
 balance of 170. The first test gives it someone to send to. The second needs no second
 service: each refusal comes before anything is sent.
 
@@ -442,7 +442,7 @@ the next lesson.
 
 Two checks where yours has one. lasair keeps balances in OCaml's 64-bit `int64`, where
 taking 100 from 30 doesn't give −70: it wraps around to a huge number. So it first asks
-whether the amount is more than the balance at all. And `unsigned_compare` is lesson 1.2's
+whether the amount is more than the balance at all. And `unsigned_compare` is [lesson 1.2](../01-bytes-and-numbers/02-numbers.md)'s
 trap again: from 2^63 up, an `int64` looks negative. A `bigint` has neither problem.
 
 </details>

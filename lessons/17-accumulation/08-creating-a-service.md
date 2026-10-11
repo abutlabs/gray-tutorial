@@ -44,7 +44,7 @@ One honest note: no official vector creates a service at a public id, so that fo
 checked against the Gray Paper and by hand, not by a vector. It's in HARDENING, to confirm
 against the block-import traces.
 
-**The round** already handles new accounts: lesson 17.7 taught it that an id a run created
+**The round** already handles new accounts: [lesson 17.7](./07-ejecting-a-service.md) taught it that an id a run created
 joins the accounts after the round.
 
 ## The tests

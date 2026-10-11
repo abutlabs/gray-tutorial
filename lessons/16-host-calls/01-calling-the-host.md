@@ -1,6 +1,6 @@
 # Calling the host
 
-Since lesson 15.8, your machine stops at `ecalli`, the program's way of asking the
+Since [lesson 15.8](../15-the-pvm/08-a-real-program.md), your machine stops at `ecalli`, the program's way of asking the
 outside world for something, and that's where the story ended. A real service asks all
 the time: how much gas is left? What work came in? What's in my storage? This lesson
 gives the machine a host that answers, so it can carry on. It answers just one question,
@@ -70,7 +70,7 @@ test("28 host calls, numbered as in the GP: fetch is 2, provide 27", () => {
 ```
 
 A tiny program: one `ecalli`, then a return through r0. Both are in one basic block,
-which costs 100 (the `ecalli`'s 100 cycles, from lesson 15.9). So with 1,000 gas, the
+which costs 100 (the `ecalli`'s 100 cycles, from [lesson 15.9](../15-the-pvm/09-what-instructions-cost.md)). So with 1,000 gas, the
 block leaves 900, and asking leaves 852.
 
 **Run, expect it to fail**
@@ -145,8 +145,8 @@ export function unknown(m: Machine): HostExit {
 }
 ```
 
-`runWithHost` is Ψ_H: lesson 15.11's `runWithGas` until a host call, the host's answer,
-and on again. The machine is still on the `ecalli` when it stops (lesson 15.8), so carrying
+`runWithHost` is Ψ_H: [lesson 15.11](../15-the-pvm/11-the-gas-meter.md)'s `runWithGas` until a host call, the host's answer,
+and on again. The machine is still on the `ecalli` when it stops ([lesson 15.8](../15-the-pvm/08-a-real-program.md)), so carrying
 on means stepping past it, exactly as the Gray Paper's ı″ says. A `Host` is a plain
 function, so each invocation can bring its own; the tests' host knows `gas` and nothing
 else.
@@ -226,7 +226,7 @@ node bin/host.ts
 ```
 
 A real service this time: 1729, from the accumulate test vectors. Its very first host call
-is `fetch`, asking for item 0, the chain's protocol constants (lesson 15.8's bootstrap
+is `fetch`, asking for item 0, the chain's protocol constants ([lesson 15.8](../15-the-pvm/08-a-real-program.md)'s bootstrap
 service asked the same). Your host has never heard of `fetch`: WHAT. And the service,
 unable to learn the rules of the chain it's running on, gives up and panics. Fair enough.
 The *Host calls* panel has the conversation, short as it is. `fetch` is next.

@@ -20,7 +20,7 @@ All four are in the [glossary](../glossary.md).
 ## Lists and structures
 
 The list 1, 2, 3, each a single byte, encodes as `03 01 02 03`: its length (a compact
-natural from lesson 2.2) and then each item. The length tells a decoder where the list
+natural from [lesson 2.2](./02-compact-naturals.md)) and then each item. The length tells a decoder where the list
 ends.
 
 A record with a slot of 42 (u32) and a gas amount of 7 (u64) encodes as
@@ -100,7 +100,7 @@ exactly as you wrote them.)
 
 The type is the clever bit. `record({ slot: u32, gas: u64 })` is a
 `Codec<{ slot: number; gas: bigint }>`: `{ [K in keyof F]: Value<F[K]> }` walks through
-each field name K and asks `Value` (lesson 2.4) what its codec holds. You write the
+each field name K and asks `Value` ([lesson 2.4](./04-codecs.md)) what its codec holds. You write the
 field list, TypeScript writes the type.
 
 ## Tests

@@ -62,7 +62,7 @@ second bit to part ways.
 Two sets of vectors. The `trie` vectors are made for exactly this: entries in, root out,
 from no entries at all up to ten. (Their keys are 32 bytes, from when the Gray Paper's
 keys were. The trie never looks past byte 31, so the test simply drops the last one.)
-And then real states, from the four traces of lesson 5.2: each trace step carries the
+And then real states, from the four traces of [lesson 5.2](../05-hashing-and-signatures/02-the-extrinsic-hash.md): each trace step carries the
 state *before* its block, as key-value entries, and each block's header promises that
 state's root.
 
@@ -197,14 +197,14 @@ A few things to notice:
 
 - **`bit`** finds byte `i / 8`, rounded down, and inside it bit `i % 8`, counted from the
   left: shift that bit to the bottom (`>>`), and keep just it (`& 1`). These are the
-  bitwise operators lesson 1.2 warned about, and they're safe here: a byte is far below
+  bitwise operators [lesson 1.2](../01-bytes-and-numbers/02-numbers.md) warned about, and they're safe here: a byte is far below
   their 32 bits.
 - **`0b10000000 | value.length`** builds a leaf's first byte in one go: the `1, 0` on
   top, the length (at most 32, so six bits are plenty) at the bottom.
 - **`merkle` keeps the keys whole and counts `depth`.** The Gray Paper chops the first
   bit off every key at each level instead, and looks at the new first bit. Same trie, and
   no copying.
-- **`trace`** is the same optional watcher as the decoder's (lesson 2.7): it hears about
+- **`trace`** is the same optional watcher as the decoder's ([lesson 2.7](../02-codec/07-watch-a-decode.md)): it hears about
   every leaf, and costs nothing when nobody is listening.
 
 **Run**

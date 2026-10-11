@@ -1,7 +1,7 @@
 # Branches and calls
 
 Programs make choices (*if the balance is too low, stop*), and they call functions and
-come back. Lesson 15.3 gave your machine the two simplest choices, equal and not equal.
+come back. [Lesson 15.3](./03-the-machine.md) gave your machine the two simplest choices, equal and not equal.
 This lesson completes the set of sixteen branches, and adds the two instructions for a
 call. One question runs right through it: is −1 less than 1? That depends on who's asking.
 
@@ -10,17 +10,17 @@ call. One question runs right through it: is −1 less than 1? That depends on w
 Appendix A.5:
 
 - **Branches** compare φ_A with a register φ_B, or with an immediate ν_X, and jump if the
-  comparison holds. It's lesson 15.3's `branch`: the target and the next instruction must
+  comparison holds. It's [lesson 15.3](./03-the-machine.md)'s `branch`: the target and the next instruction must
   both start basic blocks. There are ten comparisons: `eq`, `ne`, and `lt`, `le`, `ge`,
   `gt` in two flavours each. `_u` reads the 64 bits as an unsigned number, `_s` as a
-  signed one (Z₈, lesson 15.2). The immediate branches have all ten; with two registers
+  signed one (Z₈, [lesson 15.2](./02-instructions.md)). The immediate branches have all ten; with two registers
   there are six (no `le` or `gt`: swap the registers and use `ge` or `lt`).
 - **−1 against 1.** A register holds −1 as 64 set bits. Unsigned, that's 2^64 − 1, the
   biggest number there is. Signed, it's −1. So `branch_lt_u` says −1 < 1 is false, and
   `branch_lt_s` says it's true. Same bits, opposite answers.
 - **`load_imm_jump`** (80) sets φ_A to ν_X and jumps to ν_Y. That's a function call: ν_X
-  is the way back, an address in the jump table (lesson 15.3), and the function returns
-  with `jump_ind` through φ_A. Programs keep the way back in r0, which is why lesson 15.3's
+  is the way back, an address in the jump table ([lesson 15.3](./03-the-machine.md)), and the function returns
+  with `jump_ind` through φ_A. Programs keep the way back in r0, which is why [lesson 15.3](./03-the-machine.md)'s
   program finished by jumping through r0.
 - **`load_imm_jump_ind`** (180) is the same call through a register: φ_A gets ν_X, and the
   machine jumps through the table to φ_B + ν_Y. Think *function pointer*. φ_B is read as
@@ -284,7 +284,7 @@ read them. The *Branches* panel has all sixteen.
 
 The same order as yours, and a comment to stop anyone "tidying" it. For the branches,
 lasair has the opposite problem to yours: OCaml's `Int64` compares as signed, so lasair
-writes a `compare_u64` for the `_u` branches, while your `bigint`s are unsigned and need
+writes a `compare_u64` for the `_u` branches, while your `bigint` values are unsigned and need
 `signed` for the `_s` ones.
 
 </details>

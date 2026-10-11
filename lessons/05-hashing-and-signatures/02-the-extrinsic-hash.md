@@ -2,7 +2,7 @@
 
 Nodes pass headers around on their own, ahead of the rest of the block. A header is a
 few hundred bytes; the extrinsic behind it can be many times that. So how does a header
-say *exactly* which extrinsic belongs to it? With a field you've decoded since lesson 4.6
+say *exactly* which extrinsic belongs to it? With a field you've decoded since [lesson 4.6](../04-blocks/06-the-header.md)
 without a second look: `extrinsic_hash`, 32 bytes that promise the whole contents. Swap
 one ticket, drop one signature, and the promise is broken. This lesson computes the
 promise, then checks it in 400 real blocks.
@@ -48,7 +48,7 @@ Over their 100 blocks each:
 | `storage` | 86 guarantees, 520 assurances |
 
 Together they put four of the five parts to work. (No trace carries a dispute, so here
-the disputes part is only ever empty. Lesson 4.4's vectors already checked its bytes.)
+the disputes part is only ever empty. [Lesson 4.4](../04-blocks/04-disputes.md)'s vectors already checked its bytes.)
 First, let `traceBlock` read any of them:
 
 **Replace in** `test/hash.test.ts`

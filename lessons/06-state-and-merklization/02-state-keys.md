@@ -1,6 +1,6 @@
 # State keys
 
-Lesson 6.1's keys looked suspiciously *designed*: `0x01` and thirty zeros, `0xff` and
+[Lesson 6.1](./01-the-state-trie.md)'s keys looked suspiciously *designed*: `0x01` and thirty zeros, `0xff` and
 thirty zeros, and then a few that looked like noise. They are designed. Every key in a
 JAM state is made by one of three recipes, which the Gray Paper calls C. Learn the
 recipes, and you know where to find anything: the validators, the clock, a service's
@@ -29,7 +29,7 @@ Appendix D. Every key is 31 bytes, made one of three ways:
 hash's first four, then 23 more bytes of the hash follow.)
 
 The state has **16 components**, C(1) to C(16), each a Greek letter in the Gray Paper.
-Here they are, with their sizes in the state you met in lesson 6.1:
+Here they are, with their sizes in the state you met in [lesson 6.1](./01-the-state-trie.md):
 
 | Key | Letter | What it is | Bytes |
 | --- | --- | --- | --- |
@@ -50,7 +50,7 @@ Here they are, with their sizes in the state you met in lesson 6.1:
 | C(15) | ξ | recently accumulated packages | 12 |
 | C(16) | θ | the last accumulation outputs | 1 |
 
-You can already read a few of those sizes. τ is 4 bytes: ℰ₄ of a timeslot (lesson 0.4).
+You can already read a few of those sizes. τ is 4 bytes: ℰ₄ of a timeslot ([lesson 0.4](../00-start/04-the-jam-clock.md)).
 η is 128: four 32-byte hashes. The three validator sets are 2,017 each: a length byte,
 then six validators of 336 bytes. Reading what's *inside* comes next lesson.
 
@@ -167,7 +167,7 @@ export function requestKey(s: number, h: Bytes, l: number): Bytes {
 }
 ```
 
-`encodeFixed` is ℰ₄ from lesson 2.1, and `2n ** 32n - 2n` is 2^32 − 2 as a `bigint`.
+`encodeFixed` is ℰ₄ from [lesson 2.1](../02-codec/01-fixed-width-integers.md), and `2n ** 32n - 2n` is 2^32 − 2 as a `bigint`.
 `a.subarray(4, 27)` is a₄ to a₂₆: from index 4 up to, but not including, 27.
 
 **Run**
@@ -182,7 +182,7 @@ npm run typecheck
 ```
 
 All 21 keys, accounted for. Two of the service's entries are preimages (the
-159,322-byte one is its code, as lesson 6.1 found), and two are the requests that asked
+159,322-byte one is its code, as [lesson 6.1](./01-the-state-trie.md) found), and two are the requests that asked
 for them.
 
 ## Watch it
@@ -280,7 +280,7 @@ node bin/state.ts ../vectors/traces/fallback/00000001.json
 # prints: reported to Grafana
 ```
 
-The same 21 leaves as lesson 6.1, now with names. The one alone at depth 1 is service
+The same 21 leaves as [lesson 6.1](./01-the-state-trie.md), now with names. The one alone at depth 1 is service
 0's account. The *State trie* panel shows the names too. Then try a state a hundred
 blocks on, `../vectors/traces/storage/00000100.json`: 164 entries. The same 16
 components, the same account, the same two preimages and requests, and 143 new things
@@ -305,7 +305,7 @@ let make_service_key (service_id : int) : bytes =
 C(255, s), byte by byte: `land 0xff` keeps the low byte, `lsr 8` shifts the next one
 down. Your `accountKey` lets `encodeFixed` split the bytes and a loop place them. lasair
 has the same recipe a second time, as `state_key_from_index_service` in
-`lib/merklization.ml`: two copies to keep in step, like its headers in lesson 4.6.
+`lib/merklization.ml`: two copies to keep in step, like its headers in [lesson 4.6](../04-blocks/06-the-header.md).
 
 </details>
 

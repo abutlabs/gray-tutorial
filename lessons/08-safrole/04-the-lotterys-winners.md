@@ -24,7 +24,7 @@ of 12 on tiny. Then two things can happen:
   tickets. Everyone learns the winning *tickets*, though still not who holds them.
 - **The sealers** (*The Slot-Sealer Sequence*): at the next epoch, if it follows on
   directly (e′ = e + 1), the block before was past the close (m ≥ Y), and the lottery
-  was full, then γ′_S is the winners. Otherwise it's lesson 8.3's fallback.
+  was full, then γ′_S is the winners. Otherwise it's [lesson 8.3](./03-the-fallback-sealers.md)'s fallback.
 
 Either way the winners go in **outside-in** order, Z: the first, the last, the second,
 the second to last, and so on inwards. Slot 0 gets the best ticket, slot 1 the worst of

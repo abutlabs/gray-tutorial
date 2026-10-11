@@ -1,7 +1,7 @@
 # The fallback sealers
 
 Every slot of an epoch needs a **sealer**: the one validator allowed to make that slot's
-block. Normally a lottery decides, with secret tickets (lesson 8.4). But lotteries can
+block. Normally a lottery decides, with secret tickets ([lesson 8.4](./04-the-lotterys-winners.md)). But lotteries can
 fizzle: too few tickets get entered, or no blocks arrive in the epoch's closing slots
 when the lottery would close, or the chain skips whole epochs. JAM never
 lets a slot go unclaimed, so there's a Plan B: pick the sealers straight from the
@@ -19,8 +19,8 @@ tickets (8.4) or, otherwise, the **fallback** sequence F(η′₂, κ′):
 
 In words: for each slot number i, hash η′₂ with i, read the first four bytes as a number,
 and take that validator of the *new* active set, wrapping round with `mod`. Two inputs,
-both fixed before the epoch begins: η′₂, randomness from two epochs back (lesson 8.1),
-and κ′, the validators who'll be active (lesson 8.2).
+both fixed before the epoch begins: η′₂, randomness from two epochs back ([lesson 8.1](./01-stirring-the-entropy.md)),
+and κ′, the validators who'll be active ([lesson 8.2](./02-rotating-the-validators.md)).
 
 ## The tests
 
@@ -65,7 +65,7 @@ test("F: an epoch without a full lottery is sealed by keys picked from κ′ by 
 
 *Which* new epochs fall back is the next lesson's question. This test checks every vector
 where the fallback happened: post_state's γ_S holds `keys` instead of `tickets`. It works
-out η′ and κ′ with lessons 8.1 and 8.2's own functions, so your whole Safrole so far is on
+out η′ and κ′ with lessons [8.1](./01-stirring-the-entropy.md) and [8.2](./02-rotating-the-validators.md)'s own functions, so your whole Safrole so far is on
 trial, not just F.
 
 **Run, expect it to fail**
@@ -98,7 +98,7 @@ export function fallbackKeys(config: Config, r: Bytes, validators: ValidatorKey[
 }
 ```
 
-It's the same trick as lesson 7.2's numbers from a hash, with one hash per slot instead of
+It's the same trick as [lesson 7.2](../07-time-and-shuffling/02-the-shuffle.md)'s numbers from a hash, with one hash per slot instead of
 eight numbers per hash.
 
 **Run**
@@ -186,8 +186,8 @@ lucky, and nobody is guaranteed a turn. The *Sealers* panel has the whole epoch.
 Read that first comment: a bug story. lasair once picked from the wrong set, the one the
 epoch mark announces for *later*. In the test data it had at the time, every set held the
 same validators, so the wrong set gave the right answer, until data with different sets
-arrived. That's why lesson 8.2's vectors, with their shuffled sets, matter. (And
-`epoch_mark.tickets_entropy` is η′₂ under another name: lesson 6.3 showed the epoch mark
+arrived. That's why [lesson 8.2](./02-rotating-the-validators.md)'s vectors, with their shuffled sets, matter. (And
+`epoch_mark.tickets_entropy` is η′₂ under another name: [lesson 6.3](../06-state-and-merklization/03-reading-the-state.md) showed the epoch mark
 carries the old η₁.)
 
 </details>

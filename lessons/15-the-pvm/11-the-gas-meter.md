@@ -11,7 +11,7 @@ forever? It pays at every lap, and sooner or later it can't.
 App. A.4, the start of Ψ₁. The machine carries its gas ϱ and a flag: has the basic block
 it's in been paid for yet?
 
-- **On a step, if the flag is off**, the block's cost ϱ^Δ (lesson 15.10) is due. With
+- **On a step, if the flag is off**, the block's cost ϱ^Δ ([lesson 15.10](./10-the-pipeline.md)) is due. With
   enough gas, it's paid and the flag goes on. Without enough, the machine stops with
   **oog**, out of gas, and nothing else changes: no instruction runs, and the gas stays
   as it was.
@@ -133,7 +133,7 @@ export function runWithGas(m: Machine): Exit {
 }
 ```
 
-The meter wraps lesson 15.3's `step` rather than living inside it, so `machine.ts` never
+The meter wraps [lesson 15.3](./03-the-machine.md)'s `step` rather than living inside it, so `machine.ts` never
 needs `gas.ts` (which already needs `machine.ts`). `stepWithGas` notes the opcode before
 stepping, because `step` moves ı on: afterwards, the question is whether the instruction
 that just ran was a terminator.
@@ -212,7 +212,7 @@ node bin/gas.ts
 # prints: reported to Grafana
 ```
 
-The same 38 steps as lesson 15.8, now in five payments: 15, 26 (lesson 15.10's block),
+The same 38 steps as [lesson 15.8](./08-a-real-program.md), now in five payments: 15, 26 ([lesson 15.10](./10-the-pipeline.md)'s block),
 27, 73, and 102 for the last block, the one with `ecalli` in it: that instruction's 100
 cycles are most of the bill. 243 in all. Then the same start on a budget of 100: three
 blocks paid, 32 gas left, and the fourth costs 73. Out of gas, at the door of the block

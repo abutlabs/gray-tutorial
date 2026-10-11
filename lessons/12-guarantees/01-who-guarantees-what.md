@@ -3,8 +3,8 @@
 Work arrives at JAM as work-packages, and every package needs **guarantors**: validators
 who run it, sign the resulting report, and put their stake behind it. But which
 validators get which core? If you could pick, you'd pick your friends. So JAM deals them
-out: three validators per core, shuffled with randomness nobody could steer (lesson
-7.2), and reshuffled along every few slots so nobody stays on one core for long. This
+out: three validators per core, shuffled with randomness nobody could steer ([lesson
+7.2](../07-time-and-shuffling/02-the-shuffle.md)), and reshuffled along every few slots so nobody stays on one core for long. This
 lesson deals the hand.
 
 ## What the Gray Paper says
@@ -13,12 +13,12 @@ lesson deals the hand.
 **active**: three guarantors each. P(v, e, t), the core of each validator at slot t:
 
 1. Start with the seats: validator i gets core ⌊i/3⌋, so `0 0 0 1 1 1 2 2 2 …`.
-2. **Shuffle** them (lesson 7.2) with entropy e.
+2. **Shuffle** them ([lesson 7.2](../07-time-and-shuffling/02-the-shuffle.md)) with entropy e.
 3. **Rotate**: every R slots, everyone moves on one core, wrapping round the active
    cores. At slot t, that's ⌊(t mod E)/R⌋ moves since the epoch began.
 
 **M**, this rotation's assignment, is P(|κ′|, η′₂, τ′) with the keys of κ′, offenders
-zeroed by lesson 8.2's Φ. η′₂, not η′₁, says the Gray Paper: randomness from two epochs
+zeroed by [lesson 8.2](../08-safrole/02-rotating-the-validators.md)'s Φ. η′₂, not η′₁, says the Gray Paper: randomness from two epochs
 back, which no fork at the end of the last epoch can disagree about.
 
 **M\***, the *last* rotation's, is P at τ′ − R. If τ′ − R falls in the same epoch, it

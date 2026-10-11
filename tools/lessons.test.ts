@@ -83,3 +83,55 @@ test("commands paste safely: no shell line has a comment after its command", () 
   }
   assert.deepEqual(bad, []);
 });
+
+// Prose only: no code blocks, inline code, links, headings or HTML tags.
+function prose(text: string): string {
+  return text.replace(/```[\s\S]*?```|`[^`\n]*`|!?\[[^\]]*\]\([^)]*\)|^#.*$|<[^>\n]+>/gm, " ");
+}
+const pages = readdirSync(LESSONS, { recursive: true }).map(String).filter((f) => f.endsWith(".md"));
+const lessonAt = new Map(parts.flatMap((p) => p.lessons).map((l) => [l.file, l.id]));
+
+// As the Rust Book links every cross-reference: a reader can always follow one.
+test("every mention of another lesson is a link to it", () => {
+  const ids = new Set(lessonAt.values());
+  const plain: string[] = [];
+  for (const md of pages) {
+    const text = prose(readFileSync(join(LESSONS, md), "utf8"));
+    for (const [mention, id] of text.matchAll(/\b[Ll]essons?\s+(\d+\.\d+)/g)) {
+      if (ids.has(id) && lessonAt.get(md) !== id) plain.push(`${md}: ${mention}`);
+    }
+  }
+  assert.deepEqual(plain, []);
+});
+
+// The code font means "exactly this code", and `bigint`s isn't code (the Book's style guide).
+test("no word is half code: two `bigint` values, not two `bigint`s", () => {
+  const mixed: string[] = [];
+  for (const md of pages) {
+    const text = readFileSync(join(LESSONS, md), "utf8").replace(/```[\s\S]*?```/g, " ");
+    for (const [word] of text.matchAll(/`[^`\n]+`(?:s|es|ed|ing)\b/g)) mixed.push(`${md}: ${word}`);
+  }
+  assert.deepEqual(mixed, []);
+});
+
+// The Book closes a chapter with what you learned. These lessons predate the rule; the
+// part-by-part rewrite adds theirs and takes them off this list.
+const NO_CLOSING_YET = new Set([
+  "00-start/01-what-you-will-build.md",
+  "01-bytes-and-numbers/01-bytes-and-hex.md",
+  "01-bytes-and-numbers/02-numbers.md",
+  "02-codec/01-fixed-width-integers.md",
+  "02-codec/02-compact-naturals.md",
+  "02-codec/03-writer-and-reader.md",
+  "02-codec/04-codecs.md",
+  "02-codec/05-sequences-and-records.md",
+]);
+
+test("every lesson closes with What you have", () => {
+  for (const file of lessonAt.keys()) {
+    const sections = [...readFileSync(join(LESSONS, file), "utf8").replace(/```[\s\S]*?```/g, "")
+      .matchAll(/^## (.+)$/gm)].map((m) => m[1]);
+    if (NO_CLOSING_YET.has(file)) assert.ok(!sections.includes("What you have"), `${file} has one now: take it off NO_CLOSING_YET`);
+    else assert.equal(sections.at(-1), "What you have", `${file} closes with "## What you have"`);
+  }
+});

@@ -7,7 +7,7 @@ observability course opens with that story:
 [Why a JAM network needs observability](https://abutlabs.github.io/jam-learning/observability/lesson.html?lesson=00-welcome/01-why-observe).)
 
 Your client starts the other way round. Before it knows a single JAM rule, it learns to
-talk to the stack you started in lesson 0.2. By the end of this lesson it has said hello,
+talk to the stack you started in [lesson 0.2](./02-set-up-the-project.md). By the end of this lesson it has said hello,
 and every test run from then on reports itself.
 
 ## New words

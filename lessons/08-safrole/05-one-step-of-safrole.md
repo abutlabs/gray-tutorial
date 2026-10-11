@@ -9,10 +9,10 @@ header must carry. Then the test throws the whole post-state of every vector it 
 
 Nothing new in principle: it's §6, all at once. A few last rules join in:
 
-- **τ′** is the block's slot (lesson 7.1).
-- **The epoch mark** (lesson 4.6) appears exactly at a new epoch (lesson 7.1), and carries
-  η₀ and η₁ *as they were* (lesson 6.3), and the Bandersnatch and Ed25519 keys of γ′_P,
-  the newly pending validators (lesson 8.2).
+- **τ′** is the block's slot ([lesson 7.1](../07-time-and-shuffling/01-epochs.md)).
+- **The epoch mark** ([lesson 4.6](../04-blocks/06-the-header.md)) appears exactly at a new epoch ([lesson 7.1](../07-time-and-shuffling/01-epochs.md)), and carries
+  η₀ and η₁ *as they were* ([lesson 6.3](../06-state-and-merklization/03-reading-the-state.md)), and the Bandersnatch and Ed25519 keys of γ′_P,
+  the newly pending validators ([lesson 8.2](./02-rotating-the-validators.md)).
 - **γ′_A**: a new epoch starts a new lottery, so the accumulator empties. Otherwise it
   keeps its tickets, plus any the block brings.
 
@@ -168,7 +168,7 @@ export function safroleFromJson(json: SafroleJson): Safrole {
 ```
 
 Two imports change shape here. `src/safrole.ts` already imports the *types* `TicketBody`
-and `ValidatorKey` (lessons 8.2 and 8.4). Now it needs their *values* too, for `fromJson`,
+and `ValidatorKey` (lessons [8.2](./02-rotating-the-validators.md) and [8.4](./04-the-lotterys-winners.md)). Now it needs their *values* too, for `fromJson`,
 and a value import brings the type along. So take those two names out of the
 `import type` lines, and drop a line that's left empty. TypeScript would complain about a
 name imported twice.

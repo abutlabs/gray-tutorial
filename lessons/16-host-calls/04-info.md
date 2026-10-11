@@ -2,7 +2,7 @@
 
 Across the accumulate test vectors, the first question a service asks that your host
 can't answer yet is one of three: `info`, `read` or `write`. All
-three are about service *accounts*, the records and storage lesson 14.2 read out of the
+three are about service *accounts*, the records and storage [lesson 14.2](../14-services/02-the-service-account.md) read out of the
 state. So the host needs to know the accounts, and the gentlest of the three goes first.
 `info` just looks.
 
@@ -15,7 +15,7 @@ whose: a service id, or 2^64 − 1 for the service itself. The record goes out a
 | --- | --- |
 | 32 | c, the code hash |
 | 8 | b, the balance |
-| 8 | a_t, the minimum balance (lesson 14.2) |
+| 8 | a_t, the minimum balance ([lesson 14.2](../14-services/02-the-service-account.md)) |
 | 8 | g, the least gas for each work-item |
 | 8 | m, the least gas for each transfer's memo |
 | 8 | o, the bytes it keeps |
@@ -246,7 +246,7 @@ export type Accumulation = {
 ```
 
 `info` builds the 96 bytes in the Gray Paper's order: the five 8-byte numbers and the
-three 4-byte ones in one `map` each, and the minimum balance worked out by lesson 14.2's
+three 4-byte ones in one `map` each, and the minimum balance worked out by [lesson 14.2](../14-services/02-the-service-account.md)'s
 `minimumBalance`, since the record doesn't store it.
 
 **Replace in** `src/host.ts`

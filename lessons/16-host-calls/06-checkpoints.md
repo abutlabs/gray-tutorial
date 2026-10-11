@@ -18,7 +18,7 @@ the fallback.
 - **C, the collapse** (App. B.4): when the machine stops, a halt keeps X; a panic or
   running out of gas keeps Y. So without a checkpoint, a failed accumulation changes
   nothing at all.
-- **Ψ_A** puts it together: lay out the service's code with Y (lesson 15.8), arguments
+- **Ψ_A** puts it together: lay out the service's code with Y ([lesson 15.8](../15-the-pvm/08-a-real-program.md)), arguments
   E(t, s, |i|), start at 5, answer host calls with F, then collapse. The gas used is u = g
   minus what's left (never counting below zero).
 
@@ -243,8 +243,8 @@ export function accumulate(
 }
 ```
 
-`accumulate` is everything `vectorService` used to do by hand, plus the collapse: lesson
-15.8's start, lesson 16.1's `runWithHost` with accumulation's host, and C at the end. Its
+`accumulate` is everything `vectorService` used to do by hand, plus the collapse: [lesson
+15.8](../15-the-pvm/08-a-real-program.md)'s start, [lesson 16.1](./01-calling-the-host.md)'s `runWithHost` with accumulation's host, and C at the end. Its
 `watch` is for the curious: it sees every host call, once answered.
 
 The bin can stop building machines now:
@@ -318,7 +318,7 @@ node bin/host.ts
 # prints: reported to Grafana
 ```
 
-The same conversation as lesson 16.3, through Ψ_A now. And across the accumulate vectors,
+The same conversation as [lesson 16.3](./03-growing-the-heap.md), through Ψ_A now. And across the accumulate vectors,
 the services that stopped at `checkpoint` go on to ask for something new, one family of
 vectors each: `bless`, `assign` and `designate` (privileges), `new`, `upgrade`, `eject` and
 `transfer` (services), `lookup`, `solicit`, `query` and `provide` (preimages), and `yield`.

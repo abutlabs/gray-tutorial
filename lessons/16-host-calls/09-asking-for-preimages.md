@@ -1,8 +1,8 @@
 # Asking for preimages
 
-Lesson 16.8's `lookup` reads the preimages a service already has. But how does a preimage
+[Lesson 16.8](./08-lookup.md)'s `lookup` reads the preimages a service already has. But how does a preimage
 get there? The service *asks* for it. It files a request: "I want the data whose hash is
-h, z bytes long". Later a block provides it (lesson 14.1), and later still the service may
+h, z bytes long". Later a block provides it ([lesson 14.1](../14-services/01-providing-preimages.md)), and later still the service may
 let it go. This lesson gives a running service the three host calls for that: `solicit`
 to ask, `query` to see how the asking is going, and `forget` to give up.
 
@@ -24,7 +24,7 @@ Then:
 
 - **`solicit`** (24, 2,193 gas) asks. A new request starts as []; one that's been forgotten,
   [x, y], is asked for again: [x, y, t]. Anything else is HUH. A request takes deposit
-  (lesson 14.2: 2 items, and 81 + z bytes), so if the balance can't cover it: FULL.
+  ([lesson 14.2](../14-services/02-the-service-account.md): 2 items, and 81 + z bytes), so if the balance can't cover it: FULL.
 - **`forget`** (25, 3,250 gas) gives up. A request never provided, [], goes, and so does one
   forgotten more than D slots ago, [x, y] with y < t − D: the request and the preimage, and
   the deposit with them. One that's provided, [x], is marked forgotten now: [x, t]. One asked
@@ -425,7 +425,7 @@ node bin/accumulate.ts ../vectors/stf/accumulate/tiny/preimage_len_bound-1.json
 The same order as yours, spelled out in the comment because it's the kind of detail that
 slips: read the hash first and an unreadable one panics the machine, where the Gray Paper
 says HUH and carry on. lasair's registers are signed 64-bit integers, so it compares them
-with `unsigned_compare`; your `bigint`s just compare.
+with `unsigned_compare`; your `bigint` values just compare.
 
 </details>
 

@@ -26,7 +26,7 @@ Three rows depend on more than the instruction's name:
 - **𝔓_S(a, b)**, for the shifts and rotations with three registers: a if φ_D is the same
   register as φ_A.
 - **𝔟**, a branch's cycles: 20, or just 1 if either way it can go (the next instruction, or
-  the target) starts with `trap` or `unlikely`. That's lesson 15.6's hint at work: a branch
+  the target) starts with `trap` or `unlikely`. That's [lesson 15.6](./06-branches-and-calls.md)'s hint at work: a branch
   to a `trap` is usually a check that should never fail, so a CPU would guess it right.
 
 For 𝔓, App. A.9 defines š and ř: the registers an instruction reads and writes, straight
@@ -298,7 +298,7 @@ node bin/costs.ts
 # prints: reported to Grafana
 ```
 
-You met this block in lesson 15.8: a function getting started. It makes room on the
+You met this block in [lesson 15.8](./08-a-real-program.md): a function getting started. It makes room on the
 stack, saves three registers there, and calls another function. Add up its cycles and you
 get 91. But a real CPU doesn't wait for one store to finish before starting the next: the
 model has four store units, and they can all work at once. The next lesson builds that

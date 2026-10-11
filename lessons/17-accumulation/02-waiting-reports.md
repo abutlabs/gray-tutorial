@@ -1,7 +1,7 @@
 # Waiting reports
 
 Some work can't go until other work has gone. A report can name *prerequisites*: other
-work-packages that must be accumulated first. Lesson 17.1 left those reports out. This
+work-packages that must be accumulated first. [Lesson 17.1](./01-a-blocks-accumulation.md) left those reports out. This
 lesson gives them somewhere to wait, a way to know when they're free, and the bookkeeping
 that keeps both straight from block to block. Seven more official vectors pass, every one
 of them about waiting.
@@ -34,7 +34,7 @@ All four are in the [glossary](../glossary.md).
 3. **Unlock, again and again.** Every waiter with nothing left to wait for goes; their
    packages are now done, which may free others; repeat until nothing more is free.
 4. **Accumulate** the reports going now, then the unlocked ones in that order, in one
-   round (lesson 17.1).
+   round ([lesson 17.1](./01-a-blocks-accumulation.md)).
 5. **Remember.** The history moves on one slot: the oldest set drops off, and a new set
    with everything just accumulated goes on the end. The queue's list for this slot gets
    this block's new waiters, and every other list loses whatever is now done. Lists for
@@ -128,7 +128,7 @@ npm test
 
 ## The code
 
-First the pieces: lesson 17.1's round on its own, the queue's two operations, the state a
+First the pieces: [lesson 17.1](./01-a-blocks-accumulation.md)'s round on its own, the queue's two operations, the state a
 block's accumulation works on, and a reader for the vectors' version of it:
 
 **Add to** `src/accumulate.ts`
@@ -241,7 +241,7 @@ export function accumulationStateFromJson(json: AccumulationStateJson): Accumula
 ```
 
 `edit` and `unlock` are the Gray Paper's E and Q, nearly word for word. Hashes travel as
-hex strings in `Set`s, so "is this package done?" is a plain `has`.
+hex strings in `Set` objects, so "is this package done?" is a plain `has`.
 
 Then the block, which takes the whole state now and gives back the new one:
 

@@ -24,7 +24,7 @@ Each block, α′[c] is made in three steps:
 3. If the pool is now over O, the oldest drop off the front, leaving the newest O.
 
 ϕ′, not ϕ: the queue *after* accumulation, which is why, in a real client, this step
-comes late in the block. In C(1) and C(2) (lesson 6.2) the pools are lists with their
+comes late in the block. In C(1) and C(2) ([lesson 6.2](../06-state-and-merklization/02-state-keys.md)) the pools are lists with their
 length in front, and the queues are 80 hashes exactly: 514 and 5,120 bytes on tiny.
 
 ## The code first

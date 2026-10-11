@@ -2,7 +2,7 @@
 
 Part 15 is the big one: the **PVM**, the Polkadot Virtual Machine, the little computer
 inside every JAM node that runs services' code. Before it can run anything, though, it
-has to *unpack* it. A service's code arrives as one long preimage (lesson 14.1), and
+has to *unpack* it. A service's code arrives as one long preimage ([lesson 14.1](../14-services/01-providing-preimages.md)), and
 inside it, like nesting dolls, are a label, a memory layout, and finally the program the
 PVM steps through. This lesson opens all the dolls, on a real service's real code.
 
@@ -29,7 +29,7 @@ memory.)
 - c, the **code**: the instructions, byte after byte;
 - k, the **opcode bitmask**: one bit per byte of c, saying which bytes *start* an
   instruction. Instructions take 1 to 16 bytes, so without k you couldn't tell an
-  opcode from an argument. Bits are packed least significant first, like lesson 11.1's
+  opcode from an argument. Bits are packed least significant first, like [lesson 11.1](../11-assurances/01-available.md)'s
   bitfields.
 
 ## The tests
@@ -90,7 +90,7 @@ test("its PVM blob: 39,849 instructions, and all 1,601 jumps land on one", () =>
 The first test builds a blob by hand, eight bytes you can read: one jump to byte 2,
 three bytes of code, and a bitmask of `0000 0101` that marks bytes 0 and 2 as
 instructions. The others unpack the code of the trace's service 0, the 159,322-byte
-preimage from lesson 6.1, and check that every layer fits *exactly*: no bytes left over
+preimage from [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md), and check that every layer fits *exactly*: no bytes left over
 at the end of the preimage, every jump landing on an instruction.
 
 **Run, expect it to fail**
@@ -159,7 +159,7 @@ export function startsInstruction(program: Program, i: number): boolean {
 
 The PVM gets a folder of its own, `src/pvm/`, since several files are coming. All of
 this is Part 2's `Reader`: `fixed(3)` for ℰ₃, `natural()` for ℰ, `bytes(n)` for the
-data. `startsInstruction` reuses lesson 11.1's `bitAt`: the same packing, so the same
+data. `startsInstruction` reuses [lesson 11.1](../11-assurances/01-available.md)'s `bitAt`: the same packing, so the same
 function.
 
 **Run**

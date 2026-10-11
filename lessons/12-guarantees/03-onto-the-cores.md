@@ -14,9 +14,9 @@ core can only take a report if it's free, after the disputes (10.3) and the assu
 (11.2) have done their clearing. Every other core keeps what it had.
 
 **The reported packages** are a dictionary: each reported work-package's hash, mapped to
-the root of the segments it exports. Lesson 9.2's `recordBlock` takes exactly these, as
+the root of the segments it exports. [Lesson 9.2](../09-recent-history/02-recent-blocks.md)'s `recordBlock` takes exactly these, as
 `work_packages`. A dictionary is kept **sorted by key**, so they're listed by package
-hash, not in the order the guarantees came. (Lesson 9.2 left sorting to the hardening
+hash, not in the order the guarantees came. ([Lesson 9.2](../09-recent-history/02-recent-blocks.md) left sorting to the hardening
 pass. Here the vectors insist on it.)
 
 ## The tests
@@ -214,7 +214,7 @@ shows both lists.
 The same rule, turned around: lasair walks the cores and looks for a guarantee for each
 one, where yours walks the guarantees and drops each on its core. Both seat the same
 reports. A few lines above this, in the same adapter, the reported list's segment roots
-are still `TODO: compute properly` and written as zeros. Lesson 12.2 showed why no test
+are still `TODO: compute properly` and written as zeros. [Lesson 12.2](./02-signed-and-counted.md) showed why no test
 noticed: the adapter only counts the reported packages.
 
 </details>

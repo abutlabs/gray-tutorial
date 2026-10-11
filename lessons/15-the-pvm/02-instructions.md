@@ -1,6 +1,6 @@
 # Instructions
 
-Lesson 15.1 found 39,849 instructions in a real service's code, but only as opcode
+[Lesson 15.1](./01-the-program-blob.md) found 39,849 instructions in a real service's code, but only as opcode
 numbers. Now your client learns to *read* each one: its name, and its arguments, which
 registers it uses, which numbers it carries, where it jumps. That's a disassembler, and
 by the end of this lesson you'll be reading real JAM service code, the way a computer
@@ -34,7 +34,7 @@ The rules for reading them, in brief:
 - **Immediates** are little-endian, 0 to 4 bytes long, and **sign-extended** to 64 bits
   (X): if their top bit is set, they're negative, and the missing high bytes fill with
   `ff`. Their length isn't written down: it's whatever the instruction's bytes leave,
-  which is why lesson 15.1's bitmask matters.
+  which is why [lesson 15.1](./01-the-program-blob.md)'s bitmask matters.
 - **skip(ı)** is the distance from an opcode to the next one, minus one, never over 24.
   An instruction ends where the next begins.
 - **Offsets** are signed (Z) and relative: the target is ı plus the offset, so a jump
@@ -416,7 +416,7 @@ The very first two instructions are jumps, and that's no accident: the PVM start
 front doors. Follow the first one, `node bin/disassemble.ts
 ../vectors/traces/fallback/00000001.json 80282`, and you're reading the start of a
 function: `add_imm_64 r1, r1, -752` makes room on the stack (r1 is the stack pointer),
-and `store_ind_u64 r0, r1, 744` saves the return address (r0) there. Then lesson 15.1's
+and `store_ind_u64 r0, r1, 744` saves the return address (r0) there. Then [lesson 15.1](./01-the-program-blob.md)'s
 most common opcodes have names: `load_ind_u64` and `store_ind_u64`, moving 8-byte values
 between registers and memory, and `load_imm`. The *Disassembly* panel shows each
 instruction.

@@ -1,6 +1,6 @@
 # What cores and services did
 
-Lesson 18.1 kept score for validators, epoch by epoch. Cores and services get a scorecard
+[Lesson 18.1](./01-who-did-what.md) kept score for validators, epoch by epoch. Cores and services get a scorecard
 too, but a short-lived one: it covers a single block, and the next block starts again
 from zero. This lesson builds both cards and checks them against every reports and
 preimages test vector. No vector checks a core's data load, so you'll work one out by
@@ -32,12 +32,12 @@ a per-block basis": nothing carries over from the block before.
 
 **Each core's card** is filled from three places:
 
-1. **The work it took on.** Every report this block's guarantees put on the core (lesson
-   12.3): add up its digests' imports, exports, gas and extrinsics (how many, and their
+1. **The work it took on.** Every report this block's guarantees put on the core ([lesson
+   12.3](../12-guarantees/03-onto-the-cores.md)): add up its digests' imports, exports, gas and extrinsics (how many, and their
    bytes), and its bundle's length. A work-item's *extrinsics* are data blobs sent along
    with it for refine to read; nothing to do with the block's extrinsic.
 2. **Its data load.** Every report of the core's that became available in this block
-   (lesson 11.1): its bundle's length, plus 4104 bytes for every segment it exported,
+   ([lesson 11.1](../11-assurances/01-available.md)): its bundle's length, plus 4104 bytes for every segment it exported,
    plus one more segment for every 64 of them, rounded up. That last one is a *proof
    page*: hashes that let anyone check later that a segment is the real one.
 3. **Its popularity.** How many of the block's assurances have the core's bit set.
@@ -46,16 +46,16 @@ a per-block basis": nothing carries over from the block before.
 
 1. **Its share of the work.** Every digest for the service in the reports taken on: how
    many, their gas, imports, extrinsics and exports.
-2. **Its provisions.** The preimages provided for it in this block (lesson 14.1): how
+2. **Its provisions.** The preimages provided for it in this block ([lesson 14.1](../14-services/01-providing-preimages.md)): how
    many, and their bytes.
-3. **Its accumulation.** Lesson 17.1's (count, transfers, gas), or zeros if it didn't
+3. **Its accumulation.** [Lesson 17.1](../17-accumulation/01-a-blocks-accumulation.md)'s (count, transfers, gas), or zeros if it didn't
    accumulate.
 
 A service gets a card only if it appears in at least one of the three.
 
 The Gray Paper's names: the cores' cards are **π_C**, the services' **π_S**. The reports
-taken on are **𝐈** (a bold I, lesson 12.3), the newly available ones **𝐑** (a bold R,
-lesson 11.1). For core c, it writes the work as R(c), with a plain R: a different thing,
+taken on are **𝐈** (a bold I, [lesson 12.3](../12-guarantees/03-onto-the-cores.md)), the newly available ones **𝐑** (a bold R,
+[lesson 11.1](../11-assurances/01-available.md)). For core c, it writes the work as R(c), with a plain R: a different thing,
 the sum of step 1. The bundle lengths are L(c), and the data load is
 
   D(c) = Σ over 𝐑's reports for core c of: bundle length + W_G · ⌈segments · 65/64⌉
@@ -165,7 +165,7 @@ Three kinds of vector, each checking one piece:
   the six validators assure core 0, and four assure core 1. More than two thirds of 6
   means at least 5, so only core 0's report becomes available.
 
-Accumulation's part was checked against the accumulate vectors in lesson 17.1.
+Accumulation's part was checked against the accumulate vectors in [lesson 17.1](../17-accumulation/01-a-blocks-accumulation.md).
 
 **Run, expect it to fail**
 
@@ -292,7 +292,7 @@ export function serviceStats(
 
 Both are sums, done once for each core or service. A few things to notice:
 
-- `assuredCount` is lesson 11.1's, which counted the same bits to decide availability.
+- `assuredCount` is [lesson 11.1](../11-assurances/01-available.md)'s, which counted the same bits to decide availability.
 - Gas is a `bigint`, as everywhere since Part 15, so its sums start from `0n`.
 - `Math.ceil` on `n * 65 / 64` is exact: dividing by 64, a power of two, never rounds in
   floating point.

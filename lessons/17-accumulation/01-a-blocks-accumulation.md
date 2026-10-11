@@ -25,13 +25,13 @@ All four are in the [glossary](../glossary.md), with the rest.
 
 §12 in four plain steps:
 
-1. **Which reports go now.** Of the reports that just became available (lesson 11.1),
+1. **Which reports go now.** Of the reports that just became available ([lesson 11.1](../11-assurances/01-available.md)),
    the ones with no prerequisites, and no segment-root lookups (another kind of
-   dependency), are accumulated straight away. The rest wait in a queue: lesson 17.2.
+   dependency), are accumulated straight away. The rest wait in a queue: [lesson 17.2](./02-waiting-reports.md).
 2. **Which services run.** Every service named by a digest in those reports, plus the
-   always-accumulate services, which run every block on free gas (lesson 16.7).
-3. **One round.** Each service runs once, with its inputs and gas from lesson 16.7,
-   through lesson 16.6's Ψ_A. All of them start from the same accounts, and each one keeps
+   always-accumulate services, which run every block on free gas ([lesson 16.7](../16-host-calls/07-a-services-inputs.md)).
+3. **One round.** Each service runs once, with its inputs and gas from [lesson 16.7](../16-host-calls/07-a-services-inputs.md),
+   through [lesson 16.6](../16-host-calls/06-checkpoints.md)'s Ψ_A. All of them start from the same accounts, and each one keeps
    its own account as its run leaves it.
 4. **Afterwards.** Every service that did anything (accumulated a digest, or used gas)
    gets its statistics, and its last-accumulation slot becomes this block's slot.
@@ -41,7 +41,7 @@ isn't there) runs nothing and uses no gas, but its digest still counts.
 
 Now the Gray Paper's names for those steps. The reports in step 1 are **R!**. The round
 in step 3 is the parallel accumulation function **Δ\***, and one service's part of it,
-lesson 16.7's work, is **Δ₁**. The statistics are **S(s) = (N(s), T(s), G(s))**, and the
+[lesson 16.7](../16-host-calls/07-a-services-inputs.md)'s work, is **Δ₁**. The statistics are **S(s) = (N(s), T(s), G(s))**, and the
 last-accumulation slot is an account's **a**, set to **τ′**.
 
 Left for later in this part: the queue (17.2), a gas budget for the whole block, which

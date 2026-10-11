@@ -2,19 +2,19 @@
 
 Service 1729 runs to a clean halt now, and spends 17,867 gas doing it. The test vector
 says 16,417. Somewhere in there are 1,450 gas your client charges and the real thing
-doesn't, and lesson 16.2 pointed at the culprit: two calls to `grow_heap`, each answered
+doesn't, and [lesson 16.2](./02-fetch.md) pointed at the culprit: two calls to `grow_heap`, each answered
 WHAT, at 1,000 gas apiece. Teach your host `grow_heap`, and watch the number land.
 
 ## What the Gray Paper says
 
-A program's heap is lesson 15.8's read-write zone: w, then z pages of zeros. **`grow_heap`**
+A program's heap is [lesson 15.8](../15-the-pvm/08-a-real-program.md)'s read-write zone: w, then z pages of zeros. **`grow_heap`**
 (host call 1, App. B.5, Ω_♊︎, the Gemini sign) lets a program make it bigger, a page
 at a time, up towards the stack. φ₇ is the page the heap should end at: one past its last page.
 
 Three page numbers do the work:
 
-- **a = (2Z_Z + Q(|o|)) / Z_P**: the zone's first page, one empty zone above o (lesson
-  15.8).
+- **a = (2Z_Z + Q(|o|)) / Z_P**: the zone's first page, one empty zone above o ([lesson
+  15.8](../15-the-pvm/08-a-real-program.md)).
 - **b = (2^32 − 3Z_Z − Z_I − P(s)) / Z_P**: as far as it may ever reach, a whole zone short
   of the stack.
 - **h**: where the heap ends today: a, plus however many writable pages there are from a
@@ -139,7 +139,7 @@ npm test
 
 ## The code
 
-`grow_heap` rounds sizes just as lesson 15.8's Y does, so Y shares its `roundUp`:
+`grow_heap` rounds sizes just as [lesson 15.8](../15-the-pvm/08-a-real-program.md)'s Y does, so Y shares its `roundUp`:
 
 **Replace in** `src/pvm/standard.ts`
 
@@ -181,7 +181,7 @@ export function growHeap(m: Machine, code: ServiceCode): HostExit {
 ```
 
 `h` counts the writable pages between a and b. Only the pages a program has are in the
-memory map, so that's a short walk, not a million steps. New pages come from lesson 15.4's
+memory map, so that's a short walk, not a million steps. New pages come from [lesson 15.4](../15-the-pvm/04-memory.md)'s
 `addPages`, zeroed and writable.
 
 **Replace in** `src/host.ts`
@@ -262,7 +262,7 @@ node bin/host.ts
 ```
 
 Now the bin compares its answer with the vector's. There it is: 16,417, to the last unit
-of gas. Every instruction priced by the pipeline of lesson 15.10, every block paid for by
+of gas. Every instruction priced by the pipeline of [lesson 15.10](../15-the-pvm/10-the-pipeline.md), every block paid for by
 the meter of 15.11, every host call charged its Gray Paper price. And the two `grow_heap` calls? Both ask for page 51, and the heap
 already ends at 51 (a = 48, then w and its two heap pages), so each is the cheap kind: 275,
 not 1,000. The *Host calls* panel has the conversation, now word for word what the vector

@@ -2,14 +2,14 @@
 
 A JAM service can't download things. If it needs some data, say a new version of its
 own code or a large file, it can only ask for it *by its hash and length*, and wait. Some
-later block brings the data in its preimages extrinsic (lesson 4.1), the chain checks
+later block brings the data in its preimages extrinsic ([lesson 4.1](../04-blocks/01-tickets-and-preimages.md)), the chain checks
 it really is what was asked for (its hash says so), and hands it over. This lesson is
 that handover, and it starts Part 14.
 
 ## What the Gray Paper says
 
 §9 and §12. For every piece of data a service has asked for, it keeps a **request**,
-under lesson 6.2's `requestKey(s, H(data), length)`. Its value is a short **history**,
+under [lesson 6.2](../06-state-and-merklization/02-state-keys.md)'s `requestKey(s, H(data), length)`. Its value is a short **history**,
 the slots of its life so far:
 
 | History | Means |
@@ -21,7 +21,7 @@ the slots of its life so far:
 
 **Y, "providable"**: a preimage (s, data) is welcome if service s has a request for
 (H(data), length) whose history is `[]`. **I, "provide"**: for each welcome preimage,
-the data is stored under `preimageKey(s, data)` (lesson 6.2), and the request's history
+the data is stored under `preimageKey(s, data)` ([lesson 6.2](../06-state-and-merklization/02-state-keys.md)), and the request's history
 becomes `[τ′]`, the slot of this block.
 
 The data proves itself: its hash is in the key, so nobody can provide the wrong thing.
@@ -123,7 +123,7 @@ The second test is the big one: every preimage in blocks 1 to 99 of the `preimag
 trace, 67 of them, provided to real state, and compared with the state the chain
 actually had after each block. (Block 100 has one more, but no next state in the trace
 to compare against.) The third test turns the `preimages` vectors' accounts into state
-entries with lesson 6.2's keys, so the same `providePreimages` runs on both.
+entries with [lesson 6.2](../06-state-and-merklization/02-state-keys.md)'s keys, so the same `providePreimages` runs on both.
 
 **Run, expect it to fail**
 
@@ -274,7 +274,7 @@ let integrate_preimage (db : Lasair.State_db.t) (slot : int)
 
 Line for line, your loop body: find the request by its key, check its history is
 `[]`, store the data, write `[slot]`. lasair also works on its state store directly,
-with the same key recipes as lesson 6.2. When a rule is about the state, writing it
+with the same key recipes as [lesson 6.2](../06-state-and-merklization/02-state-keys.md). When a rule is about the state, writing it
 against the state keeps it short.
 
 </details>

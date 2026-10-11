@@ -13,14 +13,14 @@ accumulator:
 
 > η′₀ = H(η₀ ⌢ Y(H_v))
 
-H_v is the header's `entropy_source` (lesson 4.6): a 96-byte Bandersnatch **VRF**
+H_v is the header's `entropy_source` ([lesson 4.6](../04-blocks/06-the-header.md)): a 96-byte Bandersnatch **VRF**
 signature by the block's author. Y(H_v) is its *output*, 32 bytes of randomness with a
 special property. The author can't choose it: for a given key and message, a VRF's
 output comes out one way only. Yet everyone can check it was made honestly. So
 nobody, not even the author, can steer what goes into η.
 
 Computing Y needs Bandersnatch, which this tutorial hasn't got yet. The `safrole` test
-vectors hand it to you instead, as `input.entropy`. And the rest of η′ is lesson 7.1's
+vectors hand it to you instead, as `input.entropy`. And the rest of η′ is [lesson 7.1](../07-time-and-shuffling/01-epochs.md)'s
 history: moved along one at a new epoch, unchanged otherwise.
 
 ## The tests
@@ -109,7 +109,7 @@ export function nextEntropy(entropy: Bytes[], vrfOutput: Bytes, newEpoch: boolea
 }
 ```
 
-One hash for the accumulator, and lesson 7.1's `entropyHistory` for the rest.
+One hash for the accumulator, and [lesson 7.1](../07-time-and-shuffling/01-epochs.md)'s `entropyHistory` for the rest.
 
 **Run**
 

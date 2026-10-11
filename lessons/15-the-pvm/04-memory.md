@@ -84,7 +84,7 @@ test("writing a read-only page faults, and writes nothing", () => {
 });
 ```
 
-The first test is the `ind` forms you saw most in the real code (lesson 15.2): r1
+The first test is the `ind` forms you saw most in the real code ([lesson 15.2](./02-instructions.md)): r1
 holds an address, like a stack pointer. `0x80` as an unsigned byte is 128; as a signed
 byte it's −128, which in 64 bits is `0xffffffffffffff80`.
 
@@ -243,10 +243,10 @@ function memoryInstructions(m: Machine, ins: Instruction): Exit | undefined {
 }
 ```
 
-Thirty instructions in two `if`s: a regular expression reads the name, and the name says
+Thirty instructions in two `if` statements: a regular expression reads the name, and the name says
 everything. `load_ind_i16` is "load, through a register, signed, 16 bits". The
 `([ui])` group catches signed or unsigned, `(ind_)?` the indirect form, `(8|16|32|64)`
-the width. That's lesson 15.3's `FAMILIES` paying off: `step` hasn't changed at all.
+the width. That's [lesson 15.3](./03-the-machine.md)'s `FAMILIES` paying off: `step` hasn't changed at all.
 
 **Run**
 

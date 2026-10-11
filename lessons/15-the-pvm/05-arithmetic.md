@@ -115,7 +115,7 @@ test("every arithmetic instruction in the GP's tables has an operation: 72 of th
 ```
 
 Each test runs one instruction and looks at r2. The last test is the safety net: it
-walks all 72 arithmetic opcodes of lesson 15.2's table and checks each has an
+walks all 72 arithmetic opcodes of [lesson 15.2](./02-instructions.md)'s table and checks each has an
 operation, so none can be forgotten.
 
 **Run, expect it to fail**
@@ -235,7 +235,7 @@ export function operationOf(name: string): { operation: string; swapped: boolean
 ```
 
 Every operation takes p and q, the two inputs, plus `old`, the value already in the
-register being written (only `cmov` looks at it). `bigint`s never overflow, so the
+register being written (only `cmov` looks at it). `bigint` values never overflow, so the
 wrap-around is explicit: `mod` brings every result back into 64 bits, and `ext32` into
 32 bits, sign-extended. One trap with bigint: `%` keeps the sign of the number on its
 left, so `-7n % 2n` is `-1n`. That's wrong for wrapping, which is why `mod` adds n and
@@ -246,7 +246,7 @@ directly.
 table serves 72 instructions. `cmov…_imm` is the odd one out: its immediate is the
 value moved, not the condition, so it reads the swapped way round.
 
-Lesson 15.3's `basics` had six of these instructions written out. They move to the new
+[Lesson 15.3](./03-the-machine.md)'s `basics` had six of these instructions written out. They move to the new
 family now, so `basics` gets shorter:
 
 **Replace in** `src/pvm/machine.ts`

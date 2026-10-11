@@ -1,6 +1,6 @@
 # Votes and verdicts
 
-Back in lesson 4.4 you decoded disputes: trials held right in the blocks. Now your client
+Back in [lesson 4.4](../04-blocks/04-disputes.md) you decoded disputes: trials held right in the blocks. Now your client
 gets to be the court clerk. When validators challenge a work-report, two thirds of them
 plus one vote on it, and every vote is signed. The clerk's job: check every signature,
 count the votes, and record the verdict, *good*, *bad* or *wonky*, in the state for
@@ -14,7 +14,7 @@ good. This lesson is that clerk.
 are κ, the current validators, if the age is the current epoch, and λ, the previous
 ones, otherwise. That rule is K.
 
-**What a vote signs.** Ed25519 (lesson 5.3), over a prefix and the report's hash:
+**What a vote signs.** Ed25519 ([lesson 5.3](../05-hashing-and-signatures/03-signatures.md)), over a prefix and the report's hash:
 `$jam_valid` for "this report is good", `$jam_invalid` for "it isn't". The `$` is
 notation, as always: the bytes are `jam_valid` and `jam_invalid`. The prefix is part of
 the message, so a "valid" signature can't be passed off as an "invalid" one.
@@ -27,7 +27,7 @@ the message, so a "valid" signature can't be passed off as an "invalid" one.
 | 0 | **bad** |
 | ⌊\|K\|/3⌋ (2 on tiny, 341 on full) | **wonky**: nobody can tell |
 
-**What the state keeps.** ψ (C(5), lesson 6.2) holds three sets of report hashes, good,
+**What the state keeps.** ψ (C(5), [lesson 6.2](../06-state-and-merklization/02-state-keys.md)) holds three sets of report hashes, good,
 bad and wonky, plus the offenders' keys (next lesson). Each verdict's report joins the
 set of its outcome. Sets in the state are kept sorted.
 
@@ -292,7 +292,7 @@ Two trials in one block: one report cleared, one condemned. Now try
 `progress_with_bad_signatures-1.json`: `every vote signed by its judge: false`, a forged
 vote. Then `progress_with_verdict_signatures_from_previous_set-1.json`, judged by λ. And
 that report's hash, `0x0e5751c0…`, should ring a bell: it's the Blake2b of no bytes at
-all, from lesson 5.1. Test vectors need report hashes from somewhere! The *Verdicts*
+all, from [lesson 5.1](../05-hashing-and-signatures/01-hashes.md). Test vectors need report hashes from somewhere! The *Verdicts*
 panel has every trial.
 
 ![Verdicts panel](./images/01-verdicts.png)

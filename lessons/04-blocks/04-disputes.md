@@ -160,7 +160,7 @@ node bin/decode.ts disputes_extrinsic ../vectors/codec/full/disputes_extrinsic.b
 # prints: reported to Grafana
 ```
 
-`0x82ab` is a two-byte compact natural (lesson 2.2): the first byte's leading `1` says
+`0x82ab` is a two-byte compact natural ([lesson 2.2](../02-codec/02-compact-naturals.md)): the first byte's leading `1` says
 one more byte follows, and together they make 683. Then 683 votes scroll past. It's a
 big jury.
 
@@ -184,7 +184,7 @@ and at v0.8.0:
 
 That `\var` is the length prefix. Without it, a decoder had to *know* how many votes to
 read, which means knowing V, which means knowing the size of the network. That's exactly
-where lasair's frozen-at-tiny bug (lesson 4.2) bit: its vote count, like its bitfield
+where lasair's frozen-at-tiny bug ([lesson 4.2](./02-tiny-and-full.md)) bit: its vote count, like its bitfield
 size, was computed once at tiny and never again. Under 0.8.0 the votes say how many they
 are, and that trap is gone. Specs evolve, and sometimes they make your life easier.
 

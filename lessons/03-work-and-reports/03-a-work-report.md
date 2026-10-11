@@ -22,12 +22,12 @@ All three are in the [glossary](../glossary.md).
 §11 (*Work Report*) says a report is:
 
 - the **availability specification**: how to find the package's data again later;
-- the refinement **context** (lesson 2.6) and the **core** that did the work;
+- the refinement **context** ([lesson 2.6](../02-codec/06-the-first-test-vectors.md)) and the **core** that did the work;
 - the **authorizer**'s hash, the gas it used, and its output (the vectors call that
   output `auth_output`);
 - a **segment-root lookup**: for work-packages this one imported segments from, by
   package hash, the root of the segments they exported;
-- the work **digests**, one per item (lesson 3.2).
+- the work **digests**, one per item ([lesson 3.2](./02-work-digests.md)).
 
 And the availability specification (§11, *Availability*) is six things: the package's
 hash, the length of its *bundle* (the package plus everything needed to re-run it), an
@@ -39,7 +39,7 @@ for every validator, cut so cleverly that any third of them can rebuild the whol
 Hence `erasure_shards`: one per validator. Which means, for the first time, tiny and full
 vectors differ: 6 shards on tiny, 1,023 on full.
 
-Two fields are compact naturals: `core_index`, and `auth_gas_used`. Remember lesson 1.2?
+Two fields are compact naturals: `core_index`, and `auth_gas_used`. Remember [lesson 1.2](../01-bytes-and-numbers/02-numbers.md)?
 `auth_gas_used` is the field where lasair's signed-number bug lived.
 
 ## The test

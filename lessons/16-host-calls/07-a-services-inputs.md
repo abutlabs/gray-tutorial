@@ -1,6 +1,6 @@
 # A service's inputs
 
-Lesson 16.2's `fetch` hands a service its inputs, items 14 and 15. So far every service
+[Lesson 16.2](./02-fetch.md)'s `fetch` hands a service its inputs, items 14 and 15. So far every service
 got none. But a service accumulates *because* work came in for it: the block's
 work-reports carry the results of its work-items, refined on the cores. This lesson turns
 those reports into the service's inputs, and with them, the matches the earlier lessons
@@ -10,7 +10,7 @@ gas and the byte of storage.
 ## What the Gray Paper says
 
 §12 calls each input an **operand**, U: what accumulation learns of one work-digest (the
-result of one work-item, lesson 3.2's `WorkDigest`). It mixes the two:
+result of one work-item, [lesson 3.2](../03-work-and-reports/02-work-digests.md)'s `WorkDigest`). It mixes the two:
 
 | From the report | From the digest |
 | --- | --- |
@@ -20,7 +20,7 @@ result of one work-item, lesson 3.2's `WorkDigest`). It mixes the two:
 | t, the authorizer's trace | |
 
 App. C encodes it as **E(0, p, e, a, y, g, O(l), ↕t)**: the hashes as they are, the gas as
-a compact natural, the result as lesson 3.2's O (a 0 and the output, or an error's tag),
+a compact natural, the result as [lesson 3.2](../03-work-and-reports/02-work-digests.md)'s O (a 0 and the output, or an error's tag),
 and the trace with its length. The leading 0 says "operand": a service's inputs can also
 be transfers, which start with a 1 (a later lesson).
 

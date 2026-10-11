@@ -1,6 +1,6 @@
 # Reading the state
 
-You know where everything in the state lives (lesson 6.2). Time to open the boxes. Each
+You know where everything in the state lives ([lesson 6.2](./02-state-keys.md)). Time to open the boxes. Each
 value in the state is an *encoding*, so the codecs you built in Part 2 can read it. This
 lesson reads three components, the time, the entropy and the validators, and checks each
 one against something completely independent: the blocks themselves.
@@ -27,17 +27,17 @@ Appendix D's T says what each key's value is. Three of them:
 | C(8) | κ, this epoch's validators, with their length in front | `seq(ValidatorKey)` |
 
 A **validator key** (§6) is 336 bytes, four keys for four jobs: Bandersnatch (32 bytes),
-Ed25519 (32), BLS (144) and metadata (128). You met the first two in lesson 4.6, where
+Ed25519 (32), BLS (144) and metadata (128). You met the first two in [lesson 4.6](../04-blocks/06-the-header.md), where
 an epoch mark carries just those. The state keeps all four.
 
 And three facts from elsewhere in the Gray Paper, to check your reading against:
 
 - **τ** (§6): after a block, the time *is* that block's slot. So the time in the state
   before block n is the slot of block n − 1.
-- **η** (§6): an epoch mark (lesson 4.6) is η₀, η₁ and the next validators, with η₀ and η₁
+- **η** (§6): an epoch mark ([lesson 4.6](../04-blocks/06-the-header.md)) is η₀, η₁ and the next validators, with η₀ and η₁
   as they stood before its block. So `epoch_mark.entropy` must be the state's η₀, and
   `epoch_mark.tickets_entropy` its η₁.
-- **κ** (§11): assurances are signed with the validators' Ed25519 keys (lesson 5.3). So
+- **κ** (§11): assurances are signed with the validators' Ed25519 keys ([lesson 5.3](../05-hashing-and-signatures/03-signatures.md)). So
   the keys in κ must check out against real assurances.
 
 ## The tests
@@ -178,7 +178,7 @@ npm run typecheck
 
 Look at what the κ test just did: real assurances from real blocks (Part 4), checked
 with Ed25519 (Part 5) against keys your client read out of a real state (Part 6) with its
-own codecs (Part 2). And lesson 6.1 already proved that state is the one the header
+own codecs (Part 2). And [lesson 6.1](./01-the-state-trie.md) already proved that state is the one the header
 promised. Four parts of the tutorial, in one `assert`.
 
 One honest footnote. The rule says assurances are signed by κ′, the validators *after*
@@ -239,7 +239,7 @@ node bin/read-state.ts ../vectors/traces/safrole/00000012.json
 Block 12 of the `safrole` trace starts an epoch, and its state says the time is slot 11:
 one block earlier, as promised. Compare η0 and η1 with that block's epoch mark, in the
 trace file: same hashes. And κ0's key, `0x4418fb8c…`, is an old friend: it's validator 0
-from lesson 5.3's assurance vectors. The test vectors share one cast of six validators.
+from [lesson 5.3](../05-hashing-and-signatures/03-signatures.md)'s assurance vectors. The test vectors share one cast of six validators.
 The *Reading σ* panel shows all three components.
 
 ![Reading σ panel](./images/03-reading-sigma.png)
@@ -258,7 +258,7 @@ type validator_keys = {
 
 Ed25519 first, Bandersnatch second: the opposite of the bytes. In lasair that's fine,
 because its decoders are written by hand and read the bytes in their own order. In your
-client the record *is* the byte order (lesson 2.5): swap two fields of `ValidatorKey`
+client the record *is* the byte order ([lesson 2.5](../02-codec/05-sequences-and-records.md)): swap two fields of `ValidatorKey`
 and every key comes out wrong. Try it, and watch the κ test go red.
 
 </details>

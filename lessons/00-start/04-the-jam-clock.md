@@ -10,10 +10,10 @@ Your first piece of real JAM. It's tiny, and it is everywhere: every block in JA
 - **JAM Common Era.** The moment JAM's clock starts: 12:00 UTC on 1 January 2025.
   *Example:* slot 0 begins right then.
 - **Unix epoch.** The moment most computer clocks count from: 00:00 UTC on 1 January
-  1970. (Nothing to do with a JAM epoch, which arrives in lesson 7.1.) *Example:* the JAM
+  1970. (Nothing to do with a JAM epoch, which arrives in [lesson 7.1](../07-time-and-shuffling/01-epochs.md).) *Example:* the JAM
   Common Era is 1,735,732,800 seconds after it.
 - **Header.** A block's cover page; among other things, it names the block's slot
-  (lesson 4.6). *Example:* a header saying slot 43.
+  ([lesson 4.6](../04-blocks/06-the-header.md)). *Example:* a header saying slot 43.
 - **Test-driven development (TDD).** Writing a test before the code it tests, watching it
   fail, then writing the code that makes it pass. *Example:* this lesson's `slotAt`.
 - **Assertion.** One check inside a test: if the value isn't what it should be, the test

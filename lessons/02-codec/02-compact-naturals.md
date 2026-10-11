@@ -49,7 +49,7 @@ condition picks the smallest l that x fits in.
 
 ## The tests
 
-One value at each of a few lengths, including our old friend 2^64 − 70 from lesson 1.2:
+One value at each of a few lengths, including our old friend 2^64 − 70 from [lesson 1.2](../01-bytes-and-numbers/02-numbers.md):
 
 **Add to** `test/numbers.test.ts`
 

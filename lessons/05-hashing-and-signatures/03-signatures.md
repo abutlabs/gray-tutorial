@@ -23,7 +23,7 @@ All three are in the [glossary](../glossary.md).
 §3 (*Notational Conventions*): JAM's everyday signatures are **Ed25519**, as RFC 8032
 defines them. A public key is 32 bytes, a signature is 64.
 
-§11 (*Reporting and Assurance*): an assurance (lesson 4.2) must be signed by the
+§11 (*Reporting and Assurance*): an assurance ([lesson 4.2](../04-blocks/02-tiny-and-full.md)) must be signed by the
 validator it names, with that validator's Ed25519 key, and the message signed is
 
 > X_A, then H(ℰ(parent, bitfield)), where X_A = `$jam_available`
@@ -39,7 +39,7 @@ Three details, and each one matters:
   "I hold my piece" can never be replayed as "this report is good".
 - **ℰ(parent, bitfield)** is just the two side by side: a hash and a fixed-size bitfield
   encode as themselves. The parent is the block's parent hash, and an assurance's
-  `anchor` must be exactly that (§11 again), so your code signs the anchor. (Lesson 11.3
+  `anchor` must be exactly that (§11 again), so your code signs the anchor. ([Lesson 11.3](../11-assurances/03-bad-assurances.md)
   checks that the two really are the same.)
 
 ## Another library

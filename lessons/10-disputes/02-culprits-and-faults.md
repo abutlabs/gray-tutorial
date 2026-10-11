@@ -8,7 +8,7 @@ evidence. Two kinds of offender, two kinds of evidence:
 - a **fault** voted against the verdict: "valid" on a bad report, or "invalid" on a good
   one. Exhibit A: their vote.
 
-Offenders are remembered forever in ψ_O, and lesson 8.2's Φ keeps them out of the next
+Offenders are remembered forever in ψ_O, and [lesson 8.2](../08-safrole/02-rotating-the-validators.md)'s Φ keeps them out of the next
 validator set. This lesson checks the evidence and keeps the record.
 
 ## What the Gray Paper says
@@ -19,9 +19,9 @@ validator set. This lesson checks the evidence and keeps the record.
   the very message a guarantor signs when vouching for report r. (The `$` is notation;
   the bytes are `jam_guarantee`.)
 - A **fault** (r, v, k, s) is valid if s is k's signature on the vote v about r:
-  `$jam_valid` or `$jam_invalid`, then r, exactly like lesson 10.1's votes.
+  `$jam_valid` or `$jam_invalid`, then r, exactly like [lesson 10.1](./01-votes-and-verdicts.md)'s votes.
 - **ψ′_O**, the offenders, gains every culprit's and every fault's key.
-- **The offenders mark** (lesson 4.6's `offenders_mark`) lists the same keys: the
+- **The offenders mark** ([lesson 4.6](../04-blocks/06-the-header.md)'s `offenders_mark`) lists the same keys: the
   culprits' first, then the faults', in the order the block gives them.
 
 There are more rules about *which* offenders may appear: a culprit's report must really
@@ -125,7 +125,7 @@ export function recordOffenders(
 }
 ```
 
-`faultSigned` reuses lesson 10.1's `voteMessage`: a fault's evidence *is* a vote, just
+`faultSigned` reuses [lesson 10.1](./01-votes-and-verdicts.md)'s `voteMessage`: a fault's evidence *is* a vote, just
 one on the losing side. And `recordOffenders` reuses `sorted`, since ψ_O is a set like
 the other three.
 
@@ -193,10 +193,10 @@ node bin/offenders.ts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
 # prints: reported to Grafana
 ```
 
-Put it next to lesson 10.1's `bin/verdicts.ts` on the same vector, and the whole trial
+Put it next to [lesson 10.1](./01-votes-and-verdicts.md)'s `bin/verdicts.ts` on the same vector, and the whole trial
 reads like a story. Report `0x7b0a…` was judged bad, so the two validators who
 guaranteed it are culprits. Report `0x11da…` was judged good, and validator `0x4418…`
-(validator 0, from lesson 5.3) had voted "invalid" on it: a fault. Now try
+(validator 0, from [lesson 5.3](../05-hashing-and-signatures/03-signatures.md)) had voted "invalid" on it: a fault. Now try
 `progress_with_bad_signatures-2.json`, where the second culprit's "evidence" is a
 forgery. The *Offenders* panel lists every offender.
 

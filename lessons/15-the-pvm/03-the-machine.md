@@ -1,6 +1,6 @@
 # The machine
 
-Time to switch it on. Lessons 15.1 and 15.2 read a program; this one *runs* one. The PVM
+Time to switch it on. Lessons [15.1](./01-the-program-blob.md) and [15.2](./02-instructions.md) read a program; this one *runs* one. The PVM
 is a small, very strict computer: thirteen 64-bit registers, an instruction counter,
 and a rulebook for each instruction. This lesson builds the machine and teaches it its
 first seventeen instructions, enough to run a loop. Memory comes next lesson, and gas
@@ -11,7 +11,7 @@ after that.
 Appendix A.
 
 **The state**: ı, the instruction counter, and φ, thirteen registers of 64 bits each. (A
-curly phi: the straight ϕ of lesson 6.2 is the authorizer queue. Memory and a gas counter
+curly phi: the straight ϕ of [lesson 6.2](../06-state-and-merklization/02-state-keys.md) is the authorizer queue. Memory and a gas counter
 are coming soon.)
 
 **One step, Ψ₁**: run the instruction at ı. Unless it says otherwise, an instruction
@@ -81,8 +81,8 @@ test("trap panics; jump_ind to anything else than the halt address, without a ta
 });
 ```
 
-The `SUM` program is seven instructions you can read from the comments, and lesson
-15.2's layouts tell you each byte. `0x32` packs two registers, r2 and r3. `0xff` is −1,
+The `SUM` program is seven instructions you can read from the comments, and [lesson
+15.2](./02-instructions.md)'s layouts tell you each byte. `0x32` packs two registers, r2 and r3. `0xff` is −1,
 sign-extended. `0xfa` is −6, the jump back. Look at the `fallthrough` at 5: it does
 nothing but end a basic block, so that 6, where the loop starts, *begins* one. Without
 it the branch back to 6 would panic.
@@ -259,11 +259,11 @@ export function run(m: Machine): Exit {
 The machine is a plain object that `step` *changes*. Most of your client works on values
 it doesn't change, but a machine is exactly something that changes as it runs (like
 Part 2's `Writer` and `Reader`, which move along as they go). `step` decodes
-the instruction (lesson 15.2), moves ı on, and then offers it to each *family* of
+the instruction ([lesson 15.2](./02-instructions.md)), moves ı on, and then offers it to each *family* of
 instructions in turn. This lesson has one family, `basics`; later lessons add more to
 `FAMILIES` without touching `step`. Inside a family, each instruction can override the
 move: a jump sets ı itself, a halt or panic stops. Each register's meaning depends on
-the layout, as lesson 15.2's comments said: `add_64` writes its *third* register, and
+the layout, as [lesson 15.2](./02-instructions.md)'s comments said: `add_64` writes its *third* register, and
 `add_imm_64` its *first*. Instructions not built yet throw an `Error`, which is your
 bug, not the program's: a panic is the program's fault, a thrown `Error` is yours.
 

@@ -41,7 +41,7 @@ others, the more can run at once.
 
 Two things to watch for. The list is in the Gray Paper's order, not an order you can run:
 γ′ comes first, before η′, which it needs. And it's a summary: 𝐑*, the reports ready to
-accumulate, is listed as made from E_A and ρ† alone, but its full definition (lesson 17.2)
+accumulate, is listed as made from E_A and ρ† alone, but its full definition ([lesson 17.2](../17-accumulation/02-waiting-reports.md))
 also reads the ready queue ω. That's state from before the block, there from the start, so
 the order doesn't change.
 
@@ -229,7 +229,7 @@ built it. The *Block import plan* panel keeps it.
 The next lessons of this part run real blocks through these waves and compare the whole
 state after each one with the official block-import traces. One step can't run on a real
 block yet: η′ mixes in randomness that only the block's header can give, the output of
-its entropy signature H_V, a Bandersnatch VRF signature (lesson 8.1 took that output
+its entropy signature H_V, a Bandersnatch VRF signature ([lesson 8.1](../08-safrole/01-stirring-the-entropy.md) took that output
 ready-made from the test vectors). That's the cryptography Part 8 left for later.
 
 <details>

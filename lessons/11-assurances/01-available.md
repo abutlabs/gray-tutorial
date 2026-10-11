@@ -1,8 +1,8 @@
 # Available
 
-A guaranteed work-report sits on its core (lesson 10.3) until JAM is sure its data won't
+A guaranteed work-report sits on its core ([lesson 10.3](../10-disputes/03-clearing-the-cores.md)) until JAM is sure its data won't
 vanish: enough validators must hold their pieces of it. Every block, validators send
-**assurances**, lesson 4.2's bitfields: one bit per core, 1 meaning "I hold my share of
+**assurances**, [lesson 4.2](../04-blocks/02-tiny-and-full.md)'s bitfields: one bit per core, 1 meaning "I hold my share of
 this core's data". Count the 1s for a core, and if more than two thirds of the
 validators say so, the report is **available**. This lesson counts.
 
@@ -14,7 +14,7 @@ validators say so, the report is **available**. This lesson counts.
 first**: core 0 is the lowest bit of byte 0, core 7 the highest, core 8 the lowest bit
 of byte 1. So `0x05`, `0000 0101`, means cores 0 and 2.
 
-Careful: that's the *opposite* of lesson 6.1's trie, which reads key bits most
+Careful: that's the *opposite* of [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md)'s trie, which reads key bits most
 significant first. JAM uses both orders, each in its own place. Mixing them up is a
 classic way to spend an afternoon.
 
@@ -135,7 +135,7 @@ export function nowAvailable(
 }
 ```
 
-`bitAt` is lesson 6.1's `bit`, flipped: `>> (c % 8)` instead of `>> (7 - (i % 8))`,
+`bitAt` is [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md)'s `bit`, flipped: `>> (c % 8)` instead of `>> (7 - (i % 8))`,
 least significant first instead of most. (And it answers `true` or `false`.)
 
 **Run**

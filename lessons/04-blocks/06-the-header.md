@@ -26,18 +26,18 @@ All three are in the [glossary](../glossary.md).
 | `parent` | the parent block's header hash: the link in the chain |
 | `parent_state_root` | the state root after the parent block |
 | `extrinsic_hash` | a hash committing to this block's extrinsic (Part 4's five bags) |
-| `slot` | the timeslot (lesson 0.4), ℰ₄ |
+| `slot` | the timeslot ([lesson 0.4](../00-start/04-the-jam-clock.md)), ℰ₄ |
 | `epoch_mark` | at an epoch's first block only: fresh randomness, and the keys of the validators for the epoch that's starting |
 | `tickets_mark` | once per epoch, when the ticket lottery closes: the winning ticket for every slot of the next epoch |
 | `author_index` | which validator made this block, ℰ₂ |
 | `entropy_source` | a VRF signature: 96 bytes of verifiable fresh randomness |
-| `offenders_mark` | the Ed25519 keys of validators newly convicted in disputes (lesson 4.4) |
+| `offenders_mark` | the Ed25519 keys of validators newly convicted in disputes ([lesson 4.4](./04-disputes.md)) |
 | `seal` | the author's signature over all of the above |
 
-Two markers that are only sometimes there: that's what `option` is for (lesson 4.5). And
+Two markers that are only sometimes there: that's what `option` is for ([lesson 4.5](./05-maybe-and-exactly-n.md)). And
 the tickets mark holds exactly one ticket per slot of an epoch, E of them, 12 on tiny and
 600 on full, with no length in front: that's `seqN`. The epoch mark's validator list,
-though, *does* carry its length. (Trust the bytes: lesson 4.5 checked both.)
+though, *does* carry its length. (Trust the bytes: [lesson 4.5](./05-maybe-and-exactly-n.md) checked both.)
 
 And the order? You know the drill. §5 lists the offenders mark before the author index;
 Appendix C writes the author index, the entropy source, *then* the offenders. The encoding
@@ -144,7 +144,7 @@ export type Header = Value<ReturnType<typeof Header>>;
 ```
 
 A winning ticket in the header is just its `id` and `attempt`. The 784-byte proof from
-lesson 4.1 already did its job when the ticket was submitted; by now everyone has checked
+[lesson 4.1](./01-tickets-and-preimages.md) already did its job when the ticket was submitted; by now everyone has checked
 it, so the header can travel light.
 
 **Run**

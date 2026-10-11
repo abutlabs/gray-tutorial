@@ -10,7 +10,7 @@ Then Part 11 is done.
 §11 again: ρ‡, the cores after the assurances. A core's pending report p is dropped
 when any of these holds:
 
-1. **p became available** (lesson 11.1): its job on the core is done. It moves on to be
+1. **p became available** ([lesson 11.1](./01-available.md)): its job on the core is done. It moves on to be
    accumulated (Part 17).
 2. **p timed out**: the block's slot is at least p's `registered_slot` + U, where
    **U = 5** slots. Thirty seconds to gather its assurances, or it's out.
@@ -22,7 +22,7 @@ Otherwise p stays, and waits another block.
 
 ## Splitting a function
 
-`clearCores` needs to know *which cores* became available, and lesson 11.1's
+`clearCores` needs to know *which cores* became available, and [lesson 11.1](./01-available.md)'s
 `nowAvailable` already works that out, but only hands back the reports. So split it:
 `availableCores` finds the cores, and `nowAvailable` turns them into reports. Same
 behaviour, and now both users share the counting.

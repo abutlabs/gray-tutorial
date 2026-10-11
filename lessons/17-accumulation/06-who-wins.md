@@ -449,7 +449,7 @@ assigner is 1 now. The *Accumulate* panel shows the assigners on the block's lin
 ```
 
 lasair gets there a different way. Instead of comparing every run's privileges after the
-round, it goes through each run's `assign`s (`assign_moves`) and keeps a move only if it
+round, it goes through each run's `assign` calls (`assign_moves`) and keeps a move only if it
 came from the manager (`is_manager`) or from the core's assigner at the round's start
 (`owns_core`, which reads `pv0`, the round's start). Those are exactly the two services
 R listens to.

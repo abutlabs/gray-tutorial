@@ -3,7 +3,7 @@
 JAM's validators don't serve forever. They work in shifts, an epoch at a time, and
 there's always a queue: who's on now, who's up next, who's next after that, and who
 just finished. At each new epoch everyone shuffles one step along, like a relay team
-handing over batons. And if a validator was caught cheating (lesson 4.4's disputes),
+handing over batons. And if a validator was caught cheating ([lesson 4.4](../04-blocks/04-disputes.md)'s disputes),
 it doesn't get to step up: its keys are swapped for zeros.
 
 ## What the Gray Paper says
@@ -172,7 +172,7 @@ export function rotateValidators(sets: ValidatorSets, offenders: Bytes[]): Valid
 ```
 
 `withoutOffenders` puts the offenders' keys in a `Set` of hex strings first, so checking
-each validator is a quick lookup. (Two `Uint8Array`s with the same bytes aren't `===`, but
+each validator is a quick lookup. (Two `Uint8Array` values with the same bytes aren't `===`, but
 their hex strings are.)
 
 **Run**
@@ -243,7 +243,7 @@ node bin/rotation.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding
 # prints: reported to Grafana
 ```
 
-Read it like a slide puzzle. The six validators are an old cast, `4418` is lesson 5.3's
+Read it like a slide puzzle. The six validators are an old cast, `4418` is [lesson 5.3](../05-hashing-and-signatures/03-signatures.md)'s
 validator 0, but each set holds them in a different order. After the block, each row's
 *right* side is the row above's *left*: staging slid into pending, pending into active,
 active into previous. Except for one tile: `ab00` is an offender, and arrived in pending

@@ -97,7 +97,7 @@ doesn't ship.
 
 ## You will see everything
 
-From lesson 0.3 on, your client tells an observability stack (Grafana and friends,
+From [lesson 0.3](./03-watch-your-client.md) on, your client tells an observability stack (Grafana and friends,
 running on your own machine) everything it does: each test run, each program, and later
 each step of importing a block. When something goes wrong, you won't be squinting at one
 wrong number at the end. You will watch the step where it went wrong.

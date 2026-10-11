@@ -4,7 +4,7 @@ Some services are more equal than others. One may hand out privileges. One, for 
 picks which authorizers that core will use. One picks the next validators. One may create
 services with small ids. The chain keeps a record of who's who, and a privileged service
 changes it from inside its own accumulation, with a host call. This lesson builds the
-record and the first of those calls, `assign`. Lesson 17.6 sorts out what happens when two
+record and the first of those calls, `assign`. [Lesson 17.6](./06-who-wins.md) sorts out what happens when two
 services change the same privilege in one round.
 
 ## New words
@@ -14,7 +14,7 @@ services change the same privilege in one round.
 - **Assigner.** For each core, the service that may set the core's authorizer queue, and
   hand that right to another service. *Example:* service 0 hands core 0 to service 1.
 - **Authorizer queue.** For each core, 80 authorizer hashes, one of which joins the core's
-  pool every slot (lesson 13.1). *Example:* the 80 hashes `assign` hands over with a core.
+  pool every slot ([lesson 13.1](../13-authorization/01-the-authorizer-pools.md)). *Example:* the 80 hashes `assign` hands over with a core.
 
 All three are in the [glossary](../glossary.md).
 
@@ -26,7 +26,7 @@ All three are in the [glossary](../glossary.md).
 - an **assigner** for each core, χ_A, may set that core's authorizer queue (`assign`);
 - the **delegator**, χ_V, may choose the next validators' keys (`designate`);
 - the **registrar**, χ_R, may create services with small ids of its choosing (`new`);
-- the **always-accumulate** services, χ_Z, accumulate every block (lesson 17.1's `free`).
+- the **always-accumulate** services, χ_Z, accumulate every block ([lesson 17.1](./01-a-blocks-accumulation.md)'s `free`).
 
 The test vectors name the first four after the host call each one allows: `bless`,
 `assign`, `designate` and `register`. Your client uses the same names.
@@ -286,7 +286,7 @@ export function assign(m: Machine, s: number, powers: Powers, cores: number): Ho
 where nobody holds one: `NOBODY` is 2^32, an id no service can have, and no core has an
 assigner. Every earlier test that builds a run without privileges keeps working.
 
-Then the same small changes as in lesson 17.3, so the powers go where they should. A run
+Then the same small changes as in [lesson 17.3](./03-sending-a-transfer.md), so the powers go where they should. A run
 may be given privileges:
 
 **Replace in** `src/host.ts`

@@ -1,7 +1,7 @@
 # Recent blocks
 
 The state has a short memory, on purpose: the last eight blocks. For each, it keeps the
-block's header hash, the state root after it, the belt's super-peak (lesson 9.1), its
+block's header hash, the state root after it, the belt's super-peak ([lesson 9.1](./01-the-mountain-belt.md)), its
 slot, and the work-packages it reported. Guarantors point at these blocks to prove their
 work is anchored in something real and recent, and the chain uses them to turn away
 reports it has already seen. This lesson keeps that memory up to date, block by block.
@@ -13,8 +13,8 @@ them, and β_B, the belt. Each new block does three things to them:
 
 1. **Fills in a blank.** The newest remembered block's state root couldn't be known when
    it was added, because a block's state root comes *after* the block. Now it is known:
-   it's this block's `parent_state_root` (H_r, lesson 4.6). So it's written in.
-2. **Adds itself.** The block's accumulation outputs go onto the belt (lesson 9.1), and
+   it's this block's `parent_state_root` (H_r, [lesson 4.6](../04-blocks/06-the-header.md)). So it's written in.
+2. **Adds itself.** The block's accumulation outputs go onto the belt ([lesson 9.1](./01-the-mountain-belt.md)), and
    a new entry joins the list: its header hash, the belt's new super-peak, its slot, the
    packages it reported, and a state root of 32 zeros. The Gray Paper calls that zero
    root "inaccurate but safe": nothing reads it before step 1 fixes it, one block later.
@@ -99,8 +99,8 @@ export function recordBlock(before: Recent, block: NewBlock): Recent {
 ```
 
 Every structure here is a `record`, so it's a type, an encoder, a decoder and a JSON
-reader at once (lesson 2.5). `Recent` is exactly how C(3) holds β in the state: the list,
-then the belt, each peak an `option` (lesson 4.5), since a belt has gaps.
+reader at once ([lesson 2.5](../02-codec/05-sequences-and-records.md)). `Recent` is exactly how C(3) holds β in the state: the list,
+then the belt, each peak an `option` ([lesson 4.5](../04-blocks/05-maybe-and-exactly-n.md)), since a belt has gaps.
 
 The `slot` in each entry is new in Gray Paper 0.8.0; 0.7.2's entries didn't have it.
 
@@ -155,7 +155,7 @@ test("β in real states: the newest block remembered is the block before", () =>
 Two kinds of check. The vectors check `recordBlock`: all three steps, at both sizes,
 including a block that pushes the ninth entry out. Then real states check the *codec*,
 and the rules too: in the state before each of 99 trace blocks, the newest remembered
-block is the one before, by header hash (lesson 5.1), with its state root still zeros,
+block is the one before, by header hash ([lesson 5.1](../05-hashing-and-signatures/01-hashes.md)), with its state root still zeros,
 and the entry before it has had its blank filled in.
 
 **Run, expect it to fail**
@@ -169,7 +169,7 @@ It's `readRecent` that's missing: `src/history.ts` is already there.
 
 ## The code, finished
 
-A reader for β, next to lesson 6.3's:
+A reader for β, next to [lesson 6.3](../06-state-and-merklization/03-reading-the-state.md)'s:
 
 **Add to** `src/state.ts`
 
@@ -245,7 +245,7 @@ node bin/history.ts ../vectors/traces/preimages/00000050.json
 ```
 
 Eight blocks, slots 42 to 49, and only the newest still waiting for its state root. Now
-read the belt backwards, as lesson 9.1 taught you: 110001 in binary is 49, one
+read the belt backwards, as [lesson 9.1](./01-the-mountain-belt.md) taught you: 110001 in binary is 49, one
 accumulation root for each block so far. The *Recent history* panel shows it all.
 
 ![Recent history panel](./images/02-recent-history.png)
@@ -266,8 +266,8 @@ accumulation root for each block so far. The *Recent history* panel shows it all
 The same entry as yours, field for field, and lasair marks the slot as new in 0.8.0 with
 the number of the Gray Paper change that added it. Specs move; good code says which
 version it follows. Just above this, lasair also sorts the reported packages by hash. In
-the Gray Paper they're a *dictionary*, and dictionaries are encoded in key order (lesson
-3.3). Yours keeps them in the order they came, which is fine for the vectors; the
+the Gray Paper they're a *dictionary*, and dictionaries are encoded in key order ([lesson
+3.3](../03-work-and-reports/03-a-work-report.md)). Yours keeps them in the order they came, which is fine for the vectors; the
 hardening pass sorts them.
 
 </details>

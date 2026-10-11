@@ -95,7 +95,7 @@ lasair, written in OCaml, keeps 64-bit values in OCaml's `int64`, which is *sign
 value as negative, so 2^64 − 70 was written down as if it were tiny. The official fuzzer
 caught it: a work-report's `auth_gas_used` of 2^64 − 70 got the wrong encoding, so its
 hash was wrong, so lasair rejected a perfectly valid block. A `bigint` has no sign bit to
-trip over, and lesson 2.2 tests that exact value.
+trip over, and [lesson 2.2](../02-codec/02-compact-naturals.md) tests that exact value.
 
 <details>
 <summary>lasair: the fix, in <code>lib/serialization.ml</code></summary>

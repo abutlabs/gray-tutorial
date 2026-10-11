@@ -30,7 +30,7 @@ All three are in the [glossary](../glossary.md).
    twice. (`not_sorted_or_unique_assurers`)
 4. **Only cores with something on them.** A bit may be set only for a core with a report
    pending in ρ†, the cores after the judgments. (`core_not_engaged`)
-5. **Signed.** By that validator's Ed25519 key in κ, over lesson 5.3's message: `jam_available`
+5. **Signed.** By that validator's Ed25519 key in κ, over [lesson 5.3](../05-hashing-and-signatures/03-signatures.md)'s message: `jam_available`
    and the hash of the parent and the bitfield. (`bad_signature`)
 
 Break any one and the whole block is invalid.

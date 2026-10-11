@@ -15,7 +15,7 @@ It's in the [glossary](../glossary.md).
 
 §4 says a block B is a header H and an extrinsic E, and the extrinsic is its five parts.
 Appendix C writes the block as the header, then the five parts in its own order: tickets,
-preimages, guarantees, assurances, disputes (lesson 4.1 had the table). Nothing in
+preimages, guarantees, assurances, disputes ([lesson 4.1](./01-tickets-and-preimages.md) had the table). Nothing in
 between, no lengths around the parts beyond their own.
 
 ## The tests

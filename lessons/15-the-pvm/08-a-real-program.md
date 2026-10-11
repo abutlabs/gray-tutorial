@@ -15,7 +15,7 @@ memory as they were. The host answers, by changing registers or memory, and the 
 carries on from the next instruction (Ψ_H, App. A.6). The host calls are numbered in App.
 B: `gas` is 0, `grow_heap` 1, `fetch` 2, and so on up to `provide`, 27. Part 16 builds them.
 
-**Y** (App. A.7) turns a standard program (lesson 15.1 unpacked its parts: o, w, z, s and
+**Y** (App. A.7) turns a standard program ([lesson 15.1](./01-the-program-blob.md) unpacked its parts: o, w, z, s and
 the code) and some argument bytes a into a starting memory and registers. Memory is laid
 out in *zones* of Z_Z = 2^16 bytes, with an empty zone between sections, so a program that
 runs off the end of one section hits nothing at all instead of the next one:
@@ -28,15 +28,15 @@ runs off the end of one section hits nothing at all instead of the next one:
 | 2^32 − 2^16 − 2^24 | the arguments a, at most Z_I = 2^24 bytes, padded to a page | R |
 
 P rounds up to whole pages, Q to whole zones. Everything else isn't there: touch it and the
-machine faults, or panics below 2^16 (lesson 15.4).
+machine faults, or panics below 2^16 ([lesson 15.4](./04-memory.md)).
 
-And the registers: r0 = 2^32 − 2^16, the halt address (lesson 15.3), so that when the
+And the registers: r0 = 2^32 − 2^16, the halt address ([lesson 15.3](./03-the-machine.md)), so that when the
 program returns, it ends. r1 = the top of the stack, which grows down. r7 = where the
 arguments are, r8 = how many bytes. Every other register starts at 0.
 
 **Where to start.** A program has more than one way in. App. B starts authorization and
 refinement at instruction 0, and accumulation at 5, with the arguments E(t, s, |i|): the
-slot, the service's id, and how many inputs it has, each a compact natural (lesson 2.2).
+slot, the service's id, and how many inputs it has, each a compact natural ([lesson 2.2](../02-codec/02-compact-naturals.md)).
 
 ## The tests
 
@@ -206,7 +206,7 @@ function hostCall(m: Machine, ins: Instruction): Exit | undefined {
 }
 ```
 
-TypeScript now spots something in lesson 15.4's `bin/memory.ts`. It reads `exit.fault`
+TypeScript now spots something in [lesson 15.4](./04-memory.md)'s `bin/memory.ts`. It reads `exit.fault`
 from any exit that's an object, and a host call is an object too. Ask which it is, with
 `in`:
 
@@ -313,7 +313,7 @@ Four sections, with empty zones between them, just as the table said. Then 38 st
 real compiled code. Step 1 jumps from 5 into the program. Step 2 moves the stack pointer
 r1 down by 1,440 bytes to make room, and steps 3 to 5 save registers there: the stack
 pages from Y, in use already. Step 8 is a `load_imm_jump`, a call, leaving the way back in
-r0 exactly as in lesson 15.6, and step 16 is another. Step 38 is `ecalli 2`: `fetch`. And
+r0 exactly as in [lesson 15.6](./06-branches-and-calls.md), and step 16 is another. Step 38 is `ecalli 2`: `fetch`. And
 r10 = 0 says what it wants: in `fetch`'s table, item 0 is the chain's protocol constants.
 The service's first question is "what are the rules here?" Fair enough. The *A real
 program starts* panel has the whole run.

@@ -11,7 +11,7 @@ JAM's cores, with a permission slip stapled to the front.
 - **Authorizer.** A small program that decides whether a package may use a core at all.
   *Example:* a package names its authorizer by a service and a code hash.
 - **Refinement context.** The chain as a package saw it when it was built: a recent block
-  to anchor on, and anything that must be accumulated first. *Example:* lesson 2.6's
+  to anchor on, and anything that must be accumulated first. *Example:* [lesson 2.6](../02-codec/06-the-first-test-vectors.md)'s
   `refine_context` vector.
 
 All three are in the [glossary](../glossary.md).
@@ -21,7 +21,7 @@ All three are in the [glossary](../glossary.md).
 §14 (*Packages and Items*) defines a work-package as six things:
 
 - **items**: the work items, 1 to 16 of them (the Gray Paper calls the limit I = 16);
-- **context**: the refinement context from lesson 2.6, the chain as the package saw it;
+- **context**: the refinement context from [lesson 2.6](../02-codec/06-the-first-test-vectors.md), the chain as the package saw it;
 - and the permission slip, in four parts. Each core only accepts packages that a small
   program called an **authorizer** approves. The package says where that program lives
   (`auth_code_host`, a service, and `auth_code_hash`, which code in it), hands it a token
@@ -136,7 +136,7 @@ type work_package = {
 
 The other, in `conformance/codec_tests.ml`, uses the vectors' names in Appendix C's
 order (`auth_code_host`, `auth_code_hash`, `context`, `authorization`, ...), and its
-encoder writes them that way, code host first, the trap from lesson 2.6 avoided by hand:
+encoder writes them that way, code host first, the trap from [lesson 2.6](../02-codec/06-the-first-test-vectors.md) avoided by hand:
 
 ```ocaml
 let encode_work_package (wp : work_package) : bytes =

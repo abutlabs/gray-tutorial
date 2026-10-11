@@ -1,10 +1,10 @@
 # Bad culprits and faults
 
-Lesson 10.4 checked the verdicts. Now the accusations. A culprit says "this validator
+[Lesson 10.4](./04-bad-verdicts.md) checked the verdicts. Now the accusations. A culprit says "this validator
 vouched for a report that turned out bad", a fault says "this validator voted the wrong
 way", and either one gets a validator punished. So they had better be true: about a real
 validator, backed by that validator's own signature, and not about someone already
-punished. This lesson writes down those rules, and with lesson 10.4's, your client's
+punished. This lesson writes down those rules, and with [lesson 10.4](./04-bad-verdicts.md)'s, your client's
 disputes now agree with every disputes vector.
 
 ## New words
@@ -21,14 +21,14 @@ All three are in the [glossary](../glossary.md).
 ## What the Gray Paper says
 
 §10 again, after the verdicts. ψ′ here means the judged sets *after* this block's verdicts
-(lesson 10.1's `recordVerdicts`). Every culprit must keep four rules:
+([lesson 10.1](./01-votes-and-verdicts.md)'s `recordVerdicts`). Every culprit must keep four rules:
 
 1. **In order.** Culprits sorted by key, no key twice. (`culprits_not_sorted_unique`)
 2. **About a bad report.** Its report is in ψ′'s bad set. (`culprits_verdict_not_bad`)
 3. **About a validator.** Its key is one of κ's or λ's (`bad_guarantor_key`), and not
    already an offender (`offender_already_reported`).
-4. **With evidence.** Its signature is the validator's guarantee of that report (lesson
-   10.2's `culpritSigned`). (`bad_signature`)
+4. **With evidence.** Its signature is the validator's guarantee of that report ([lesson
+   10.2](./02-culprits-and-faults.md)'s `culpritSigned`). (`bad_signature`)
 
 Every fault keeps the same kind of four, and two of its own:
 
@@ -76,9 +76,9 @@ for (const { config, name } of VERDICT_VECTORS) {
 }
 ```
 
-This time no list of bad vectors is needed. `disputesError` runs every rule, lesson
-10.4's and these, so its answer must be exactly the vector's: accepted, or the error the
-vector names. The same vectors as lesson 10.4: every tiny one, and the full ones tiny
+This time no list of bad vectors is needed. `disputesError` runs every rule, [lesson
+10.4](./04-bad-verdicts.md)'s and these, so its answer must be exactly the vector's: accepted, or the error the
+vector names. The same vectors as [lesson 10.4](./04-bad-verdicts.md): every tiny one, and the full ones tiny
 can't have.
 
 **Run, expect it to fail**
@@ -149,7 +149,7 @@ export function disputesError(
 }
 ```
 
-`offenseError` works out ψ′'s bad and good sets the way lesson 10.1 does, then the rules,
+`offenseError` works out ψ′'s bad and good sets the way [lesson 10.1](./01-votes-and-verdicts.md) does, then the rules,
 in the order above. `wrong` is rule 6 in one line: a fault that voted valid must name a
 bad report, one that voted invalid a good report. `disputesError` puts the two lessons
 together: the verdicts first, then the accusations.

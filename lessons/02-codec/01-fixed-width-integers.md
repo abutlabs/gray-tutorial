@@ -36,8 +36,8 @@ repeat with one byte fewer. The subscript l is the width: ℰ₄ is a u32, ℰ�
 
 ## The code
 
-One function for every width, working on `bigint` so that ℰ₈ is exact (lesson 1.2's
-rule). Lesson 2.4 converts to `number` for the smaller widths.
+One function for every width, working on `bigint` so that ℰ₈ is exact ([lesson 1.2](../01-bytes-and-numbers/02-numbers.md)'s
+rule). [Lesson 2.4](./04-codecs.md) converts to `number` for the smaller widths.
 
 **New file** `test/numbers.test.ts`
 

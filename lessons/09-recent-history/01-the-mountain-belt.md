@@ -25,7 +25,7 @@ That's binary addition, with mountains for 1s, empty places for 0s, and merging 
 The **super-peak**, M_R, squeezes a belt into one hash: take the peaks that exist, in
 order. None gives 32 zero bytes, and one gives itself. Otherwise it's
 H(`$peak` ⌢ M_R(all but the last) ⌢ the last). (The `$` again marks an ASCII string, as
-in lesson 5.3: the bytes are `peak`. The vectors agree, and with the `$` they don't.)
+in [lesson 5.3](../05-hashing-and-signatures/03-signatures.md): the bytes are `peak`. The vectors agree, and with the `$` they don't.)
 
 And the hash? Not Blake2b, for once. §7 says the belt uses **Keccak-256**, Ethereum's
 hash, "to maximize compatibility with legacy systems": a bridge contract on Ethereum can
@@ -99,7 +99,7 @@ test("the belt after each block of the history vectors, and its super-peak", () 
 });
 ```
 
-The vectors are the `history` ones (lesson 9.2 uses the rest of them). Each gives the
+The vectors are the `history` ones ([lesson 9.2](./02-recent-blocks.md) uses the rest of them). Each gives the
 belt before a block, the item appended (`accumulate_root`), the belt after, and, in the
 newest block's history entry, the super-peak as `beefy_root`. Between them they hold
 belts of 1, 2, 8 and 9 items, so the 7 → 8 append carries all the way up, three merges

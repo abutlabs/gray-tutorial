@@ -1,7 +1,7 @@
 # Storage
 
-Every service has a little key-value store of its own in the state: its *storage*. Lesson
-14.2 counted what it costs to keep. This lesson lets a service use it, with two host calls,
+Every service has a little key-value store of its own in the state: its *storage*. [Lesson
+14.2](../14-services/02-the-service-account.md) counted what it costs to keep. This lesson lets a service use it, with two host calls,
 `read` and `write`, and with them the first real check on what a service may keep: it has
 to be able to afford it. When they're done, eight of the accumulate vectors' services run
 to the same gas *and* leave exactly the storage the vectors expect.
@@ -19,7 +19,7 @@ bytes) and the value at φ₉ (φ₁₀ bytes); an empty value deletes the key. 
 the length of the value that was there before, or NONE. It costs 2,442, plus 3,358 per KiB
 of key and 216 per KiB of value.
 
-The catch: every stored key costs the service deposit. Lesson 14.2's footprint counts one
+The catch: every stored key costs the service deposit. [Lesson 14.2](../14-services/02-the-service-account.md)'s footprint counts one
 item and 34 + |key| + |value| bytes for each, and the minimum balance a_t grows with it.
 If after the write a_t would be more than the service's balance, nothing is written and
 φ₇ is **FULL** (2^64 − 5).
@@ -98,7 +98,7 @@ npm test
 ## The code
 
 An account gains its storage, keyed by the key's hex (a `Map` compares strings by value,
-but `Uint8Array`s only by identity). `accountFromJson` reads it from the vectors:
+but `Uint8Array` values only by identity). `accountFromJson` reads it from the vectors:
 
 **Replace in** `src/services.ts`
 
@@ -172,7 +172,7 @@ export function write(m: Machine, accounts: Map<number, Account>, s: number): Ho
 }
 ```
 
-`write` works out the account as it would be after the write, with lesson 14.2's
+`write` works out the account as it would be after the write, with [lesson 14.2](../14-services/02-the-service-account.md)'s
 footprint sums, and only commits to it if the minimum balance is covered. The vectors'
 accounts arrive with their items and bytes already counted, so adding and taking away is
 all it takes to keep them right.

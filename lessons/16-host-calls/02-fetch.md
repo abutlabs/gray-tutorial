@@ -1,6 +1,6 @@
 # Fetch
 
-Lesson 16.1 ended with a service asking for `fetch` and getting WHAT. `fetch` is how a
+[Lesson 16.1](./01-calling-the-host.md) ended with a service asking for `fetch` and getting WHAT. `fetch` is how a
 service learns about the world it's running in: the chain's rules, some fresh randomness,
 and the work it has been handed. Answer it, and the service gets a lot further. Very
 nearly all the way.
@@ -13,7 +13,7 @@ invocation has its own. During accumulation (App. B.4's F) there are four:
 | Item | What it is |
 | --- | --- |
 | 0 | the protocol's constants, 29 of them, in 122 bytes |
-| 1 | η′₀, the entropy (lesson 8.1) |
+| 1 | η′₀, the entropy ([lesson 8.1](../08-safrole/01-stirring-the-entropy.md)) |
 | 14 | the service's inputs, all of them, as a sequence |
 | 15 | one input, number φ₁₁ |
 
@@ -247,7 +247,7 @@ export function accumulateHost(config: Config, entropy: Bytes, inputs: Bytes[]):
 
 `protocolConstants` is the Gray Paper's list read top to bottom: each pair is a size in
 bytes and a value. `fetch` works out f and l exactly as the Gray Paper does, clamped so
-they can't run past the end of the item, then writes, and lesson 15.4's `writeMemory`
+they can't run past the end of the item, then writes, and [lesson 15.4](../15-the-pvm/04-memory.md)'s `writeMemory`
 says whether it could. And `accumulateHost` is F, accumulation's own host: it decides what
 the items are, then sends each host call to the function that answers it. As more host
 calls arrive, they join its `switch`.

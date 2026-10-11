@@ -1,10 +1,10 @@
 # Bad verdicts
 
-Your court from lessons 10.1 to 10.3 believes every verdict it's handed. A real block can
+Your court from lessons [10.1](./01-votes-and-verdicts.md) to [10.3](./03-clearing-the-cores.md) believes every verdict it's handed. A real block can
 carry a broken one: the wrong number of votes, votes out of order, a judge who never
 signed, a report that was judged long ago. Any of them sinks the whole block. This lesson
 writes down the rules a verdict must keep, and checks them against every disputes test
-vector. Lesson 10.5 does the same for culprits and faults.
+vector. [Lesson 10.5](./05-bad-culprits-and-faults.md) does the same for culprits and faults.
 
 ## New words
 
@@ -32,12 +32,12 @@ All three are in the [glossary](../glossary.md).
    (`bad_votes_count`)
 5. **Votes in order.** Sorted by judge index, no judge twice.
    (`judgements_not_sorted_unique`)
-6. **Signed.** Every vote by the judge it names (lesson 10.1's `votesSigned`), and every
+6. **Signed.** Every vote by the judge it names ([lesson 10.1](./01-votes-and-verdicts.md)'s `votesSigned`), and every
    judge index a real one. (`bad_signature`)
 7. **A meaningful split.** All, none, or a third of the judges said "valid".
    (`bad_vote_split`)
 
-Rule 7 changes lesson 10.1's `outcome`: it called every split that wasn't all or none
+Rule 7 changes [lesson 10.1](./01-votes-and-verdicts.md)'s `outcome`: it called every split that wasn't all or none
 "wonky". Now any other split never gets that far, and only the third is left.
 
 The Gray Paper's names: the judges are **K(a)**, κ if a = ⌊τ/E⌋ and λ otherwise; the
@@ -101,7 +101,7 @@ for (const { config, name } of VERDICT_VECTORS) {
 
 `BAD_VERDICTS` lists the vectors whose verdicts break a rule, and which rule. Every other
 disputes vector's verdicts must pass, including those the vector refuses for a culprit or
-a fault (lesson 10.5's business). The test runs every tiny vector, and only the two full
+a fault ([lesson 10.5](./05-bad-culprits-and-faults.md)'s business). The test runs every tiny vector, and only the two full
 ones that tiny can't have: a full verdict carries 683 signed votes, and checking every
 full vector takes the better part of a minute, on every `npm test`. Watch it, below,
 checks them all whenever you ask. One error name comes up in both lessons: in
@@ -221,7 +221,7 @@ node bin/check-disputes.ts
 
 Every line where the rules found a bad verdict agrees with the vector, and
 `node bin/check-disputes.ts full` says the same of the full vectors. The others show
-what's left for lesson 10.5: blocks whose verdicts are fine, refused for their culprits or
+what's left for [lesson 10.5](./05-bad-culprits-and-faults.md): blocks whose verdicts are fine, refused for their culprits or
 faults. The *Dispute checks* panel keeps the list.
 
 ![Dispute checks panel](./images/04-dispute-checks.png)
@@ -241,7 +241,7 @@ let classify_verdict (k : validator_key list) (judgements : judgement_vote list)
 lasair gives a verdict four possible outcomes, the fourth being "this split means
 nothing", where your client keeps rule 7 in `verdictError` and leaves `outcome` with three.
 The comment above it in lasair admits that an earlier version called every other split
-wonky, just as your lesson 10.1 did, and says why that stayed hidden: no vector has a
+wonky, just as your [lesson 10.1](./01-votes-and-verdicts.md) did, and says why that stayed hidden: no vector has a
 split between a third and two thirds of the judges.
 
 </details>

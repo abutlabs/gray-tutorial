@@ -17,10 +17,10 @@ Appendix A.5, the instructions with two registers (101 to 110). Each one makes �
 - Each count comes in **64 and 32** bits. The `_32` forms see only the low 32 bits:
   `count_set_bits_32` of all ones is 32, and `trailing_zero_bits_32` of zero is 32.
 - **`sign_extend_8`** and **`sign_extend_16`** take the lowest byte or two and read them
-  as a signed number (Z, lesson 15.2): 0x80 becomes −128. **`zero_extend_16`** keeps the
+  as a signed number (Z, [lesson 15.2](./02-instructions.md)): 0x80 becomes −128. **`zero_extend_16`** keeps the
   lowest two bytes as they are, and clears the rest.
 - **`reverse_bytes`** turns the 8 bytes round, first to last. Registers go to memory
-  little-endian (lesson 15.4); plenty of data out in the world is big-endian. One
+  little-endian ([lesson 15.4](./04-memory.md)); plenty of data out in the world is big-endian. One
   instruction flips between them.
 
 The Gray Paper counts with B, which lists a number's bits lowest first, and B with an

@@ -1,6 +1,6 @@
 # Rounds
 
-Lesson 17.3's gift left service 0 and went nowhere. Time to deliver it. A block's
+[Lesson 17.3](./03-sending-a-transfer.md)'s gift left service 0 and went nowhere. Time to deliver it. A block's
 accumulation doesn't happen all at once: it happens in *rounds*, and the transfers sent in
 one round arrive in the next. By the end of this lesson, the gift's whole block matches
 its official vector, receiver and all.
@@ -16,7 +16,7 @@ its official vector, receiver and all.
 - **Transfer input.** An input that starts with a 1, followed by one transfer, encoded.
   Operands start with a 0. *Example:* service 1's only input in round 2.
 
-All three are in the [glossary](../glossary.md). (*Round* itself is from lesson 17.1.)
+All three are in the [glossary](../glossary.md). (*Round* itself is from [lesson 17.1](./01-a-blocks-accumulation.md).)
 
 ## What the Gray Paper says
 
@@ -32,7 +32,7 @@ All three are in the [glossary](../glossary.md). (*Round* itself is from lesson 
 4. **Again and again.** Round 2's transfers make round 3, and so on, until a round
    sends nothing.
 5. **The statistics count every round.** G adds up each service's gas over all the
-   rounds, and T counts the transfers it received (lesson 17.1 left T at 0). A service
+   rounds, and T counts the transfers it received ([lesson 17.1](./01-a-blocks-accumulation.md) left T at 0). A service
    that only received a transfer still counts, and gets its last-accumulation slot.
 
 Inside a round the services go in order of their ids, and so do the transfers they send:

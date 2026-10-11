@@ -49,7 +49,7 @@ test("a fixed-length sequence has no length in front", () => {
 });
 ```
 
-Compare `seqN(u16, 3)` with lesson 2.5's `seq(u16)`: the same three numbers, minus the
+Compare `seqN(u16, 3)` with [lesson 2.5](../02-codec/05-sequences-and-records.md)'s `seq(u16)`: the same three numbers, minus the
 `0x03` in front.
 
 **Run, expect it to fail**
@@ -93,7 +93,7 @@ export function seqN<T>(item: Codec<T>, n: number): Codec<T[]> {
 ```
 
 "Nothing" is `null` in your client, just as it is in the vectors' JSON. Both codecs name
-what they read for the decode trace (lesson 2.7): an option's tag shows up as `present`,
+what they read for the decode trace ([lesson 2.7](../02-codec/07-watch-a-decode.md)): an option's tag shows up as `present`,
 and a fixed sequence's items as `0`, `1`, `2`, just like `seq`'s, minus the `length`.
 
 **Run**

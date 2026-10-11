@@ -11,12 +11,12 @@ lesson teaches your client to tell epochs apart, and to spot the moment one turn
 §6 (*Timekeeping*): a slot's epoch is e = ⌊slot / E⌋, and its **phase**, where it falls
 within the epoch, is m = slot mod E. A block starts a new epoch when its epoch, e′, is
 greater than the epoch of the block before it, e. (The block before it is the one whose
-slot is τ, the time in the state: lesson 6.3.)
+slot is τ, the time in the state: [lesson 6.3](../06-state-and-merklization/03-reading-the-state.md).)
 
 Two things happen exactly then:
 
-- **The header carries an epoch mark** (lesson 4.6): η₀, η₁ and the next validators.
-- **The entropy history moves along one.** η (lesson 6.3) is four hashes. η₀ is the
+- **The header carries an epoch mark** ([lesson 4.6](../04-blocks/06-the-header.md)): η₀, η₁ and the next validators.
+- **The entropy history moves along one.** η ([lesson 6.3](../06-state-and-merklization/03-reading-the-state.md)) is four hashes. η₀ is the
   *accumulator*: every block stirs fresh randomness into it. η₁, η₂ and η₃ are what η₀
   was at the end of each of the last three epochs. So at a new epoch, η′₁ is the old η₀,
   η′₂ the old η₁, η′₃ the old η₂, and the oldest is forgotten. In any other block, they
@@ -178,7 +178,7 @@ node bin/epochs.ts
 ```
 
 `0xcf7f084e…` should look familiar: it's the η₀ that `bin/read-state.ts` showed you in
-lesson 6.3, in the state before this very block. One block later it has retired to η₁.
+[lesson 6.3](../06-state-and-merklization/03-reading-the-state.md), in the state before this very block. One block later it has retired to η₁.
 The *Epochs* panel lists every block with its epoch and phase, and flags the eight where
 a new epoch begins: watch the phase run 0 to 11, then start again.
 

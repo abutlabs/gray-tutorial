@@ -8,13 +8,13 @@ right core. Then it writes down who signed: the **reporters**, which the statist
 ## What the Gray Paper says
 
 §11 (*Work Report Guarantees*). For each signature (v, s) on a guarantee, with (c, k)
-the assignment the guarantee answers to (lesson 12.1):
+the assignment the guarantee answers to ([lesson 12.1](./01-who-guarantees-what.md)):
 
 - s must be the Ed25519 signature of k[v], validator v's key, on `$jam_guarantee` ⌢ H(the
-  report). That's the same message a culprit's evidence carries (lesson 10.2): a
+  report). That's the same message a culprit's evidence carries ([lesson 10.2](../10-disputes/02-culprits-and-faults.md)): a
   guarantee is exactly the signature that convicts its signers if the report turns out
   bad.
-- k is the assignment's keys *after* Φ (lesson 8.2): an offender's key is all zeros.
+- k is the assignment's keys *after* Φ ([lesson 8.2](../08-safrole/02-rotating-the-validators.md)): an offender's key is all zeros.
   So even a genuine signature from an offender can't check out. Banned means banned.
 
 **𝐆, the reporters**, is the set of Ed25519 keys of everyone who signed any guarantee
@@ -22,7 +22,7 @@ in the block. A *set*: each key once, however many guarantees it signed.
 
 ## Sharing a message
 
-Culprits (lesson 10.2) and guarantees sign the same message, so it gets one home:
+Culprits ([lesson 10.2](../10-disputes/02-culprits-and-faults.md)) and guarantees sign the same message, so it gets one home:
 
 **Add to** `src/disputes.ts`
 
@@ -44,7 +44,7 @@ export function culpritSigned(culprit: Culprit): boolean {
 
 ## The tests
 
-Lesson 12.1's `signerCores` worked out each guarantee's assignment inline; the new tests
+[Lesson 12.1](./01-who-guarantees-what.md)'s `signerCores` worked out each guarantee's assignment inline; the new tests
 need that too. So `assigned` does it once, and `signerCores` is rebuilt on top:
 
 **Replace in** `test/guarantors.test.ts`

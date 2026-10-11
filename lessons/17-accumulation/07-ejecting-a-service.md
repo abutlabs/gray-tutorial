@@ -27,7 +27,7 @@ preimage hash h:
 2. **Who.** d must exist, must not be s itself, and its code hash must be s's id as 32
    bytes (ℰ₃₂(s)): d named s as its ejector. Otherwise `WHO`.
 3. **Ready.** d must keep nothing but one request (2 items), for h, as long as d's
-   footprint minus 81 bytes, and it must have forgotten that preimage (lesson 16.9) more
+   footprint minus 81 bytes, and it must have forgotten that preimage ([lesson 16.9](../16-host-calls/09-asking-for-preimages.md)) more
    than D slots ago. Otherwise `HUH`.
 4. **Go.** d is removed, and d's balance is added to s's. φ₇ = `OK`. It costs 458 gas.
 
@@ -38,7 +38,7 @@ might still need.
 **The round** needs one more rule. Each run works on its own copy of the accounts, so a
 run that ejected d left a copy without it. After the round, any account some run removed
 is removed, whatever the other runs' copies say: the Gray Paper's **(d ∪ n) \ m**, where
-m is every account some run removed. (n is the accounts runs created: lesson 17.8.)
+m is every account some run removed. (n is the accounts runs created: [lesson 17.8](./08-creating-a-service.md).)
 
 ## The tests
 
@@ -315,7 +315,7 @@ export function accumulateRound(
 ```
 
 `left` is the accounts as a run left them. An id in `left` that wasn't in the round's
-accounts is new (lesson 17.8 makes some). An id in the round's accounts that isn't in
+accounts is new ([lesson 17.8](./08-creating-a-service.md) makes some). An id in the round's accounts that isn't in
 `left` was ejected, and goes once every run is done.
 
 **Run**

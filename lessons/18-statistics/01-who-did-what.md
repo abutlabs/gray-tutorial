@@ -37,7 +37,7 @@ voting on finality or auditing, happens off the chain, and the Gray Paper leaves
 
 The Gray Paper's names: the tally in progress is **π_V** (its "accumulator"), the last
 epoch's **π_L**. The six fields are **b, t, p, d, g, a**. The author is **H_I**, the
-reporters **𝐆** (lesson 12.2's set), and "a new epoch" means ⌊τ′/E⌋ ≠ ⌊τ/E⌋.
+reporters **𝐆** ([lesson 12.2](../12-guarantees/02-signed-and-counted.md)'s set), and "a new epoch" means ⌊τ′/E⌋ ≠ ⌊τ/E⌋.
 
 ## The tests
 
@@ -187,7 +187,7 @@ export function updateValidatorStats(
 ```
 
 The three steps, in order. Note the copy at the top: `before`'s tallies stay as they were,
-so a test can still compare with them. `reporters` and `signerKeys` come from lesson 12.2.
+so a test can still compare with them. `reporters` and `signerKeys` come from [lesson 12.2](../12-guarantees/02-signed-and-counted.md).
 
 **Run**
 

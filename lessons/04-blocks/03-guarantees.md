@@ -19,7 +19,7 @@ Both are in the [glossary](../glossary.md).
 
 §11 (*Work Report Guarantees*): a guarantee is three things:
 
-- the **work-report** itself (lesson 3.3);
+- the **work-report** itself ([lesson 3.3](../03-work-and-reports/03-a-work-report.md));
 - the **timeslot** the guarantors signed it in;
 - a **credential**: two or three signatures, each a validator's index and its Ed25519
   signature.
@@ -75,7 +75,7 @@ export const GuaranteesExtrinsic = seq(ReportGuarantee);
 The whole work-report from Part 3 slots straight in as one field. Every piece you've
 built so far is a brick for the next.
 
-The report has a size-dependent part (its erasure shards, lesson 3.3) only in its
+The report has a size-dependent part (its erasure shards, [lesson 3.3](../03-work-and-reports/03-a-work-report.md)) only in its
 *values*, not its shape: 6 or 1,023, it's a u16 either way. So `GuaranteesExtrinsic` is
 a plain codec, not a function of the config.
 
@@ -142,7 +142,7 @@ let decode_guarantee b off =
 ```
 
 Count the `off` variables: every step works out where the next one starts. That's the
-bookkeeping your Reader does for you (lesson 2.3), and why your version is a five-line
+bookkeeping your Reader does for you ([lesson 2.3](../02-codec/03-writer-and-reader.md)), and why your version is a five-line
 record.
 
 </details>

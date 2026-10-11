@@ -97,7 +97,7 @@ test("each block names its parent by the hash of the header before it", () => {
 });
 ```
 
-`Block` is both a codec and a type (lessons 2.5 and 4.7): `traceBlock(n): Block` uses
+`Block` is both a codec and a type (lessons [2.5](../02-codec/05-sequences-and-records.md) and [4.7](../04-blocks/07-the-block.md)): `traceBlock(n): Block` uses
 the type, `Block(TINY)` the codec. TypeScript tells them apart by where they appear.
 
 **Run, expect it to fail**
