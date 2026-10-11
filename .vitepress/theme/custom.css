@@ -31,4 +31,23 @@
   .VPDoc .container { max-width: 1200px !important; }
 }
 
-:root { --vp-layout-max-width: 1680px; }
+/* The whole layout widens to 1680px only on screens that wide: on a narrower one, VitePress's
+   sidebar width formula would go below its own width and cut the lesson titles off. */
+@media (min-width: 1680px) {
+  :root { --vp-layout-max-width: 1680px; }
+}
+/* Narrower screens with the outline on the right: tighter gaps and a 200px outline leave
+   the code its 880px from 1440px wide (a full MacBook screen) and more room below that. */
+@media (min-width: 1280px) and (max-width: 1679px) {
+  .VPDoc { padding-right: 8px !important; }
+  .VPDoc .content { padding-left: 0 !important; padding-right: 24px !important; }
+  .VPDoc .aside { padding-left: 0 !important; max-width: 216px !important; }
+  .VPDoc .aside-container, .VPDoc .aside-curtain { width: 200px !important; }
+}
+
+/* Prose at a reading width, about 90 characters a line, as in the Rust Book; code
+   blocks, tables, pictures and lasair's folds keep the wider column above. */
+.vp-doc > div > :is(blockquote, p:not(:has(img)),
+    ul:not(:has(div[class*="language-"], img)), ol:not(:has(div[class*="language-"], img))) {
+  max-width: 688px;
+}
