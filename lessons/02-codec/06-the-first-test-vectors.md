@@ -6,6 +6,10 @@ the exact bytes ℰ produces. Decode the bytes into the JSON's values, encode th
 back into the very same bytes, and your codec agrees with every other client's. No
 partial credit.
 
+Everything in Part 2 gets used here: [lesson 2.1](./01-fixed-width-integers.md)'s fixed widths, [lesson 2.2](./02-compact-naturals.md)'s compact
+naturals, [lesson 2.3](./03-writer-and-reader.md)'s Writer and Reader, and lessons [2.4](./04-codecs.md) and [2.5](./05-sequences-and-records.md)'s codecs, sequences
+and records.
+
 ## New words
 
 - **Hex dump.** A file's bytes printed as hex, a few to a line, to read them by eye.
@@ -43,9 +47,18 @@ for (let i = 0; i < bytes.length; i += 16) {
 
 ```sh
 cat ../vectors/codec/tiny/work_item.json
-# prints: "refine_gas_limit": 42
 node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 48
-# prints: 04 03 02 01 70 a5 08 29
+```
+
+```text
+{
+    "service": 16909060,
+    "code_hash": "0x70a50829851e8f6a8c80f92806ae0e95eb7c06ad064e311cc39107b3219e532e",
+    "refine_gas_limit": 42,
+...
+04 03 02 01 70 a5 08 29 85 1e 8f 6a 8c 80 f9 28
+06 ae 0e 95 eb 7c 06 ad 06 4e 31 1c c3 91 07 b3
+21 9e 53 2e 2a 00 00 00 00 00 00 00 2a 00 00 00
 ```
 
 Read the first bytes against the JSON:
@@ -146,10 +159,23 @@ for (const spec of ["tiny", "full"]) {
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
 
-It fails because `src/work.ts` doesn't exist yet. You write it next.
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/work.ts' imported from …/client/test/work.test.ts
+...
+✖ test/work.test.ts (150.8ms)
+✔ a reader reads back what a writer wrote, in the same order (1.1ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 17
+ℹ fail 1
+...
+```
+
+It fails because `src/work.ts` doesn't exist yet. (No stub this time: the vectors are
+about to judge the real thing.) You write it next.
 
 **New file** `src/work.ts`
 
@@ -207,11 +233,23 @@ never wrote it. The codec did.
 
 ```sh
 npm test
-# prints: refine_context (full)
-# prints: work_item (full)
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ refine_context (tiny) (3.2ms)
+✔ work_item (tiny) (0.4ms)
+✔ refine_context (full) (1.1ms)
+✔ work_item (full) (0.8ms)
+...
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+...
+reported 21 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726654352
+...
 ```
 
 All four pass: tiny and full, both structures. Your codec reproduces the official
@@ -265,6 +303,8 @@ Gray Paper 0.8.0, and lasair's type marks them so.
 ## What you have
 
 A codec built from a dozen small pieces, and the first two JAM structures agreeing with
-the official vectors at both parameter sets.
+the official vectors at both parameter sets. When a decode goes wrong, though, all a test
+can say is that two values differ. [Lesson 2.7](./07-watch-a-decode.md) makes the codec
+say which bytes it read for which field.
 
 Next: [2.7 Watch a decode](./07-watch-a-decode.md)

@@ -114,17 +114,11 @@ test("no word is half code: two `bigint` values, not two `bigint`s", () => {
   assert.deepEqual(mixed, []);
 });
 
-// The Book closes a chapter with what you learned. These lessons predate the rule; the
-// part-by-part rewrite adds theirs and takes them off this list.
-const NO_CLOSING_YET = new Set([
-  "02-codec/05-sequences-and-records.md",
-]);
-
+// The Book closes a chapter with what you learned, then why the next one comes next.
 test("every lesson closes with What you have", () => {
   for (const file of lessonAt.keys()) {
     const sections = [...readFileSync(join(LESSONS, file), "utf8").replace(/```[\s\S]*?```/g, "")
       .matchAll(/^## (.+)$/gm)].map((m) => m[1]);
-    if (NO_CLOSING_YET.has(file)) assert.ok(!sections.includes("What you have"), `${file} has one now: take it off NO_CLOSING_YET`);
-    else assert.equal(sections.at(-1), "What you have", `${file} closes with "## What you have"`);
+    assert.equal(sections.at(-1), "What you have", `${file} closes with "## What you have"`);
   }
 });

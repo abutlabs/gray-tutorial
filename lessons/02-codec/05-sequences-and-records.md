@@ -138,9 +138,21 @@ every JAM structure from here on: a codec, and the type that falls out of it.
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ a sequence has its length in front (0.2ms)
+✔ a record encodes its fields in the order written (0.2ms)
+...
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+...
+reported 17 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726651502
+...
 ```
 
 <details>
@@ -167,5 +179,12 @@ writes the field order a second time in `encode_refinement_context`, and a third
 `decode_refinement_context`.
 
 </details>
+
+## What you have
+
+Sequences and records: lists of any codec, and structures of named fields whose type
+TypeScript works out for you. That's every shape a JAM structure takes. Time to find out
+whether yours agree with everyone else's: [lesson 2.6](./06-the-first-test-vectors.md)
+puts them to the official test vectors.
 
 Next: [2.6 The first test vectors](./06-the-first-test-vectors.md)

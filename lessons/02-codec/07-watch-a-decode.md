@@ -209,9 +209,21 @@ handed. That's all a `Trace` is: something that listens.
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ a decode trace names every innermost field, with where its bytes are (1.3ms)
+✔ the trace covers every byte, once, in order (0.3ms)
+...
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+...
+reported 23 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726654909
+...
 ```
 
 ## Bytes in events
@@ -283,9 +295,28 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/decode.ts work_item ../vectors/codec/tiny/work_item.bin
-# prints: 0..4     service
-# prints: import_segments.0.tree_root
-# prints: reported to Grafana
+```
+
+```text
+    0..4     service                        0x04030201
+    4..36    code_hash                      0x70a50829851e8f6a8c80f92806ae0e95eb7c06ad064e311cc39107b3219e532e
+   36..44    refine_gas_limit               0x2a00000000000000
+   44..52    accumulate_gas_limit           0x2a00000000000000
+   52..54    export_count                   0x0400
+   54..60    payload                        0x050102030405
+   60..61    import_segments.length         0x03
+   61..93    import_segments.0.tree_root    0x461236a7eb29dcffc1dd282ce1de0e0ed691fc80e91e02276fe8f778f088a1b8
+   93..95    import_segments.0.index        0x0000
+   95..127   import_segments.1.tree_root    0xe7cb536522c1c1b41fff8021055b774e929530941ea12c10f1213c56455f29ad
+  127..129   import_segments.1.index        0x0100
+  129..161   import_segments.2.tree_root    0xb0a487a4adf6a0eda5d69ddd2f8b241cf44204f0ff793e993e5e553b7862a1dc
+  161..163   import_segments.2.index        0x0200
+  163..164   extrinsic.length               0x02
+  164..196   extrinsic.0.hash               0x381a0e351c5593018bbc87dd6694695caa1c0c1ddb24e70995da878d89495bf1
+  196..200   extrinsic.0.len                0x10000000
+  200..232   extrinsic.1.hash               0x6c437d85cd8327f42a35d427ede1b5871347d3aae7442f2df1ff80f834acf17a
+  232..236   extrinsic.1.len                0x11000000
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791726655368
 ```
 
 Read the output against the hex dump from [lesson 2.6](./06-the-first-test-vectors.md): `service` is bytes 0 to 4, then
@@ -338,6 +369,8 @@ step traces of later parts, say *which step* made it wrong, while it happens.
 ## What you have
 
 A codec that can tell you, byte by byte, what it read, and a program that shows any
-decode in the terminal and in Grafana.
+decode in the terminal and in Grafana. The codec is done. Part 3 uses it on the
+paperwork JAM's work travels in: work-packages, their results, and the reports that
+bind them.
 
 Next: [Part 3 · Work and reports](../03-work-and-reports/index.md)
