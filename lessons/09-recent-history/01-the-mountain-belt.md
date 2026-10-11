@@ -4,7 +4,7 @@ Every JAM block remembers a little of the blocks before it, and one thing it kee
 running commitment to *every accumulation output ever*. Bridges to other chains read it
 (a bridge is a program on another chain, Ethereum say, that checks what happened on
 JAM), so it has to be small, cheap to extend, and checkable with tools those chains already
-have. JAM's answer is a **Merkle mountain belt**: a row of perfect little Merkle trees,
+have. JAM's answer is a *Merkle mountain belt*: a row of perfect little Merkle trees,
 "mountains", of sizes 1, 2, 4, 8 and so on. Appending an item is exactly like adding 1 to
 a binary number. Really. You'll see it. By the end of this lesson your client keeps the
 belt, and its one-hash summary, exactly as the test vectors do.

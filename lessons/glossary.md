@@ -400,6 +400,11 @@ belt. JAM keeps one of every block's accumulation outputs, for bridges to other 
 *Example:* 5 items make a mountain of 4 and a mountain of 1.
 ([9.1](./09-recent-history/01-the-mountain-belt.md))
 
+**Recent history.** β. What the state remembers of the last eight blocks (β_H: each one's
+header hash, state root, belt super-peak, slot and reported packages), with the belt of
+accumulation outputs (β_B). *Example:* a guarantee's anchor must be one of those eight
+blocks. ([9.2](./09-recent-history/02-recent-blocks.md))
+
 **State key and state component.** The state is 16 components, C(1) to C(16), each a Greek
 letter, filed under 31-byte keys; services' data have keys of their own. *Example:* C(11)
 is τ, the time. ([6.2](./06-state-and-merklization/02-state-keys.md))

@@ -6,6 +6,14 @@ slot, and the work-packages it reported. Guarantors point at these blocks to pro
 work is anchored in something real and recent, and the chain uses them to turn away
 reports it has already seen. This lesson keeps that memory up to date, block by block.
 
+## New words
+
+- **Recent history.** β. What the state remembers of the last eight blocks (β_H), with the
+  belt of accumulation outputs (β_B). *Example:* a guarantee's anchor must be one of
+  those eight blocks.
+
+It's in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §7 (*Recent History*). β is two things: β_H, the list of recent blocks, at most H = 8 of
