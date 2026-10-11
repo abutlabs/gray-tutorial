@@ -161,8 +161,23 @@ const CASES: [string, number][] = [
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/host.ts' does not provide an export named 'HUH'
+...
+✖ test/host.test.ts (229.8ms)
+...
+ℹ tests 453
+ℹ suites 0
+ℹ pass 449
+ℹ fail 4
+...
+```
+
+Red: `src/host.ts` doesn't export `HUH` or the three new calls yet. They share the
+request history and its rules, so they come together, after the account grows its requests.
 
 ## The code
 
@@ -391,11 +406,28 @@ export function accumulate(
 
 ```sh
 npm test
-# prints: solicit: a request with no slots yet, and 2 items and 81 + 100 bytes more to pay for
-# prints: preimage_len_bound-3: service 0 ends as the vector says
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ preimage_len_bound-1: service 0 ends as the vector says (96.0ms)
+✔ preimage_len_bound-2: service 0 ends as the vector says (126.8ms)
+✔ preimage_len_bound-3: service 0 ends as the vector says (110.5ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (205.3ms)
+...
+✔ solicit: a request with no slots yet, and 2 items and 81 + 100 bytes more to pay for (0.2ms)
+✔ asking twice is HUH, and so is a length no preimage can have (0.1ms)
+✔ forget: a request never provided just goes; one provided at x becomes [x, t] (0.2ms)
+...
+ℹ tests 478
+ℹ suites 0
+ℹ pass 478
+ℹ fail 0
+...
+reported 478 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738525132
+...
 ```
 
 Thirteen official vectors now pass end to end, and the checks are stricter: storage,
@@ -407,9 +439,18 @@ requests, items and bytes, all as the vectors leave them.
 
 ```sh
 node bin/accumulate.ts ../vectors/stf/accumulate/tiny/preimage_len_bound-1.json
-# prints: service 0: 1 input(s)
-# prints: reported to Grafana
 ```
+
+```text
+service 0: 1 input(s), 2000000 gas, "halt"
+  gas used 133691; the vector says 133691
+  storage: 0x0100000000 = 0x774935b629cc42513a66c8ed1a09f88b00fe35689032bafd5a26d52f464c48080000, 0x00 = 0x01000000, 0x02774935b629cc42513a66c8ed1a09f88b00fe35689032bafd5a26d52f464c48080000 = 0x010101
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738530109
+```
+
+Service 0 files its requests, checks on them and halts, on exactly the vector's gas, and
+its storage is the vector's too. The bin is [lesson 16.7](./07-a-services-inputs.md)'s, unchanged: each new host call
+only had to join the host.
 
 <details>
 <summary>lasair: the length bound, in <code>lib/pvm_host.ml</code></summary>
@@ -432,6 +473,8 @@ with `unsigned_compare`; your `bigint` values just compare.
 ## What you have
 
 Services that ask for data, check on it, and let it go, paying deposit for each request
-while it lasts. Thirteen official accumulate vectors passing.
+while it lasts. Thirteen official accumulate vectors passing, and Part 16 is done. So
+far every report in a block is accumulated at once, in one go. [Part 17](../17-accumulation/index.md) is about
+which reports go when, and what a service's actions do to the others.
 
 Next: [Part 17 · Accumulation](../17-accumulation/index.md)

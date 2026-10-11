@@ -7,9 +7,18 @@ those reports into the service's inputs, and with them, the matches the earlier 
 could only describe become tests: eight services in seven vectors, each to the unit of
 gas and the byte of storage.
 
+## New words
+
+- **Operand.** U. What accumulation learns of one work-digest: the package, its exports
+  root, the authorizer and its trace, the payload's hash, the gas and the result. An
+  input that starts with a 0. *Example:* a report with two digests for one service gives
+  that service two operands.
+
+It's in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
-§12 calls each input an **operand**, U: what accumulation learns of one work-digest (the
+§12 calls each input an *operand*, U: what accumulation learns of one work-digest (the
 result of one work-item, [lesson 3.2](../03-work-and-reports/02-work-digests.md)'s `WorkDigest`). It mixes the two:
 
 | From the report | From the digest |
@@ -22,14 +31,14 @@ result of one work-item, [lesson 3.2](../03-work-and-reports/02-work-digests.md)
 App. C encodes it as **E(0, p, e, a, y, g, O(l), ↕t)**: the hashes as they are, the gas as
 a compact natural, the result as [lesson 3.2](../03-work-and-reports/02-work-digests.md)'s O (a 0 and the output, or an error's tag),
 and the trace with its length. The leading 0 says "operand": a service's inputs can also
-be transfers, which start with a 1 (a later lesson).
+be transfers, which start with a 1 ([lesson 17.4](../17-accumulation/04-rounds.md)).
 
 **Δ₁** (§12) gathers service s's share of a block: an operand for each digest that names
 s, report by report, in order (transfers would come first). Its gas is its free gas (the
 always-accumulate privilege, `always_acc` in the vectors) plus the gas of every one of
 those digests.
 
-*Which* reports a block accumulates, and when, is Part 17's story: some must wait for
+*Which* reports a block accumulates, and when, is [Part 17](../17-accumulation/index.md)'s story: some must wait for
 others. Here every report is accumulated at once, which is exactly what the seven vectors
 below do.
 
@@ -144,8 +153,23 @@ same `accountFromJson` as the accounts going in.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/accumulate.ts' imported from …/client/test/accumulate.test.ts
+...
+✖ test/accumulate.test.ts (298.3ms)
+...
+ℹ tests 460
+ℹ suites 0
+ℹ pass 459
+ℹ fail 1
+...
+```
+
+Red: `src/accumulate.ts` doesn't exist yet. The operand and the function that gathers a
+service's share come together, as one small file.
 
 ## The code
 
@@ -203,22 +227,42 @@ export function serviceInputs(reports: WorkReport[], s: number, free = 0n) {
 }
 ```
 
-`Operand` is a plain record (Part 2), so `encode` does all the work; the 0 goes in front
+`Operand` is a plain record ([lesson 2.5](../02-codec/05-sequences-and-records.md)), so `encode` does all the work; the 0 goes in front
 by hand. `serviceInputs` walks the reports in order and keeps the digests for s.
 
 **Run**
 
 ```sh
 npm test
-# prints: same_round_storage_isolation-2: service 1730 ends as the vector says
-# prints: fail 0
-# prints: reported
 npm run typecheck
 ```
 
-Nine tests pass, eight of them official test vectors, run end to end: Part 3's reports,
-Part 14's accounts, Part 15's whole PVM with its gas, and this part's host, all agreeing
-with the vectors at once.
+```text
+...
+✔ an operand: a 0, the report's three hashes, the payload's, the gas, result and trace (5.6ms)
+✔ always_accumulate-1: service 1729 ends as the vector says (31.0ms)
+✔ always_accumulate-2: service 1729 ends as the vector says (60.4ms)
+✔ process_one_immediate_report-1: service 1729 ends as the vector says (107.4ms)
+✔ queues_are_shifted-1: service 1729 ends as the vector says (79.6ms)
+✔ same_code_different_services-1: service 1729 ends as the vector says (50.6ms)
+✔ same_round_storage_isolation-1: service 1729 ends as the vector says (28.2ms)
+✔ same_round_storage_isolation-1: service 1730 ends as the vector says (19.6ms)
+✔ same_round_storage_isolation-2: service 1730 ends as the vector says (40.6ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (290.7ms)
+...
+ℹ tests 468
+ℹ suites 0
+ℹ pass 468
+ℹ fail 0
+...
+reported 468 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738499570
+...
+```
+
+Nine tests pass, eight of them official test vectors, run end to end: [Part 3](../03-work-and-reports/index.md)'s
+reports, [Part 14](../14-services/index.md)'s accounts, [Part 15](../15-the-pvm/index.md)'s whole PVM with its gas, and this part's
+host, all agreeing with the vectors at once.
 
 ## Watch it
 
@@ -289,10 +333,16 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/accumulate.ts
-# prints: service 1729: 1 input(s), 200000 gas, "halt"
-# prints: gas used 29643; the vector says 29643
-# prints: gas used 34413; the vector says 34413
-# prints: reported to Grafana
+```
+
+```text
+service 1729: 1 input(s), 200000 gas, "halt"
+  gas used 29643; the vector says 29643
+  storage: 0x6c617374 = 0x033fde3d
+service 1730: 1 input(s), 200000 gas, "halt"
+  gas used 34413; the vector says 34413
+  storage: 0x6672656164 = 0x00
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738508312
 ```
 
 `same_round_storage_isolation-1` accumulates two services in the same round. Each starts
@@ -328,6 +378,7 @@ one field at a time.
 ## What you have
 
 A service's inputs, built from a block's reports, and the first eight official accumulate
-vectors passing end to end.
+vectors passing end to end. Many of the other vectors' services ask for preimages next:
+[lesson 16.8](./08-lookup.md) lets them read one.
 
 Next: [16.8 Lookup](./08-lookup.md)

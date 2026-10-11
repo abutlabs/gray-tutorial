@@ -93,8 +93,23 @@ const CASES: [string, number][] = [
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/host.ts' does not provide an export named 'lookup'
+...
+✖ test/host.test.ts (268.9ms)
+...
+ℹ tests 450
+ℹ suites 0
+ℹ pass 447
+ℹ fail 3
+...
+```
+
+Red: `src/host.ts` doesn't export `lookup` yet, and an account has no preimages for it to
+find. Both arrive below.
 
 ## The code
 
@@ -201,11 +216,26 @@ export function accumulateHost(config: Config, a: Accumulation): Host {
 
 ```sh
 npm test
-# prints: lookup: a preimage the service keeps, found by its hash
-# prints: lookup_foreign_preimage-2: service 0 ends as the vector says
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ lookup_foreign_preimage-1: service 0 ends as the vector says (201.2ms)
+✔ lookup_foreign_preimage-2: service 0 ends as the vector says (101.9ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (220.2ms)
+...
+✔ lookup: a preimage the service keeps, found by its hash (1.0ms)
+✔ lookup of a hash the service doesn't keep, or of a service that isn't there: NONE (0.4ms)
+...
+ℹ tests 472
+ℹ suites 0
+ℹ pass 472
+ℹ fail 0
+...
+reported 472 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738514291
+...
 ```
 
 Ten official vectors now pass end to end.
@@ -216,8 +246,13 @@ Ten official vectors now pass end to end.
 
 ```sh
 node bin/accumulate.ts ../vectors/stf/accumulate/tiny/lookup_foreign_preimage-1.json
-# prints: service 0: 1 input(s)
-# prints: reported to Grafana
+```
+
+```text
+service 0: 1 input(s), 2000000 gas, "halt"
+  gas used 140681; the vector says 140681
+  storage: 0x0100000000 = 0x774935b629cc42513a66c8ed1a09f88b00fe35689032bafd5a26d52f464c48080000, 0x00 = 0x01000000, 0x02774935b629cc42513a66c8ed1a09f88b00fe35689032bafd5a26d52f464c48080000 = 0x010106
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738519670
 ```
 
 The bin from [lesson 16.7](./07-a-services-inputs.md) needs no change: point it at the new vector, and service 0's gas
@@ -251,6 +286,7 @@ every account into the context, which keeps it to one `Map` lookup.
 ## What you have
 
 Services that can read any preimage on the chain, and ten official accumulate vectors
-passing end to end.
+passing end to end. Reading a preimage needs someone to have asked for it first:
+[lesson 16.9](./09-asking-for-preimages.md) lets a service ask.
 
 Next: [16.9 Asking for preimages](./09-asking-for-preimages.md)

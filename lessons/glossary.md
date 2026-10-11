@@ -666,6 +666,11 @@ receiver's balance before its code runs, and the transfer becomes one of its inp
 *Example:* service 1's balance grows by 100, then it reads "gift".
 ([17.4](./17-accumulation/04-rounds.md))
 
+**Operand.** U. What accumulation learns of one work-digest: the package, its exports
+root, the authorizer and its trace, the payload's hash, the gas and the result. An input
+that starts with a 0. *Example:* a report with two digests for one service gives that
+service two operands. ([16.7](./16-host-calls/07-a-services-inputs.md))
+
 **Transfer input.** An accumulation input that starts with a 1, then one transfer; an
 operand starts with a 0. *Example:* service 1's only input in round 2.
 ([17.4](./17-accumulation/04-rounds.md))
