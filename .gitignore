@@ -10,3 +10,4 @@ reference/
 # your own client: yours alone, never part of the tutorial (keep the empty folder)
 client/*
 !client/.gitkeep
+.verify-output/

@@ -104,7 +104,27 @@ number. Run the tests:
 
 ```sh
 npm test
-# fails with: Expected values to be strictly equal
+```
+
+```text
+...
+✖ slot 0 is the first six seconds of the JAM Common Era (1.6ms)
+✔ an hour is 600 slots (0.2ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+...
+✖ failing tests:
+
+test at test/time.test.ts:7:1
+✖ slot 0 is the first six seconds of the JAM Common Era (1.6ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at TestContext.<anonymous> (…/client/test/time.test.ts:9:10)
+...
 ```
 
 ## Bug hunt
@@ -143,9 +163,26 @@ export function slotAt(date: Date): number {
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ slot 0 is the first six seconds of the JAM Common Era (0.5ms)
+✔ an hour is 600 slots (0.1ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 48.3
+reported 2 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=…&var-run_id=test-1791722258705
+
+> typecheck
+> tsc -p .
+...
 ```
 
 Green, and on the dashboard *Tests passed* jumps to 2 and *Tests failed* drops back to

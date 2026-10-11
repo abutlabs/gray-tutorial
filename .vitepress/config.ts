@@ -52,6 +52,7 @@ export default defineConfig({
 
 // A label line above a code block ("**Add to** `src/x.ts`") becomes a tab on the block, and
 // its bold word a link to the list of labels in 0.1 (as the Book's Ferris icons link to theirs).
+// A ```text block right after a Run block is its output (tools/output.ts): it gets an Output tab.
 function snippetLabels(md: MarkdownIt): void {
   const LABEL = /^\*\*(New file|Add to|Replace in|Rewrite|Run(?:, expect it to fail)?)\*\*(?: `[^`]+`)?$/;
   const KIND: Record<string, string> = {
@@ -73,6 +74,11 @@ function snippetLabels(md: MarkdownIt): void {
       if (open >= 0 && close > open) {
         words.splice(close + 1, 0, new state.Token("link_close", "a", -1));
         words.splice(open, 0, link);
+      }
+      if (m[1].startsWith("Run") && t[i + 4]?.type === "fence" && t[i + 4].info.trim() === "text") {
+        const tab = new state.Token("html_block", "", 0);
+        tab.content = '<p class="snippet-label output"><strong>Output</strong></p>\n';
+        t.splice(i + 4, 0, tab);
       }
     }
   });

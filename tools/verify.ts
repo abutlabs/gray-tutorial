@@ -7,12 +7,15 @@
 //   npm run verify -- 2.1 2.3   apply everything, but only run lessons 2.1 to 2.3
 
 import { spawnSync } from "node:child_process";
-import { mkdirSync, readdirSync, rmSync } from "node:fs";
+import { mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { readLessons, ROOT } from "./lessons.ts";
+import { checkOutput, tidy } from "./output.ts";
 import { applyStep } from "./tangle.ts";
 
 const TANGLED = join(ROOT, ".tangled");
+// every run's output, tidied (tools/output.ts), for writers to paste into Output blocks
+const OUTPUTS = join(ROOT, ".verify-output");
 const [from, to] = process.argv.length > 3 ? process.argv.slice(2) : [undefined, process.argv[2]];
 
 const lessons = readLessons();
@@ -60,12 +63,16 @@ for (const [i, lesson] of lessons.slice(0, last + 1).entries()) {
     // "# prints: x" and "# fails with: x" lines tell the reader what to expect; the output must contain x
     const expected = [...step.command.matchAll(/^# (?:prints|fails with): (.+)$/gm)].map((m) => m[1].trim());
     const missing = expected.filter((x) => !output.includes(x));
-    const ok = (r.status === 0) !== step.fails && missing.length === 0;
+    const wrongOutput = step.output === undefined ? null : checkOutput(step.output, output);
+    mkdirSync(join(OUTPUTS, lesson.id), { recursive: true });
+    writeFileSync(join(OUTPUTS, lesson.id, `line-${step.line}.txt`), output.split("\n").map(tidy).join("\n"));
+    const ok = (r.status === 0) !== step.fails && missing.length === 0 && wrongOutput === null;
     const commands = step.command.split("\n").filter((l) => l.trim() && !l.startsWith("#")).join("; ");
     console.log(`  ${ok ? "ok  " : "FAIL"} ${commands}${step.fails ? "   (fails, as it should)" : ""}  ${((Date.now() - t) / 1000).toFixed(1)}s`);
     if (!ok) {
       failures++;
       console.log(`       at ${where}, exit ${r.status}${missing.length ? `, output lacks: ${missing.join(" | ")}` : ""}`);
+      if (wrongOutput) console.log(indent(`its Output block: ${wrongOutput}`));
       console.log(indent(output.trim().split("\n").slice(-30).join("\n")));
     }
   }

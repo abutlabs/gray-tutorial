@@ -87,7 +87,10 @@ above each snippet says what to do with it:
 
 Inside a **Run** block, a line `# prints: fail 0` names text the output will contain, and
 `# fails with: ...` the error you should see. They are notes, not commands: don't type
-them (the website's copy button leaves them out). Paths are inside `client/`. A code block
+them (the website's copy button leaves them out). Some Run blocks are followed by the
+output itself, in a block of its own (*Output* on the website): put it next to your
+terminal. A line `...` marks where lines are cut, and `…` a part that changes from run to
+run; times, durations and run ids will differ too. Paths are inside `client/`. A code block
 with no label above it is for reading. On the website, a label is a link back to this
 list.
 

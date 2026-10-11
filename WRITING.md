@@ -12,16 +12,16 @@
 
 ## Observability in every lesson
 
-Every step a lesson builds also reports what it did: test runs through
-`test/grafana.ts`, programs through `Run`, codec and later STF steps through a `Trace`.
-A **Run** block that reports says so (`# prints: reported`), so verify checks the run
-reached the stack. When a step needs a new panel, it goes in the same change onto the
-theme dashboard for its Part (`observability/dashboards/gray-tutorial-*.json`; the title
-names its Parts), in that Part's row, in lesson order. Test results and everything
-reported stay on the overview, `gray-tutorial.json`, where the run links land. A new Part
-joins a theme by widening that theme's title. `tools/dashboards.test.ts` checks that
-every panel a lesson names is on its Part's dashboard, and that all of them share one
-link bar and one pair of menus.
+Every step a lesson builds also reports what it did: test runs through `test/grafana.ts`,
+programs through `Run`, codec and later STF steps through a `Trace`. A **Run** block that
+reports says so (`# prints: reported`, or the `reported ...` line in its Output block), so
+verify checks the run reached the stack. When a step needs a new panel, it goes in the
+same change onto the theme dashboard for its Part
+(`observability/dashboards/gray-tutorial-*.json`; the title names its Parts), in that
+Part's row, in lesson order. Test results and everything reported stay on the overview,
+`gray-tutorial.json`, where the run links land. A new Part joins a theme by widening that
+theme's title. `tools/dashboards.test.ts` checks that every panel a lesson names is on its
+Part's dashboard, and that all of them share one link bar and one pair of menus.
 
 ## Visual tutorial verification
 
@@ -164,6 +164,15 @@ The line right above a code block, exactly one of:
 
 Paths are relative to `client/`. A Run block is ```` ```sh ````, runs in `client/`, and may
 hold `# prints: text` or `# fails with: text` lines: the output must contain that text.
+
+**Output.** A ```` ```text ```` block right after a Run block is that run's output, as the
+Rust Book shows every run's; the website gives it an *Output* tab. verify checks it
+against the real run (`tools/output.ts`): its lines in order and one after another; a
+line `...` marks a cut (at the start and end too, if the output goes on); `…` inside a
+line stands for anything; times, durations, run ids and paths into the client are masked
+on both sides. Paste real output from `.verify-output/<lesson>/line-<n>.txt`, which verify
+writes for every run. A Run with an Output block needs no `# prints:` lines, so its block
+is pure commands.
 
 ## Code style the tools rely on
 

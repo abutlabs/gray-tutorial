@@ -8,6 +8,9 @@
 //   **Run**                          run the commands; they must succeed
 //   **Run, expect it to fail**       run the commands; they must fail
 //
+// A ```text block right after a Run block is its output, checked against the real run
+// (tools/output.ts).
+//
 // Paths are relative to client/. A code block without a label is only for reading.
 
 import { readdirSync, readFileSync } from "node:fs";
@@ -21,7 +24,7 @@ export type FileOp = "new" | "add" | "replace" | "rewrite";
 
 export type Step =
   | { kind: "file"; op: FileOp; path: string; code: string; line: number }
-  | { kind: "run"; command: string; fails: boolean; line: number };
+  | { kind: "run"; command: string; fails: boolean; line: number; output?: string };
 
 export interface Lesson {
   id: string; // "2.3": part 2, lesson 3
@@ -119,7 +122,17 @@ export function parseLesson(id: string, file: string): Lesson {
       steps.push({ kind: "file", op: OPS[file[1]], path: file[2], code, line: i + 1 });
     } else {
       if (!["sh", "bash", "shell"].includes(block![2])) fail(j + 1, "a Run block must be ```sh");
-      steps.push({ kind: "run", command: code, fails: Boolean(run![1]), line: i + 1 });
+      const step: Step = { kind: "run", command: code, fails: Boolean(run![1]), line: i + 1 };
+      steps.push(step);
+      let k = end + 1;
+      while (k < lines.length && lines[k].trim() === "") k++;
+      if (/^```text\s*$/.test(lines[k] ?? "")) {
+        const close = lines.findIndex((l, n) => n > k && l.trimEnd() === "```");
+        if (close < 0) fail(k + 1, "the output block never closes");
+        step.output = lines.slice(k + 1, close).join("\n");
+        i = close;
+        continue;
+      }
     }
     i = end;
   }
