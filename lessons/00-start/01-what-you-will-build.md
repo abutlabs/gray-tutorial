@@ -80,11 +80,16 @@ above each snippet says what to do with it:
   same name, its comment included.
 - **Rewrite** `package.json`: replace the whole file.
 - **Run**: type it in a terminal in `client/`. It should work.
-- **Run, expect it to fail**: it should fail, the way the lesson says. This tutorial uses
-  test-driven development: we often write the test first and watch it go red, because a
-  test that has never failed has never proved anything.
+- **Run, expect it to fail**: it should fail, the way the lesson says (on the website, its
+  block is tinted red). This tutorial uses test-driven development: we often write the
+  test first and watch it go red, because a test that has never failed has never proved
+  anything.
 
-Paths are inside `client/`. A code block with no label above it is for reading.
+Inside a **Run** block, a line `# prints: fail 0` names text the output will contain, and
+`# fails with: ...` the error you should see. They are notes, not commands: don't type
+them (the website's copy button leaves them out). Paths are inside `client/`. A code block
+with no label above it is for reading. On the website, a label is a link back to this
+list.
 
 Every lesson is checked before you see it: a script follows it from an empty folder,
 applies every snippet and runs every **Run** block. If anything breaks, the lesson

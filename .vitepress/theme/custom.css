@@ -21,6 +21,14 @@
 .vp-doc p.snippet-label.run strong { color: var(--vp-c-text-2); }
 .vp-doc p.snippet-label.fails strong { color: var(--vp-c-danger-1); }
 
+/* The label word links to 0.1's list of labels, and keeps its look */
+.vp-doc p.snippet-label a.snippet-legend { color: inherit; text-decoration: none; }
+.vp-doc p.snippet-label a.snippet-legend:hover strong { text-decoration: underline dotted; }
+
+/* Code meant to fail is tinted red, as the Book tints its listings that don't compile */
+.vp-doc p.snippet-label.fails,
+.vp-doc p.snippet-label.fails + div[class*="language-"] { background-color: var(--vp-c-danger-soft); }
+
 /* lasair's OCaml, folded under a snippet */
 .vp-doc details { margin: 16px 0; }
 .vp-doc details > summary { cursor: pointer; color: var(--vp-c-text-2); font-size: 14px; }

@@ -70,8 +70,9 @@ Red! Node can't find `src/time.ts`, because there isn't one. Good: now you know 
 really runs, and really fails without the code.
 
 Two small conventions you'll see in every lesson: a line starting with `#` in a **Run**
-block is a comment (the shell skips it), and `# fails with:` or `# prints:` tells you
-what to look for in the output. The tutorial's own checks look for exactly that text.
+block is a note, not a command (don't type it; the website's copy button leaves it out),
+and `# fails with:` or `# prints:` tells you what to look for in the output. The
+tutorial's own checks look for exactly that text.
 
 Over in Grafana, this failed run is already there: *Tests failed* is no longer 0, and
 *Test results* says which test failed and why.

@@ -46,7 +46,9 @@ export default defineConfig({
   },
 });
 
-// A label line above a code block ("**Add to** `src/x.ts`") becomes a tab on the block.
+// A label line above a code block ("**Add to** `src/x.ts`") becomes a tab on the block, and
+// its bold word a link to the list of labels in 0.1 (as the Book's Ferris icons link to theirs).
+const LEGEND = "/00-start/01-what-you-will-build.md#how-a-lesson-works";
 function snippetLabels(md: MarkdownIt): void {
   const LABEL = /^\*\*(New file|Add to|Replace in|Rewrite|Run(?:, expect it to fail)?)\*\*(?: `[^`]+`)?$/;
   const KIND: Record<string, string> = {
@@ -58,7 +60,17 @@ function snippetLabels(md: MarkdownIt): void {
     for (let i = 0; i + 3 < t.length; i++) {
       if (t[i].type !== "paragraph_open" || t[i + 2].type !== "paragraph_close" || t[i + 3].type !== "fence") continue;
       const m = LABEL.exec(t[i + 1].content);
-      if (m) t[i].attrJoin("class", `snippet-label ${KIND[m[1]]}`);
+      if (!m) continue;
+      t[i].attrJoin("class", `snippet-label ${KIND[m[1]]}`);
+      const words = t[i + 1].children ?? [];
+      const link = new state.Token("link_open", "a", 1);
+      link.attrs = [["href", LEGEND], ["class", "snippet-legend"], ["title", "What the labels mean"]];
+      const open = words.findIndex((w) => w.type === "strong_open");
+      const close = words.findIndex((w) => w.type === "strong_close");
+      if (open >= 0 && close > open) {
+        words.splice(close + 1, 0, new state.Token("link_close", "a", -1));
+        words.splice(open, 0, link);
+      }
     }
   });
 }
