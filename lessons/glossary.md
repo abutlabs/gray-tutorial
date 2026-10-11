@@ -326,6 +326,10 @@ all starts `0x0e5751c0`. ([5.1](./05-hashing-and-signatures/01-hashes.md))
 JAM asks for 32. *Example:* the hash of no bytes at all starts `0e5751c0`.
 ([5.1](./05-hashing-and-signatures/01-hashes.md))
 
+**Keccak-256.** Ethereum's hash function: 32 bytes, like Blake2b, but different ones. JAM
+uses it where other chains must check the result. *Example:* the Keccak-256 of no bytes
+at all starts `0xc5d24601`. ([9.1](./09-recent-history/01-the-mountain-belt.md))
+
 **Extrinsic hash.** A header's 32-byte promise of exactly which extrinsic belongs to it: a
 hash of the five parts' hashes. *Example:* swap one ticket, and it no longer matches.
 ([5.2](./05-hashing-and-signatures/02-the-extrinsic-hash.md))
@@ -373,6 +377,13 @@ node is 64 bytes. ([6.1](./06-state-and-merklization/01-the-state-trie.md))
 **Merklization.** Hashing a whole trie down to one root, so any one entry can later be
 proven with a few hashes. The GP writes the root as M. *Example:* a state, down to 32
 bytes. ([6.1](./06-state-and-merklization/01-the-state-trie.md))
+
+**Merkle mountain belt, peak and super-peak.** A list of Merkle tree roots, one per power
+of two, grown one item at a time like a binary counter. Each root is a *peak* (∅ where
+there's no mountain of that size), and the *super-peak*, M_R, is one hash for the whole
+belt. JAM keeps one of every block's accumulation outputs, for bridges to other chains.
+*Example:* 5 items make a mountain of 4 and a mountain of 1.
+([9.1](./09-recent-history/01-the-mountain-belt.md))
 
 **State key and state component.** The state is 16 components, C(1) to C(16), each a Greek
 letter, filed under 31-byte keys; services' data have keys of their own. *Example:* C(11)

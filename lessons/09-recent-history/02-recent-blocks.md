@@ -22,11 +22,13 @@ them, and β_B, the belt. Each new block does three things to them:
 
 The history vectors give the new block's parts ready-made: its header hash, its
 `parent_state_root`, the root of its accumulation outputs, its slot, and its reported
-packages. (Working those out yourself takes Parts 12 and 17.)
+packages. For now, all you need to know is that a block brings them; working them out
+yourself takes [Part 12](../12-guarantees/index.md) (the reported packages) and [Part 17](../17-accumulation/index.md) (the accumulation root).
 
-## The code first, this time
+## The records first
 
-The tests read β from real states as well as from the vectors, so its codec comes first.
+The tests read β from real states as well as from the vectors, so its records come first,
+with a `recordBlock` that doesn't record anything yet:
 
 **New file** `src/history.ts`
 
@@ -37,8 +39,6 @@ The tests read β from real states as well as from the vectors, so its codec com
 import type { Bytes } from "./bytes.ts";
 import type { Value } from "./codec/codec.ts";
 import { hash, option, record, seq, u32 } from "./codec/codec.ts";
-import type { Belt } from "./belt.ts";
-import { appendToBelt, superPeak } from "./belt.ts";
 
 /** A work-package reported in a block: its hash, and the root of the segments it exports. */
 export const ReportedPackage = record({
@@ -77,24 +77,8 @@ export type NewBlock = Value<typeof NewBlock>;
 /** H: how many recent blocks the state remembers. */
 export const RECENT_BLOCKS = 8;
 
-/**
- * β′ (GP §7): the newest remembered block learns its state root, the new block joins the
- * belt and the list, and the list keeps only the last eight.
- */
 export function recordBlock(before: Recent, block: NewBlock): Recent {
-  const last = before.history.length - 1;
-  const fixed = before.history.map((b, i) =>
-    i === last ? { ...b, state_root: block.parent_state_root } : b,
-  );
-  const belt: Belt = appendToBelt(before.belt, block.accumulate_root);
-  const entry: RecentBlock = {
-    header_hash: block.header_hash,
-    beefy_root: superPeak(belt),
-    state_root: new Uint8Array(32), // unknown yet: zeros until the next block
-    slot: block.slot,
-    reported: block.work_packages,
-  };
-  return { history: [...fixed, entry].slice(-RECENT_BLOCKS), belt };
+  return before;
 }
 ```
 
@@ -102,7 +86,22 @@ Every structure here is a `record`, so it's a type, an encoder, a decoder and a 
 reader at once ([lesson 2.5](../02-codec/05-sequences-and-records.md)). `Recent` is exactly how C(3) holds β in the state: the list,
 then the belt, each peak an `option` ([lesson 4.5](../04-blocks/05-maybe-and-exactly-n.md)), since a belt has gaps.
 
-The `slot` in each entry is new in Gray Paper 0.8.0; 0.7.2's entries didn't have it.
+> [!NOTE]
+> The `slot` in each entry is new in Gray Paper 0.8.0; 0.7.2's entries didn't have it.
+> Rules change between versions, so a client says which one it follows.
+
+And a reader for β, next to [lesson 6.3](../06-state-and-merklization/03-reading-the-state.md)'s:
+
+**Add to** `src/state.ts`
+
+```ts
+import { Recent } from "./history.ts";
+
+/** β, C(3): the recent blocks, and the belt. */
+export function readRecent(entries: KeyValue[]): Recent {
+  return component(entries, 3, Recent);
+}
+```
 
 ## The tests
 
@@ -156,46 +155,115 @@ Two kinds of check. The vectors check `recordBlock`: all three steps, at both si
 including a block that pushes the ninth entry out. Then real states check the *codec*,
 and the rules too: in the state before each of 99 trace blocks, the newest remembered
 block is the one before, by header hash ([lesson 5.1](../05-hashing-and-signatures/01-hashes.md)), with its state root still zeros,
-and the entry before it has had its blank filled in.
+and the entry before it has had its blank filled in. The real chain did the recording, so
+this one can pass before your `recordBlock` does anything.
 
 **Run, expect it to fail**
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
 
-It's `readRecent` that's missing: `src/history.ts` is already there.
+```text
+...
+✖ β′: the last block learns its state root, the new one joins, eight are kept (197.8ms)
+✔ β in real states: the newest block remembered is the block before (366.2ms)
+...
+ℹ tests 84
+ℹ suites 0
+ℹ pass 83
+ℹ fail 1
+...
+test at test/history.test.ts:14:1
+✖ β′: the last block learns its state root, the new one joins, eight are kept (197.8ms)
+  AssertionError [ERR_ASSERTION]: stf/history/tiny/progress_blocks_history-1.json
+  + actual - expected
 
-## The code, finished
+    {
+  +   belt: [],
+  +   history: []
+  -   belt: [
+...
+```
 
-A reader for β, next to [lesson 6.3](../06-state-and-merklization/03-reading-the-state.md)'s:
+One red, one green, and that's the split you want. The real states pass: your records
+and `readRecent` read β exactly as the chain wrote it. The vectors fail on the first one,
+which starts from an empty history. Your stub hands it back empty (`+`), where the
+vector expects one block remembered and a belt of one mountain (`-`).
 
-**Add to** `src/state.ts`
+## The code
+
+The three steps, one line or two each:
+
+**Replace in** `src/history.ts`
 
 ```ts
-import { Recent } from "./history.ts";
+import type { Belt } from "./belt.ts";
+import { appendToBelt, superPeak } from "./belt.ts";
 
-/** β, C(3): the recent blocks, and the belt. */
-export function readRecent(entries: KeyValue[]): Recent {
-  return component(entries, 3, Recent);
+/**
+ * β′ (GP §7): the newest remembered block learns its state root, the new block joins the
+ * belt and the list, and the list keeps only the last eight.
+ */
+export function recordBlock(before: Recent, block: NewBlock): Recent {
+  const last = before.history.length - 1;
+  const fixed = before.history.map((b, i) =>
+    i === last ? { ...b, state_root: block.parent_state_root } : b,
+  );
+  const belt: Belt = appendToBelt(before.belt, block.accumulate_root);
+  const entry: RecentBlock = {
+    header_hash: block.header_hash,
+    beefy_root: superPeak(belt),
+    state_root: new Uint8Array(32), // unknown yet: zeros until the next block
+    slot: block.slot,
+    reported: block.work_packages,
+  };
+  return { history: [...fixed, entry].slice(-RECENT_BLOCKS), belt };
 }
 ```
 
-Then look again at `recordBlock`, now that the tests say what it must do. `fixed` is step 1:
-copy every entry, but give the last one its state root. `{ ...b, state_root }` copies
-an object with one field changed. `entry` is step 2, and `.slice(-RECENT_BLOCKS)` is
-step 3: a negative `slice` counts from the end, so it keeps the last eight.
+`fixed` is step 1: copy every entry, but give the last one its state root.
+
+```ts
+    i === last ? { ...b, state_root: block.parent_state_root } : b,
+```
+
+`{ ...b, state_root: ... }` copies an object with one field changed. `entry` is step 2,
+and step 3 is the last line:
+
+```ts
+  return { history: [...fixed, entry].slice(-RECENT_BLOCKS), belt };
+```
+
+A negative `slice` counts from the end, so it keeps the last eight.
+
+> [!NOTE]
+> **The simple road.** `recordBlock` keeps the reported packages in the order the block
+> lists them. The Gray Paper holds them in a *dictionary*, and dictionaries are encoded
+> sorted by key ([lesson 3.3](../03-work-and-reports/03-a-work-report.md)), here the
+> package hash. The vectors only ever list them in order, so this is fine for now; the
+> [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) sorts
+> them.
 
 **Run**
 
 ```sh
 npm test
-# prints: β′: the last block learns its state root, the new one joins, eight are kept
-# prints: β in real states: the newest block remembered is the block before
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ β′: the last block learns its state root, the new one joins, eight are kept (7.5ms)
+✔ β in real states: the newest block remembered is the block before (408.1ms)
+...
+ℹ tests 84
+ℹ suites 0
+ℹ pass 84
+ℹ fail 0
+...
+reported 84 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731468082
+...
 ```
 
 ## Watch it
@@ -239,9 +307,19 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/history.ts ../vectors/traces/preimages/00000050.json
-# prints: slot  49  header 0x7c7ee195…  state root 0x00000000…  reported: 1
-# prints: the belt: ● · · · ● ●
-# prints: reported to Grafana
+```
+
+```text
+slot  42  header 0x8492038c…  state root 0x85e2f9da…  reported: 0
+slot  43  header 0x083e87af…  state root 0x92b349ae…  reported: 0
+slot  44  header 0x0193a9f8…  state root 0xf3d9561f…  reported: 2
+slot  45  header 0xdf827752…  state root 0x1e90a7be…  reported: 1
+slot  46  header 0xb3711eed…  state root 0xa61f6f99…  reported: 0
+slot  47  header 0x12d04d3e…  state root 0x2f529bd8…  reported: 1
+slot  48  header 0x1beca774…  state root 0xd095c60f…  reported: 1
+slot  49  header 0x7c7ee195…  state root 0x00000000…  reported: 1
+the belt: ● · · · ● ●
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=history-1791731472054
 ```
 
 Eight blocks, slots 42 to 49, and only the newest still waiting for its state root. Now
@@ -265,16 +343,15 @@ accumulation root for each block so far. The *Recent history* panel shows it all
 
 The same entry as yours, field for field, and lasair marks the slot as new in 0.8.0 with
 the number of the Gray Paper change that added it. Specs move; good code says which
-version it follows. Just above this, lasair also sorts the reported packages by hash. In
-the Gray Paper they're a *dictionary*, and dictionaries are encoded in key order ([lesson
-3.3](../03-work-and-reports/03-a-work-report.md)). Yours keeps them in the order they came, which is fine for the vectors; the
-hardening pass sorts them.
+version it follows. Just above this, lasair also sorts the reported packages by hash,
+the road yours doesn't take yet (the note above).
 
 </details>
 
 ## What you have
 
 The chain's short-term memory: eight blocks, kept up to date, with the blank from last
-block filled in every time.
+block filled in every time. That's what the chain remembers; [Part 10](../10-disputes/index.md) is how it
+judges, when a work-report that validators vouched for turns out to be wrong.
 
 Next: [Part 10 · Disputes](../10-disputes/index.md)

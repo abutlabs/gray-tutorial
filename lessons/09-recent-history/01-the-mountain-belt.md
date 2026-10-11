@@ -5,11 +5,25 @@ running commitment to *every accumulation output ever*. Bridges to other chains 
 so it has to be small, cheap to extend, and checkable with tools those chains already
 have. JAM's answer is a **Merkle mountain belt**: a row of perfect little Merkle trees,
 "mountains", of sizes 1, 2, 4, 8 and so on. Appending an item is exactly like adding 1 to
-a binary number. Really. You'll see it.
+a binary number. Really. You'll see it. By the end of this lesson your client keeps the
+belt, and its one-hash summary, exactly as the test vectors do.
+
+## New words
+
+- **Merkle mountain belt.** A list of Merkle tree roots, one per power of two, that grows
+  one item at a time. *Example:* 5 items make a mountain of 4 and a mountain of 1.
+- **Peak.** One mountain's root, or ∅ where the belt has no mountain of that size.
+  *Example:* after 5 items the peaks are [a hash, ∅, a hash].
+- **Super-peak.** One hash for the whole belt, made from its peaks. *Example:* the
+  `beefy_root` in each recent block.
+- **Keccak-256.** Ethereum's hash function. It gives 32 bytes, like Blake2b, but different
+  ones. *Example:* Keccak-256 of nothing at all starts `0xc5d24601`.
+
+All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
-Appendix E (*Merkle Mountain Ranges and Belts*). A belt is a list of **peaks**: peak i is
+Appendix E (*Merkle Mountain Ranges and Belts*). A belt is a list of *peaks*: peak i is
 the root of a mountain of 2^i items, or ∅ if there's no mountain of that size.
 
 **Appending** an item l (the function A): start at place 0, carrying l.
@@ -22,12 +36,12 @@ the root of a mountain of 2^i items, or ∅ if there's no mountain of that size.
 That's binary addition, with mountains for 1s, empty places for 0s, and merging for
 "carry the one".
 
-The **super-peak**, M_R, squeezes a belt into one hash: take the peaks that exist, in
+The *super-peak*, M_R, squeezes a belt into one hash: take the peaks that exist, in
 order. None gives 32 zero bytes, and one gives itself. Otherwise it's
-H(`$peak` ⌢ M_R(all but the last) ⌢ the last). (The `$` again marks an ASCII string, as
-in [lesson 5.3](../05-hashing-and-signatures/03-signatures.md): the bytes are `peak`. The vectors agree, and with the `$` they don't.)
+H(`$peak` ⌢ M_R(all but the last) ⌢ the last). The `$` marks an ASCII string, as in
+[lesson 5.3](../05-hashing-and-signatures/03-signatures.md): the bytes hashed are the four letters `peak`, without the `$`.
 
-And the hash? Not Blake2b, for once. §7 says the belt uses **Keccak-256**, Ethereum's
+And the hash? Not Blake2b, for once. §7 says the belt uses *Keccak-256*, Ethereum's
 hash, "to maximize compatibility with legacy systems": a bridge contract on Ethereum can
 check JAM's belt with a hash it has built in.
 
@@ -105,16 +119,69 @@ newest block's history entry, the super-peak as `beefy_root`. Between them they 
 belts of 1, 2, 8 and 9 items, so the 7 → 8 append carries all the way up, three merges
 in a row.
 
+A stub that never merges: every item becomes a peak of its own, and the super-peak is
+zeros.
+
+**New file** `src/belt.ts`
+
+```ts
+// The accumulation output belt (GP §7, App. E): a Merkle mountain belt. A compact
+// commitment to every block's accumulation outputs, built with Keccak so that other chains
+// can check it.
+
+import type { Bytes } from "./bytes.ts";
+
+/** A mountain belt: peak i is the root of 2^i items, or null if there's no such mountain. */
+export type Belt = (Bytes | null)[];
+
+export function appendToBelt(belt: Belt, item: Bytes): Belt {
+  return [...belt, item];
+}
+
+export function superPeak(belt: Belt): Bytes {
+  return new Uint8Array(32);
+}
+```
+
 **Run, expect it to fail**
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+✖ appending is counting in binary: mountains of 1, 2, 4... (1.9ms)
+✖ the belt after each block of the history vectors, and its super-peak (0.9ms)
+...
+ℹ tests 82
+ℹ suites 0
+ℹ pass 80
+ℹ fail 2
+...
+test at test/belt.test.ts:14:1
+✖ appending is counting in binary: mountains of 1, 2, 4... (1.9ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    [
+  -   null,
+      Uint8Array(32) [
+  +     1,
+...
+```
+
+Red, in the two tests that append. Read the first diff from its top. The expected belt
+(the `-` lines) starts with `null`, an empty place, because two items should merge into
+one mountain of 2 in place 1. Your stub's belt (the `+` lines) starts with the item
+itself, its 32 bytes all 1, and has it again in place 1: two mountains of 1, side by
+side. The Keccak test already passes: the hash was there before the belt.
 
 ## The code
 
-**New file** `src/belt.ts`
+Now the real thing, the whole file again:
+
+**Rewrite** `src/belt.ts`
 
 ```ts
 // The accumulation output belt (GP §7, App. E): a Merkle mountain belt. A compact
@@ -158,6 +225,13 @@ export function superPeak(belt: Belt): Bytes {
 }
 ```
 
+The merge is two lines in the loop:
+
+```ts
+    carry = keccak256(concatBytes(peak, carry)); // two mountains of 2^i make one of 2^(i+1)
+    peaks[i] = null;
+```
+
 The Gray Paper writes appending as a recursion, P; `appendToBelt` is the same thing as a
 loop, carrying one hash along the places. `superPeak` stays recursive, just as the Gray
 Paper writes it: fold all but the last, then join the last on.
@@ -166,11 +240,22 @@ Paper writes it: fold all but the last, then join the last on.
 
 ```sh
 npm test
-# prints: Keccak-256 of nothing at all
-# prints: the belt after each block of the history vectors, and its super-peak
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ Keccak-256 of nothing at all (1.1ms)
+✔ appending is counting in binary: mountains of 1, 2, 4... (0.9ms)
+✔ the belt after each block of the history vectors, and its super-peak (16.7ms)
+...
+ℹ tests 82
+ℹ suites 0
+ℹ pass 82
+ℹ fail 0
+...
+reported 82 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731459401
+...
 ```
 
 ## Watch it
@@ -206,12 +291,30 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/belt.ts
-# prints: after   1: ●
-# prints: after   8: · · · ●
-# prints: reported to Grafana
 ```
 
-Now read the dots from right to left: after 5, `● · ●` is 101, after 6 `· ● ●` is 110, after
+```text
+after   1: ●            super-peak 0x5fe7f977…
+after   2: · ●          super-peak 0x71d8979c…
+after   3: ● ●          super-peak 0xacb31462…
+after   4: · · ●        super-peak 0x3ef0aafe…
+after   5: ● · ●        super-peak 0x57bba00c…
+after   6: · ● ●        super-peak 0xe1de474b…
+after   7: ● ● ●        super-peak 0xe7b9b123…
+after   8: · · · ●      super-peak 0x62762e65…
+after   9: ● · · ●      super-peak 0x13f2e75e…
+after  10: · ● · ●      super-peak 0x643b865f…
+after  11: ● ● · ●      super-peak 0xa6d8952e…
+after  12: · · ● ●      super-peak 0xd8e5acd3…
+after  13: ● · ● ●      super-peak 0x52b36038…
+after  14: · ● ● ●      super-peak 0xba074758…
+after  15: ● ● ● ●      super-peak 0xc4c91480…
+after  16: · · · · ●    super-peak 0x77a03478…
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=belt-1791731463475
+```
+
+Your hashes are these same ones: the items are fixed bytes, so only the link's run id
+changes from run to run. Now read the dots from right to left: after 5, `● · ●` is 101, after 6 `· ● ●` is 110, after
 8 `· · · ●` is 1000. The belt *is* the count in binary, written backwards, smallest
 mountain first. Watch 7 → 8: three mountains merge into one, like 0111 + 1 = 1000. The
 *Belt* panel has every step; try `node bin/belt.ts 100`.
@@ -244,6 +347,7 @@ same `history` vectors. OCaml's `match` makes the binary counter almost a poem.
 ## What you have
 
 A Merkle mountain belt, the commitment JAM keeps for bridges, appended to in a handful of
-hashes per block, whatever its length.
+hashes per block, whatever its length. The belt's super-peak is one of the things the
+chain writes down for every block; [lesson 9.2](./02-recent-blocks.md) keeps the rest of that record.
 
 Next: [9.2 Recent blocks](./02-recent-blocks.md)
