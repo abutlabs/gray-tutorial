@@ -227,7 +227,7 @@ is the byte 255; `0x0102` is the bytes 1 and 2. ([1.1](./01-bytes-and-numbers/01
 it is. *Example:* a u32 always takes four bytes, so 1 is `01 00 00 00`.
 ([2.1](./02-codec/01-fixed-width-integers.md))
 
-**Encoding, decoding, codec.** Encoding turns a value into bytes; decoding turns the
+**Encode, decode and codec.** Encoding turns a value into bytes; decoding turns the
 bytes back. A codec is one object that does both for one kind of value, and reads it from
 the test vectors' JSON too. The GP writes encoding as ℰ (Appendix C). *Example:* the
 number 5 in one byte encodes as `0x05`.
@@ -243,7 +243,7 @@ compact natural, how many more bytes follow. *Example:* `110xxxxx` has two.
 
 **Blob.** Any run of bytes of no fixed length. Encoded with its length in front (the GP's
 ↕). *Example:* the three bytes 1, 2, 3 encode as `0x03010203`.
-([2.5](./02-codec/05-sequences-and-records.md))
+([2.4](./02-codec/04-codecs.md))
 
 **Fixed-length sequence.** A list whose length the protocol fixes, so it's written with no
 length in front. The GP writes ⟦T⟧ₙ. *Example:* the tickets mark.

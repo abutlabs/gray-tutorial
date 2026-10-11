@@ -11,8 +11,10 @@ So the Gray Paper has a second way to write a number, one that shrinks to fit.
   byte; 128 takes two, `0x8080`.
 - **Leading ones.** The one-bits at the very start of a byte, before its first zero.
   *Example:* `110xxxxx` has two leading ones: two more bytes follow.
+- **Off-by-one.** A bug that's wrong by exactly one, usually at the edge of a range.
+  *Example:* a loop over ten items that runs eleven times.
 
-Both are in the [glossary](../glossary.md).
+All three are in the [glossary](../glossary.md).
 
 ## Shrink to fit
 

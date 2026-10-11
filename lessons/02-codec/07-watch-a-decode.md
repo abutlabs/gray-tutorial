@@ -18,7 +18,7 @@ All three are in the [glossary](../glossary.md).
 
 ## The idea
 
-A decode trace is a list of the **innermost fields** of a value, in the order they are
+A decode trace is a list of the *innermost fields* of a value, in the order they are
 read. Each says its path (`import_segments.0.index`), where its bytes start and end, and
 the bytes themselves. Lengths count as fields too (`import_segments.length`),
 so the trace covers every byte of the encoding exactly once. That's easy to test, and

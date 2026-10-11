@@ -22,8 +22,10 @@ order gets written once, and every direction follows it.
   *Example:* every codec has `encode`, `decode` and `fromJson`.
 - **Generic (`<T>`).** A type with a blank in it, filled in where it's used. *Example:*
   `Codec<number>` is a codec for numbers, `Codec<Bytes>` one for bytes.
+- **Blob.** Any run of bytes of no fixed length, written with its length in front (the
+  Gray Paper's ↕). *Example:* the three bytes 1, 2, 3 encode as `0x03010203`.
 
-All four are in the [glossary](../glossary.md).
+All five are in the [glossary](../glossary.md).
 
 ## The interface
 

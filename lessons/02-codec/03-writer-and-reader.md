@@ -9,7 +9,7 @@ structure in bookkeeping. Two little helpers make the bookkeeping disappear:
 
 ## New words
 
-- **Class.** A blueprint for objects that keep their own data and come with their own
+- **Class and method.** A blueprint for objects that keep their own data and come with their own
   functions, called *methods*. *Example:* `new Writer()` makes a writer, and `w.natural(5n)`
   calls one of its methods.
 - **Private field.** A field whose name starts with `#`: only the class's own methods can

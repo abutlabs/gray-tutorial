@@ -31,13 +31,13 @@ length: both sides already know the fields and their order, so the bytes don't r
 
 From Appendix C:
 
-- **Sequences** encode as their items, one after another. A sequence whose length can
+- *Sequences* encode as their items, one after another. A sequence whose length can
   vary gets its length in front, the ↕ from last lesson: ↕[a, b, c] is ℰ(3) ⌢ ℰ(a) ⌢ ℰ(b)
   ⌢ ℰ(c).
-- **Tuples** encode as their elements' encodings, one after another, in the order the
+- *Tuples* encode as their elements' encodings, one after another, in the order the
   Gray Paper lists them.
 
-In code, a tuple with named elements is a **record**: an object whose fields are always
+In code, a tuple with named elements is a *record*: an object whose fields are always
 encoded in the same order.
 
 ## Sequences
