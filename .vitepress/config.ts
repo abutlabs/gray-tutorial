@@ -21,13 +21,17 @@ export default defineConfig({
   markdown: { config: snippetLabels, codeTransformers: [shellComments()] },
   themeConfig: {
     search: { provider: "local" },
-    nav: [{ text: "JAM learning", link: "https://abutlabs.github.io/jam-learning/" }],
+    nav: [
+      { text: "Glossary", link: "/glossary" },
+      { text: "JAM learning", link: "https://abutlabs.github.io/jam-learning/" },
+    ],
     socialLinks: [{ icon: "github", link: "https://github.com/abutlabs/gray-tutorial" }],
     outline: { level: [2, 3] },
     docFooter: { prev: "Previous lesson", next: "Next lesson" },
+    // in reading order, so the pager and the arrow keys walk the lessons; the glossary is an
+    // appendix at the end, as in the Rust Book, and always one click away in the top bar
     sidebar: [
       { text: "Start here", link: "/" },
-      { text: "Glossary", link: "/glossary" },
       ...parts.map((p) => ({
         text: p.title,
         link: `/${p.dir}/`,
@@ -37,6 +41,7 @@ export default defineConfig({
           link: `/${l.file.replace(/\.md$/, "")}`,
         })),
       })),
+      { text: "Glossary", link: "/glossary" },
     ],
   },
 });

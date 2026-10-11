@@ -137,7 +137,8 @@ One laptop screen is enough:
 3. *Terminal > New Terminal*, then `cd client`.
 
 Grafana lives in a browser tab. Prefer reading lessons in the browser too? `npm run site`
-at the repo root serves them with search and copy buttons.
+at the repo root serves them with search and copy buttons. There, the left and right arrow
+keys turn the lessons, and `?` lists the keys.
 
 ## Stuck?
 

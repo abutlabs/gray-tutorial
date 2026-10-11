@@ -51,3 +51,18 @@
     ul:not(:has(div[class*="language-"], img)), ol:not(:has(div[class*="language-"], img))) {
   max-width: 688px;
 }
+
+/* The keys help (? on any page) */
+#keys-help {
+  padding: 20px 28px 24px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  box-shadow: var(--vp-shadow-3);
+}
+#keys-help::backdrop { background: rgba(0, 0, 0, 0.4); }
+#keys-help h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; }
+#keys-help dl { display: grid; grid-template-columns: auto auto; gap: 8px 24px; margin: 0; }
+#keys-help dt { font-family: var(--vp-font-family-mono); font-size: 14px; white-space: pre; }
+#keys-help dd { margin: 0; color: var(--vp-c-text-2); }
