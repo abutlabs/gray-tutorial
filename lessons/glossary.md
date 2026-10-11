@@ -515,8 +515,9 @@ three apiece. *Example:* 6 validators keep 2 cores active.
 must be in its core's pool. *Example:* refused as `core_unauthorized` if it isn't.
 ([12.4](./12-guarantees/04-bad-guarantees.md))
 
-**Credential.** One guarantor's signature on a guarantee: its validator index and its
-Ed25519 signature. *Example:* index 3, then 64 bytes. ([4.3](./04-blocks/03-guarantees.md))
+**Credential.** The signatures on a guarantee, two or three of them, each a guarantor's
+validator index and its Ed25519 signature. *Example:* index 3 and 64 bytes, then index 4
+and 64 bytes. ([4.3](./04-blocks/03-guarantees.md))
 
 **Guarantee and guarantor.** Two or three validators (the guarantors) sign a work-report
 to vouch that it's right; that bundle is a guarantee, and it puts the report onto its

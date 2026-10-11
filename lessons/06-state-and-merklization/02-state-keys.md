@@ -62,8 +62,10 @@ What a service keeps comes in three kinds, and each makes its h differently:
 
 Hashing h makes every key exactly 31 bytes, whatever went in, and the Gray Paper points
 out the bonus: a client never needs the original storage key back, only its hash. This
-lesson builds preimages and requests. Storage arrives in [Part 14](../14-services/index.md), when your client
-starts writing it.
+lesson builds preimages and requests. Storage keys wait: your client keeps each service's
+storage as a map from key to value (read from the vectors in [lesson 14.2](../14-services/02-the-service-account.md), written
+by the `write` host call in [lesson 16.5](../16-host-calls/05-storage.md)), and needs these keys only to put that map
+into the state trie, which block import, still to be written, will do.
 
 ## The tests
 

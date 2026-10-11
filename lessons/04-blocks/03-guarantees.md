@@ -9,8 +9,9 @@ eventually, their stake) on "this report is correct". A signed report is a
 
 - **Guarantee.** A work-report signed by the validators who vouch for it. *Example:* one
   report, signed at slot 42 by validators 3 and 4.
-- **Credential.** One guarantor's signature on a guarantee: its validator index and its
-  Ed25519 signature. *Example:* index 3, then 64 bytes.
+- **Credential.** The signatures on a guarantee, two or three of them, each a guarantor's
+  validator index and its Ed25519 signature (the `signatures` field below). *Example:*
+  index 3 and 64 bytes, then index 4 and 64 bytes.
 
 Both are in the [glossary](../glossary.md).
 
