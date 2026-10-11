@@ -93,14 +93,8 @@ The second test pins down the waves. The first wave is seven steps that need not
 the block and the old state. Safrole waits until wave 2, and the last wave is everything
 waiting for accumulation.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-## The code
+A stub for the order: every step in one wave, as if the Gray Paper's list could simply run
+top to bottom. `Step` and `STEPS` are the real thing already:
 
 **New file** `src/import.ts`
 
@@ -145,6 +139,49 @@ export const STEPS: Step[] = [
   },
 ];
 
+export function waves(steps: Step[]): Step[][] {
+  return [steps];
+}
+```
+
+`STEPS` is the Gray Paper's list, line for line, with the lesson that built each step.
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✔ the Gray Paper's list isn't a recipe: γ′ comes before η′, which it's made from (0.5ms)
+✖ four waves: the first needs only the block and the state before it (0.6ms)
+✖ every step comes after everything it's made from (0.2ms)
+✖ steps that wait for each other are caught (0.1ms)
+...
+ℹ tests 613
+ℹ suites 0
+ℹ pass 610
+ℹ fail 3
+...
+test at test/import.test.ts:15:1
+✖ four waves: the first needs only the block and the state before it (0.6ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 4
+...
+```
+
+One green and three red. The green is the first test: the list isn't a recipe, which is
+true whatever `waves` does. The reds are the order itself: one wave where there should be
+four (`1 !== 4`), steps that come before what they're made from, and a loop of steps that
+wait for each other going unnoticed.
+
+## The code
+
+**Replace in** `src/import.ts`
+
+```ts
 /**
  * The steps in waves: first every step made only from the block and the state before it,
  * then every step whose inputs the first wave made, and so on. Steps in one wave don't
@@ -168,7 +205,6 @@ export function waves(steps: Step[]): Step[][] {
 }
 ```
 
-`STEPS` is the Gray Paper's list, line for line, with the lesson that built each step.
 `waves` finds the order. `madeByAStep` is everything some step makes. Anything else (the
 block, the old state) counts as ready from the start. Each time round, every step whose
 ingredients are all ready forms the next wave. If a round finds nothing ready while steps
@@ -178,10 +214,25 @@ are left, they're waiting for each other, and no order exists.
 
 ```sh
 npm test
-# prints: four waves: the first needs only the block and the state before it
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (260.5ms)
+...
+✔ the Gray Paper's list isn't a recipe: γ′ comes before η′, which it's made from (0.5ms)
+✔ four waves: the first needs only the block and the state before it (0.5ms)
+✔ every step comes after everything it's made from (0.2ms)
+✔ steps that wait for each other are caught (0.2ms)
+...
+ℹ tests 613
+ℹ suites 0
+ℹ pass 613
+ℹ fail 0
+...
+reported 613 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791741143636
+...
 ```
 
 ## Watch it
@@ -214,9 +265,30 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/plan.ts
-# prints: wave 1:
-# prints: γ′ ← H, τ, E_T, γ, ι, η′, κ′, ψ′  (lesson 8.5)
-# prints: π′ ← E_G, E_P, E_A, E_T, τ, κ′, π, H, 𝐒  (lesson 18)
+```
+
+```text
+wave 1:
+  τ′ ← H  (lesson 4.6)
+  β_H† ← H, β_H  (lesson 9.2)
+  η′ ← H, τ, η  (lesson 8.1)
+  κ′ ← H, τ, κ, γ  (lesson 8.2)
+  λ′ ← H, τ, λ, κ  (lesson 8.2)
+  ψ′ ← E_D, ψ  (lesson 10.1, 10.2)
+  ρ† ← E_D, ρ  (lesson 10.3)
+wave 2:
+  γ′ ← H, τ, E_T, γ, ι, η′, κ′, ψ′  (lesson 8.5)
+  ρ‡ ← E_A, ρ†  (lesson 11.2)
+  𝐑* ← E_A, ρ†  (lesson 11.1, 17.2)
+wave 3:
+  ρ′ ← E_G, ρ‡, κ, τ′  (lesson 12.3)
+  ω′, ξ′, δ‡, χ′, ι′, ϕ′, θ′, 𝐒 ← 𝐑*, ω, ξ, δ, χ, ι, ϕ, τ, τ′  (lesson 17)
+wave 4:
+  β_H′ ← H, E_G, β_H†, θ′  (lesson 9.2)
+  δ′ ← E_P, δ‡, τ′  (lesson 14.1)
+  α′ ← H, E_G, ϕ′, α  (lesson 13.1)
+  π′ ← E_G, E_P, E_A, E_T, τ, κ′, π, H, 𝐒  (lesson 18)
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=plan-1791741154262
 ```
 
 That's the map of your client: every step of a block, in four waves, with the lesson that
@@ -230,7 +302,7 @@ The next lessons of this part run real blocks through these waves and compare th
 state after each one with the official block-import traces. One step can't run on a real
 block yet: η′ mixes in randomness that only the block's header can give, the output of
 its entropy signature H_V, a Bandersnatch VRF signature ([lesson 8.1](../08-safrole/01-stirring-the-entropy.md) took that output
-ready-made from the test vectors). That's the cryptography Part 8 left for later.
+ready-made from the test vectors). That's the cryptography [Part 8](../08-safrole/index.md) left for later.
 
 <details>
 <summary>lasair: one long function, in <code>conformance/trace_runner.ml</code></summary>
@@ -259,4 +331,5 @@ still needs for η′.
 ## What you have
 
 The plan of a block import: every step the Gray Paper lists, what it's made from, the
-order to run them in, and where you built each one.
+order to run them in, and where you built each one. Running real blocks through it is the
+next step for this part, as *What's next* above describes.
