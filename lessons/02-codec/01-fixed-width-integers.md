@@ -58,14 +58,7 @@ test("decoding reads the bytes back", () => {
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-Red, as planned: `src/codec/numbers.ts` doesn't exist yet.
+A stub to make the tests run, wrong on purpose: every number comes out as zeros.
 
 **New file** `src/codec/numbers.ts`
 
@@ -74,6 +67,53 @@ Red, as planned: `src/codec/numbers.ts` doesn't exist yet.
 
 import type { Bytes } from "../bytes.ts";
 
+/** ℰ_l(x): x in exactly l bytes, least significant first. */
+export function encodeFixed(x: bigint, l: number): Bytes {
+  return new Uint8Array(l);
+}
+
+/** The inverse of ℰ_l: the bytes as an unsigned little-endian integer. */
+export function decodeFixed(bytes: Bytes): bigint {
+  return 0n;
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+ℹ tests 9
+ℹ suites 0
+ℹ pass 7
+ℹ fail 2
+...
+test at test/numbers.test.ts:6:1
+✖ ℰ_l writes the least significant byte first (1.2ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+    Uint8Array(2) [
+  +   0,
+  +   0
+  -   199,
+  -   18
+    ]
+
+      at TestContext.<anonymous> (…/client/test/numbers.test.ts:7:10)
+...
+```
+
+Comparing two byte arrays, `assert.deepEqual` shows a diff: lines with `+` are what your
+code gave (*actual*), lines with `-` what the test expected. Your stub wrote 0 and 0; the
+test wanted 199 and 18, which are `c7` and `12`: 4807, least significant byte first.
+
+**Replace in** `src/codec/numbers.ts`
+
+```ts
 /** ℰ_l(x): x in exactly l bytes, least significant first. */
 export function encodeFixed(x: bigint, l: number): Bytes {
   const bytes = new Uint8Array(l);
@@ -101,9 +141,21 @@ at the last, most significant byte and shift each one in.
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ ℰ_l writes the least significant byte first (2.9ms)
+✔ decoding reads the bytes back (0.8ms)
+...
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+...
+reported 9 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726348334
+...
 ```
 
 Your client can now write numbers the way JAM does. Nine tests and counting.
@@ -130,5 +182,12 @@ prefers recursion), `Int64.logand v 0xFFL` is `v & 0xff`, and `shift_right_logic
 is `>>>`, the shift that treats the value as unsigned.
 
 </details>
+
+## What you have
+
+ℰ_l both ways: any whole number in exactly l bytes, least significant first, and back,
+exact up to 64 bits. A fixed width spends all l bytes even on a tiny number, though.
+[Lesson 2.2](./02-compact-naturals.md) adds JAM's other way to write a number: one byte
+when it's small, more only when it must.
 
 Next: [2.2 Compact naturals](./02-compact-naturals.md)

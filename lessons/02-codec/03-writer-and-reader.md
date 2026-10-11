@@ -58,8 +58,22 @@ Three values in, eight bytes out, three values back. `c712` is 4,807 ([lesson 2.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/codec/reader.ts' imported from …/client/test/writer-reader.test.ts
+...
+✖ test/writer-reader.test.ts (121.1ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 1
+...
+```
+
+Red: the files the test imports don't exist yet. (No stub this time: a stub Writer and
+Reader would be nearly as long as the real ones.)
 
 ## The Writer
 
@@ -140,17 +154,35 @@ export class Reader {
 }
 ```
 
-The whole trick is `#at`. Every read starts there and moves it along, so nobody calling
-the Reader ever counts a byte again. (`slice` hands back a copy, so what you read can't
+The whole trick is `#at`:
+
+```ts
+  #at = 0; // where the next read starts
+    const out = this.#bytes.slice(this.#at, this.#at + n);
+    this.#at += n;
+```
+
+Every read starts at `#at` and moves it along, so nobody calling the Reader ever counts a
+byte again. (`slice` hands back a copy, so what you read can't
 change under your feet if someone reuses the input.)
 
 **Run**
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ a reader reads back what a writer wrote, in the same order (1.5ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+...
+reported 12 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726351783
+...
 ```
 
 <details>
@@ -168,5 +200,12 @@ let (context, sz) = decode_refinement_context bs !pos in pos := !pos + sz;
 inside itself, so no caller can forget to add a size.
 
 </details>
+
+## What you have
+
+A Writer that collects an encoding piece by piece, and a Reader that walks back through
+it, keeping its own place. Each value still needs its own two calls, one to write and
+one to read, kept in step by hand. [Lesson 2.4](./04-codecs.md) pairs them up, so one
+description of a value does both.
 
 Next: [2.4 Codecs](./04-codecs.md)

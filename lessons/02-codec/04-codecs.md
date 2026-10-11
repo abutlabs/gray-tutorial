@@ -186,9 +186,22 @@ test("a hash is 32 bytes as they are; a blob has its length in front", () => {
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ integers encode as ℰ_l and ℰ (0.6ms)
+✔ from the vectors' JSON: u32s stay numbers, u64s become bigints (0.1ms)
+✔ a hash is 32 bytes as they are; a blob has its length in front (1.2ms)
+...
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+...
+reported 15 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726352348
+...
 ```
 
 This time the tests come after the code: the earlier lessons already tested the
@@ -205,5 +218,12 @@ instead: one field list per structure, so encoder and decoder can't disagree abo
 order.
 
 </details>
+
+## What you have
+
+A `Codec`: one description of a value that both encodes and decodes it, for every
+integer width and for blobs. JAM's structures are made of these, in lists and in records
+of named fields. [Lesson 2.5](./05-sequences-and-records.md) builds those two, and with
+them, any JAM structure.
 
 Next: [2.5 Sequences and records](./05-sequences-and-records.md)

@@ -81,14 +81,47 @@ Check 128 by hand. It's at least 2^7 and below 2^14, so l = 1. The first byte is
 2^8 − 2^7 + ⌊128 / 2^8⌋ = 128 + 0 = `0x80`, then ℰ₁(128 mod 256) = `0x80`. Together:
 `0x8080`. You just did the Gray Paper's arithmetic in your head.
 
+The tests import two names `numbers.ts` doesn't have yet. Stubs again, so the tests run
+and fail on the rule:
+
+**Add to** `src/codec/numbers.ts`
+
+```ts
+/** ℰ(x): x below 2^64 in 1 to 9 bytes; the first byte says how many follow. */
+export function encodeNatural(x: bigint): Bytes {
+  return new Uint8Array(0);
+}
+
+/** The natural encoded at bytes[offset], and how many bytes it took. */
+export function decodeNatural(bytes: Bytes, offset = 0): { value: bigint; length: number } {
+  return { value: 0n, length: 0 };
+}
+```
+
 **Run, expect it to fail**
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
 
-The test file exists this time, so Node complains about the *names* it imports instead.
+```text
+...
+ℹ tests 11
+ℹ suites 0
+ℹ pass 9
+ℹ fail 2
+...
+test at test/numbers.test.ts:24:1
+✖ ℰ, the compact natural, at different lengths (0.6ms)
+  AssertionError [ERR_ASSERTION]: ℰ(0)
+
+  '0x' !== '0x00'
+...
+```
+
+Both new tests are red, and the first failure carries a label: `ℰ(0)`, the third argument
+to `assert.equal`. The test checks five numbers in a loop, and the label says which one
+it was on. Here the very first, 0: the stub gave no bytes at all.
 
 ## The code
 
@@ -112,7 +145,7 @@ export function concatBytes(...parts: Bytes[]): Bytes {
 
 One array big enough for every part, then each part copied in after the last.
 
-**Add to** `src/codec/numbers.ts`
+**Replace in** `src/codec/numbers.ts`
 
 ```ts
 import { concatBytes } from "../bytes.ts";
@@ -153,7 +186,16 @@ and returns the `length` so the caller knows where the next value starts.
 
 ```sh
 npm test
-# fails with: ℰ(128)
+```
+
+```text
+...
+test at test/numbers.test.ts:24:1
+✖ ℰ, the compact natural, at different lengths (0.8ms)
+  AssertionError [ERR_ASSERTION]: ℰ(128)
+
+  '0x80' !== '0x8080'
+...
 ```
 
 ## Bug hunt
@@ -162,9 +204,8 @@ Red, with all the code in place. (Yes: your third planted bug.) This one hides a
 edge of a range, where bugs like to live. Your tools:
 
 1. **The test output.** One test failed, *ℰ, the compact natural, at different lengths*,
-   with `ℰ(128)` and `'0x80' !== '0x8080'`. That `ℰ(128)` is the test's label: the third
-   argument to `assert.equal`, there for exactly this moment. The test checks five
-   numbers in a loop, and the label tells you which one broke. 0 and 127 passed (they
+   with `ℰ(128)` and `'0x80' !== '0x8080'`. The label tells you which of the five
+   numbers broke. 0 and 127 passed (they
    come first, and the loop stops at the first failure).
 2. **The dashboard.** *Tests failed* says 1, and *Test results* has the `FAIL` line, label
    and all.
@@ -199,9 +240,21 @@ export function encodeNatural(x: bigint): Bytes {
 
 ```sh
 npm test
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ ℰ, the compact natural, at different lengths (0.6ms)
+✔ decodeNatural can start in the middle of the bytes (0.1ms)
+...
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+...
+reported 11 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726350442
+...
 ```
 
 Green. Your client now writes numbers the way JAM likes them: small when small. And when
@@ -240,5 +293,12 @@ Same dance: count the leading ones, mask off the top bits, glue them above the r
 returns a pair, `(value, bytes_consumed)`, where yours returns an object.
 
 </details>
+
+## What you have
+
+ℰ both ways: any natural below 2^64 in one to nine bytes, its first byte saying how many
+follow, read back from anywhere in a row of bytes. Two encodings, and a JAM structure
+mixes them, field after field. [Lesson 2.3](./03-writer-and-reader.md) builds the two
+helpers that keep track of where you are in the bytes.
 
 Next: [2.3 Writer and Reader](./03-writer-and-reader.md)
