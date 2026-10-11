@@ -46,13 +46,7 @@ And the root, M, of some entries:
 Three keys starting `0x01` (`0000 0001`), `0x40` (`0100 0000`) and `0xff`
 (`1111 1111`) make this trie:
 
-```
-                root (branch)
-              0 /          \ 1
-         branch            leaf 0xff…
-        0 /    \ 1
-  leaf 0x01…   leaf 0x40…
-```
+![The trie of the keys 0x01, 0x40 and 0xff. The root is a branch. Its 1 side is the leaf for 0xff, the only key whose first bit is 1. Its 0 side is another branch, whose 0 side is the leaf for 0x01 (first bits 00) and whose 1 side is the leaf for 0x40 (first bits 01). A branch holds both sides' hashes, and the root is the hash of the top branch.](./images/01-state-trie.svg)
 
 `0xff` is alone on the 1 side, so it becomes a leaf right away. The other two need a
 second bit to part ways.
