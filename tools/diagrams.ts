@@ -227,10 +227,77 @@ ${parts.join("\n")}
 `;
 }
 
+/** Lesson 7.2's shuffle by hand (GP App. F): a b c d with the numbers 1 1 0 0, step by step. */
+export function shuffleSteps(): string {
+  const CELL = 40, PITCH = 46, LEFT = 128, PICKED = 384, ROW = 74, TOP = 58;
+  const left = ["a", "b", "c", "d"];
+  const numbers = [1, 1, 0, 0];
+  const picked: string[] = [];
+  const parts: string[] = [
+    `<text class="row" x="${LEFT}" y="22">left</text>`,
+    `<text class="row" x="${PICKED}" y="22">picked</text>`,
+  ];
+  numbers.forEach((n, step) => {
+    const y = TOP + step * ROW;
+    const l = left.length, at = n % l, last = l - 1;
+    const x = (i: number, from = LEFT) => from + i * PITCH;
+    parts.push(`<text class="row" x="16" y="${y + 22}">${n} mod ${l} = ${at}</text>`);
+    left.forEach((item, i) => {
+      const kind = i === at ? "pick" : i === last ? "last" : "item";
+      parts.push(
+        `<rect class="${kind}" x="${x(i)}" y="${y}" width="${CELL}" height="34" rx="5"/>`,
+        `<text x="${x(i) + CELL / 2}" y="${y + 22}">${item}</text>`,
+      );
+    });
+    if (at !== last) { // the last item moves into the gap the pick leaves
+      const [from, to, top] = [x(last) + CELL / 2, x(at) + CELL / 2, y - 2];
+      parts.push(
+        `<path class="move" d="M ${from} ${top} C ${from} ${top - 24} ${to} ${top - 24} ${to} ${top - 6}"/>`,
+        `<polygon class="tip" points="${to - 4},${top - 8} ${to + 4},${top - 8} ${to},${top}"/>`,
+      );
+    }
+    parts.push(`<text class="small" x="${(x(3) + CELL + PICKED) / 2}" y="${y + 22}">→</text>`);
+    picked.push(left[at]);
+    left[at] = left[last];
+    left.pop();
+    picked.forEach((item, i) => {
+      parts.push(
+        `<rect class="picked" x="${x(i, PICKED)}" y="${y}" width="${CELL}" height="34" rx="5"/>`,
+        `<text x="${x(i, PICKED) + CELL / 2}" y="${y + 22}">${item}</text>`,
+      );
+    });
+  });
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 ${TOP + 4 * ROW - 22}" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">
+<style>
+  text { fill: #3c3c43; text-anchor: middle; }
+  .row { text-anchor: start; font-size: 13px; fill: #3c3c43; }
+  .small { fill: #67676c; }
+  .item { fill: #e8f0fe; stroke: #5b8def; stroke-width: 1.5; }
+  .last { fill: #e8f0fe; stroke: #5b8def; stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .pick { fill: #fdf3e1; stroke: #d39b2a; stroke-width: 2; }
+  .picked { fill: #e6f6ef; stroke: #3fa97a; stroke-width: 1.5; }
+  .move { fill: none; stroke: #c2410c; stroke-width: 1.5; }
+  .tip { fill: #c2410c; }
+  @media (prefers-color-scheme: dark) {
+    text, .row { fill: #dfdfd6; }
+    .small { fill: #a8a8a0; }
+    .item, .last { fill: #1e2a44; stroke: #7aa2f7; }
+    .pick { fill: #3a2e14; stroke: #e0b04a; }
+    .picked { fill: #1b3329; stroke: #4fc08d; }
+    .move { stroke: #ff9a5c; }
+    .tip { fill: #ff9a5c; }
+  }
+</style>
+${parts.join("\n")}
+</svg>
+`;
+}
+
 /** Every diagram: where it goes, and what draws it. */
 export const DIAGRAMS: Record<string, () => string> = {
   "02-codec/images/06-work-item-bytes.svg": workItemBytes,
   "06-state-and-merklization/images/01-state-trie.svg": stateTrie,
+  "07-time-and-shuffling/images/02-shuffle-steps.svg": shuffleSteps,
   "08-safrole/images/04-ticket-contest.svg": ticketContest,
 };
 

@@ -30,6 +30,8 @@ numbers 1, 1, 0, 0:
 
 Result: b, d, a, c.
 
+![The four-letter shuffle from the table, one row per step: the items left, with the pick highlighted and an arrow from the last item into the gap the pick leaves, and on the right the picks so far, ending b, d, a, c.](./images/02-shuffle-steps.svg)
+
 **Q_l(h)** makes the numbers: l of them, from a 32-byte hash h. Hash h together with
 ℰ₄(0), and the 32 bytes that come out are eight 4-byte numbers, read with ℰ₄⁻¹. Hash h
 with ℰ₄(1) for the next eight, and so on. **F(s, h)** is F(s, Q_l(h)): the shuffle as JAM
