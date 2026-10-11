@@ -1,6 +1,6 @@
 # Who guarantees what
 
-Work arrives at JAM as work-packages, and every package needs **guarantors**: validators
+Work arrives at JAM as work-packages, and every package needs *guarantors*: validators
 who run it, sign the resulting report, and put their stake behind it. But which
 validators get which core? If you could pick, you'd pick your friends. So JAM deals them
 out: three validators per core, shuffled with randomness nobody could steer ([lesson
@@ -85,7 +85,6 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { GuaranteesExtrinsic } from "../src/block.ts";
 import { fromHex } from "../src/bytes.ts";
-import type { Bytes } from "../src/bytes.ts";
 import type { Config } from "../src/config.ts";
 import { FULL, TINY } from "../src/config.ts";
 import { assignCores, assignmentFor, guarantorAssignments } from "../src/guarantors.ts";
@@ -93,13 +92,11 @@ import { ValidatorKey } from "../src/state.ts";
 import { vectorFiles, vectorJson } from "./vectors.ts";
 
 test("P: three guarantors per core, and every R slots they all move on one core", () => {
-  const e: Bytes = new Uint8Array(32).fill(7); // any entropy will do
-  const now: number[] = assignCores(TINY, 6, e, 0);
-  const perCore: number[] = [0, 1].map((core) => now.filter((c) => c === core).length);
-  assert.deepEqual(perCore, [3, 3]);
-  const next: number[] = assignCores(TINY, 6, e, 4); // R = 4 slots later, on tiny
-  const movedOn: number[] = now.map((core) => (core + 1) % 2);
-  assert.deepEqual(next, movedOn);
+  const e = new Uint8Array(32).fill(7); // any entropy will do
+  const now = assignCores(TINY, 6, e, 0);
+  assert.deepEqual([0, 1].map((core) => now.filter((c) => c === core).length), [3, 3]);
+  const next = assignCores(TINY, 6, e, 4); // R = 4 slots later, on tiny
+  assert.deepEqual(next, now.map((core) => (core + 1) % 2));
 });
 
 /** A reports test vector: the parts of it this lesson uses. */
@@ -151,8 +148,7 @@ test("every guarantor of every accepted report is assigned to that report's core
 test("a guarantor from another core is caught", () => {
   const vector = vectorJson("stf/reports/tiny/wrong_assignment-1.json") as ReportsVector;
   const [{ core, signers }] = signerCores(TINY, vector);
-  const elsewhere: boolean = signers.some((signer) => signer !== core);
-  assert.ok(elsewhere);
+  assert.ok(signers.some((signer) => signer !== core));
 });
 ```
 

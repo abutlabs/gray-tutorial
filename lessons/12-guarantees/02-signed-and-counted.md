@@ -4,8 +4,15 @@ A guarantee is a promise with signatures on it: "we ran this work, and this is t
 report". This lesson checks that every signature is real: made with the key of the
 validator it names, in the assignment the guarantee answers to. (Whether that validator
 was assigned to the report's core is a check of its own, in [lesson
-12.4](./04-bad-guarantees.md).) Then it writes down who signed: the **reporters**, which the statistics
+12.4](./04-bad-guarantees.md).) Then it writes down who signed: the *reporters*, which the statistics
 ([Part 18](../18-statistics/index.md)) will credit for the work.
+
+## New words
+
+- **Reporters.** 𝐆. Every validator who signed a guarantee in a block, each counted once.
+  *Example:* guarantees signed by 0 and 1, and by 2 and 3: four reporters.
+
+It's in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
@@ -132,13 +139,11 @@ test("every accepted guarantee is signed by its guarantors, and 𝐆 lists them 
       if (vector.output.err) continue;
       const signers: Bytes[] = [];
       for (const { guarantee, assignment } of assigned(config, vector)) {
-        const signed: boolean = guaranteeSigned(guarantee, assignment.keys);
-        assert.ok(signed, name);
+        assert.ok(guaranteeSigned(guarantee, assignment.keys), name);
         signers.push(...signerKeys(guarantee, assignment.keys));
         checked++;
       }
-      const reportersHex: string[] = reporters(signers).map(toHex);
-      assert.deepEqual(reportersHex, vector.output.ok?.reporters, name);
+      assert.deepEqual(reporters(signers).map(toHex), vector.output.ok?.reporters, name);
     }
   }
   assert.equal(checked, 44); // 21 guarantees on tiny, 23 on full
@@ -147,8 +152,7 @@ test("every accepted guarantee is signed by its guarantors, and 𝐆 lists them 
 test("a forged guarantee signature is caught", () => {
   const vector = vectorJson("stf/reports/tiny/bad_signature-1.json") as ReportsVector;
   const [{ guarantee, assignment }] = assigned(TINY, vector);
-  const signed: boolean = guaranteeSigned(guarantee, assignment.keys);
-  assert.equal(signed, false);
+  assert.equal(guaranteeSigned(guarantee, assignment.keys), false);
 });
 ```
 
