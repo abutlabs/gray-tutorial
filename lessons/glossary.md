@@ -307,10 +307,10 @@ vectors come in both. ([4.2](./04-blocks/02-tiny-and-full.md))
 seal. *Example:* `header.slot` says when the block was made. ([4.6](./04-blocks/06-the-header.md))
 
 **Extrinsic.** E. The block's contents from the outside world, in five parts: tickets,
-preimages, guarantees, assurances and disputes. ([4.1](./04-blocks/01-tickets-and-preimages.md))
-A work-item's *extrinsics* are something else: data blobs sent along with the item, for
-refine to read. *Example:* `items.1.extrinsic.0`, its first blob's hash and length.
-([3.1](./03-work-and-reports/01-a-work-package.md))
+preimages, guarantees, assurances and disputes. *Example:* a block's guarantees. A
+work-item's *extrinsics* ([lesson 3.1](./03-work-and-reports/01-a-work-package.md)) are
+something else: data blobs sent along with the item, for refine to read, such as
+`items.1.extrinsic.0`. ([4.1](./04-blocks/01-tickets-and-preimages.md))
 
 **Anchor (of an assurance).** The block an assurance was made on top of; it must be the
 parent of the block carrying it. *Example:* an assurance anchored two blocks back is
@@ -476,7 +476,7 @@ runs in two stages: refine, on a core, and accumulate, on the chain.
 **Refine.** The heavy, off-chain stage: a core runs each work-item's service code on its
 payload and gets a result. ([3.2](./03-work-and-reports/02-work-digests.md))
 
-**Work-digest (work result).** What refining one work-item produced: an output, or an
+**Work digest (work result).** What refining one work-item produced: an output, or an
 error, plus the gas it may use when accumulated. ([3.2](./03-work-and-reports/02-work-digests.md))
 
 **Bundle.** A work-package together with everything needed to refine it: its extrinsics,

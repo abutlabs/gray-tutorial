@@ -1,7 +1,7 @@
 # Work digests
 
 A core has crunched a work item. What does it send back? Not the whole computation:
-a **work digest**, a small summary card that says which service it was for, how it went,
+a *work digest*, a small summary card that says which service it was for, how it went,
 and how hard the core had to work. Every validator will read these cards, so they are
 kept small.
 
@@ -16,8 +16,12 @@ There's one genuinely new idea here: a value that is *either* one thing *or* ano
   `{ ok: Bytes } | { error: WorkError }`.
 - **Tag.** A number in front of an encoded value that says which case follows.
   *Example:* tag 0 is "here comes the output", tag 2 is "it panicked".
+- **Refine and accumulate.** A work-item's two stages. *Refine* runs the service's code on
+  a core, off the chain, and gets a result; *accumulate*, later and on the chain, folds
+  that result into the service's state ([Part 16](../16-host-calls/index.md)). *Example:* refine sums some
+  numbers, and accumulate adds the sum to a total the service keeps.
 
-All three are in the [glossary](../glossary.md).
+All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 

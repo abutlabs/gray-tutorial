@@ -1,7 +1,7 @@
 # A work-report
 
 The package went in (3.1). Each item came back as a digest (3.2). Now the paperwork that
-wraps it all up: the **work-report**, the receipt a core produces for one whole
+wraps it all up: the *work-report*, the receipt a core produces for one whole
 work-package. Validators sign it, pass it around, check it, and finally fold its results
 into the chain. Everything from [Part 3](./index.md) meets here.
 
@@ -21,13 +21,13 @@ All three are in the [glossary](../glossary.md).
 
 §11 (*Work Report*) says a report is:
 
-- the **availability specification**: how to find the package's data again later;
-- the refinement **context** ([lesson 2.6](../02-codec/06-the-first-test-vectors.md)) and the **core** that did the work;
-- the **authorizer**'s hash, the gas it used, and its output (the vectors call that
+- the *availability specification*: how to find the package's data again later;
+- the refinement *context* ([lesson 2.6](../02-codec/06-the-first-test-vectors.md)) and the *core* that did the work;
+- the *authorizer*'s hash, the gas it used, and its output (the vectors call that
   output `auth_output`);
-- a **segment-root lookup**: for work-packages this one imported segments from, by
+- a *segment-root lookup*: for work-packages this one imported segments from, by
   package hash, the root of the segments they exported;
-- the work **digests**, one per item ([lesson 3.2](./02-work-digests.md)).
+- the work *digests*, one per item ([lesson 3.2](./02-work-digests.md)).
 
 And the availability specification (§11, *Availability*) is six things: the package's
 hash, the length of its *bundle* (the package plus everything needed to re-run it), an

@@ -1,13 +1,15 @@
 # A work-package
 
 In [Part 2](../02-codec/index.md) you encoded a single work item. Nobody sends a work item on its own, though.
-Items travel in a **work-package**: a parcel of up to sixteen jobs, addressed to one of
+Items travel in a *work-package*: a parcel of up to sixteen jobs, addressed to one of
 JAM's cores, with a permission slip stapled to the front.
 
 ## New words
 
-- **Work-package.** Up to 16 work items for one core, packed together with what's needed
-  to let them in. *Example:* a package of one item, for service 42.
+- **Work-item and work-package.** A work-item is one job for one service: its input (the
+  *payload*) and its gas limits. A work-package is up to 16 of them for one core, packed
+  together with what's needed to let them in. *Example:* a package of one item, for
+  service 42.
 - **Authorizer.** A small program that decides whether a package may use a core at all.
   *Example:* a package names its authorizer by a service and a code hash.
 - **Refinement context.** The chain as a package saw it when it was built: a recent block
@@ -23,7 +25,7 @@ All three are in the [glossary](../glossary.md).
 - **items**: the work items, 1 to 16 of them (the Gray Paper calls the limit I = 16);
 - **context**: the refinement context from [lesson 2.6](../02-codec/06-the-first-test-vectors.md), the chain as the package saw it;
 - and the permission slip, in four parts. Each core only accepts packages that a small
-  program called an **authorizer** approves. The package says where that program lives
+  program called an *authorizer* approves. The package says where that program lives
   (`auth_code_host`, a service, and `auth_code_hash`, which code in it), hands it a token
   (`authorization`) and its settings (`authorizer_config`).
 
