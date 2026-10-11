@@ -8,6 +8,9 @@ good. This lesson is that clerk.
 
 ## New words
 
+- **Judgement.** One validator's signed vote, valid or invalid, on a work-report. The
+  state keeps the verdicts' results as its past judgements, ψ. *Example:* a verdict on
+  tiny carries 5 judgements.
 - **Judges.** The validators whose votes a verdict carries: this epoch's (κ) if the
   verdict's age is this epoch, last epoch's (λ) if it's the one before. *Example:* on
   tiny, 6 judges, so a verdict needs ⌊2·6/3⌋ + 1 = 5 votes.
@@ -17,7 +20,7 @@ good. This lesson is that clerk.
   anything: all of them (good), none (bad), or a third of the judges (wonky).
   *Example:* on tiny, 5, 0 or 2.
 
-All three are in the [glossary](../glossary.md).
+All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 

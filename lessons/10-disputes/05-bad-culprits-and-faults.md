@@ -11,8 +11,8 @@ disputes now agree with every disputes vector.
 
 - **Evidence.** What makes an accusation stick: the accused's own signature. *Example:* a
   culprit carries the guarantee its validator signed; a fault, the vote.
-- **Offenders (ψ_O).** The keys of every validator found guilty so far. Nobody is accused
-  twice. *Example:* a culprit naming a key already in ψ_O sinks the block.
+- **Offender (ψ_O).** A validator found guilty; ψ_O holds the keys of every one so far.
+  Nobody is accused twice. *Example:* a culprit naming a key already in ψ_O sinks the block.
 - **If and only if (⇔).** The Gray Paper's ⇔ says two things are true together or false
   together. *Example:* "the report is bad ⇔ the fault voted valid".
 
