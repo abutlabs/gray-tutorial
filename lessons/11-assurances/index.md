@@ -9,6 +9,13 @@ the rules.
 By the end of this part your client counts assurances, makes reports available, clears
 the ones that waited too long, and handles every assurances vector, tiny and full.
 
+**Builds on** [Part 4 · Blocks](../04-blocks/index.md) and [Part 10 ·
+Disputes](../10-disputes/index.md), and on the foundations every part uses, [Parts 0 to
+2](../index.md#lessons).
+
+**Starting here?** At the repo root, `npm run catch-up -- 10.5` makes your client the one
+this part starts from; [How to read it](../index.md#how-to-read-it) says more.
+
 - [11.1 Available](./01-available.md)
 - [11.2 Timeouts](./02-timeouts.md)
 - [11.3 Bad assurances](./03-bad-assurances.md)

@@ -9,6 +9,9 @@ every other client's.
 By the end of this part your client encodes and decodes its first two JAM structures
 and agrees with the official test vectors, byte for byte.
 
+**Starting here?** At the repo root, `npm run catch-up -- 1.2` makes your client the one
+this part starts from; [How to read it](../index.md#how-to-read-it) says more.
+
 - [2.1 Fixed-width integers](./01-fixed-width-integers.md)
 - [2.2 Compact naturals](./02-compact-naturals.md)
 - [2.3 Writer and Reader](./03-writer-and-reader.md)

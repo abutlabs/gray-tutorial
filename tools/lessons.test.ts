@@ -24,6 +24,39 @@ test("the home page and each part's page link every lesson, titled as the lesson
   }
 });
 
+// A part's page says what it builds on, so a reader starting there knows what to read
+// first: the earlier parts whose files its code imports, besides Parts 0 to 2, which every
+// part uses. And how to start there, as the Rust Book's introduction lets you skip: catch up
+// to the last lesson before it.
+test("each part's page says what it builds on and how to start there", () => {
+  const madeIn = new Map<string, number>(); // a client file, and the part that made it
+  for (const [i, p] of parts.entries()) {
+    const used = new Set<number>();
+    for (const l of p.lessons) {
+      for (const s of l.steps) {
+        if (s.kind !== "file") continue;
+        if (!madeIn.has(s.path)) madeIn.set(s.path, p.number);
+        for (const [, from] of s.code.matchAll(/from "(\.{1,2}\/[^"]+)"/g)) {
+          const part = madeIn.get(join(dirname(s.path), from));
+          if (part !== undefined && part > 2 && part !== p.number) used.add(part);
+        }
+      }
+    }
+    const index = readFileSync(join(LESSONS, p.dir, "index.md"), "utf8");
+    if (i > 0) {
+      const before = parts[i - 1].lessons.at(-1)!.id;
+      assert.ok(index.includes(`\`npm run catch-up -- ${before}\``), `${p.dir}/index.md starts you at ${before}`);
+    }
+    if (p.number < 3) continue;
+    const buildsOn = /^\*\*Builds on\*\*[\s\S]*?\n\n/m.exec(index)?.[0];
+    assert.ok(buildsOn, `${p.dir}/index.md has a "**Builds on**" paragraph`);
+    const linked = [...buildsOn.matchAll(/\[([^\]]+)\]\(\.\.\/(\d+-[^/)]+)\/index\.md\)/g)]
+      .map(([, text, dir]) => `${dir}: ${text.replace(/\s+/g, " ")}`);
+    const expected = parts.filter((q) => used.has(q.number)).map((q) => `${q.dir}: ${q.title}`);
+    assert.deepEqual(linked, expected, `${p.dir}/index.md builds on the parts its code imports`);
+  }
+});
+
 test("each lesson ends by pointing to the next one", () => {
   const all = parts.flatMap((p) => p.lessons);
   for (const [i, l] of all.slice(0, -1).entries()) {

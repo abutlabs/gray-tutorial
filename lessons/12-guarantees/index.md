@@ -7,6 +7,17 @@ assignments, checks the guarantees' signatures, and puts new reports on free cor
 By the end of this part your client assigns guarantors, checks guarantees and reports,
 and accepts or refuses every reports vector exactly as it should.
 
+**Builds on** [Part 4 · Blocks](../04-blocks/index.md), [Part 5 · Hashing and
+signatures](../05-hashing-and-signatures/index.md), [Part 6 · State and
+Merklization](../06-state-and-merklization/index.md), [Part 7 · Time and
+shuffling](../07-time-and-shuffling/index.md), [Part 8 · Safrole](../08-safrole/index.md),
+[Part 9 · Recent history](../09-recent-history/index.md) and [Part 10 ·
+Disputes](../10-disputes/index.md), and on the foundations every part uses, [Parts 0 to
+2](../index.md#lessons).
+
+**Starting here?** At the repo root, `npm run catch-up -- 11.3` makes your client the one
+this part starts from; [How to read it](../index.md#how-to-read-it) says more.
+
 - [12.1 Who guarantees what](./01-who-guarantees-what.md)
 - [12.2 Signed and counted](./02-signed-and-counted.md)
 - [12.3 Onto the cores](./03-onto-the-cores.md)

@@ -8,6 +8,14 @@ By the end of this part your client has a complete PVM: every instruction, memor
 program's setup ([lesson 15.8](./08-a-real-program.md) puts 15.1 to 15.7 together), host calls as a way out, and
 gas, charged the Gray Paper's way.
 
+**Builds on** [Part 6 · State and Merklization](../06-state-and-merklization/index.md),
+[Part 11 · Assurances](../11-assurances/index.md) and [Part 14 · Services and
+preimages](../14-services/index.md), and on the foundations every part uses, [Parts 0 to
+2](../index.md#lessons).
+
+**Starting here?** At the repo root, `npm run catch-up -- 14.2` makes your client the one
+this part starts from; [How to read it](../index.md#how-to-read-it) says more.
+
 - [15.1 The program blob](./01-the-program-blob.md)
 - [15.2 Instructions](./02-instructions.md)
 - [15.3 The machine](./03-the-machine.md)

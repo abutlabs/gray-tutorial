@@ -8,6 +8,11 @@ comes out, each piece checked against the official vectors.
 By the end of this part your client encodes and decodes a work-package, its digests and
 the work-report that binds them, byte for byte with the official vectors at both sizes.
 
+**Builds on** the foundations alone, [Parts 0 to 2](../index.md#lessons).
+
+**Starting here?** At the repo root, `npm run catch-up -- 2.7` makes your client the one
+this part starts from; [How to read it](../index.md#how-to-read-it) says more.
+
 - [3.1 A work-package](./01-a-work-package.md)
 - [3.2 Work digests](./02-work-digests.md)
 - [3.3 A work-report](./03-a-work-report.md)

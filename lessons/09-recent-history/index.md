@@ -8,6 +8,14 @@ show their work is anchored in a real, recent block. This part builds it.
 By the end of this part your client keeps the chain's short-term memory, the last eight
 blocks, up to date block by block, with the mountain belt of accumulation outputs.
 
+**Builds on** [Part 4 · Blocks](../04-blocks/index.md), [Part 5 · Hashing and
+signatures](../05-hashing-and-signatures/index.md) and [Part 6 · State and
+Merklization](../06-state-and-merklization/index.md), and on the foundations every part
+uses, [Parts 0 to 2](../index.md#lessons).
+
+**Starting here?** At the repo root, `npm run catch-up -- 8.5` makes your client the one
+this part starts from; [How to read it](../index.md#how-to-read-it) says more.
+
 - [9.1 The mountain belt](./01-the-mountain-belt.md)
 - [9.2 Recent blocks](./02-recent-blocks.md)
 

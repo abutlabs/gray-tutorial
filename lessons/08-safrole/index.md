@@ -9,6 +9,15 @@ By the end of this part your client runs Safrole for every block that brings no 
 the whole state after it and both marks for its header, right on every vector it can
 run. Entering tickets needs Bandersnatch, which comes later.
 
+**Builds on** [Part 4 · Blocks](../04-blocks/index.md), [Part 5 · Hashing and
+signatures](../05-hashing-and-signatures/index.md), [Part 6 · State and
+Merklization](../06-state-and-merklization/index.md) and [Part 7 · Time and
+shuffling](../07-time-and-shuffling/index.md), and on the foundations every part uses,
+[Parts 0 to 2](../index.md#lessons).
+
+**Starting here?** At the repo root, `npm run catch-up -- 7.2` makes your client the one
+this part starts from; [How to read it](../index.md#how-to-read-it) says more.
+
 - [8.1 Stirring the entropy](./01-stirring-the-entropy.md)
 - [8.2 Rotating the validators](./02-rotating-the-validators.md)
 - [8.3 The fallback sealers](./03-the-fallback-sealers.md)

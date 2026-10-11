@@ -64,6 +64,10 @@ readable size instead of blowing it up; a phone still shrinks it to fit.
 (`02-codec/03-...` is lesson 2.3). Each part folder has an `index.md` whose `# ` title is
 the part's name and which links its lessons. `lessons/index.md` links every part and
 lesson. `npm test` checks those links, and that each lesson ends with a link to the next.
+A part's page also says where you'll be at its end (*By the end of this part...*), what it
+builds on (**Builds on**: the earlier parts whose files its code imports, besides Parts 0
+to 2), and how to start there (**Starting here?**: `npm run catch-up --` the lesson before
+it). `npm test` checks the last two against the code, so they stay true.
 
 **Addresses stay.** The site is public, so a page's address keeps working once it's
 published, as the Rust Book keeps its old chapters' addresses. A new page: add its address

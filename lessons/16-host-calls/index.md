@@ -9,6 +9,14 @@ the test vectors down to the last unit of gas.
 By the end of this part your client answers the host calls of a service accumulating,
 and thirteen official accumulate vectors pass.
 
+**Builds on** [Part 4 · Blocks](../04-blocks/index.md), [Part 5 · Hashing and
+signatures](../05-hashing-and-signatures/index.md), [Part 14 · Services and
+preimages](../14-services/index.md) and [Part 15 · The PVM](../15-the-pvm/index.md), and
+on the foundations every part uses, [Parts 0 to 2](../index.md#lessons).
+
+**Starting here?** At the repo root, `npm run catch-up -- 15.11` makes your client the one
+this part starts from; [How to read it](../index.md#how-to-read-it) says more.
+
 - [16.1 Calling the host](./01-calling-the-host.md)
 - [16.2 Fetch](./02-fetch.md)
 - [16.3 Growing the heap](./03-growing-the-heap.md)

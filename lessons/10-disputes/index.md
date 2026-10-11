@@ -3,10 +3,18 @@
 What happens when a guaranteed work-report turns out to be wrong? A trial, held in the
 blocks themselves: validators vote, the verdict is recorded forever, and whoever vouched
 for a bad report, or voted against the truth, is named an offender and loses their seat.
-This part makes your client the court.
 
 By the end of this part your client is the court: every verdict, culprit and fault
 checked, and every disputes vector accepted or refused just as it should be.
+
+**Builds on** [Part 4 · Blocks](../04-blocks/index.md), [Part 5 · Hashing and
+signatures](../05-hashing-and-signatures/index.md), [Part 6 · State and
+Merklization](../06-state-and-merklization/index.md) and [Part 7 · Time and
+shuffling](../07-time-and-shuffling/index.md), and on the foundations every part uses,
+[Parts 0 to 2](../index.md#lessons).
+
+**Starting here?** At the repo root, `npm run catch-up -- 9.2` makes your client the one
+this part starts from; [How to read it](../index.md#how-to-read-it) says more.
 
 - [10.1 Votes and verdicts](./01-votes-and-verdicts.md)
 - [10.2 Culprits and faults](./02-culprits-and-faults.md)
