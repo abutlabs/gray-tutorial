@@ -1,10 +1,10 @@
 # Clearing the cores
 
 A trial has one more consequence, and it's the most practical one. Remember the cores
-from Part 3: each one can hold a single guaranteed work-report while the validators make
+from [Part 3](../03-work-and-reports/index.md): each one can hold a single guaranteed work-report while the validators make
 sure its data is available. If that report has just been judged bad, or wonky, it has no
 business sitting there. Out it goes, freeing the core for honest work. This lesson
-finishes Part 10.
+finishes what an honest block's disputes do to the state.
 
 ## What the Gray Paper says
 
@@ -18,8 +18,8 @@ is it? The verdict names a report by its hash, H(ℰ(report)), the very same has
 [lesson 5.2](../05-hashing-and-signatures/02-the-extrinsic-hash.md) put in the extrinsic hash. So: hash each pending report, and compare.
 
 A good verdict leaves its report where it is. The ‡ is the Gray Paper's mark for
-"partway through the block": the assurances (Part 11) and guarantees (Part 12) change ρ
-again later in the same block.
+"partway through the block": the assurances ([Part 11](../11-assurances/index.md)) and guarantees ([Part 12](../12-guarantees/index.md))
+change ρ again later in the same block.
 
 ## The cores
 
@@ -107,16 +107,54 @@ The vectors only ever clear a core over a *bad* verdict, one core on tiny and on
 341 on full. So the second test borrows a real pending report from them and judges it
 by hand, wonky and then good, to pin down the other two cases.
 
+A stub that takes nothing off:
+
+**Add to** `src/disputes.ts`
+
+```ts
+import type { PendingReport } from "./cores.ts";
+
+export function clearJudged(
+  cores: (PendingReport | null)[],
+  judged: { target: Bytes; outcome: Outcome }[],
+): (PendingReport | null)[] {
+  return cores;
+}
+```
+
 **Run, expect it to fail**
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+✖ ρ†: a report judged bad or wonky is taken off its core (35.0ms)
+✖ ρ†: wonky clears a core too, and good leaves it be (13.8ms)
+...
+ℹ tests 93
+ℹ suites 0
+ℹ pass 91
+ℹ fail 2
+...
+test at test/disputes.test.ts:121:1
+✖ ρ†: a report judged bad or wonky is taken off its core (35.0ms)
+  AssertionError [ERR_ASSERTION]: stf/disputes/tiny/progress_invalidates_avail_assignments-1.json
+  + actual - expected
+  ... Skipped lines
+
+    [
+  -   null,
+...
+```
+
+Red, both tests. Read the first diff: the vector expects core 0 empty (`- null`), and your
+stub left its pending report there.
 
 ## The code
 
-**Add to** `src/disputes.ts`
+**Replace in** `src/disputes.ts`
 
 ```ts
 import { encode } from "./codec/codec.ts";
@@ -144,11 +182,21 @@ A `Set` of the condemned reports' hashes, as hex, then one pass over the cores.
 
 ```sh
 npm test
-# prints: ρ†: a report judged bad or wonky is taken off its core
-# prints: ρ†: wonky clears a core too, and good leaves it be
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ ρ†: a report judged bad or wonky is taken off its core (184.6ms)
+✔ ρ†: wonky clears a core too, and good leaves it be (0.5ms)
+...
+ℹ tests 93
+ℹ suites 0
+ℹ pass 93
+ℹ fail 0
+...
+reported 93 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731896437
+...
 ```
 
 ## Watch it
@@ -206,9 +254,12 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/cores.ts ../vectors/stf/disputes/tiny/progress_invalidates_avail_assignments-1.json
-# prints: was judged bad
-# prints: 1 of 2 cores keep their reports
-# prints: reported to Grafana
+```
+
+```text
+core 0: its report 0xf9076864… was judged bad
+1 of 2 cores keep their reports
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=cores-1791731900567
 ```
 
 Both cores' reports were on trial in this block. Core 0's was judged bad, so it leaves;
@@ -237,8 +288,9 @@ read more than one way, and checking that the readings agree.
 
 ## What you have
 
-Part 10, done: your client holds the whole trial. It checks every vote, files the
+Your client holds the whole trial of an honest block. It checks every vote, files the
 verdicts, names the offenders with real evidence, announces them in the header, and
-clears the condemned reports off the cores.
+clears the condemned reports off the cores. But it believes every verdict it's handed.
+[Lesson 10.4](./04-bad-verdicts.md) teaches it to refuse a broken one.
 
 Next: [10.4 Bad verdicts](./04-bad-verdicts.md)

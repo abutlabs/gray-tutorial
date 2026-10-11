@@ -6,20 +6,34 @@ plus one vote on it, and every vote is signed. The clerk's job: check every sign
 count the votes, and record the verdict, *good*, *bad* or *wonky*, in the state for
 good. This lesson is that clerk.
 
+## New words
+
+- **Judges.** The validators whose votes a verdict carries: this epoch's (κ) if the
+  verdict's age is this epoch, last epoch's (λ) if it's the one before. *Example:* on
+  tiny, 6 judges, so a verdict needs ⌊2·6/3⌋ + 1 = 5 votes.
+- **Verdict age.** The epoch a verdict's votes were cast in. Only this epoch or the last
+  one will do. *Example:* in epoch 3, ages 3 and 2 are fine, age 1 isn't.
+- **Vote split.** How many of a verdict's votes say "valid". Only three splits mean
+  anything: all of them (good), none (bad), or a third of the judges (wonky).
+  *Example:* on tiny, 5, 0 or 2.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §10 (*Disputes, Verdicts and Judgments*).
 
-**Who votes.** A verdict's `age` names an epoch: this one or the one before. Its judges
-are κ, the current validators, if the age is the current epoch, and λ, the previous
-ones, otherwise. That rule is K.
+**Who votes.** A verdict's `age`, its *verdict age*, names an epoch: this one or the one
+before. Its *judges* are κ, the current validators, if the age is the current epoch, and
+λ, the previous ones, otherwise. That rule is K.
 
 **What a vote signs.** Ed25519 ([lesson 5.3](../05-hashing-and-signatures/03-signatures.md)), over a prefix and the report's hash:
 `$jam_valid` for "this report is good", `$jam_invalid` for "it isn't". The `$` is
 notation, as always: the bytes are `jam_valid` and `jam_invalid`. The prefix is part of
 the message, so a "valid" signature can't be passed off as an "invalid" one.
 
-**What it decides.** Count the "valid" votes, t, out of the judges' number, |K|:
+**What it decides.** Count the "valid" votes, t, out of the judges' number, |K|. That
+count is the *vote split*:
 
 | t | The report is |
 | --- | --- |
@@ -128,8 +142,24 @@ about three seconds to about twelve.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/disputes.ts' imported from …/client/test/disputes.test.ts
+...
+✖ test/disputes.test.ts (220.3ms)
+...
+ℹ tests 85
+ℹ suites 0
+ℹ pass 84
+ℹ fail 1
+...
+```
+
+Red before a single test runs: `src/disputes.ts` doesn't exist yet. It's many things at
+once (ψ's record, the vote message, K, the signature check, V and the filing), so there's
+no one function to stub. The next Run turns all four tests green together.
 
 ## The code
 
@@ -214,29 +244,49 @@ export function recordVerdicts(
 }
 ```
 
-`PastJudgements` is ψ as a `record`, so it's C(5)'s codec too. `outcome` takes the
-*judges'* number, not always V: a verdict from the previous epoch is counted against
-λ's size. `recordVerdicts` copies ψ with `{ ...before }`, then rebuilds each set, sorted.
+`PastJudgements` is ψ as a `record`, so it's C(5)'s codec too. `outcome` is the table,
+row by row:
+
+```ts
+  if (valid === Math.floor((2 * judges) / 3) + 1) return "good";
+  if (valid === 0) return "bad";
+  return "wonky"; // ⌊judges / 3⌋ said "valid": no side won
+```
+
+It takes the *judges'* number, not always V: a verdict from the previous epoch is counted
+against λ's size. `recordVerdicts` copies ψ with `{ ...before }`, then rebuilds each set, sorted.
 The sort compares hex strings, which sort in the same order as the bytes they spell.
 
 **Run**
 
 ```sh
 npm test
-# prints: every vote is signed by its judge (tiny: full verdicts are 683 votes each)
-# prints: each judged report joins the set of its verdict's outcome
-# prints: a forged vote is caught
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ V: with 6 judges, 5 valid votes is good, 0 is bad, 2 is wonky (0.6ms)
+✔ every vote is signed by its judge (tiny: full verdicts are 683 votes each) (321.8ms)
+✔ each judged report joins the set of its verdict's outcome (385.9ms)
+✔ a forged vote is caught (8.9ms)
+...
+ℹ tests 88
+ℹ suites 0
+ℹ pass 88
+ℹ fail 0
+...
+reported 88 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731877727
+...
 ```
 
 21 accepted blocks, every verdict recorded where it belongs: 10 on tiny, 11 on full.
 
-A word on that last row of the table. `outcome` says *wonky* for any count that isn't
-all or nothing, but the Gray Paper only allows exactly ⌊|K|/3⌋. A block whose votes
-split any other way must be rejected. That's a check for the hardening pass, and lasair
-has a story about it (below).
+> [!NOTE]
+> **The simple road, for now.** `outcome` says *wonky* for any count that isn't all or
+> nothing, but the Gray Paper only allows exactly ⌊|K|/3⌋. A block whose votes split any
+> other way must be rejected. [Lesson 10.4](./04-bad-verdicts.md) adds that check, and lasair has a story about
+> it (below).
 
 ## Watch it
 
@@ -282,10 +332,14 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/verdicts.ts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
-# prints: 5 of 5 say valid, judged by κ
-# prints: The report is good.
-# prints: The report is bad.
-# prints: reported to Grafana
+```
+
+```text
+report 0x11da6d1f…: 5 of 5 say valid, judged by κ
+  every vote signed by its judge: true. The report is good.
+report 0x7b0aa173…: 0 of 5 say valid, judged by κ
+  every vote signed by its judge: true. The report is bad.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=verdicts-1791731881564
 ```
 
 Two trials in one block: one report cleared, one condemned. Now try
@@ -319,6 +373,7 @@ comment tells why it's there. An older version treated *any* split as wonky, lik
 ## What you have
 
 A court clerk: every vote's signature checked against the right judges, every verdict
-counted and filed in ψ.
+counted and filed in ψ. A verdict is only half a trial, though: [lesson 10.2](./02-culprits-and-faults.md) names
+the validators who were on the wrong side of it.
 
 Next: [10.2 Culprits and faults](./02-culprits-and-faults.md)

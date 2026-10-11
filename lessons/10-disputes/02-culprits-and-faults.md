@@ -26,8 +26,9 @@ validator set. This lesson checks the evidence and keeps the record.
 
 There are more rules about *which* offenders may appear: a culprit's report must really
 be bad, a fault's vote must really contradict the verdict, an offender must be a current
-or previous validator and not already punished. Each one rejects a block. They're the
-base rule's fine print, and they go to the hardening pass.
+or previous validator and not already punished. Each one rejects a block. For now, all
+you need is the base rule: check the evidence, keep the record. [Lesson 10.5](./05-bad-culprits-and-faults.md) adds the
+fine print.
 
 ## The tests
 
@@ -88,8 +89,23 @@ test("the offenders mark names this block's offenders, and ψ′_O keeps them al
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/disputes.ts' does not provide an export named 'culpritSigned'
+...
+✖ test/disputes.test.ts (250.2ms)
+...
+ℹ tests 85
+ℹ suites 0
+ℹ pass 84
+ℹ fail 1
+...
+```
+
+The test file asks `src/disputes.ts` for four functions it doesn't have yet. They come as
+one snippet, so the red is the missing names, not a wrong answer.
 
 ## The code
 
@@ -126,19 +142,34 @@ export function recordOffenders(
 ```
 
 `faultSigned` reuses [lesson 10.1](./01-votes-and-verdicts.md)'s `voteMessage`: a fault's evidence *is* a vote, just
-one on the losing side. And `recordOffenders` reuses `sorted`, since ψ_O is a set like
+one on the losing side.
+
+```ts
+  return verifyEd25519(fault.key, voteMessage(fault.vote, fault.target), fault.signature);
+```
+ And `recordOffenders` reuses `sorted`, since ψ_O is a set like
 the other three.
 
 **Run**
 
 ```sh
 npm test
-# prints: every culprit's guarantee and every fault's vote is really theirs
-# prints: a forged guarantee is caught
-# prints: the offenders mark names this block's offenders, and ψ′_O keeps them all
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ every culprit's guarantee and every fault's vote is really theirs (234.4ms)
+✔ a forged guarantee is caught (3.0ms)
+✔ the offenders mark names this block's offenders, and ψ′_O keeps them all (152.3ms)
+...
+ℹ tests 91
+ℹ suites 0
+ℹ pass 91
+ℹ fail 0
+...
+reported 91 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731886863
+...
 ```
 
 28 offenders named across the accepted vectors, 14 at each size, every one with real
@@ -188,9 +219,17 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/offenders.ts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
-# prints: culprit 0xad93247b…: guaranteed report 0x7b0aa173…
-# prints: fault 0x4418fb8c…: voted invalid on report 0x11da6d1f…
-# prints: reported to Grafana
+```
+
+```text
+culprit 0xad93247b…: guaranteed report 0x7b0aa173…
+  the guarantee is really theirs: true
+culprit 0xcab2b9ff…: guaranteed report 0x7b0aa173…
+  the guarantee is really theirs: true
+fault 0x4418fb8c…: voted invalid on report 0x11da6d1f…
+  the vote is really theirs: true
+offenders mark: 0xad93247b…, 0xcab2b9ff…, 0x4418fb8c…
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=offenders-1791731890899
 ```
 
 Put it next to [lesson 10.1](./01-votes-and-verdicts.md)'s `bin/verdicts.ts` on the same vector, and the whole trial
@@ -228,6 +267,7 @@ size between epochs. That's why your `outcome` takes the judges' count.
 ## What you have
 
 The consequences of a trial: offenders named with evidence that checks out, kept in ψ_O,
-and announced in the block's header.
+and announced in the block's header. One consequence is left, and it touches the work
+itself: [lesson 10.3](./03-clearing-the-cores.md) takes condemned reports off their cores.
 
 Next: [10.3 Clearing the cores](./03-clearing-the-cores.md)

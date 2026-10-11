@@ -6,18 +6,8 @@ signed, a report that was judged long ago. Any of them sinks the whole block. Th
 writes down the rules a verdict must keep, and checks them against every disputes test
 vector. [Lesson 10.5](./05-bad-culprits-and-faults.md) does the same for culprits and faults.
 
-## New words
-
-- **Judges.** The validators whose votes a verdict carries: this epoch's (κ) if the
-  verdict's age is this epoch, last epoch's (λ) if it's the one before. *Example:* on
-  tiny, 6 judges, so a verdict needs ⌊2·6/3⌋ + 1 = 5 votes.
-- **Verdict age.** The epoch a verdict's votes were cast in. Only this epoch or the last
-  one will do. *Example:* in epoch 3, ages 3 and 2 are fine, age 1 isn't.
-- **Vote split.** How many of a verdict's votes say "valid". Only three splits mean
-  anything: all of them (good), none (bad), or a third of the judges (wonky).
-  *Example:* on tiny, 5, 0 or 2.
-
-All three are in the [glossary](../glossary.md).
+The rules lean on three words from [lesson 10.1](./01-votes-and-verdicts.md): *judges*, *verdict age* and *vote
+split*. All three are in the [glossary](../glossary.md) too.
 
 ## What the Gray Paper says
 

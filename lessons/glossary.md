@@ -536,15 +536,15 @@ runs out when it's spent. ([15.9](./15-the-pvm/09-what-instructions-cost.md))
 
 **Judges.** K. The validators whose votes a verdict carries: κ if the verdict's age is this
 epoch, λ if it's the last. *Example:* on tiny, 6 judges, so a verdict needs 5 votes.
-([10.4](./10-disputes/04-bad-verdicts.md))
+([10.1](./10-disputes/01-votes-and-verdicts.md))
 
 **Verdict age.** The epoch a verdict's votes were cast in; only this epoch or the last will
 do. *Example:* in epoch 3, ages 3 and 2 are fine, 1 isn't.
-([10.4](./10-disputes/04-bad-verdicts.md))
+([10.1](./10-disputes/01-votes-and-verdicts.md))
 
 **Vote split.** How many of a verdict's votes say "valid": all (good), none (bad) or a
 third of the judges (wonky); any other split rejects the block. *Example:* on tiny, 5, 0
-or 2. ([10.4](./10-disputes/04-bad-verdicts.md))
+or 2. ([10.1](./10-disputes/01-votes-and-verdicts.md))
 
 **Evidence.** What makes an accusation stick: the accused validator's own signature. A
 culprit carries its signed guarantee, a fault its signed vote.
