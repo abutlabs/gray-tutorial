@@ -23,7 +23,8 @@ split*. All three are in the [glossary](../glossary.md) too.
 5. **Votes in order.** Sorted by judge index, no judge twice.
    (`judgements_not_sorted_unique`)
 6. **Signed.** Every vote by the judge it names ([lesson 10.1](./01-votes-and-verdicts.md)'s `votesSigned`), and every
-   judge index a real one. (`bad_signature`)
+   judge index a real one. (`bad_signature`; the note after the code has more on the
+   index)
 7. **A meaningful split.** All, none, or a third of the judges said "valid".
    (`bad_vote_split`)
 
@@ -100,16 +101,55 @@ here. The full vectors have one case tiny can't have: in
 `progress_with_verdicts_from_resized_previous_set-2`, λ has 6 validators and κ has 1,023.
 Its verdict is aged this epoch, so its judges are κ, and 5 votes are far short of 683.
 
+A stub that passes every verdict:
+
+**Add to** `src/disputes.ts`
+
+```ts
+export function verdictError(
+  config: Config,
+  verdicts: Verdict[],
+  before: PastJudgements, // ψ
+  time: number,
+  active: ValidatorKey[],
+  previous: ValidatorKey[],
+): string | null {
+  return null;
+}
+```
+
 **Run, expect it to fail**
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+✖ a split that's neither good, bad nor wonky is refused (1.6ms)
+...
+ℹ tests 125
+ℹ suites 0
+ℹ pass 114
+ℹ fail 11
+...
+test at test/disputes.test.ts:171:1
+✖ a split that's neither good, bad nor wonky is refused (1.6ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + null
+  - 'bad_vote_split'
+...
+```
+
+Eleven reds: the split test, and each of the ten vectors in `BAD_VERDICTS`. They all read
+the same way: the vector names a rule (`-`), and your stub, passing everything, says
+`null` (`+`).
 
 ## The code
 
-**Add to** `src/disputes.ts`
+**Replace in** `src/disputes.ts`
 
 ```ts
 /**
@@ -154,16 +194,33 @@ export function verdictError(
 Seven rules, seven lines at the end, in the order above. The helpers before them each
 answer one question about one verdict: who its judges are, whether its votes are in
 order, how many votes it needs, whether it's signed, whether its split means anything.
-This order passes every disputes vector, tiny and full.
+The order matters when a block breaks two rules at once, because a vector names only one
+of them. This order names the same one as the vector, for every disputes vector.
+
+> [!NOTE]
+> **The simple road.** The test vectors' list of error names has one more for rule 6:
+> `bad_validator_index`, for a vote whose judge index is past the end of K. No vector
+> uses it yet, so `signed` folds an index out of range into `bad_signature`, and every
+> vector agrees. The [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) gives it its own name.
 
 **Run**
 
 ```sh
 npm test
-# prints: a split that's neither good, bad nor wonky is refused
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ a split that's neither good, bad nor wonky is refused (9.7ms)
+...
+ℹ tests 125
+ℹ suites 0
+ℹ pass 125
+ℹ fail 0
+...
+reported 125 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791732266078
+...
 ```
 
 ## Watch it
@@ -205,8 +262,39 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/check-disputes.ts
-# prints: progress_with_verdicts-5: bad_vote_split (the vector: bad_vote_split)
-# prints: progress_with_culprits-1: verdicts pass (the vector: culprits_not_sorted_unique)
+```
+
+```text
+progress_invalidates_avail_assignments-1: verdicts pass (the vector: accepted)
+progress_with_bad_signatures-1: bad_signature (the vector: bad_signature)
+progress_with_bad_signatures-2: verdicts pass (the vector: bad_signature)
+progress_with_bad_verdict_without_culprits-1: verdicts pass (the vector: accepted)
+progress_with_bad_verdict_without_culprits-2: verdicts pass (the vector: accepted)
+progress_with_bad_votes_count-1: bad_votes_count (the vector: bad_votes_count)
+progress_with_culprits-1: verdicts pass (the vector: culprits_not_sorted_unique)
+progress_with_culprits-2: verdicts pass (the vector: accepted)
+progress_with_culprits-3: already_judged (the vector: already_judged)
+progress_with_culprits-4: verdicts pass (the vector: offender_already_reported)
+progress_with_culprits-5: verdicts pass (the vector: culprits_verdict_not_bad)
+progress_with_faults-1: verdicts pass (the vector: not_enough_faults)
+progress_with_faults-2: verdicts pass (the vector: accepted)
+progress_with_faults-3: verdicts pass (the vector: faults_not_sorted_unique)
+progress_with_faults-4: verdicts pass (the vector: accepted)
+progress_with_faults-5: already_judged (the vector: already_judged)
+progress_with_faults-6: verdicts pass (the vector: offender_already_reported)
+progress_with_faults-7: verdicts pass (the vector: fault_verdict_wrong)
+progress_with_invalid_keys-1: verdicts pass (the vector: bad_guarantor_key)
+progress_with_invalid_keys-2: verdicts pass (the vector: bad_auditor_key)
+progress_with_no_verdicts-1: verdicts pass (the vector: accepted)
+progress_with_verdict_signatures_from_previous_set-1: verdicts pass (the vector: accepted)
+progress_with_verdict_signatures_from_previous_set-2: bad_judgement_age (the vector: bad_judgement_age)
+progress_with_verdicts-1: judgements_not_sorted_unique (the vector: judgements_not_sorted_unique)
+progress_with_verdicts-2: judgements_not_sorted_unique (the vector: judgements_not_sorted_unique)
+progress_with_verdicts-3: verdicts_not_sorted_unique (the vector: verdicts_not_sorted_unique)
+progress_with_verdicts-4: verdicts pass (the vector: accepted)
+progress_with_verdicts-5: bad_vote_split (the vector: bad_vote_split)
+progress_with_verdicts-6: verdicts pass (the vector: accepted)
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=dispute-check-1791732270772
 ```
 
 Every line where the rules found a bad verdict agrees with the vector, and
@@ -217,28 +305,42 @@ faults. The *Dispute checks* panel keeps the list.
 ![Dispute checks panel](./images/04-dispute-checks.png)
 
 <details>
-<summary>lasair: the split, in <code>conformance/disputes_stf.ml</code></summary>
+<summary>lasair: rule 6, in <code>conformance/disputes_stf.ml</code></summary>
 
 ```ocaml
-let classify_verdict (k : validator_key list) (judgements : judgement_vote list) : verdict_result =
-  let valid_count = List.length (List.filter (fun j -> j.is_valid) judgements) in
-  if valid_count = verdict_threshold_for k then VerdictGood
-  else if valid_count = 0 then VerdictBad
-  else if valid_count = wonky_tally_for k then VerdictWonky
-  else VerdictBadSplit
+      let rec validate_votes (votes : judgement_vote list) = match votes with
+        | [] -> Result.Ok ()
+        | (vote : judgement_vote) :: rest ->
+          (* Check validator index *)
+          if vote.index < 0 || vote.index >= List.length validators then
+            Result.Error "bad_validator_index"
+          else begin
+            (* Get validator's public key *)
+            let validator = List.nth validators vote.index in
+
+            (* Verify signature *)
+            let payload = create_judgment_payload vote.is_valid v.target in
+            if not (ed25519_verify validator.ed25519 payload vote.signature) then
+              Result.Error "bad_signature"
+            else
+              validate_votes rest
+          end
+      in
 ```
 
-lasair gives a verdict four possible outcomes, the fourth being "this split means
-nothing", where your client keeps rule 7 in `verdictError` and leaves `outcome` with three.
-The comment above it in lasair admits that an earlier version called every other split
-wonky, just as your [lesson 10.1](./01-votes-and-verdicts.md) did, and says why that stayed hidden: no vector has a
-split between a third and two thirds of the judges.
+Rule 6 as a recursion over the votes, one at a time, and with the index check split
+off: an index past the end is `bad_validator_index`, the name your client folds into
+`bad_signature` (the note above). No vector has an index out of range yet, so lasair's
+name comes from reading the vectors' error list, not from a vector that proved it. The rule
+7 story, the split lasair once got wrong, is in [lesson 10.1](./01-votes-and-verdicts.md)'s lasair box.
 
 </details>
 
 ## What you have
 
 Verdicts that are checked, not trusted: seven rules, and every disputes vector's verdicts
-passed or refused as they should be, tiny in the tests and full with the bin.
+passed or refused as they should be, tiny in the tests and full with the bin. The
+vectors this lesson's rules pass but the vector still refuses are all accusations, and
+[lesson 10.5](./05-bad-culprits-and-faults.md) checks those.
 
 Next: [10.5 Bad culprits and faults](./05-bad-culprits-and-faults.md)
