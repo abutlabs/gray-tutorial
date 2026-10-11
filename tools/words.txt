@@ -1,0 +1,79 @@
+# The JAM words the English dictionaries don't know (tools/spelling.ts): one a line, in
+# lower case, without plurals or 's (the spellcheck adds those), unless only the plural is
+# missing (extrinsic is English, extrinsics isn't). Keep it to words the lessons use:
+# tools/spelling.test.ts checks every word here is still needed.
+
+# JAM and the Gray Paper
+authorizer
+bandersnatch
+bitfield
+codec
+delegator
+extrinsics
+fallthrough
+immediates
+keccak
+merkle
+merklization
+preimage
+safrole
+subtrie
+timeslot
+trie
+validator
+
+# the Gray Paper's names for its functions, written in the prose
+accone
+deblob
+oog
+removenonpositive
+rtz
+smod
+
+# names
+ethereum
+grafana
+lasair
+ocaml
+polkadot
+pushgateway
+
+# software
+async
+bigint
+bitmask
+bitwise
+breakpoint
+bytecode
+changelog
+checkable
+config
+ctrl
+disassembler
+encodings
+endian
+fuzzer
+keypress
+lookups
+npm
+nvm
+observability
+providable
+recurse
+replacer
+repo
+rulebook
+tsc
+untyped
+
+# plain English the dictionaries miss
+drumroll
+durations
+implementers
+notational
+pre
+shorthands
+there'd
+
+# a storage key a lesson quotes
+fread

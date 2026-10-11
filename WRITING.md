@@ -213,7 +213,9 @@ is pure commands.
 ## Before publishing a lesson
 
 `verify` follows every lesson from an empty client; `check` typechecks and tests the
-tools and builds the website (which finds dead links).
+tools and builds the website (which finds dead links). Its tests also spellcheck the lessons'
+prose (`tools/spelling.ts`): English, American or British, plus the JAM words in
+`tools/words.txt`. A new JAM word goes there, in lower case; a typo gets fixed.
 
 ```sh
 npm run verify
