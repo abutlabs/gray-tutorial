@@ -8,8 +8,8 @@ WHAT, at 1,000 gas apiece. Teach your host `grow_heap`, and watch the number lan
 ## What the Gray Paper says
 
 A program's heap is lesson 15.8's read-write zone: w, then z pages of zeros. **`grow_heap`**
-(host call 1, App. B.5, Ω_Gemini) lets a program make it bigger, a page at a time, up
-towards the stack. φ₇ is the page the heap should end at: one past its last page.
+(host call 1, App. B.5, Ω_♊︎, the Gemini sign) lets a program make it bigger, a page
+at a time, up towards the stack. φ₇ is the page the heap should end at: one past its last page.
 
 Three page numbers do the work:
 
