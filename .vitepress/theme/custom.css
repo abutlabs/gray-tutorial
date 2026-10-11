@@ -74,3 +74,18 @@
 #keys-help dl { display: grid; grid-template-columns: auto auto; gap: 8px 24px; margin: 0; }
 #keys-help dt { font-family: var(--vp-font-family-mono); font-size: 14px; white-space: pre; }
 #keys-help dd { margin: 0; color: var(--vp-c-text-2); }
+
+/* Pictures open full size (theme/zoom.ts) */
+.vp-doc img[role="button"] { cursor: zoom-in; }
+.vp-doc img[role="button"]:focus-visible { outline: 2px solid var(--vp-c-brand-1); outline-offset: 4px; }
+#picture-zoom {
+  padding: 0;
+  border: none;
+  background: transparent;
+  max-width: 96vw;
+  max-height: 94vh;
+  overflow: hidden;
+  cursor: zoom-out;
+}
+#picture-zoom::backdrop { background: rgba(0, 0, 0, 0.8); }
+#picture-zoom img { display: block; max-width: 96vw; max-height: 94vh; object-fit: contain; border-radius: 8px; }

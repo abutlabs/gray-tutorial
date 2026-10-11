@@ -5,6 +5,7 @@ const KEYS = (): [string, string][] => [
   ["←", "previous lesson"],
   ["→", "next lesson"],
   [`/  or  ${/Mac|iP(hone|ad)/.test(navigator.platform) ? "⌘" : "Ctrl"} K`, "search"],
+  ["Enter", "enlarge the picture you tabbed to"],
   ["?", "these keys"],
   ["Esc", "close"],
 ];
