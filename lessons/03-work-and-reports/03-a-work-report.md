@@ -14,8 +14,11 @@ into the chain. Everything from [Part 3](./index.md) meets here.
   count. *Example:* a report's `package_spec`.
 - **Erasure coding.** Chopping data into one piece per validator so cleverly that any
   third of the pieces can rebuild it all. *Example:* 6 shards on tiny, 1,023 on full.
+- **Bundle.** A work-package with everything needed to refine it again: its extrinsics,
+  and the segments it imports, with their proofs. *Example:* its length is in a report's
+  `package_spec`.
 
-All three are in the [glossary](../glossary.md).
+All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 

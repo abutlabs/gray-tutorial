@@ -19,8 +19,10 @@ and records.
 - **Tiny and full.** JAM's two sizes, with the same rules: *full* is the real network,
   *tiny* a small one for tests (6 validators, 2 cores). *Example:* `codec/tiny/` and
   `codec/full/`.
+- **Segment.** A 4,104-byte piece of data that a work-item exports, for later
+  work-packages to import. *Example:* the `work_item` vector's item exports 4.
 
-All three are in the [glossary](../glossary.md), next to *test vector*.
+All four are in the [glossary](../glossary.md), next to *test vector*.
 
 ## Look at one
 
