@@ -8,9 +8,10 @@ read it too.
 ## New words
 
 - **Epoch mark.** At an epoch's first block only: fresh randomness, and the keys of the
-  validators starting their epoch. *Example:* most headers have none.
-- **Tickets mark.** Once per epoch, when the lottery closes: the winning ticket for every
-  slot of the next epoch. *Example:* 600 tickets on full.
+  validators who take over in the epoch after this one. *Example:* most headers have none.
+- **Tickets mark.** At most once per epoch, when the lottery closes having filled every
+  slot: the winning ticket for every slot of the next epoch. *Example:* 600 tickets on
+  full.
 - **Seal.** The author's signature over the rest of the header. *Example:* 96 bytes, the
   last field.
 - **Offenders mark.** The Ed25519 keys of the validators a block convicts in its
@@ -28,8 +29,8 @@ All four are in the [glossary](../glossary.md).
 | `parent_state_root` | the state root after the parent block |
 | `extrinsic_hash` | a hash committing to this block's extrinsic ([Part 4](./index.md)'s five bags) |
 | `slot` | the timeslot ([lesson 0.4](../00-start/04-the-jam-clock.md)), ℰ₄ |
-| `epoch_mark` | at an epoch's first block only: fresh randomness, and the keys of the validators for the epoch that's starting |
-| `tickets_mark` | once per epoch, when the ticket lottery closes: the winning ticket for every slot of the next epoch |
+| `epoch_mark` | at an epoch's first block only: fresh randomness, and the keys of the validators who take over in the epoch after it |
+| `tickets_mark` | at most once per epoch, when the ticket lottery closes with every slot filled: the winning ticket for every slot of the next epoch |
 | `author_index` | which validator made this block, ℰ₂ |
 | `entropy_source` | a VRF signature: 96 bytes of verifiable fresh randomness |
 | `offenders_mark` | the Ed25519 keys of validators newly convicted in disputes ([lesson 4.4](./04-disputes.md)) |
@@ -38,7 +39,8 @@ All four are in the [glossary](../glossary.md).
 Two markers that are only sometimes there: that's what `option` is for ([lesson 4.5](./05-maybe-and-exactly-n.md)). And
 the tickets mark holds exactly one ticket per slot of an epoch, E of them, 12 on tiny and
 600 on full, with no length in front: that's `seqN`. The epoch mark's validator list,
-though, *does* carry its length. (Trust the bytes: [lesson 4.5](./05-maybe-and-exactly-n.md) checked both.)
+though, *does* carry its length: Gray Paper 0.8.0 lets the validator count change, so the
+list says how long it is.
 
 And the order? You know the drill. §5 lists the offenders mark before the author index;
 Appendix C writes the author index, the entropy source, *then* the offenders. The encoding
@@ -87,8 +89,9 @@ testCodecVector("header_0", Header);
 testCodecVector("header_1", Header);
 ```
 
-The two vectors show both markers: `header_0` starts an epoch (epoch mark, no tickets),
-`header_1` closes the lottery (tickets, no epoch mark).
+The two vectors show both markers: `header_0` has an epoch mark and no tickets, `header_1`
+a tickets mark and no epoch mark. (Both say slot 42, the middle of an epoch on tiny: a
+codec vector only has to have the right shape.)
 
 **Run, expect it to fail**
 

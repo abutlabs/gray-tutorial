@@ -29,20 +29,22 @@ All four are in the [glossary](../glossary.md).
 | assurances | validators' promises that they hold reports' data | 4.2 |
 | disputes | judgements on reports someone thinks are wrong | 4.4 |
 
-(Appendix C writes them in its own order, header, tickets, preimages, guarantees,
-assurances, disputes. You know the drill by now: the encoding's order wins.)
+(§4's own equation lists them in another order, tickets, disputes, preimages,
+assurances, guarantees. Appendix C writes them in the table's order. You know the drill
+by now: the encoding's order wins.)
 
 A **ticket** (§6) is an anonymous lottery entry. Every epoch, validators submit tickets
 for the right to author blocks in the next one, and the best tickets win slots. Each
 ticket says which of its owner's tries it is (`attempt`, one byte), and carries a **ring
 VRF proof**: 784 bytes of cryptography that prove *some* validator made it without
-revealing *which*. You'll check those proofs in [Part 8](../08-safrole/index.md). Today they're just 784 bytes.
+revealing *which*. Checking those proofs is for the rest of [Part 8](../08-safrole/index.md), still to be
+written. Today they're just 784 bytes.
 
 A *preimage* is the data behind a hash. Services can ask for data by its hash, and
 anyone can then deliver it in a block: the requesting service's id (ℰ₄) and the data
 itself, as a blob.
 
-Each part is a sequence with its length in front.
+Tickets and preimages are each a sequence with its length in front.
 
 ## A shortcut for vector tests
 

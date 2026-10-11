@@ -1,7 +1,8 @@
 # Tiny and full
 
-There are two JAMs. The **full** one is the real network: 1,023 validators and 341
-cores. Testing anything on that is slow, so there's also a **tiny** one: 6 validators
+There are two JAMs. The **full** one is the size of the real network: 1,023 validators
+and 341 cores. (Gray Paper 0.8.0 lets the validator count change, to any multiple of 3
+from 6 up to 1,023; the full vectors use the most.) Testing anything on that is slow, so there's also a **tiny** one: 6 validators
 and 2 cores, same rules, a lot less waiting. The official vectors come in both sizes,
 in folders named after them, and until now every structure looked the same in both.
 
@@ -31,7 +32,8 @@ it is holding. An assurance is four things:
 
 One bit per core means C bits. Appendix C packs bits into bytes, eight to a byte, lowest
 bit first, so the bitfield takes ⌈C/8⌉ bytes: **1 byte on tiny, 43 on full**. A codec
-that reads one byte where there are 43 would misread every assurance after the first.
+that reads one byte where there are 43 would misread every assurance, starting with the
+first one's validator index.
 
 ## The configuration
 
@@ -210,9 +212,11 @@ let bitfield_bytes = ((Stf_config.num_cores ()) + 7) / 8
 ```
 
 At load time the spec was still tiny, so `bitfield_bytes` was 1 forever, even after the
-program switched to full. Every tiny test passed. Then the official fuzzer sent a
-full-size block, and lasair crashed with `decode: bad list count`. The fix, commit F5, is
-two characters: `()`, which turns the value into a function, computed each time:
+program switched to full, and so was its twin, the number of votes a verdict carries,
+stuck at tiny's 5. Every tiny test passed. Then the official fuzzer sent a full-size block
+with a dispute in it: its verdict carried 683 votes, lasair read 5, and it crashed with
+`decode: bad list count`. The fix, F5 in lasair's release notes, is two characters for
+each: `()`, which turns the value into a function, computed each time:
 
 ```ocaml
 let bitfield_bytes () = ((Stf_config.num_cores ()) + 7) / 8

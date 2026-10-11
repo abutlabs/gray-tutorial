@@ -216,7 +216,8 @@ That `\var` is the length prefix. Without it, a decoder had to *know* how many v
 read, which means knowing V, which means knowing the size of the network. That's exactly
 where lasair's frozen-at-tiny bug ([lesson 4.2](./02-tiny-and-full.md)) bit: its vote count, like its bitfield
 size, was computed once at tiny and never again. Under 0.8.0 the votes say how many they
-are, and that trap is gone. Specs evolve, and sometimes they make your life easier.
+are, and that trap is gone. They have to: 0.8.0 lets the validator count change, so the
+network's size no longer tells a decoder how many to read. Specs evolve, and sometimes they make your life easier.
 
 </details>
 

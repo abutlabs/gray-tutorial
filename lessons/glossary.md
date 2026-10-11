@@ -468,11 +468,11 @@ without saying which. *Example:* every ticket carries a 784-byte one.
 ([4.1](./04-blocks/01-tickets-and-preimages.md))
 
 **Epoch mark.** At an epoch's first block only: fresh randomness and the keys of the
-validators starting their epoch. *Example:* most headers have none.
+validators who take over in the epoch after it. *Example:* most headers have none.
 ([4.6](./04-blocks/06-the-header.md))
 
-**Tickets mark.** Once per epoch, when the ticket lottery closes: the winning ticket for
-every slot of the next epoch. *Example:* 12 tickets on tiny, 600 on full.
+**Tickets mark.** At most once per epoch, when the ticket lottery closes with every slot
+filled: the winning ticket for every slot of the next epoch. *Example:* 12 tickets on tiny, 600 on full.
 ([4.6](./04-blocks/06-the-header.md))
 
 **Offenders mark.** The Ed25519 keys of the validators a block convicts in its disputes.
