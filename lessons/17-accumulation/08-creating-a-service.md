@@ -41,8 +41,8 @@ four bytes as a number, fold it into the public range, and skip ids already take
 knows η′₀ until the block, so nobody can aim for an id.
 
 One honest note: no official vector creates a service at a public id, so that formula is
-checked against the Gray Paper and by hand, not by a vector. It's in HARDENING, to confirm
-against the block-import traces.
+checked against the Gray Paper and by hand, not by a vector. It's in
+[HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md), to confirm against the block-import traces.
 
 **The round** already handles new accounts: [lesson 17.7](./07-ejecting-a-service.md) taught it that an id a run created
 joins the accounts after the round.
@@ -153,8 +153,23 @@ test("the registrar creates service 5, which gets its endowment a round later", 
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+✖ test/accumulate.test.ts (23650.7ms)
+...
+SyntaxError: The requested module '../src/host.ts' does not provide an export named 'newIds'
+...
+ℹ tests 440
+ℹ suites 0
+ℹ pass 438
+ℹ fail 2
+...
+```
+
+Red: `src/host.ts` doesn't export `newIds` yet. Where ids come from, the call and its
+place in the host come together.
 
 ## The code
 
@@ -305,10 +320,27 @@ export function accumulateHost(
 
 ```sh
 npm test
-# prints: new: a service pays for another, which gets the next id, or the registrar's choice
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ create_service-1: the block ends as the vector says (73.6ms)
+...
+✔ recreate_ejected_service-1: the block ends as the vector says (104.1ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (271.8ms)
+...
+✔ new: a service pays for another, which gets the next id, or the registrar's choice (0.3ms)
+✔ new refuses: gratis from a non-manager, not enough money, a registrar's id taken (0.3ms)
+...
+ℹ tests 561
+ℹ suites 0
+ℹ pass 561
+ℹ fail 0
+...
+reported 561 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740238119
+...
 ```
 
 ## Watch it
@@ -317,8 +349,26 @@ npm run typecheck
 
 ```sh
 node bin/host.ts ../vectors/stf/accumulate/tiny/create_service-1.json 0
-# prints: host call 19 (new): φ₇ = 5
-# prints: sent 500 to service 5
+```
+
+```text
+host call 2 (fetch): φ₇ = 122, 1999367 gas left
+...
+host call 19 (new): φ₇ = 5, 1858461 gas left
+host call 1 (grow_heap): φ₇ = 51, 1856927 gas left
+host call 100 (log, from JIP-1): φ₇ = WHAT, 1839711 gas left
+host call 3 (lookup): φ₇ = NONE, 1838339 gas left
+host call 0 (gas): φ₇ = 1838170, 1838170 gas left
+host call 100 (log, from JIP-1): φ₇ = WHAT, 1833399 gas left
+host call 21 (transfer): φ₇ = 0, 1832203 gas left
+host call 1 (grow_heap): φ₇ = 51, 1826498 gas left
+host call 1 (grow_heap): φ₇ = 51, 1821660 gas left
+host call 100 (log, from JIP-1): φ₇ = WHAT, 1815867 gas left
+host call 5 (write): φ₇ = 1, 1807016 gas left
+sent 500 to service 5, with 10 gas and the memo "welcome"
+the service stops: "halt", using 196983 gas
+the test vector says: 196983
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791740247569
 ```
 
 Service 0, the registrar, creates service 5 (its choice of id), then sends it 500 as an
@@ -350,6 +400,8 @@ handed out.
 ## What you have
 
 Services that make services: paid for, numbered so nobody can aim, and the registrar's
-small ids. Fifty-four official vectors pass as whole blocks.
+small ids. Fifty-four official vectors pass as whole blocks, and Part 17 is done.
+The chain also keeps score of who did all this work: [Part 18](../18-statistics/index.md) builds the
+statistics, for validators, cores and services.
 
 Next: [Part 18 · Statistics](../18-statistics/index.md)

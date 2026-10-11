@@ -151,8 +151,23 @@ test("an ejected service is gone, and its ejector has its balance", () => {
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+✖ test/accumulate.test.ts (24175.3ms)
+...
+SyntaxError: The requested module '../src/host.ts' does not provide an export named 'eject'
+...
+ℹ tests 440
+ℹ suites 0
+ℹ pass 438
+ℹ fail 2
+...
+```
+
+Red: `src/host.ts` doesn't export `eject` yet. The call comes first, then the host learns
+to answer it, and the round learns to remove what a run removed.
 
 ## The code
 
@@ -322,10 +337,25 @@ accounts is new ([lesson 17.8](./08-creating-a-service.md) makes some). An id in
 
 ```sh
 npm test
-# prints: eject: a service that named its ejector goes, and its balance goes to the ejector
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ work_for_ejected_service-2: the block ends as the vector says (58.2ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (211.7ms)
+...
+✔ eject: a service that named its ejector goes, and its balance goes to the ejector (0.3ms)
+✔ eject refuses: itself, a stranger, or a preimage forgotten too recently (0.1ms)
+...
+ℹ tests 553
+ℹ suites 0
+ℹ pass 553
+ℹ fail 0
+...
+reported 553 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740202859
+...
 ```
 
 ## Watch it
@@ -336,8 +366,18 @@ No new program: `bin/host.ts` already names every call.
 
 ```sh
 node bin/host.ts ../vectors/stf/accumulate/tiny/work_for_ejected_service-2.json 0
-# prints: host call 22 (eject): φ₇ = 0
-# prints: the test vector says: 151715
+```
+
+```text
+host call 2 (fetch): φ₇ = 122, 199367 gas left
+...
+host call 22 (eject): φ₇ = 0, 73415 gas left
+host call 1 (grow_heap): φ₇ = 51, 65617 gas left
+host call 100 (log, from JIP-1): φ₇ = WHAT, 61129 gas left
+host call 5 (write): φ₇ = 1, 52269 gas left
+the service stops: "halt", using 151715 gas
+the test vector says: 151715
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791740212297
 ```
 
 Service 0 ejects service 2 (`OK`), using exactly the vector's gas. The *Host calls* panel
@@ -368,6 +408,6 @@ that the second try finds nobody.
 
 Services that can leave: ejected by the service they named, their balance passed on, and
 rounds that remove what their runs removed. Fifty official vectors now pass as whole
-blocks.
+blocks. What leaves can also arrive: [lesson 17.8](./08-creating-a-service.md) lets a service create another.
 
 Next: [17.8 Creating a service](./08-creating-a-service.md)
