@@ -91,7 +91,8 @@ above each snippet says what to do with it:
 After each **Run** block comes the output you should see, in a block of its own
 (*Output* on the website; an `npm install` has none, since it only prints downloads): put
 it next to your terminal. A line `...` marks where lines are cut, and `…` a part that
-changes from run to run; times, durations and run ids will differ too. Paths are inside
+changes from run to run; times, durations and run ids will differ too, and so may a line
+number in an error, by one or two, if your imports sit differently. Paths are inside
 `client/`. A code block with no label above it is for reading, unless the words around it
 say to type it and where, as the setup commands in [lesson 0.2](./02-set-up-the-project.md) do. On the
 website, a label is a link back to this list.
@@ -167,7 +168,8 @@ npm run catch-up -- 2.3
 They make snippets easy to place:
 
 1. **One import per line, at the top of the file.** When a snippet starts with imports,
-   add the ones your file is missing.
+   add the ones your file is missing; a new name from a module your file already imports
+   joins that module's line.
 2. **Top-level declarations start at the left edge**, with their comment right above.
    That is what **Replace in** swaps.
 3. **Field names copy the test vectors** (`anchor_slot`, not `anchorSlot`), so a vector's

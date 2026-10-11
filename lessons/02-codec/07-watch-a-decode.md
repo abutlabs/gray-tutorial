@@ -8,7 +8,8 @@ to your terminal and to Grafana, like everything else your client does.
 ## New words
 
 - **Decode trace.** A list of every field a decoder read, with where its bytes were.
-  (Not a block trace, the recorded run of blocks from [Part 19](../19-block-import/index.md).) *Example:* `0..4 service`.
+  (Not a block trace, the recorded run of blocks you'll meet in [lesson 5.1](../05-hashing-and-signatures/01-hashes.md).) *Example:*
+  `0..4 service`.
 - **Field path.** A field's place inside a value, from the outside in, with dots.
   *Example:* `import_segments.0.index`: the index of the first imported segment.
 - **Innermost field.** A field with no fields inside it: a number, a hash, a length.
@@ -327,8 +328,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 ```
 
 Read the output against the hex dump from [lesson 2.6](./06-the-first-test-vectors.md): `service` is bytes 0 to 4, then
-`code_hash` 4 to 36, `refine_gas_limit` 36 to 44. On the dashboard, *Decode trace* shows
-the same list for the run.
+`code_hash` 4 to 36, `refine_gas_limit` 36 to 44. On the **1 · Basics** dashboard,
+*Decode trace* shows the same list for the run.
 
 ![Decode trace panel](./images/07-decode-trace.png)
 
@@ -376,7 +377,8 @@ step traces of later parts, say *which step* made it wrong, while it happens.
 ## What you have
 
 A codec that can tell you, byte by byte, what it read, and a program that shows any
-decode in the terminal and in Grafana. The codec is done. [Part 3](../03-work-and-reports/index.md) uses it on the
+decode in the terminal and in Grafana. The codec is all but done ([lesson 4.5](../04-blocks/05-maybe-and-exactly-n.md) adds two last
+shapes). [Part 3](../03-work-and-reports/index.md) uses it on the
 paperwork JAM's work travels in: work-packages, their results, and the reports that
 bind them.
 

@@ -33,7 +33,8 @@ and the l bytes after the first hold the rest, little-endian:
 
 A decoder peeks at the first byte, counts the leading ones, and knows exactly how much to
 read. Anything below 128 fits in one byte, which is why a short list costs just one byte
-of length. (If you know UTF-8, it's the same trick in a different costume.)
+of length. (If you know UTF-8, it's a cousin of its trick, but count with care: there,
+the leading ones count the first byte too, so `110xxxxx` means two bytes, not three.)
 
 ## What the Gray Paper says
 

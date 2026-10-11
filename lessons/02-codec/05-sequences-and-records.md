@@ -190,7 +190,8 @@ writes the field order a second time in `encode_refinement_context`, and a third
 ## What you have
 
 Sequences and records: lists of any codec, and structures of named fields whose type
-TypeScript works out for you. That's every shape a JAM structure takes. Time to find out
+TypeScript works out for you. That's nearly every shape a JAM structure takes ([lesson
+4.5](../04-blocks/05-maybe-and-exactly-n.md) adds the last two). Time to find out
 whether yours agree with everyone else's: [lesson 2.6](./06-the-first-test-vectors.md)
 puts them to the official test vectors.
 

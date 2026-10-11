@@ -123,7 +123,8 @@ two things it compares are the same kind of thing.
 that value must encode back to the very same bytes.
 
 Its name doesn't end in `.test.ts`, so `npm test`'s pattern leaves it out: it is a
-helper the tests import, like `test/grafana.ts`.
+helper the tests import. (`test/grafana.ts` is left out the same way: it's the reporter
+`npm test` loads, not a test.)
 
 ## The structures
 
@@ -280,8 +281,8 @@ code decoded, `-` is the vector's JSON):
 The decoder took the first 2 bytes of the refine gas limit (`2a 00`) as the export
 count, 42, and each gas limit then started 2 bytes late, which makes them huge. The
 three fields together are still 18 bytes, so the payload and everything after it still
-line up and decode correctly. Move a field of a different width and everything after it
-goes wrong. Put `export_count` back before going on.
+line up and decode correctly. Move `export_count` below `payload` instead, and everything
+from `payload` on goes wrong. Put `export_count` back before going on.
 
 <details>
 <summary>lasair: <code>encode_refinement_context</code></summary>

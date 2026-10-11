@@ -1,6 +1,6 @@
 # Writer and Reader
 
-A block header has ten fields. A work-report has a dozen, some of them lists of other
+A block header has ten fields. A work-report has eight, some of them lists of other
 structures. Gluing byte arrays by hand and counting offsets for each would bury every
 structure in bookkeeping. Two little helpers make the bookkeeping disappear:
 

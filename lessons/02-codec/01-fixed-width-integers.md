@@ -186,7 +186,8 @@ let encode_fixed_int (n : int) (value : int64) : bytes =
 
 The same algorithm. `let rec fill` is a recursive helper instead of a loop (OCaml
 prefers recursion), `Int64.logand v 0xFFL` is `v & 0xff`, and `shift_right_logical`
-is `>>>`, the shift that treats the value as unsigned.
+is `>>>` on a `number`, the shift that treats the value as unsigned. (A `bigint` has no
+`>>>`; your values are never negative, so `>>` does the same job.)
 
 </details>
 
