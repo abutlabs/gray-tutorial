@@ -216,5 +216,5 @@ will be written. Each one is checked end to end before it is published here.
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
 | 16 · Host calls (rest) | upgrade, yield, provide, bless, designate, the inner machine | App. B |
 | 17 · Accumulation (rest) | the other privileged calls, the block's gas budget | §12 |
-| 19 · Block import (rest) | real blocks through every step, the block-import traces (needs [Part 8](./08-safrole/index.md)'s Bandersnatch for η′) | §4, §5 |
+| 19 · Block import (rest) | real blocks through every step, the block-import traces (needs [Part 8](./08-safrole/index.md)'s Bandersnatch for η′ and γ′) | §4, §5 |
 | 20 · Facing the fuzzer | the conformance fuzzer's protocol | |

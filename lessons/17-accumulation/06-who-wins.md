@@ -149,8 +149,8 @@ SyntaxError: The requested module '../src/accumulate.ts' does not provide an exp
 ...
 ```
 
-Red: `src/accumulate.ts` doesn't export `mergePrivileges` yet. R comes first, then the
-block's state learns to carry the privileges from round to round.
+Red: `src/accumulate.ts` doesn't export `mergePrivileges` yet. First the block's state
+learns to carry the privileges, then comes R, the merge, and the rounds that use it.
 
 ## The code
 
@@ -250,7 +250,9 @@ export function mergePrivileges(before: Privileges, after: Map<number, Privilege
 ```
 
 `post(s)` is service s's privileges as its run left them, or the round's start if it
-didn't run (step 4). The rest is the five steps, one line each.
+didn't run (step 4). Then steps 1 to 3: `manager` and `bless` (step 1), the three `R`
+lines (step 2), and the `queues` loop (step 3). Step 5, carrying the merge into the next
+round, belongs to the rounds, next.
 
 A round hands every run the round's privileges, and merges what they leave:
 
@@ -448,8 +450,8 @@ for (const [s, { count, transfers, gasUsed }] of statistics) {
 }
 ```
 
-(The lines under `const went` come along: they sit right under it with no blank line, up
-to the end of the `for` loop.)
+(Replace `const went` and everything after it, down to the end of the `for` loop: it's
+one block, with no blank line in it.)
 
 **Run**
 
