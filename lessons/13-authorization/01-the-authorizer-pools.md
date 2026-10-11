@@ -13,11 +13,11 @@ lesson keeps the pools moving, and it's all of Part 13.
 
 - **α[c], the pool**: at most O = 8 authorizer hashes.
 - **ϕ[c], the queue**: exactly Q = 80 of them. Only a privileged service can change the
-  queue, during accumulation (Part 17).
+  queue, during accumulation ([Part 17](../17-accumulation/index.md)).
 
 Each block, α′[c] is made in three steps:
 
-1. If a guarantee in this block used core c (Part 12), its report's authorizer is
+1. If a guarantee in this block used core c ([Part 12](../12-guarantees/index.md)), its report's authorizer is
    taken out of the pool: the *leftmost* copy, the one that's been there longest.
 2. The queue's entry for this slot joins: ϕ′[c][τ′ mod Q]. The queue is a wheel, read
    one slot at a time and going round every 80 slots.
@@ -27,9 +27,10 @@ Each block, α′[c] is made in three steps:
 comes late in the block. In C(1) and C(2) ([lesson 6.2](../06-state-and-merklization/02-state-keys.md)) the pools are lists with their
 length in front, and the queues are 80 hashes exactly: 514 and 5,120 bytes on tiny.
 
-## The code first
+## The codecs first
 
-The tests read pools from real states as well as from vectors, so the codecs come first.
+The tests read pools from real states as well as from vectors, so the codecs come first,
+with a `nextPools` that doesn't move anything yet:
 
 **New file** `src/authorization.ts`
 
@@ -67,25 +68,13 @@ export const UsedAuthorizer = record({
 });
 export type UsedAuthorizer = Value<typeof UsedAuthorizer>;
 
-/**
- * α′ (GP §8): a core's used authorizer leaves its pool (its oldest copy), the queue's entry
- * for this slot joins, and the pool keeps its newest O.
- */
 export function nextPools(
   pools: Bytes[][],
   queues: Bytes[][], // ϕ′
   used: UsedAuthorizer[],
   slot: number, // τ′
 ): Bytes[][] {
-  return pools.map((pool, core) => {
-    const left = [...pool];
-    for (const { auth_hash } of used.filter((u) => u.core === core)) {
-      const oldest = left.findIndex((a) => toHex(a) === toHex(auth_hash));
-      if (oldest >= 0) left.splice(oldest, 1);
-    }
-    const next = queues[core][slot % QUEUE_SIZE]; // the queue goes round, a slot at a time
-    return [...left, next].slice(-POOL_SIZE);
-  });
+  return pools;
 }
 
 /** The authorizers a block's guarantees used: one per guaranteed core. */
@@ -97,8 +86,26 @@ export function usedAuthorizers(guarantees: ReportGuarantee[]): UsedAuthorizer[]
 }
 ```
 
-`usedAuthorizers` connects Part 12 to here: each guarantee says which core it used and
-which authorizer let it in.
+`usedAuthorizers` connects [Part 12](../12-guarantees/index.md) to here: each guarantee says which core it used
+and which authorizer let it in. And the readers for C(1) and C(2), next to [lesson
+6.3](../06-state-and-merklization/03-reading-the-state.md)'s:
+
+**Add to** `src/state.ts`
+
+```ts
+import { AuthPools, AuthQueues } from "./authorization.ts";
+import type { Config } from "./config.ts";
+
+/** α, C(1): each core's authorizer pool. */
+export function readAuthPools(config: Config, entries: KeyValue[]): Bytes[][] {
+  return component(entries, 1, AuthPools(config));
+}
+
+/** ϕ, C(2): each core's authorizer queue. */
+export function readAuthQueues(config: Config, entries: KeyValue[]): Bytes[][] {
+  return component(entries, 2, AuthQueues(config));
+}
+```
 
 ## The tests
 
@@ -170,44 +177,101 @@ test("α′ through 99 real blocks, with the authorizers their own guarantees us
 Four tests: the rule by hand twice, with one-byte "letters" for hashes; the six
 authorizations vectors; and then a real chain. Through 99 blocks of the `preimages`
 trace, the pools after each block are worked out from the pools before it, the queues
-after it, and the authorizers the block's *own guarantees* used: 85 of them. That's Part
-12's guarantees and Part 13's pools, checked together on real state.
+after it, and the authorizers the block's *own guarantees* used: 85 of them. That's
+[Part 12](../12-guarantees/index.md)'s guarantees and this part's readers, checked together on real state.
 
 **Run, expect it to fail**
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
 
-## The readers
+```text
+...
+✖ the used authorizer leaves, the queue's next one joins (7.9ms)
+✖ a full pool keeps its newest eight (3.7ms)
+✖ α′ on the authorizations vectors (3.9ms)
+✔ α′ through 99 real blocks, with the authorizers their own guarantees used (540.6ms)
+...
+ℹ tests 382
+ℹ suites 0
+ℹ pass 379
+ℹ fail 3
+...
+```
 
-**Add to** `src/state.ts`
+Three reds, and one surprising green. The rule's tests fail: a pool that never changes isn't what they expect. But the 99 real blocks
+pass, even with a `nextPools` that does nothing. In this trace every pool and every
+queue holds the same authorizer, 8 and 80 times over, so taking one out and putting the
+next one in leaves each pool exactly as it was. That test checks your readers and
+`usedAuthorizers` against real state; only the hand tests and the vectors check the
+rule. A test that can't fail on wrong code is worth spotting, and a stub is how you
+spot it.
+
+## The code
+
+The three steps, as the Gray Paper lists them:
+
+**Replace in** `src/authorization.ts`
 
 ```ts
-import { AuthPools, AuthQueues } from "./authorization.ts";
-import type { Config } from "./config.ts";
-
-/** α, C(1): each core's authorizer pool. */
-export function readAuthPools(config: Config, entries: KeyValue[]): Bytes[][] {
-  return component(entries, 1, AuthPools(config));
-}
-
-/** ϕ, C(2): each core's authorizer queue. */
-export function readAuthQueues(config: Config, entries: KeyValue[]): Bytes[][] {
-  return component(entries, 2, AuthQueues(config));
+/**
+ * α′ (GP §8): a core's used authorizer leaves its pool (its oldest copy), the queue's entry
+ * for this slot joins, and the pool keeps its newest O.
+ */
+export function nextPools(
+  pools: Bytes[][],
+  queues: Bytes[][], // ϕ′
+  used: UsedAuthorizer[],
+  slot: number, // τ′
+): Bytes[][] {
+  return pools.map((pool, core) => {
+    const left = [...pool];
+    for (const { auth_hash } of used.filter((u) => u.core === core)) {
+      const oldest = left.findIndex((a) => toHex(a) === toHex(auth_hash));
+      if (oldest >= 0) left.splice(oldest, 1);
+    }
+    const next = queues[core][slot % QUEUE_SIZE]; // the queue goes round, a slot at a time
+    return [...left, next].slice(-POOL_SIZE);
+  });
 }
 ```
+
+Each step is a line or two:
+
+```ts
+      if (oldest >= 0) left.splice(oldest, 1);
+    const next = queues[core][slot % QUEUE_SIZE]; // the queue goes round, a slot at a time
+    return [...left, next].slice(-POOL_SIZE);
+```
+
+`splice(oldest, 1)` cuts out one item where it stands, so the rest close up behind it.
+`slot % QUEUE_SIZE` turns the wheel. And `.slice(-POOL_SIZE)` keeps the last eight, as
+[lesson 9.2](../09-recent-history/02-recent-blocks.md)'s history did.
 
 **Run**
 
 ```sh
 npm test
-# prints: the used authorizer leaves, the queue's next one joins
-# prints: α′ through 99 real blocks, with the authorizers their own guarantees used
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the used authorizer leaves, the queue's next one joins (0.9ms)
+✔ a full pool keeps its newest eight (0.1ms)
+✔ α′ on the authorizations vectors (150.5ms)
+✔ α′ through 99 real blocks, with the authorizers their own guarantees used (490.6ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (465.4ms)
+...
+ℹ tests 382
+ℹ suites 0
+ℹ pass 382
+ℹ fail 0
+...
+reported 382 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734931482
+...
 ```
 
 ## Watch it
@@ -256,9 +320,15 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/pools.ts ../vectors/stf/authorizations/tiny/progress_authorizations-2.json
-# prints: core 0: b6ab baad dbe5 1989 6d74 8da3 332d f9e9
-# prints: − b6ab, + 5b83
-# prints: reported to Grafana
+```
+
+```text
+slot 45: each core's next authorizer is queue entry 45
+core 0: b6ab baad dbe5 1989 6d74 8da3 332d f9e9
+  − b6ab, + 5b83  →  baad dbe5 1989 6d74 8da3 332d f9e9 5b83
+core 1: 80ef 510d fae1 e38b 678d af59 73cc c874
+  − 510d, + 9c89  →  80ef fae1 e38b 678d af59 73cc c874 9c89
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=pools-1791734945852
 ```
 
 Core 0 used `b6ab`, its oldest, so it leaves from the front and `5b83` joins at the
@@ -294,6 +364,7 @@ and that comment didn't. Comments go stale; tests don't.
 ## What you have
 
 Part 13, done: every core's pool of authorizers, kept moving block by block, checked on
-the vectors and on 99 real blocks.
+the vectors and on 99 real blocks. An authorizer lets work onto a core for a service.
+[Part 14](../14-services/index.md) opens up the services themselves.
 
 Next: [Part 14 · Services and preimages](../14-services/index.md)
