@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 340" width="560" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">
+<style>
+  text { fill: #3c3c43; text-anchor: start; }
+  .row { font-size: 13px; }
+  .small { fill: #67676c; font-size: 12px; }
+  .note { fill: #c2410c; font-size: 12px; }
+  .service { fill: #e6f6ef; stroke: #3fa97a; stroke-width: 1.5; }
+  .done { fill: none; stroke: #9a9aa0; stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .send { stroke: #c2410c; stroke-width: 1.5; }
+  .tip { fill: #c2410c; }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #dfdfd6; }
+    .small { fill: #a8a8a0; }
+    .note { fill: #ff9a5c; }
+    .service { fill: #1b3329; stroke: #4fc08d; }
+    .done { stroke: #6b6b72; }
+    .send { stroke: #ff9a5c; }
+    .tip { fill: #ff9a5c; }
+  }
+</style>
+<text class="row" x="16" y="68">round 1</text>
+<rect class="service" x="118" y="30" width="300" height="66" rx="6"/>
+<text class="" x="132" y="54">service 0</text>
+<text class="small" x="132" y="72">in: 1 operand (its digest)</text>
+<text class="small" x="132" y="90">used: 255,437 gas</text>
+<line class="send" x1="158" y1="96" x2="158" y2="141"/>
+<polygon class="tip" points="153,139 163,139 158,147"/>
+<text class="note" x="172" y="117">sends service 1 a transfer: 100,</text>
+<text class="note" x="172" y="133">the memo "gift", 80,000 gas</text>
+<text class="row" x="16" y="186">round 2</text>
+<rect class="service" x="118" y="148" width="300" height="66" rx="6"/>
+<text class="" x="132" y="172">service 1</text>
+<text class="small" x="132" y="190">first, its balance: 227,714 + 100</text>
+<text class="small" x="132" y="208">in: 1 transfer; used: 61,711 gas</text>
+<line class="send" x1="158" y1="214" x2="158" y2="259"/>
+<polygon class="tip" points="153,257 163,257 158,265"/>
+<text class="note" x="172" y="235">sends nothing</text>
+<text class="row" x="16" y="304">round 3</text>
+<rect class="done" x="118" y="266" width="300" height="66" rx="6"/>
+<text class="" x="132" y="290">no transfers to deliver:</text>
+<text class="small" x="132" y="308">Δ+ stops</text>
+</svg>

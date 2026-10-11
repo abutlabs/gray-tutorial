@@ -54,7 +54,9 @@ against the source (a vector's real bytes, the Gray Paper's rule): add a functio
 path to `DIAGRAMS`, then `npm run diagrams`. `tools/diagrams.test.ts` checks every
 committed SVG is what the code draws, so the two never drift. Monospace text, light and
 dark colours in the SVG's own style, no wider than about 880 units so it shows at full
-size; in the lesson, the picture alone with real alt text, like a screenshot.
+size; in the lesson, the picture alone with real alt text, like a screenshot. A narrow one
+(well under 880 units) gets a `width` on its `<svg>`, so a wide screen shows it at a
+readable size instead of blowing it up; a phone still shrinks it to fit.
 
 ## Where
 

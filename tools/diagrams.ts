@@ -293,12 +293,67 @@ ${parts.join("\n")}
 `;
 }
 
+/**
+ * Lesson 17.4's rounds, on the gift's block (transfer_for_live_service-1): what each round
+ * runs, what it sends on, and why Δ+ stops. The numbers are that vector's.
+ */
+export function accumulationRounds(): string {
+  const LABEL = 16, BOX = 118, W = 300, H = 66, GAP = 52;
+  const y = (round: number) => 30 + round * (H + GAP);
+  const box = (round: number, kind: string, lines: string[]) => [
+    `<text class="row" x="${LABEL}" y="${y(round) + 38}">round ${round + 1}</text>`,
+    `<rect class="${kind}" x="${BOX}" y="${y(round)}" width="${W}" height="${H}" rx="6"/>`,
+    ...lines.map((line, i) =>
+      `<text class="${i === 0 ? "" : "small"}" x="${BOX + 14}" y="${y(round) + 24 + i * 18}">${line}</text>`),
+  ];
+  const arrow = (round: number, label: string[]) => {
+    const [x, top, bottom] = [BOX + 40, y(round) + H, y(round + 1)];
+    return [
+      `<line class="send" x1="${x}" y1="${top}" x2="${x}" y2="${bottom - 7}"/>`,
+      `<polygon class="tip" points="${x - 5},${bottom - 9} ${x + 5},${bottom - 9} ${x},${bottom - 1}"/>`,
+      ...label.map((line, i) =>
+        `<text class="note" x="${x + 14}" y="${top + 21 + i * 16}">${line}</text>`),
+    ];
+  };
+  const parts = [
+    ...box(0, "service", ["service 0", "in: 1 operand (its digest)", "used: 255,437 gas"]),
+    ...arrow(0, ["sends service 1 a transfer: 100,", "the memo \"gift\", 80,000 gas"]),
+    ...box(1, "service", ["service 1", "first, its balance: 227,714 + 100", "in: 1 transfer; used: 61,711 gas"]),
+    ...arrow(1, ["sends nothing"]),
+    ...box(2, "done", ["no transfers to deliver:", "Δ+ stops"]),
+  ];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 ${y(2) + H + 8}" width="560" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">
+<style>
+  text { fill: #3c3c43; text-anchor: start; }
+  .row { font-size: 13px; }
+  .small { fill: #67676c; font-size: 12px; }
+  .note { fill: #c2410c; font-size: 12px; }
+  .service { fill: #e6f6ef; stroke: #3fa97a; stroke-width: 1.5; }
+  .done { fill: none; stroke: #9a9aa0; stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .send { stroke: #c2410c; stroke-width: 1.5; }
+  .tip { fill: #c2410c; }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #dfdfd6; }
+    .small { fill: #a8a8a0; }
+    .note { fill: #ff9a5c; }
+    .service { fill: #1b3329; stroke: #4fc08d; }
+    .done { stroke: #6b6b72; }
+    .send { stroke: #ff9a5c; }
+    .tip { fill: #ff9a5c; }
+  }
+</style>
+${parts.join("\n")}
+</svg>
+`;
+}
+
 /** Every diagram: where it goes, and what draws it. */
 export const DIAGRAMS: Record<string, () => string> = {
   "02-codec/images/06-work-item-bytes.svg": workItemBytes,
   "06-state-and-merklization/images/01-state-trie.svg": stateTrie,
   "07-time-and-shuffling/images/02-shuffle-steps.svg": shuffleSteps,
   "08-safrole/images/04-ticket-contest.svg": ticketContest,
+  "17-accumulation/images/04-rounds.svg": accumulationRounds,
 };
 
 if (import.meta.main) {
