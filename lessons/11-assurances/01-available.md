@@ -2,9 +2,17 @@
 
 A guaranteed work-report sits on its core ([lesson 10.3](../10-disputes/03-clearing-the-cores.md)) until JAM is sure its data won't
 vanish: enough validators must hold their pieces of it. Every block, validators send
-**assurances**, [lesson 4.2](../04-blocks/02-tiny-and-full.md)'s bitfields: one bit per core, 1 meaning "I hold my share of
+*assurances*, [lesson 4.2](../04-blocks/02-tiny-and-full.md)'s bitfields: one bit per core, 1 meaning "I hold my share of
 this core's data". Count the 1s for a core, and if more than two thirds of the
-validators say so, the report is **available**. This lesson counts.
+validators say so, the report is *available*. This lesson counts.
+
+## New words
+
+- **Assurance and availability.** Each validator signs one bit per core: "I hold my piece
+  of this core's data". When more than two thirds of them do, the core's report is
+  *available*. *Example:* on tiny, 5 of the 6 validators.
+
+It's in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
