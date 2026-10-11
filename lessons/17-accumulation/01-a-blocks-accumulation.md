@@ -1,6 +1,6 @@
 # A block's accumulation
 
-Part 16 ran one service at a time. A real block brings work for many services at once,
+[Part 16](../16-host-calls/index.md) ran one service at a time. A real block brings work for many services at once,
 and every validator must accumulate all of it, the same way, to reach the same state.
 This lesson accumulates a whole block, in its simplest form, and checks it against 29
 official test vectors: every account, every statistic.
@@ -44,8 +44,10 @@ in step 3 is the parallel accumulation function **Δ\***, and one service's part
 [lesson 16.7](../16-host-calls/07-a-services-inputs.md)'s work, is **Δ₁**. The statistics are **S(s) = (N(s), T(s), G(s))**, and the
 last-accumulation slot is an account's **a**, set to **τ′**.
 
-Left for later in this part: the queue (17.2), a gas budget for the whole block, which
-may split it into several rounds (17.3), privileges (17.4) and transfers (17.5).
+Left for later in this part: the queue ([lesson 17.2](./02-waiting-reports.md)); transfers ([lesson 17.3](./03-sending-a-transfer.md)); a gas budget
+for the whole block, which may split it into several rounds ([lesson 17.4](./04-rounds.md)); privileges
+(lessons [17.5](./05-privileges.md) and [17.6](./06-who-wins.md)); and services leaving and arriving (lessons [17.7](./07-ejecting-a-service.md) and
+[17.8](./08-creating-a-service.md)).
 
 ## The tests
 
@@ -129,8 +131,23 @@ pass only if those reports are left alone.
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/accumulate.ts' does not provide an export named 'accumulateBlock'
+...
+✖ test/accumulate.test.ts (203.5ms)
+...
+ℹ tests 465
+ℹ suites 0
+ℹ pass 464
+ℹ fail 1
+...
+```
+
+Red: `src/accumulate.ts` doesn't export `accumulateBlock` yet. The four steps and the
+small helper that finds a service's code come in one snippet.
 
 ## The code
 
@@ -211,10 +228,24 @@ fresh copy of the starting accounts, which is all "the same starting state" take
 
 ```sh
 npm test
-# prints: same_round_storage_isolation-2: the block ends as the vector says
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ always_accumulate-1: the block ends as the vector says (8.8ms)
+...
+✔ same_round_storage_isolation-2: the block ends as the vector says (14.6ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (205.5ms)
+...
+ℹ tests 507
+ℹ suites 0
+ℹ pass 507
+ℹ fail 0
+...
+reported 507 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738801360
+...
 ```
 
 ## Watch it
@@ -270,9 +301,17 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/accumulate.ts
-# prints: service 1729: 1 digest(s), 29643 gas
-# prints: the vector says: 1 digest(s), 29643 gas
-# prints: reported to Grafana
+```
+
+```text
+2 report(s) at slot 43: 2 service(s)
+service 1729: 1 digest(s), 29643 gas
+  the vector says: 1 digest(s), 29643 gas
+  storage: 0x6c617374 = 0x033fde3d
+service 1730: 1 digest(s), 34413 gas
+  the vector says: 1 digest(s), 34413 gas
+  storage: 0x6672656164 = 0x00
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738806530
 ```
 
 Two services in one round, each writing its own key, each using exactly the vector's gas.
@@ -303,6 +342,7 @@ your fresh copy for each service.
 ## What you have
 
 A whole block's accumulation, in its simplest form, matching 29 official vectors on every
-account and every statistic.
+account and every statistic. Reports with prerequisites were left alone: [lesson 17.2](./02-waiting-reports.md)
+gives them a queue to wait in.
 
 Next: [17.2 Waiting reports](./02-waiting-reports.md)

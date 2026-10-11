@@ -25,7 +25,7 @@ All four are in the [glossary](../glossary.md).
 
 §12's *History and Queuing*, in plain steps:
 
-1. **Sort the new reports.** Those with no dependencies go now, as in 17.1. Each of the
+1. **Sort the new reports.** Those with no dependencies go now, as in [lesson 17.1](./01-a-blocks-accumulation.md). Each of the
    others joins the waiters with its set of dependencies, minus any package the history
    says is already done.
 2. **Line up everyone waiting.** The reports already in the queue, read around the ring
@@ -123,8 +123,24 @@ slot 43 for package A; the block at slot 44 brings A; both go.
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/accumulate.ts' does not provide an export named 'accumulationStateFromJson'
+...
+✖ test/accumulate.test.ts (174.3ms)
+...
+ℹ tests 465
+ℹ suites 0
+ℹ pass 464
+ℹ fail 1
+...
+```
+
+Red: `src/accumulate.ts` doesn't export `accumulationStateFromJson` yet, the reader for
+the state the queue lives in. The queue's pieces only make sense together, so they come
+in one snippet, and then the block is rebuilt on them.
 
 ## The code
 
@@ -355,11 +371,24 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm test
-# prints: a report waiting for package A goes in the same block as A
-# prints: enqueue_and_unlock_chain-4: the block ends as the vector says
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ enqueue_and_unlock_chain-4: the block ends as the vector says (45.6ms)
+...
+✔ a report waiting for package A goes in the same block as A (43.3ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (216.4ms)
+...
+ℹ tests 515
+ℹ suites 0
+ℹ pass 515
+ℹ fail 0
+...
+reported 515 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738811802
+...
 ```
 
 Thirty-six official vectors now end exactly as their post-states say: every account, every
@@ -371,10 +400,15 @@ statistic, the ready queue and the history.
 
 ```sh
 node bin/accumulate.ts
-# prints: slot 44: 1 new report(s), 1 waiting
-# prints: accumulated: 0x9aa14535, 0xd97d7965
-# prints: still waiting: 0
-# prints: reported to Grafana
+```
+
+```text
+slot 44: 1 new report(s), 1 waiting
+accumulated: 0x9aa14535, 0xd97d7965
+still waiting: 0
+service 1729: 2 digest(s), 40441 gas
+  the vector says: 2 digest(s), 40441 gas
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738817098
 ```
 
 A comes in, D was waiting for it, both go, nobody's left waiting, and service 1729's two
@@ -413,6 +447,7 @@ the rest with the newly done packages. Your `unlock` is the same recursion as a 
 ## What you have
 
 Reports that wait for each other, unlocked in the right order, and a queue and history
-that match 36 official vectors.
+that match 36 official vectors. Services so far only touch their own accounts; [lesson
+17.3](./03-sending-a-transfer.md) lets one pay another.
 
 Next: [17.3 Sending a transfer](./03-sending-a-transfer.md)

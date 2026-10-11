@@ -142,8 +142,24 @@ test("a gift: service 0 sends service 1 a hundred, with a memo", () => {
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/host.ts' does not provide an export named 'CASH'
+...
+✖ test/host.test.ts (171.9ms)
+...
+ℹ tests 499
+ℹ suites 0
+ℹ pass 489
+ℹ fail 10
+...
+```
+
+Red: `src/host.ts` doesn't export `CASH` yet, nor the rest of the transfer pieces. The
+transfer, the outbox that holds them and the host call come first, then the host learns
+to keep the outbox through a checkpoint.
 
 ## The code
 
@@ -342,10 +358,27 @@ older test, gets an empty one.
 
 ```sh
 npm test
-# prints: a gift: service 0 sends service 1 a hundred, with a memo
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ transfer_for_live_service-1: service 0 ends as the vector says (118.6ms)
+...
+✔ a gift: service 0 sends service 1 a hundred, with a memo (65.6ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (249.3ms)
+...
+✔ transfer: the money leaves at once, and a checkpoint keeps what was sent (0.2ms)
+✔ transfer refuses: no such service, too little gas, too little money (0.2ms)
+...
+ℹ tests 526
+ℹ suites 0
+ℹ pass 526
+ℹ fail 0
+...
+reported 526 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738822352
+...
 ```
 
 ## Watch it
@@ -417,15 +450,26 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/host.ts ../vectors/stf/accumulate/tiny/transfer_for_live_service-1.json 0
-# prints: host call 21 (transfer): φ₇ = 0
-# prints: sent 100 to service 1, with 80000 gas and the memo "gift"
-# prints: the test vector says: 255437
+```
+
+```text
+host call 2 (fetch): φ₇ = 122, 399367 gas left
+...
+host call 21 (transfer): φ₇ = 0, 188133 gas left
+host call 1 (grow_heap): φ₇ = 51, 181528 gas left
+host call 1 (grow_heap): φ₇ = 51, 177844 gas left
+host call 100 (log, from JIP-1): φ₇ = WHAT, 159107 gas left
+host call 5 (write): φ₇ = 1, 148562 gas left
+sent 100 to service 1, with 80000 gas and the memo "gift"
+the service stops: "halt", using 255437 gas
+the test vector says: 255437
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791738827853
 ```
 
 Service 0 reads its input, sends the gift (φ₇ = 0 is `OK`), and stops having used exactly
 the vector's gas, the transfer's 80,000 included. The *Host calls* panel shows the call
 and, just before the end, the transfer. Service 1's balance hasn't moved yet: that's
-the next lesson.
+[lesson 17.4](./04-rounds.md).
 
 ![Host calls panel](./images/03-host-calls.png)
 
@@ -450,6 +494,7 @@ trap again: from 2^63 up, an `int64` looks negative. A `bigint` has neither prob
 ## What you have
 
 Services that pay each other: the money leaves at once, a failure takes it back, and eight
-official service runs that send transfers match their vectors.
+official service runs that send transfers match their vectors. The money has left; it
+hasn't arrived. [Lesson 17.4](./04-rounds.md) delivers it, in a second round.
 
 Next: [17.4 Rounds](./04-rounds.md)
