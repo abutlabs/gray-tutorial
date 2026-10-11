@@ -5,7 +5,47 @@ with a small example. Where the Gray Paper (the GP, JAM's specification) has a s
 it, the symbol comes next, and the link at the end goes to the lesson that builds it.
 
 You don't need to read this page first. Come back whenever a word stops you. The groups go
-from the most everyday words to the most JAM-specific ones.
+from the most everyday words to the most JAM-specific ones, after a table of the Gray
+Paper's symbols.
+
+## Gray Paper symbols
+
+The Gray Paper names things with letters, mostly Greek. Here is each one this tutorial uses,
+how to say it (so you can search for it), what it stands for, and where it first appears.
+
+| Symbol | Say it | What it is | First in |
+| --- | --- | --- | --- |
+| σ | sigma | the whole state: everything the chain remembers | [0.1](./00-start/01-what-you-will-build.md) |
+| Υ | upsilon | the state transition: the state and a block give the next state | [0.1](./00-start/01-what-you-will-build.md) |
+| ℰ | script E | encoding a value as bytes; ℰ_l: in exactly l bytes | [2.1](./02-codec/01-fixed-width-integers.md) |
+| α | alpha | the authorizer pools | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| φ | phi | the authorizer queue | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| β | beta | recent blocks | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| γ | gamma | Safrole's state: the ticket lottery | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| ψ | psi | past judgements, from disputes | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| η | eta | entropy | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| ι | iota | the next validators | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| κ | kappa | the validators | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| λ | lambda | the previous validators | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| ρ | rho | reports awaiting availability | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| τ | tau | the time: the current timeslot | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| χ | chi | the privileged services | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| π | pi | the statistics | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| ω | omega | reports ready to accumulate (the ready queue) | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| ξ | xi | recently accumulated work-packages | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| θ | theta | the last accumulation outputs | [6.2](./06-state-and-merklization/02-state-keys.md) |
+| Φ | capital phi | the filter that keeps offenders out of a validator set | [8.2](./08-safrole/02-rotating-the-validators.md) |
+| ζ | zeta | a program's code, followed by zeros forever | [15.2](./15-the-pvm/02-instructions.md) |
+| Ψ | capital psi | running the PVM; Ψ₁ is one step | [15.3](./15-the-pvm/03-the-machine.md) |
+| ε | epsilon | how a PVM step ended: carry on, halt, panic, ... | [15.3](./15-the-pvm/03-the-machine.md) |
+| μ | mu | the PVM's memory | [15.4](./15-the-pvm/04-memory.md) |
+| ν | nu | an instruction's immediate values (ν_X, ν_Y) | [15.4](./15-the-pvm/04-memory.md) |
+| Ω | capital omega | the host calls: Ω_G is gas, Ω_Y is fetch, ... | [16.1](./16-host-calls/01-calling-the-host.md) |
+| Δ | capital delta | accumulation: Δ₁ one service, Δ* one round, Δ+ every round | [16.7](./16-host-calls/07-a-services-inputs.md) |
+| Σ | capital sigma | a sum | [18.2](./18-statistics/02-what-cores-and-services-did.md) |
+
+One letter does two jobs in these lessons. Parts 15 to 17 also write the PVM's registers
+as ω (ω₇ is register 7), as Gray Papers before 0.7 did; version 0.8.0 writes them φ.
 
 ## The big picture
 

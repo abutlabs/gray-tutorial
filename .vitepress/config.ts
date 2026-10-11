@@ -20,7 +20,8 @@ export default defineConfig({
   lastUpdated: false,
   markdown: { config: snippetLabels, codeTransformers: [shellComments()] },
   themeConfig: {
-    search: { provider: "local" },
+    // every word you type must match, so "ready queue" finds the ready queue first
+    search: { provider: "local", options: { miniSearch: { searchOptions: { combineWith: "AND" } } } },
     nav: [
       { text: "Glossary", link: "/glossary" },
       { text: "JAM learning", link: "https://abutlabs.github.io/jam-learning/" },
