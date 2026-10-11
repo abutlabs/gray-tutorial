@@ -20,15 +20,17 @@ and every test run from then on reports itself.
   by one id. *Example:* in Grafana, pick a run to see only what it did.
 - **Reporter.** A plug-in for Node's test runner that receives every test's result. Yours
   sends them to the stack. *Example:* `test/grafana.ts`, later in this lesson.
+- **Grafana.** The dashboards where your client's runs show up. *Example:* the page a
+  `reported to Grafana` link opens.
 
 ## Two kinds of signal
 
 | Signal | What it answers | Where it goes |
 | --- | --- | --- |
-| **Events**: one line of JSON per thing that happened | What happened, in what order? | Loki |
-| **Numbers**: one value per run | How many tests passed? What slot is it? | Pushgateway, then Prometheus |
+| *Events*: one line of JSON per thing that happened | What happened, in what order? | Loki |
+| *Numbers*: one value per run | How many tests passed? What slot is it? | Pushgateway, then Prometheus |
 
-A **run** (one `npm test`, or one program) collects its events and numbers and sends
+A *run* (one `npm test`, or one program) collects its events and numbers and sends
 them in one go, at the end, all labelled with the run's id. In Grafana you can pick a
 run and see only what it did.
 
@@ -150,7 +152,7 @@ them.
 
 ## Every test run, reported
 
-Node's test runner lets you plug in a **reporter**: a function that gets every test's
+Node's test runner lets you plug in a *reporter*: a function that gets every test's
 result as it happens. This one turns the results into a run (an event per test, the
 totals as numbers) and reports it.
 

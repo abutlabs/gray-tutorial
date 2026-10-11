@@ -14,6 +14,8 @@ Your first piece of real JAM. It's tiny, and it is everywhere: every block in JA
   Common Era is 1,735,732,800 seconds after it.
 - **Header.** A block's cover page; among other things, it names the block's slot
   ([lesson 4.6](../04-blocks/06-the-header.md)). *Example:* a header saying slot 43.
+- **Test.** A small program that checks one thing your code should do, and fails loudly
+  if it doesn't. *Example:* "an hour is 600 slots", below.
 - **Test-driven development (TDD).** Writing a test before the code it tests, watching it
   fail, then writing the code that makes it pass. *Example:* this lesson's `slotAt`.
 - **Assertion.** One check inside a test: if the value isn't what it should be, the test
@@ -27,7 +29,7 @@ Your first piece of real JAM. It's tiny, and it is everywhere: every block in JA
 
 ## What the Gray Paper says
 
-JAM keeps time in six-second **timeslots**, counted from the **JAM Common Era**: 12:00
+JAM keeps time in six-second *timeslots*, counted from the *JAM Common Era*: 12:00
 UTC on 1 January 2025 (GP §4, *Time*), which is 1,735,732,800 seconds after the Unix
 epoch. One slot lasts P = 6 seconds (§4, *Epochs and Slots*). So slot 0 is the first six
 seconds of the era, slot 1 the next six, and slot 600 starts exactly one hour in.

@@ -280,6 +280,10 @@ value. *Example:* a header's epoch mark is only there at an epoch's start.
 
 ## Time and the chain
 
+**JAM Common Era.** The moment JAM's clock starts: 12:00 UTC on 1 January 2025,
+1,735,732,800 seconds after the Unix epoch. *Example:* slot 0 begins right then.
+([0.4](./00-start/04-the-jam-clock.md))
+
 **Timeslot (slot).** τ. A six-second tick of JAM's clock, counted from 0 at 12:00 UTC on
 1 January 2025, the *JAM Common Era*. At most one block is made per slot. *Example:* 12:00:06
 that day was slot 1. ([0.4](./00-start/04-the-jam-clock.md))

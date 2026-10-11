@@ -7,6 +7,9 @@ VS Code (or any editor) and Docker Desktop.
 
 ## New words
 
+- **TypeScript.** JavaScript with types: you write down what kind of value each thing is,
+  and a checker, `tsc`, catches mix-ups before you run anything. *Example:* `const slot:
+  number = 42`.
 - **Node.** The program that runs JavaScript (and, in recent versions, TypeScript) outside a
   browser. *Example:* `node --version` says which one you have.
 - **nvm.** A tool that installs Node versions and switches between them. *Example:*

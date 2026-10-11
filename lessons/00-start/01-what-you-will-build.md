@@ -24,6 +24,9 @@ read most of the Gray Paper, one rule at a time, with code running beside it. Sn
   seconds. *Example:* the test vectors include runs of 100 real blocks.
 - **State.** Everything the chain remembers between blocks: who the validators are, every
   service's data, the time, and more. *Example:* "it's slot 43" is part of the state.
+- **State transition.** The rule that takes the state before a block, and the block, to
+  the state after it: the Gray Paper's Υ. *Example:* the state at slot 43, and the block
+  for slot 44, give the state at slot 44.
 - **Test vector.** An official example: an input, with the exact output a correct client
   must produce from it. *Example:* a block, and the state it must lead to.
 
@@ -45,7 +48,7 @@ equation (§4, *Overview*):
   from validator keys to the last few blocks, plus the service accounts.
 - **B** is the block.
 - **σ′** (sigma prime) is the state after it.
-- **Υ** (upsilon) is the **state-transition function**, the machine that turns one into
+- **Υ** (upsilon) is the *state-transition function*, the machine that turns one into
   the other.
 
 That's it. A blockchain, says the Gray Paper, is a starting state plus Υ, and almost
@@ -109,7 +112,7 @@ needed it. You get it on day one.
 
 ## The referee
 
-The official **test vectors** (the `davxy/jam-test-vectors` repository, which every JAM
+The official *test vectors* (the `davxy/jam-test-vectors` repository, which every JAM
 team tests against) are inputs paired with the exact outputs a correct client produces.
 They are the referee: when your code and a vector disagree, the vector wins. (Unless the
 vectors' own changelog says otherwise. Even referees publish corrections.)
