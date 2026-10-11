@@ -30,14 +30,14 @@ Addresses wrap round at 2^32 (the GP's ↻), and every value is little-endian.
 
 | Instructions | Address | Does |
 | --- | --- | --- |
-| `load_u8` … `load_u64`, `load_i8` … `load_i32` | ν_X | ω_A ← memory; `i` sign-extends |
-| `load_ind_u8` … `load_ind_u64`, `load_ind_i…` | ω_B + ν_X | the same, through a register |
-| `store_u8` … `store_u64` | ν_X | memory ← ω_A |
-| `store_ind_u8` … `store_ind_u64` | ω_B + ν_X | memory ← ω_A |
+| `load_u8` … `load_u64`, `load_i8` … `load_i32` | ν_X | φ_A ← memory; `i` sign-extends |
+| `load_ind_u8` … `load_ind_u64`, `load_ind_i…` | φ_B + ν_X | the same, through a register |
+| `store_u8` … `store_u64` | ν_X | memory ← φ_A |
+| `store_ind_u8` … `store_ind_u64` | φ_B + ν_X | memory ← φ_A |
 | `store_imm_u8` … `store_imm_u64` | ν_X | memory ← ν_Y |
-| `store_imm_ind_u8` … `store_imm_ind_u64` | ω_A + ν_X | memory ← ν_Y |
+| `store_imm_ind_u8` … `store_imm_ind_u64` | φ_A + ν_X | memory ← ν_Y |
 
-A store keeps only the low bytes: `store_u8` writes ω_A mod 2^8.
+A store keeps only the low bytes: `store_u8` writes φ_A mod 2^8.
 
 ## The tests
 
@@ -177,7 +177,7 @@ Now the machine. It gets a new way to stop, a memory, and the new family.
 /** How a step ends (GP's ε): carry on, finish, fail, or fault on a page of memory. */
 export type Exit = "continue" | "halt" | "panic" | { fault: number };
 
-/** The machine's state: the program, ı, the registers ω, and the memory μ. */
+/** The machine's state: the program, ı, the registers φ, and the memory μ. */
 export type Machine = {
   program: Program;
   pc: number;
@@ -233,7 +233,7 @@ function memoryInstructions(m: Machine, ins: Instruction): Exit | undefined {
   if (store) {
     const [, imm, indirect, bits] = store;
     const n = Number(bits) / 8;
-    const value = imm ? y : reg[a]; // store_imm… stores an immediate, the others ω_A
+    const value = imm ? y : reg[a]; // store_imm… stores an immediate, the others φ_A
     const base = !indirect ? 0n : imm ? reg[a] : reg[b]; // …_ind adds a register
     const bytes = encodeFixed(value % 2n ** BigInt(8 * n), n);
     const error = writeMemory(m.memory, base + x, bytes);

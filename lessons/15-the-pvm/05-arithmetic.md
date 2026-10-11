@@ -25,9 +25,9 @@ corners that catch people:
 - **Shifts**: `shlo_r` (logical) fills with zeros; `shar_r` (arithmetic) keeps the sign,
   so −8 shifted right is −4. Shift amounts are taken mod 32 or mod 64.
 - **The immediate forms** are the three-register ones with ν_X standing in for a
-  register: `add_imm_64` writes ω_A from ω_B + ν_X. The **alt** forms swap the inputs:
-  `shlo_l_imm_alt_32` shifts ν_X by ω_B. Two come only with an immediate, `neg_add_imm`
-  (ν_X − ω_B) and `set_gt_imm` (ω_B > ν_X): with three registers you'd just swap them
+  register: `add_imm_64` writes φ_A from φ_B + ν_X. The **alt** forms swap the inputs:
+  `shlo_l_imm_alt_32` shifts ν_X by φ_B. Two come only with an immediate, `neg_add_imm`
+  (ν_X − φ_B) and `set_gt_imm` (φ_B > ν_X): with three registers you'd just swap them
   and use `sub` or `set_lt`.
 - **`cmov`** moves a value only if a condition register is zero (`iz`) or not (`nz`),
   otherwise the destination keeps what it had.
@@ -83,7 +83,7 @@ test("rotations carry the bits round", () => {
   assert.equal(three(221, 0x80000000n, 1n), 1n); // rot_l_32: bit 31 to bit 0
 });
 
-test("immediate forms: ω_B with ν_X, and the alt forms the other way round", () => {
+test("immediate forms: φ_B with ν_X, and the alt forms the other way round", () => {
   // [opcode, A + 16·B, ν_X]: A = r2 gets the result, B = r1 holds 4, ν_X = 3
   assert.equal(after([138, 0x12, 3], [0n, 4n])[2], 32n); // shlo_l_imm_32: 4 << 3
   assert.equal(after([144, 0x12, 3], [0n, 4n])[2], 48n); // shlo_l_imm_alt_32: 3 << 4
@@ -153,8 +153,8 @@ const rotateRight = (x: bigint, k: bigint, n: bigint) =>
   mod((x >> k) | (x << (n - k)), 2n ** n);
 
 /**
- * Each operation, by its three-register name: p and q are its two inputs (ω_A and ω_B,
- * or ω_B and ν_X for the immediate forms), and `old` the register being written.
+ * Each operation, by its three-register name: p and q are its two inputs (φ_A and φ_B,
+ * or φ_B and ν_X for the immediate forms), and `old` the register being written.
  */
 export const OPERATIONS: Record<string, (p: bigint, q: bigint, old: bigint) => bigint> = {
   add_32: (p, q) => ext32(p + q),
@@ -256,7 +256,7 @@ family now, so `basics` gets shorter:
 function basics(m: Machine, ins: Instruction): Exit | undefined {
   const [a, b] = ins.registers; // the GP's register letters, in its order
   const [x] = ins.immediates;
-  const reg = m.registers; // ω
+  const reg = m.registers; // φ
   switch (ins.name) {
     case "trap":
       return "panic";
@@ -270,7 +270,7 @@ function basics(m: Machine, ins: Instruction): Exit | undefined {
     case "load_imm_64":
       reg[a] = x;
       return "continue";
-    case "move_reg": // registers [D, A]: ω′_D = ω_A
+    case "move_reg": // registers [D, A]: φ′_D = φ_A
       reg[a] = reg[b];
       return "continue";
     case "branch_eq":
@@ -304,10 +304,10 @@ function arithmetic(m: Machine, ins: Instruction): Exit | undefined {
   const [x] = ins.immediates;
   const reg = m.registers;
   if (ins.layout === "regRegImm") {
-    const [p, q] = swapped ? [x, reg[b]] : [reg[b], x]; // ω′_A from ω_B and ν_X
+    const [p, q] = swapped ? [x, reg[b]] : [reg[b], x]; // φ′_A from φ_B and ν_X
     reg[a] = f(p, q, reg[a]);
   } else {
-    reg[d] = f(reg[a], reg[b], reg[d]); // three registers: ω′_D from ω_A and ω_B
+    reg[d] = f(reg[a], reg[b], reg[d]); // three registers: φ′_D from φ_A and φ_B
   }
   return "continue";
 }

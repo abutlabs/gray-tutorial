@@ -46,7 +46,7 @@ import { bootstrapCode } from "./vectors.ts";
 /** The gas a hand-made block costs, from its first instruction. */
 const gas = (...instructions: number[][]) => blockCost(assemble(instructions), 0);
 
-// load_ind_u64 is [130, A + 16·B]: ω_A from memory at ω_B. trap ends each block.
+// load_ind_u64 is [130, A + 16·B]: φ_A from memory at φ_B. trap ends each block.
 test("one instruction on its own costs its cycles: the 3 is the pipeline's overhead", () => {
   assert.equal(gas([0]), 2); // trap
   assert.equal(gas([40, 0]), 15); // jump

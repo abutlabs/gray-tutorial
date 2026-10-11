@@ -9,7 +9,7 @@ WHAT, at 1,000 gas apiece. Teach your host `grow_heap`, and watch the number lan
 
 A program's heap is lesson 15.8's read-write zone: w, then z pages of zeros. **`grow_heap`**
 (host call 1, App. B.5, Ω_Gemini) lets a program make it bigger, a page at a time, up
-towards the stack. ω₇ is the page the heap should end at: one past its last page.
+towards the stack. φ₇ is the page the heap should end at: one past its last page.
 
 Three page numbers do the work:
 
@@ -22,12 +22,12 @@ Three page numbers do the work:
 
 Then:
 
-- **If ω₇ ≤ h** (the heap is already that big) **or ω₇ > b** (that's too big): nothing
-  changes, ω₇ becomes h, and it costs 275. So asking for less is how a program asks
+- **If φ₇ ≤ h** (the heap is already that big) **or φ₇ > b** (that's too big): nothing
+  changes, φ₇ becomes h, and it costs 275. So asking for less is how a program asks
   "where does my heap end?".
-- **Otherwise** it costs 275 plus 121 for each new page, the pages up to ω₇ become
-  writable (all zeros), and ω₇ stays as asked. Without that much gas: out of gas, and
-  ω₇ is h.
+- **Otherwise** it costs 275 plus 121 for each new page, the pages up to φ₇ become
+  writable (all zeros), and φ₇ stays as asked. Without that much gas: out of gas, and
+  φ₇ is h.
 
 To find a and b, `grow_heap` needs the program's o and s, so accumulation's F hands it the
 service's code.
@@ -157,7 +157,7 @@ import { INPUT_SIZE, roundUp, ZONE } from "./pvm/standard.ts";
 
 /**
  * grow_heap (GP App. B.5, Ω_Gemini): makes the read-write zone's pages writable up to page
- * ω₇ (not including it), and says where the heap ends now. The zone starts at page a, may
+ * φ₇ (not including it), and says where the heap ends now. The zone starts at page a, may
  * reach b, and ends at h today. Asking for no more than h, or past b, just reports h.
  */
 export function growHeap(m: Machine, code: ServiceCode): HostExit {
@@ -255,7 +255,7 @@ run.event("stop", { exit: JSON.stringify(exit), gas: Number(machine.gas) });
 
 ```sh
 node bin/host.ts
-# prints: host call 1 (grow_heap): ω₇ = 51, 98728 gas left
+# prints: host call 1 (grow_heap): φ₇ = 51, 98728 gas left
 # prints: the service stops: "halt", using 16417 gas
 # prints: the test vector says: 16417
 # prints: reported to Grafana

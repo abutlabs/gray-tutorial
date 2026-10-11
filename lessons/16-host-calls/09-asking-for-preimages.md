@@ -18,7 +18,7 @@ up to three slots (§9):
 | [x, y] | provided at x, forgotten at y |
 | [x, y, w] | provided at x, forgotten at y, asked for again at w |
 
-The three calls (App. B.7) all take the hash from memory at ω₇ and the length from ω₈.
+The three calls (App. B.7) all take the hash from memory at φ₇ and the length from φ₈.
 A length of 2^32 or more is HUH (no preimage is that long); an unreadable hash, a panic.
 Then:
 
@@ -29,8 +29,8 @@ Then:
   forgotten more than D slots ago, [x, y] with y < t − D: the request and the preimage, and
   the deposit with them. One that's provided, [x], is marked forgotten now: [x, t]. One asked
   for again, [x, y, w] with y long enough ago, becomes [w, t]. Anything else: HUH.
-- **`query`** (23, 643 gas) reports: ω₇ = the number of slots plus 2^32 times the first,
-  ω₈ = the second plus 2^32 times the third. No such request: NONE, and ω₈ = 0.
+- **`query`** (23, 643 gas) reports: φ₇ = the number of slots plus 2^32 times the first,
+  φ₈ = the second plus 2^32 times the third. No such request: NONE, and φ₈ = 0.
 
 D is the expunge period, `expunge_period` in the config: 32 slots on tiny. t is the slot of
 the block, so accumulation's host needs to know it now.
@@ -77,7 +77,7 @@ import { forget, HUH, OK, query, solicit } from "../src/host.ts";
 
 const HASH = new Uint8Array(32).fill(5);
 
-/** A machine about to make a request: ω₇ points at a hash of fives, ω₈ = the length. */
+/** A machine about to make a request: φ₇ points at a hash of fives, φ₈ = the length. */
 function requesting(length: bigint) {
   const memory = new Map();
   addPages(memory, 0x20000, 4096, "W");
@@ -219,7 +219,7 @@ export function copyAccounts(accounts: Map<number, Account>): Map<number, Accoun
 ```ts
 export const HUH = 2n ** 64n - 9n; // that can't be done now
 
-/** The hash a request names, in memory at ω₇, in hex; none if it isn't readable. */
+/** The hash a request names, in memory at φ₇, in hex; none if it isn't readable. */
 function requestedHash(m: Machine): string | undefined {
   const hash = readMemory(m.memory, m.registers[7], 32);
   return hash instanceof Uint8Array ? toHex(hash) : undefined;
@@ -227,8 +227,8 @@ function requestedHash(m: Machine): string | undefined {
 
 /**
  * query (GP App. B.7, Ω_Q): what has become of the service's request for the preimage of
- * ω₇'s hash, ω₈ bytes long. The slots in its history come back packed into ω₇ and ω₈:
- * their count in ω₇'s low 32 bits, the first above it, the second and third in ω₈.
+ * φ₇'s hash, φ₈ bytes long. The slots in its history come back packed into φ₇ and φ₈:
+ * their count in φ₇'s low 32 bits, the first above it, the second and third in φ₈.
  */
 export function query(m: Machine, a: Accumulation): HostExit {
   if (!charge(m, 643)) return "oog";
@@ -247,7 +247,7 @@ export function query(m: Machine, a: Accumulation): HostExit {
 }
 
 /**
- * solicit (GP App. B.7, Ω_S): asks for the preimage of ω₇'s hash, ω₈ bytes long. A new
+ * solicit (GP App. B.7, Ω_S): asks for the preimage of φ₇'s hash, φ₈ bytes long. A new
  * request starts with no slots; one already provided and since forgotten ([x, y]) is asked
  * for again at slot t. Anything else: HUH. A request costs deposit (lesson 14.2): FULL if
  * the balance can't cover it.
@@ -271,7 +271,7 @@ export function solicit(m: Machine, a: Accumulation, t: number): HostExit {
 }
 
 /**
- * forget (GP App. B.7, Ω_F): gives up on the preimage of ω₇'s hash, ω₈ bytes long. A
+ * forget (GP App. B.7, Ω_F): gives up on the preimage of φ₇'s hash, φ₈ bytes long. A
  * request never provided, or provided and forgotten more than D slots ago, goes, preimage
  * and all. One provided at x is marked forgotten now, [x, t]; one asked for again after
  * that ([x, y, w], y long enough ago) becomes [w, t]. Anything else: HUH.
@@ -300,7 +300,7 @@ export function forget(m: Machine, a: Accumulation, t: number, D: number): HostE
   return setTo(m, OK);
 }
 
-/** ω₇ = an answer, and carry on. */
+/** φ₇ = an answer, and carry on. */
 function setTo(m: Machine, answer: bigint): HostExit {
   m.registers[7] = answer;
   return "continue";

@@ -8,8 +8,8 @@ Gray Paper but one.
 
 ## What the Gray Paper says
 
-Appendix A.5, the instructions with two registers (101 to 110). Each one makes ω′_D from
-ω_A alone, and the byte after the opcode is D + 16·A.
+Appendix A.5, the instructions with two registers (101 to 110). Each one makes φ′_D from
+φ_A alone, and the byte after the opcode is D + 16·A.
 
 - **`count_set_bits`**: how many bits are 1.
 - **`leading_zero_bits`**: how many 0s come above the highest 1. **`trailing_zero_bits`**:
@@ -41,7 +41,7 @@ import { assemble } from "../src/pvm/program.ts";
 
 const MAX = 2n ** 64n - 1n; // all 64 bits set
 
-/** ω′_D after one two-register instruction, [opcode, D + 16·A]: here D = r1, A = r0. */
+/** φ′_D after one two-register instruction, [opcode, D + 16·A]: here D = r1, A = r0. */
 function one(opcode: number, r0: bigint): bigint {
   const machine = newMachine(assemble([[opcode, 0x01]]), [r0]);
   step(machine);
@@ -93,7 +93,7 @@ npm test
 
 ```ts
 // Bits and bytes (GP App. A.5, two registers): instructions that count a register's bits,
-// widen its lowest bytes, or turn it back to front. Each makes ω′_D from ω_A alone.
+// widen its lowest bytes, or turn it back to front. Each makes φ′_D from φ_A alone.
 
 import { decodeFixed, encodeFixed } from "../codec/numbers.ts";
 import { signExtend } from "./instructions.ts";
@@ -105,7 +105,7 @@ const ones = (s: string) => BigInt(s.replaceAll("0", "").length);
 const leadingZeros = (s: string) => BigInt(/^0*/.exec(s)![0].length);
 const trailingZeros = (s: string) => BigInt(/0*$/.exec(s)![0].length);
 
-/** Each instruction's operation, by name: x is ω_A, and the answer goes to ω′_D. */
+/** Each instruction's operation, by name: x is φ_A, and the answer goes to φ′_D. */
 export const BIT_OPERATIONS: Record<string, (x: bigint) => bigint> = {
   count_set_bits_64: (x) => ones(bits(x, 64)),
   count_set_bits_32: (x) => ones(bits(x, 32)),
@@ -137,7 +137,7 @@ A family to run them, and a place in the line-up:
 ```ts
 import { BIT_OPERATIONS } from "./bits.ts";
 
-/** Lesson 15.7's instructions: ω′_D from ω_A alone, by counting, widening or reversing. */
+/** Lesson 15.7's instructions: φ′_D from φ_A alone, by counting, widening or reversing. */
 function bitsAndBytes(m: Machine, ins: Instruction): Exit | undefined {
   const f = BIT_OPERATIONS[ins.name];
   if (!f) return undefined;

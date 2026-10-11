@@ -23,8 +23,8 @@ Three rows depend on more than the instruction's name:
   `add_64 r0 = r0 + r1` needs 1 decode slot and `add_64 r2 = r0 + r1` needs 2. Picture a
   CPU whose add always overwrites one of its inputs: aiming at a third register takes an
   extra copy first.
-- **𝔓_S(a, b)**, for the shifts and rotations with three registers: a if ω_D is the same
-  register as ω_A.
+- **𝔓_S(a, b)**, for the shifts and rotations with three registers: a if φ_D is the same
+  register as φ_A.
 - **𝔟**, a branch's cycles: 20, or just 1 if either way it can go (the next instruction, or
   the target) starts with `trap` or `unlikely`. That's lesson 15.6's hint at work: a branch
   to a `trap` is usually a check that should never fail, so a CPU would guess it right.
@@ -216,7 +216,7 @@ export function instructionCost(program: Program, ins: Instruction): Cost {
   const overlap = writes.some((r) => reads.includes(r));
   const [a, , d] = ins.registers; // for the shifts: registers [A, B, D]
   const p = (x: number, y: number) => (overlap ? x : y); // 𝔓: writes a register it reads?
-  const ps = (x: number, y: number) => (a === d ? x : y); // 𝔓_S: is ω_D the same as ω_A?
+  const ps = (x: number, y: number) => (a === d ? x : y); // 𝔓_S: is φ_D the same as φ_A?
   const b = ins.name.startsWith("branch_") ? branchCost(program, ins) : 0;
   return rowOf(ins.name)({ p, ps, b });
 }

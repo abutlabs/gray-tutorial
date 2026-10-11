@@ -126,7 +126,7 @@ test("a core changes hands for the whole block, with a new queue", () => {
   const before = accumulationStateFromJson(vector.pre_state);
   const { state, queues } = accumulateBlock(TINY, before, vector.input.slot, reportsOf(vector));
   assert.deepEqual([before.privileges.assign, state.privileges.assign], [[0, 0], [1, 0]]);
-  assert.equal(queues.get(0)!.length, 80); // for Part 13's φ
+  assert.equal(queues.get(0)!.length, 80); // for Part 13's ϕ
 });
 ```
 
@@ -336,7 +336,7 @@ export function accumulateBlock(
   let free = state.free; // the always-accumulate services,
   let transfers: Transfer[] = []; // and no transfers yet
   let privileges = state.privileges;
-  const queues = new Map<number, Bytes[]>(); // the cores' new authorizer queues, for φ′
+  const queues = new Map<number, Bytes[]>(); // the cores' new authorizer queues, for ϕ′
   const used = new Map<number, bigint>(); // G: gas, over every round
   const received = new Map<number, number>(); // T: transfers delivered
   while (todo.length + free.size + transfers.length > 0) {
@@ -377,7 +377,7 @@ export function accumulateBlock(
 }
 ```
 
-The new queues go back beside the statistics. Part 13's φ will take them when Part 19
+The new queues go back beside the statistics. Part 13's ϕ will take them when Part 19
 puts a whole block together.
 
 **Run**

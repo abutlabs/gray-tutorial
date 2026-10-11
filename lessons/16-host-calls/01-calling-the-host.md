@@ -17,14 +17,14 @@ App. B sets the rules every host call follows:
 
 - **Each one costs gas**, its g, taken before anything else. If that's more than is left,
   the machine is out of gas and nothing else happens.
-- **The answer mostly comes back in ω₇.** Some values right at the top of the 64-bit
+- **The answer mostly comes back in φ₇.** Some values right at the top of the 64-bit
   range mean trouble (App. B.1): NONE is 2^64 − 1, "no such item", and WHAT is
   2^64 − 2, "no such host call". OK is 0.
 - **There are 28 host calls**, numbered from `gas` (0) to `provide` (27). Accumulation's
   host function F (App. B.4) knows them all, and answers anything else with WHAT, for
   1,000 gas.
 
-The first and simplest is **`gas`** (App. B.5, Ω_G): ω₇ becomes the gas left, after paying
+The first and simplest is **`gas`** (App. B.5, Ω_G): φ₇ becomes the gas left, after paying
 48 to ask.
 
 ## The tests
@@ -92,7 +92,7 @@ import type { Exit, Machine } from "./pvm/machine.ts";
 import { runWithGas } from "./pvm/gas.ts";
 import { skip } from "./pvm/instructions.ts";
 
-/** The answers a host call can give in ω₇ when it can't do what was asked (GP App. B.1). */
+/** The answers a host call can give in φ₇ when it can't do what was asked (GP App. B.1). */
 export const NONE = 2n ** 64n - 1n; // no such item
 export const WHAT = 2n ** 64n - 2n; // no such host call
 export const OK = 0n;
@@ -131,14 +131,14 @@ export function charge(m: Machine, g: number): boolean {
   return m.gas >= 0n;
 }
 
-/** gas (GP App. B.5, Ω_G): ω₇ = the gas left, after paying 48 to ask. */
+/** gas (GP App. B.5, Ω_G): φ₇ = the gas left, after paying 48 to ask. */
 export function gas(m: Machine): HostExit {
   if (!charge(m, 48)) return "oog";
   m.registers[7] = m.gas;
   return "continue";
 }
 
-/** A host call nobody knows (GP App. B.4, the end of F): ω₇ = WHAT, for 1,000 gas. */
+/** A host call nobody knows (GP App. B.4, the end of F): φ₇ = WHAT, for 1,000 gas. */
 export function unknown(m: Machine): HostExit {
   m.registers[7] = WHAT;
   return charge(m, 1000) ? "continue" : "oog";

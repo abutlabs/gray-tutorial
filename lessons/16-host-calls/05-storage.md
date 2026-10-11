@@ -8,21 +8,21 @@ to the same gas *and* leave exactly the storage the vectors expect.
 
 ## What the Gray Paper says
 
-**`read`** (host call 4, App. B.5, Ω_R) looks a key up in a service's storage. ω₇ says
-whose (2^64 − 1 for its own), and the key is in memory, at ω₈, ω₉ bytes long. If the key
-isn't readable, the machine panics. The value comes out like `fetch`'s items, to ω₁₀,
-from byte ω₁₁, at most ω₁₂ bytes; NONE if there's no such key. It costs 2,407, plus 1,736
+**`read`** (host call 4, App. B.5, Ω_R) looks a key up in a service's storage. φ₇ says
+whose (2^64 − 1 for its own), and the key is in memory, at φ₈, φ₉ bytes long. If the key
+isn't readable, the machine panics. The value comes out like `fetch`'s items, to φ₁₀,
+from byte φ₁₁, at most φ₁₂ bytes; NONE if there's no such key. It costs 2,407, plus 1,736
 per KiB of key and 248 per KiB of value asked for.
 
-**`write`** (host call 5, Ω_W) changes the service's *own* storage. The key is at ω₇ (ω₈
-bytes) and the value at ω₉ (ω₁₀ bytes); an empty value deletes the key. ω₇ comes back as
+**`write`** (host call 5, Ω_W) changes the service's *own* storage. The key is at φ₇ (φ₈
+bytes) and the value at φ₉ (φ₁₀ bytes); an empty value deletes the key. φ₇ comes back as
 the length of the value that was there before, or NONE. It costs 2,442, plus 3,358 per KiB
 of key and 216 per KiB of value.
 
 The catch: every stored key costs the service deposit. Lesson 14.2's footprint counts one
 item and 34 + |key| + |value| bytes for each, and the minimum balance a_t grows with it.
 If after the write a_t would be more than the service's balance, nothing is written and
-ω₇ is **FULL** (2^64 − 5).
+φ₇ is **FULL** (2^64 − 5).
 
 ## The tests
 
@@ -42,7 +42,7 @@ function tinyAccounts(): Map<number, Account> {
 ```ts
 import { FULL, read, write } from "../src/host.ts";
 
-/** ω₇ on as given, and a writable page at 0x20000: the key "last" there, 1, 2, 3 at 0x20010. */
+/** φ₇ on as given, and a writable page at 0x20000: the key "last" there, 1, 2, 3 at 0x20010. */
 function storing(...r7on: bigint[]) {
   const memory = new Map();
   addPages(memory, 0x20000, 4096, "W");
@@ -127,8 +127,8 @@ import { readMemory } from "./pvm/memory.ts";
 export const FULL = 2n ** 64n - 5n; // not enough balance to keep that much
 
 /**
- * read (GP App. B.5, Ω_R): from the storage of service ω₇ (its own if ω₇ = 2^64 − 1), the
- * value under the key in memory at ω₈ (ω₉ bytes long), copied out like fetch from ω₁₀ on.
+ * read (GP App. B.5, Ω_R): from the storage of service φ₇ (its own if φ₇ = 2^64 − 1), the
+ * value under the key in memory at φ₈ (φ₉ bytes long), copied out like fetch from φ₁₀ on.
  */
 export function read(m: Machine, accounts: Map<number, Account>, s: number): HostExit {
   const [who, keyAt, keyLength, o, from, length] = m.registers.slice(7, 13);
@@ -140,8 +140,8 @@ export function read(m: Machine, accounts: Map<number, Account>, s: number): Hos
 }
 
 /**
- * write (GP App. B.5, Ω_W): stores the value at ω₉ (ω₁₀ bytes) under the key at ω₇ (ω₈
- * bytes), or deletes the key if the value is empty. ω₇ = the old value's length, or NONE.
+ * write (GP App. B.5, Ω_W): stores the value at φ₉ (φ₁₀ bytes) under the key at φ₇ (φ₈
+ * bytes), or deletes the key if the value is empty. φ₇ = the old value's length, or NONE.
  * If the service's balance can't cover its new footprint, nothing changes: FULL.
  */
 export function write(m: Machine, accounts: Map<number, Account>, s: number): HostExit {

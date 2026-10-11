@@ -9,7 +9,7 @@ call. One question runs right through it: is −1 less than 1? That depends on w
 
 Appendix A.5:
 
-- **Branches** compare ω_A with a register ω_B, or with an immediate ν_X, and jump if the
+- **Branches** compare φ_A with a register φ_B, or with an immediate ν_X, and jump if the
   comparison holds. It's lesson 15.3's `branch`: the target and the next instruction must
   both start basic blocks. There are ten comparisons: `eq`, `ne`, and `lt`, `le`, `ge`,
   `gt` in two flavours each. `_u` reads the 64 bits as an unsigned number, `_s` as a
@@ -18,13 +18,13 @@ Appendix A.5:
 - **−1 against 1.** A register holds −1 as 64 set bits. Unsigned, that's 2^64 − 1, the
   biggest number there is. Signed, it's −1. So `branch_lt_u` says −1 < 1 is false, and
   `branch_lt_s` says it's true. Same bits, opposite answers.
-- **`load_imm_jump`** (80) sets ω_A to ν_X and jumps to ν_Y. That's a function call: ν_X
+- **`load_imm_jump`** (80) sets φ_A to ν_X and jumps to ν_Y. That's a function call: ν_X
   is the way back, an address in the jump table (lesson 15.3), and the function returns
-  with `jump_ind` through ω_A. Programs keep the way back in r0, which is why lesson 15.3's
+  with `jump_ind` through φ_A. Programs keep the way back in r0, which is why lesson 15.3's
   program finished by jumping through r0.
-- **`load_imm_jump_ind`** (180) is the same call through a register: ω_A gets ν_X, and the
-  machine jumps through the table to ω_B + ν_Y. Think *function pointer*. ω_B is read as
-  it was before ω_A changes, which matters when they're the same register.
+- **`load_imm_jump_ind`** (180) is the same call through a register: φ_A gets ν_X, and the
+  machine jumps through the table to φ_B + ν_Y. Think *function pointer*. φ_B is read as
+  it was before φ_A changes, which matters when they're the same register.
 - **`unlikely`** (2) changes nothing at all. It marks a path a branch rarely takes, and
   only the gas meter cares: a branch with `unlikely` (or `trap`) at either end costs less.
   Gas gets its own lessons later.
@@ -83,7 +83,7 @@ test("a call: load_imm_jump leaves the way back in r0, and the function returns 
 });
 
 // load_imm_jump_ind is [opcode, A + 16·B, l_X, X, Y]: here A = r0, B = r3, X = 2, no Y.
-test("a call through a register: load_imm_jump_ind jumps to ω_B + ν_Y", () => {
+test("a call through a register: load_imm_jump_ind jumps to φ_B + ν_Y", () => {
   const registers = [0n, HALT_ADDRESS, 21n, 4n]; // r3 = 4: the function's address
   const machine = newMachine(withCall([180, 0x30, 0x01, 2]), registers);
   assert.equal(run(machine), "halt");
@@ -134,7 +134,7 @@ The four branches in `basics` move out to join their twelve siblings:
 function basics(m: Machine, ins: Instruction): Exit | undefined {
   const [a, b] = ins.registers; // the GP's register letters, in its order
   const [x] = ins.immediates;
-  const reg = m.registers; // ω
+  const reg = m.registers; // φ
   switch (ins.name) {
     case "trap":
       return "panic";
@@ -148,7 +148,7 @@ function basics(m: Machine, ins: Instruction): Exit | undefined {
     case "load_imm_64":
       reg[a] = x;
       return "continue";
-    case "move_reg": // registers [D, A]: ω′_D = ω_A
+    case "move_reg": // registers [D, A]: φ′_D = φ_A
       reg[a] = reg[b];
       return "continue";
     default:
@@ -165,7 +165,7 @@ const FAMILIES: Family[] = [basics, memoryInstructions, arithmetic, decisions];
 ```ts
 import { signed } from "./instructions.ts";
 
-/** How a branch compares ω_A with ω_B or ν_X: as unsigned numbers (u), or signed (s, Z₈). */
+/** How a branch compares φ_A with φ_B or ν_X: as unsigned numbers (u), or signed (s, Z₈). */
 const COMPARISONS: Record<string, (p: bigint, q: bigint) => boolean> = {
   eq: (p, q) => p === q,
   ne: (p, q) => p !== q,
@@ -186,15 +186,15 @@ function decisions(m: Machine, ins: Instruction): Exit | undefined {
   const reg = m.registers;
   if (ins.name.startsWith("branch_")) {
     const comparison = ins.name.slice("branch_".length).replace("_imm", "");
-    const q = ins.name.endsWith("_imm") ? x : reg[b]; // ω_A against ν_X, or against ω_B
+    const q = ins.name.endsWith("_imm") ? x : reg[b]; // φ_A against ν_X, or against φ_B
     return branch(m, ins, ins.target as number, COMPARISONS[comparison](reg[a], q));
   }
   switch (ins.name) {
-    case "load_imm_jump": // ω′_A = ν_X, and jump to ν_Y
+    case "load_imm_jump": // φ′_A = ν_X, and jump to ν_Y
       reg[a] = x;
       return jumpTo(m, ins.target as number);
     case "load_imm_jump_ind": {
-      const address = (reg[b] + y) % 2n ** 32n; // from ω_B as it was, before ω_A changes
+      const address = (reg[b] + y) % 2n ** 32n; // from φ_B as it was, before φ_A changes
       reg[a] = x;
       return jumpIndirect(m, address);
     }
@@ -208,14 +208,14 @@ function decisions(m: Machine, ins: Instruction): Exit | undefined {
 
 `COMPARISONS` is the whole Gray Paper table in ten lines. A branch's name says which
 comparison it wants (`branch_lt_s_imm` → `lt_s`) and whether its other side is ν_X or
-ω_B. In `load_imm_jump_ind`, the address is worked out *before* ω_A changes: write the
+φ_B. In `load_imm_jump_ind`, the address is worked out *before* φ_A changes: write the
 two lines the other way round and a call through r0 would jump to its own way back.
 
 **Run**
 
 ```sh
 npm test
-# prints: a call through a register: load_imm_jump_ind jumps to ω_B + ν_Y
+# prints: a call through a register: load_imm_jump_ind jumps to φ_B + ν_Y
 # prints: every branch in the GP's tables has a comparison: 16 of them
 # prints: fail 0
 # prints: reported

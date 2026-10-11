@@ -197,7 +197,7 @@
    "id": 42,
    "type": "logs",
    "title": "Host calls",
-   "description": "What bin/host.ts saw: every host call a real service made during accumulation, the answer it got in ω₇, the gas left, the transfers it sent, and how the service stopped.",
+   "description": "What bin/host.ts saw: every host call a real service made during accumulation, the answer it got in φ₇, the gas left, the transfers it sent, and how the service stopped.",
    "datasource": {
     "type": "loki",
     "uid": "loki"

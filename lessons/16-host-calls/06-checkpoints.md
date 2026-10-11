@@ -14,7 +14,7 @@ state (I(…)², the Gray Paper writes: I's context, twice). Every host call cha
 the fallback.
 
 - **`checkpoint`** (host call 18, App. B.7, Ω_C): Y′ = X, so everything done so far
-  survives whatever comes next. ω₇ = the gas left, after paying 103.
+  survives whatever comes next. φ₇ = the gas left, after paying 103.
 - **C, the collapse** (App. B.4): when the machine stops, a halt keeps X; a panic or
   running out of gas keeps Y. So without a checkpoint, a failed accumulation changes
   nothing at all.
@@ -285,7 +285,7 @@ const result = accumulate(TINY, a, vector.input.slot, 100_000n, (call, m) => {
   const name = HOST_CALLS[call] ?? (call === 100 ? "log, from JIP-1" : "?");
   const r7 = m.registers[7];
   const said = r7 === WHAT ? "WHAT" : r7 === NONE ? "NONE" : String(r7);
-  console.log(`host call ${call} (${name}): ω₇ = ${said}, ${m.gas} gas left`);
+  console.log(`host call ${call} (${name}): φ₇ = ${said}, ${m.gas} gas left`);
   run.event("call", { call, name, said, gas: Number(m.gas) });
 });
 console.log(`the service stops: ${JSON.stringify(result.exit)}, using ${result.gasUsed} gas`);
@@ -312,7 +312,7 @@ npm run typecheck
 
 ```sh
 node bin/host.ts
-# prints: host call 2 (fetch): ω₇ = 122, 99367 gas left
+# prints: host call 2 (fetch): φ₇ = 122, 99367 gas left
 # prints: the service stops: "halt", using 16417 gas
 # prints: the test vector says: 16417
 # prints: reported to Grafana

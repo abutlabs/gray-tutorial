@@ -23,18 +23,18 @@ All three are in the [glossary](../glossary.md).
 
 `new` is host call 19 (Appendix B.7, Ω_N). Service s asks for a new service:
 
-1. **Read.** The code's hash is the 32 bytes at ω₇ (unreadable: panic), the code's length
-   ω₈ (2^32 or more: panic), its least gas per item ω₉ and per memo ω₁₀, its gratis storage
-   ω₁₁, and an id it would like, ω₁₂.
-2. **The new account.** It keeps one request, for its own code, ω₈ bytes long: two items,
-   81 + ω₈ bytes. Its balance is its own minimum balance for that, and s pays it. Created
+1. **Read.** The code's hash is the 32 bytes at φ₇ (unreadable: panic), the code's length
+   φ₈ (2^32 or more: panic), its least gas per item φ₉ and per memo φ₁₀, its gratis storage
+   φ₁₁, and an id it would like, φ₁₂.
+2. **The new account.** It keeps one request, for its own code, φ₈ bytes long: two items,
+   81 + φ₈ bytes. Its balance is its own minimum balance for that, and s pays it. Created
    now, last accumulated never, parent s.
 3. **Maybe refuse.** `HUH` if it asks for gratis storage and s isn't the manager. `CASH`
    if paying would leave s below its own minimum balance. `FULL` if s is the registrar
    asking for an id below S that's taken.
 4. **Its id.** If s is the registrar asking for an id below S: that id. Otherwise the run's
    next free id, which then moves 42 further on (round the public range, skipping any id
-   already taken). ω₇ = the new id. It costs 3,855 gas.
+   already taken). φ₇ = the new id. It costs 3,855 gas.
 
 Where does a run's first free id come from? Hash s's id, η′₀ and the slot, take the first
 four bytes as a number, fold it into the public range, and skip ids already taken. Nobody
@@ -191,10 +191,10 @@ export function newIds(s: number, entropy: Bytes, slot: number, taken: Set<numbe
 
 /**
  * new (GP App. B.7, Ω_N): creates a service whose code is the preimage of the 32-byte hash
- * at ω₇, ω₈ bytes long, which it asks for; with least gases ω₉ (to accumulate) and ω₁₀ (per
- * memo), and ω₁₁ of gratis storage. Its balance is its own minimum, paid by this service.
- * Its id: ω₁₂ if this is the registrar asking for an id below S, otherwise the run's next
- * free id. ω₇ = the new id. HUH: gratis from anyone but the manager; CASH: this service
+ * at φ₇, φ₈ bytes long, which it asks for; with least gases φ₉ (to accumulate) and φ₁₀ (per
+ * memo), and φ₁₁ of gratis storage. Its balance is its own minimum, paid by this service.
+ * Its id: φ₁₂ if this is the registrar asking for an id below S, otherwise the run's next
+ * free id. φ₇ = the new id. HUH: gratis from anyone but the manager; CASH: this service
  * can't afford it; FULL: the registrar's id is taken.
  */
 export function newService(
@@ -317,7 +317,7 @@ npm run typecheck
 
 ```sh
 node bin/host.ts ../vectors/stf/accumulate/tiny/create_service-1.json 0
-# prints: host call 19 (new): ω₇ = 5
+# prints: host call 19 (new): φ₇ = 5
 # prints: sent 500 to service 5
 ```
 

@@ -34,7 +34,7 @@ Here they are, with their sizes in the state you met in lesson 6.1:
 | Key | Letter | What it is | Bytes |
 | --- | --- | --- | --- |
 | C(1) | α | the authorizer pool | 514 |
-| C(2) | φ | the authorizer queue | 5,120 |
+| C(2) | ϕ | the authorizer queue | 5,120 |
 | C(3) | β | recent blocks | 103 |
 | C(4) | γ | Safrole's state: the ticket lottery | 2,547 |
 | C(5) | ψ | past judgements, from disputes | 4 |
@@ -208,7 +208,7 @@ import { stateRoot } from "../src/trie.ts";
 const COMPONENTS = [
   "",
   "α, the authorizer pool",
-  "φ, the authorizer queue",
+  "ϕ, the authorizer queue",
   "β, recent blocks",
   "γ, Safrole's state",
   "ψ, past judgements",

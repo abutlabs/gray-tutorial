@@ -23,13 +23,13 @@ All three are in the [glossary](../glossary.md).
 `eject` is host call 22 (Appendix B.7, Ω_J). Service s asks to eject service d, naming a
 preimage hash h:
 
-1. **Read.** d is ω₇, the hash h is the 32 bytes at ω₈ (unreadable: panic).
+1. **Read.** d is φ₇, the hash h is the 32 bytes at φ₈ (unreadable: panic).
 2. **Who.** d must exist, must not be s itself, and its code hash must be s's id as 32
    bytes (ℰ₃₂(s)): d named s as its ejector. Otherwise `WHO`.
 3. **Ready.** d must keep nothing but one request (2 items), for h, as long as d's
    footprint minus 81 bytes, and it must have forgotten that preimage (lesson 16.9) more
    than D slots ago. Otherwise `HUH`.
-4. **Go.** d is removed, and d's balance is added to s's. ω₇ = `OK`. It costs 458 gas.
+4. **Go.** d is removed, and d's balance is added to s's. φ₇ = `OK`. It costs 458 gas.
 
 Why such a fuss? An account holds a deposit for everything it keeps. Making d let go of
 everything first, and wait out the expunge period, means nothing is lost that someone
@@ -162,9 +162,9 @@ The call:
 
 ```ts
 /**
- * eject (GP App. B.7, Ω_J): removes service ω₇ and takes its balance, if this service may.
+ * eject (GP App. B.7, Ω_J): removes service φ₇ and takes its balance, if this service may.
  * The other service must have named this one as its ejector (its code hash is this
- * service's id, in 32 bytes), hold nothing but one request, for the preimage at ω₈ (as
+ * service's id, in 32 bytes), hold nothing but one request, for the preimage at φ₈ (as
  * long as its footprint minus 81), and have forgotten that preimage more than D slots ago.
  * WHO if it doesn't exist or names someone else, HUH if it isn't ready; nothing changes.
  */
@@ -336,7 +336,7 @@ No new program: `bin/host.ts` already names every call.
 
 ```sh
 node bin/host.ts ../vectors/stf/accumulate/tiny/work_for_ejected_service-2.json 0
-# prints: host call 22 (eject): ω₇ = 0
+# prints: host call 22 (eject): φ₇ = 0
 # prints: the test vector says: 151715
 ```
 

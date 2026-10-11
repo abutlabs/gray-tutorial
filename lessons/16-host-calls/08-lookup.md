@@ -7,10 +7,10 @@ running service read them, any service's, with `lookup`.
 
 ## What the Gray Paper says
 
-**`lookup`** (host call 3, App. B.5, Ω_L) finds a preimage by its hash. ω₇ says whose
-preimages to look in: the service's own if ω₇ is its id or 2^64 − 1, otherwise service ω₇'s.
-The 32-byte hash is in memory at ω₈; if it isn't readable, the machine panics. The preimage
-comes out like `fetch`'s items: to ω₉, from byte ω₁₀, at most ω₁₁ bytes, and ω₇ becomes its
+**`lookup`** (host call 3, App. B.5, Ω_L) finds a preimage by its hash. φ₇ says whose
+preimages to look in: the service's own if φ₇ is its id or 2^64 − 1, otherwise service φ₇'s.
+The 32-byte hash is in memory at φ₈; if it isn't readable, the machine panics. The preimage
+comes out like `fetch`'s items: to φ₉, from byte φ₁₀, at most φ₁₁ bytes, and φ₇ becomes its
 length. A service that doesn't exist, or doesn't have that preimage: NONE. It costs 600,
 plus 248 per KiB asked for.
 
@@ -142,9 +142,9 @@ export function copyAccounts(accounts: Map<number, Account>): Map<number, Accoun
 
 ```ts
 /**
- * lookup (GP App. B.5, Ω_L): the preimage of the hash in memory at ω₈, among those service
- * ω₇ keeps (its own if ω₇ is its id or 2^64 − 1), copied out like fetch to ω₉, from byte
- * ω₁₀, at most ω₁₁ bytes. NONE if the service doesn't have it.
+ * lookup (GP App. B.5, Ω_L): the preimage of the hash in memory at φ₈, among those service
+ * φ₇ keeps (its own if φ₇ is its id or 2^64 − 1), copied out like fetch to φ₉, from byte
+ * φ₁₀, at most φ₁₁ bytes. NONE if the service doesn't have it.
  */
 export function lookup(m: Machine, accounts: Map<number, Account>, s: number): HostExit {
   const [who, hashAt, o, from, length] = m.registers.slice(7, 12);

@@ -7,7 +7,7 @@ nearly all the way.
 
 ## What the Gray Paper says
 
-**`fetch`** (host call 2, App. B.5, Ω_Y) hands out *items*, by number, in ω₁₀. Each
+**`fetch`** (host call 2, App. B.5, Ω_Y) hands out *items*, by number, in φ₁₀. Each
 invocation has its own. During accumulation (App. B.4's F) there are four:
 
 | Item | What it is |
@@ -15,13 +15,13 @@ invocation has its own. During accumulation (App. B.4's F) there are four:
 | 0 | the protocol's constants, 29 of them, in 122 bytes |
 | 1 | η′₀, the entropy (lesson 8.1) |
 | 14 | the service's inputs, all of them, as a sequence |
-| 15 | one input, number ω₁₁ |
+| 15 | one input, number φ₁₁ |
 
-Every other item is nothing: ω₇ = NONE.
+Every other item is nothing: φ₇ = NONE.
 
-The registers say where the item goes. ω₇ is the address o, ω₈ the first byte wanted f,
-and ω₉ how many bytes z. The host copies up to z bytes of the item, from byte f on, into
-memory at o, and ω₇ becomes the item's *whole* length. So a service can ask for 0 bytes
+The registers say where the item goes. φ₇ is the address o, φ₈ the first byte wanted f,
+and φ₉ how many bytes z. The host copies up to z bytes of the item, from byte f on, into
+memory at o, and φ₇ becomes the item's *whole* length. So a service can ask for 0 bytes
 first, to learn how big the item is, and then ask again with room for it. If the memory
 there isn't writable, the machine panics.
 
@@ -46,7 +46,7 @@ import { addPages, readMemory } from "../src/pvm/memory.ts";
 /** Accumulation's host, with an entropy of 32 sevens and no inputs. */
 const accumulating = accumulateHost(TINY, new Uint8Array(32).fill(7), []);
 
-/** ecalli 2 (fetch) with ω₇ to ω₁₀ as given, then a return; a writable page at 0x20000. */
+/** ecalli 2 (fetch) with φ₇ to φ₁₀ as given, then a return; a writable page at 0x20000. */
 function fetching(o: bigint, from: bigint, length: bigint, item: bigint) {
   const memory = new Map();
   addPages(memory, 0x20000, 4096, "W");
@@ -75,7 +75,7 @@ test("asking for no bytes at all: just the length", () => {
   assert.deepEqual(readMemory(machine.memory, 0x20000n, 1), Uint8Array.of(0)); // untouched
 });
 
-test("part of an item: from byte ω₈, and at most ω₉ bytes of it", () => {
+test("part of an item: from byte φ₈, and at most φ₉ bytes of it", () => {
   const machine = fetching(0x20000n, 30n, 10n, 1n); // the entropy, from byte 30: 2 bytes left
   runWithHost(machine, accumulating);
   assert.equal(machine.registers[7], 32n);
@@ -199,8 +199,8 @@ const FETCH_GAS: [number, number][] = [
 export type Items = (kind: number, index: bigint) => Bytes | undefined;
 
 /**
- * fetch (GP App. B.5, Ω_Y): copies item ω₁₀ (with index ω₁₁) to memory at ω₇: up to ω₉
- * bytes of it, from byte ω₈ on. ω₇ becomes the item's whole length, or NONE if there's no
+ * fetch (GP App. B.5, Ω_Y): copies item φ₁₀ (with index φ₁₁) to memory at φ₇: up to φ₉
+ * bytes of it, from byte φ₈ on. φ₇ becomes the item's whole length, or NONE if there's no
  * such item. `find` says what each item is, so each invocation offers its own.
  */
 export function fetch(m: Machine, find: Items): HostExit {
@@ -306,7 +306,7 @@ const host: Host = (call, m) => {
   const name = HOST_CALLS[call] ?? (call === 100 ? "log, from JIP-1" : "?");
   const r7 = m.registers[7];
   const said = r7 === WHAT ? "WHAT" : r7 === NONE ? "NONE" : String(r7);
-  console.log(`host call ${call} (${name}): ω₇ = ${said}, ${m.gas} gas left`);
+  console.log(`host call ${call} (${name}): φ₇ = ${said}, ${m.gas} gas left`);
   run.event("call", { call, name, said, gas: Number(m.gas) });
   return exit;
 };
@@ -321,8 +321,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/host.ts
-# prints: host call 2 (fetch): ω₇ = 122, 99367 gas left
-# prints: host call 1 (grow_heap): ω₇ = WHAT
+# prints: host call 2 (fetch): φ₇ = 122, 99367 gas left
+# prints: host call 1 (grow_heap): φ₇ = WHAT
 # prints: the service stops: "halt", with 82133 gas left
 # prints: reported to Grafana
 ```

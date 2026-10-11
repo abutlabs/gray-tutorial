@@ -12,18 +12,18 @@ lesson keeps the pools moving, and it's all of Part 13.
 §8 (*Authorization*). For each core c:
 
 - **α[c], the pool**: at most O = 8 authorizer hashes.
-- **φ[c], the queue**: exactly Q = 80 of them. Only a privileged service can change the
+- **ϕ[c], the queue**: exactly Q = 80 of them. Only a privileged service can change the
   queue, during accumulation (Part 17).
 
 Each block, α′[c] is made in three steps:
 
 1. If a guarantee in this block used core c (Part 12), its report's authorizer is
    taken out of the pool: the *leftmost* copy, the one that's been there longest.
-2. The queue's entry for this slot joins: φ′[c][τ′ mod Q]. The queue is a wheel, read
+2. The queue's entry for this slot joins: ϕ′[c][τ′ mod Q]. The queue is a wheel, read
    one slot at a time and going round every 80 slots.
 3. If the pool is now over O, the oldest drop off the front, leaving the newest O.
 
-φ′, not φ: the queue *after* accumulation, which is why, in a real client, this step
+ϕ′, not ϕ: the queue *after* accumulation, which is why, in a real client, this step
 comes late in the block. In C(1) and C(2) (lesson 6.2) the pools are lists with their
 length in front, and the queues are 80 hashes exactly: 514 and 5,120 bytes on tiny.
 
@@ -55,7 +55,7 @@ export function AuthPools(config: Config) {
   return seqN(seq(hash), config.core_count);
 }
 
-/** φ, C(2): each core's queue of authorizers, exactly Q of them. */
+/** ϕ, C(2): each core's queue of authorizers, exactly Q of them. */
 export function AuthQueues(config: Config) {
   return seqN(seqN(hash, QUEUE_SIZE), config.core_count);
 }
@@ -73,7 +73,7 @@ export type UsedAuthorizer = Value<typeof UsedAuthorizer>;
  */
 export function nextPools(
   pools: Bytes[][],
-  queues: Bytes[][], // φ′
+  queues: Bytes[][], // ϕ′
   used: UsedAuthorizer[],
   slot: number, // τ′
 ): Bytes[][] {
@@ -158,7 +158,7 @@ test("α′ through 99 real blocks, with the authorizers their own guarantees us
     const block = Block(TINY).fromJson(before.block);
     const auths = usedAuthorizers(block.extrinsic.guarantees);
     const pools = readAuthPools(TINY, before.entries);
-    const queues = readAuthQueues(TINY, after.entries); // φ′: the queues after the block
+    const queues = readAuthQueues(TINY, after.entries); // ϕ′: the queues after the block
     const next = nextPools(pools, queues, auths, block.header.slot);
     assert.deepEqual(next, readAuthPools(TINY, after.entries), `block ${n}`);
     used += auths.length;
@@ -193,7 +193,7 @@ export function readAuthPools(config: Config, entries: KeyValue[]): Bytes[][] {
   return component(entries, 1, AuthPools(config));
 }
 
-/** φ, C(2): each core's authorizer queue. */
+/** ϕ, C(2): each core's authorizer queue. */
 export function readAuthQueues(config: Config, entries: KeyValue[]): Bytes[][] {
   return component(entries, 2, AuthQueues(config));
 }

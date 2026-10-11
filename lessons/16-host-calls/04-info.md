@@ -8,7 +8,7 @@ state. So the host needs to know the accounts, and the gentlest of the three goe
 
 ## What the Gray Paper says
 
-**`info`** (host call 6, App. B.5, Ω_I) hands a service an account's record. ω₇ says
+**`info`** (host call 6, App. B.5, Ω_I) hands a service an account's record. φ₇ says
 whose: a service id, or 2^64 − 1 for the service itself. The record goes out as 96 bytes:
 
 | Bytes | What |
@@ -23,8 +23,8 @@ whose: a service id, or 2^64 − 1 for the service itself. The record goes out a
 | 8 | f, the gratis storage |
 | 4 each | r, the slot it was created; a, the slot it last accumulated; p, its parent |
 
-It costs 703, and then it works exactly like `fetch`, only one register along: ω₈ is the
-address, ω₉ the first byte wanted, ω₁₀ how many. No such service: NONE.
+It costs 703, and then it works exactly like `fetch`, only one register along: φ₈ is the
+address, φ₉ the first byte wanted, φ₁₀ how many. No such service: NONE.
 
 Accumulation's F hands `info` two things: X's service id, and the accounts as the context X
 holds them. So accumulation needs a little bundle of its own: which service is running,
@@ -179,8 +179,8 @@ moves out of `fetch` into a function of its own:
 
 ```ts
 /**
- * fetch (GP App. B.5, Ω_Y): copies item ω₁₀ (with index ω₁₁) to memory at ω₇: up to ω₉
- * bytes of it, from byte ω₈ on. ω₇ becomes the item's whole length, or NONE if there's no
+ * fetch (GP App. B.5, Ω_Y): copies item φ₁₀ (with index φ₁₁) to memory at φ₇: up to φ₉
+ * bytes of it, from byte φ₈ on. φ₇ becomes the item's whole length, or NONE if there's no
  * such item. `find` says what each item is, so each invocation offers its own.
  */
 export function fetch(m: Machine, find: Items): HostExit {
@@ -199,7 +199,7 @@ import { minimumBalance } from "./services.ts";
 
 /**
  * How fetch, info, read and lookup answer (GP App. B.5): `length` bytes of v at most, from
- * byte `from`, go to memory at o, and ω₇ = |v|. No v: NONE. Nowhere to write it: panic.
+ * byte `from`, go to memory at o, and φ₇ = |v|. No v: NONE. Nowhere to write it: panic.
  */
 function copyOut(m: Machine, v: Bytes | undefined, o: bigint, from: bigint, length: bigint) {
   if (v === undefined) {
@@ -213,7 +213,7 @@ function copyOut(m: Machine, v: Bytes | undefined, o: bigint, from: bigint, leng
   return "continue";
 }
 
-/** info (GP App. B.5, Ω_I): service ω₇'s record (its own if ω₇ = 2^64 − 1), 96 bytes. */
+/** info (GP App. B.5, Ω_I): service φ₇'s record (its own if φ₇ = 2^64 − 1), 96 bytes. */
 export function info(m: Machine, accounts: Map<number, Account>, s: number): HostExit {
   if (!charge(m, 703)) return "oog";
   const [who, o, from, length] = m.registers.slice(7, 11);

@@ -10,8 +10,9 @@ after that.
 
 Appendix A.
 
-**The state**: ı, the instruction counter, and ω, thirteen registers of 64 bits each.
-(Also memory and a gas counter, coming soon.)
+**The state**: ı, the instruction counter, and φ, thirteen registers of 64 bits each. (A
+curly phi: the straight ϕ of lesson 6.2 is the authorizer queue. Memory and a gas counter
+are coming soon.)
 
 **One step, Ψ₁**: run the instruction at ı. Unless it says otherwise, an instruction
 moves ı on to the next one, ı + 1 + skip(ı), and the step ends with ε = ▸, carry on. A
@@ -127,7 +128,7 @@ import { startsInstruction } from "./program.ts";
 /** How a step ends (GP's ε): carry on, finish, or fail. */
 export type Exit = "continue" | "halt" | "panic";
 
-/** The machine's state: the program, ı, and the registers ω. */
+/** The machine's state: the program, ı, and the registers φ. */
 export type Machine = { program: Program; pc: number; registers: bigint[]; blocks: Set<number> };
 
 /** T (GP App. A.3): the instructions that end a basic block. */
@@ -181,7 +182,7 @@ function jumpIndirect(m: Machine, a: bigint): Exit {
 function basics(m: Machine, ins: Instruction): Exit | undefined {
   const [a, b, c] = ins.registers; // the GP's register letters, in its order
   const [x] = ins.immediates;
-  const reg = m.registers; // ω
+  const reg = m.registers; // φ
   switch (ins.name) {
     case "trap":
       return "panic";
@@ -195,13 +196,13 @@ function basics(m: Machine, ins: Instruction): Exit | undefined {
     case "load_imm_64":
       reg[a] = x;
       return "continue";
-    case "move_reg": // registers [D, A]: ω′_D = ω_A
+    case "move_reg": // registers [D, A]: φ′_D = φ_A
       reg[a] = reg[b];
       return "continue";
-    case "add_imm_64": // registers [A, B]: ω′_A = ω_B + ν_X
+    case "add_imm_64": // registers [A, B]: φ′_A = φ_B + ν_X
       reg[a] = (reg[b] + x) % 2n ** 64n; // registers hold 64 bits
       return "continue";
-    case "add_64": // registers [A, B, D]: ω′_D = ω_A + ω_B
+    case "add_64": // registers [A, B, D]: φ′_D = φ_A + φ_B
       reg[c] = (reg[a] + reg[b]) % 2n ** 64n;
       return "continue";
     case "sub_64":

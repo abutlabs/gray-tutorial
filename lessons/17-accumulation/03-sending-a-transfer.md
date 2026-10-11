@@ -22,14 +22,14 @@ All three are in the [glossary](../glossary.md).
 
 `transfer` is host call 21 (Appendix B.7, Ω_T). In plain steps:
 
-1. **Read the order.** The receiver's id is in ω₇, the amount in ω₈, the gas in ω₉, and
-   the memo is the 128 bytes at ω₁₀ (unreadable memory: panic, as always).
-2. **Maybe refuse.** Nothing is sent, and ω₇ says why, if there's no such service
+1. **Read the order.** The receiver's id is in φ₇, the amount in φ₈, the gas in φ₉, and
+   the memo is the 128 bytes at φ₁₀ (unreadable memory: panic, as always).
+2. **Maybe refuse.** Nothing is sent, and φ₇ says why, if there's no such service
    (`WHO`), if the gas is below the least the receiver asks for a memo (`LOW`, its
    `min_memo_gas` from lesson 14.2), or if paying would leave the sender below its own
    minimum balance (`CASH`).
 3. **Send.** Take the amount off the sender's balance, right now, and add the transfer to
-   the list of transfers this run has sent. ω₇ = `OK`.
+   the list of transfers this run has sent. φ₇ = `OK`.
 
 It costs 575 gas, plus the transfer's own gas when it's sent: the sender pays up front
 for the work the receiver will do with it.
@@ -183,8 +183,8 @@ export const CASH = 2n ** 64n - 7n; // not enough balance
 export const LOW = 2n ** 64n - 8n; // not enough gas
 
 /**
- * transfer (GP App. B.7, Ω_T): sends ω₈ of the service's balance to service ω₇, with the
- * memo at ω₁₀ and ω₉ gas for the receiver to spend on it. The money leaves the sender now;
+ * transfer (GP App. B.7, Ω_T): sends φ₈ of the service's balance to service φ₇, with the
+ * memo at φ₁₀ and φ₉ gas for the receiver to spend on it. The money leaves the sender now;
  * it arrives in the next round. Nothing is sent if there's no such service (WHO), the gas
  * is below the receiver's minimum (LOW), or the sender would drop below its own (CASH).
  * Costs 575, and the transfer's gas on top if it's sent.
@@ -397,7 +397,7 @@ const result = accumulate(TINY, a, vector.input.slot, gas, (call, m) => {
   const name = HOST_CALLS[call] ?? (call === 100 ? "log, from JIP-1" : "?");
   const r7 = m.registers[7];
   const said = r7 === WHAT ? "WHAT" : r7 === NONE ? "NONE" : String(r7);
-  console.log(`host call ${call} (${name}): ω₇ = ${said}, ${m.gas} gas left`);
+  console.log(`host call ${call} (${name}): φ₇ = ${said}, ${m.gas} gas left`);
   run.event("call", { call, name, said, gas: Number(m.gas) });
 });
 for (const t of result.transfers) {
@@ -417,12 +417,12 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/host.ts ../vectors/stf/accumulate/tiny/transfer_for_live_service-1.json 0
-# prints: host call 21 (transfer): ω₇ = 0
+# prints: host call 21 (transfer): φ₇ = 0
 # prints: sent 100 to service 1, with 80000 gas and the memo "gift"
 # prints: the test vector says: 255437
 ```
 
-Service 0 reads its input, sends the gift (ω₇ = 0 is `OK`), and stops having used exactly
+Service 0 reads its input, sends the gift (φ₇ = 0 is `OK`), and stops having used exactly
 the vector's gas, the transfer's 80,000 included. The *Host calls* panel shows the call
 and, just before the end, the transfer. Service 1's balance hasn't moved yet: that's
 the next lesson.

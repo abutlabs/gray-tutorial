@@ -33,17 +33,17 @@ The test vectors name the first four after the host call each one allows: `bless
 
 `assign` is host call 16 (Appendix B.7, Ω_A). In plain steps:
 
-1. **Read the order.** The core is ω₇, its new queue is the 80 hashes (2,560 bytes) at
-   ω₈ (unreadable: panic), and the next assigner is ω₉.
+1. **Read the order.** The core is φ₇, its new queue is the 80 hashes (2,560 bytes) at
+   φ₈ (unreadable: panic), and the next assigner is φ₉.
 2. **Maybe refuse.** `CORE` if there's no such core; `HUH` if the caller isn't that
-   core's assigner; `WHO` if ω₉ is too big to be a service id.
-3. **Hand it over.** The core's queue becomes the 80 hashes, and its assigner becomes ω₉.
-   ω₇ = `OK`. It costs 1,818 gas.
+   core's assigner; `WHO` if φ₉ is too big to be a service id.
+3. **Hand it over.** The core's queue becomes the 80 hashes, and its assigner becomes φ₉.
+   φ₇ = `OK`. It costs 1,818 gas.
 
 And the checkpoint rule holds again: the privileges and the queues are part of what a run
 can change, so a failure undoes the changes made since its last checkpoint, and a
 checkpoint keeps them. In the Gray Paper they sit in ψ, the state a run works on, next to
-the accounts: queues φ, privileges χ, in both X and Y.
+the accounts: queues ϕ, privileges χ, in both X and Y.
 
 ## The tests
 
@@ -262,9 +262,9 @@ export function collapsePowers(powers: Powers, exit: Exit): Privileged {
 export const CORE = 2n ** 64n - 6n; // no such core
 
 /**
- * assign (GP App. B.7, Ω_A): hands core ω₇ on. The 80 hashes at ω₈ become its authorizer
- * queue, and service ω₉ the one that may assign it next. Only the core's assigner may
- * (HUH for anyone else); CORE if there's no such core, WHO if ω₉ can't be a service id.
+ * assign (GP App. B.7, Ω_A): hands core φ₇ on. The 80 hashes at φ₈ become its authorizer
+ * queue, and service φ₉ the one that may assign it next. Only the core's assigner may
+ * (HUH for anyone else); CORE if there's no such core, WHO if φ₉ can't be a service id.
  */
 export function assign(m: Machine, s: number, powers: Powers, cores: number): HostExit {
   if (!charge(m, 1818)) return "oog";
@@ -481,7 +481,7 @@ const a = {
 const result = accumulate(TINY, a, vector.input.slot, gas, (call, m) => {
   const name = HOST_CALLS[call] ?? (call === 100 ? "log, from JIP-1" : "?");
   const said = answerName(m.registers[7]);
-  console.log(`host call ${call} (${name}): ω₇ = ${said}, ${m.gas} gas left`);
+  console.log(`host call ${call} (${name}): φ₇ = ${said}, ${m.gas} gas left`);
   run.event("call", { call, name, said, gas: Number(m.gas) });
 });
 for (const t of result.transfers) {
@@ -494,7 +494,7 @@ for (const t of result.transfers) {
 **Add to** `bin/host.ts`
 
 ```ts
-/** ω₇ as the host's answer, by name if it's one of them (GP App. B.1), or as a number. */
+/** φ₇ as the host's answer, by name if it's one of them (GP App. B.1), or as a number. */
 function answerName(r7: bigint): string {
   const names = { NONE, WHAT, WHO, FULL, CORE, CASH, LOW, HUH };
   const found = Object.entries(names).find(([, code]) => code === r7);
@@ -511,7 +511,7 @@ used above the line it's written on.
 
 ```sh
 node bin/host.ts ../vectors/stf/accumulate/tiny/assign_from_non_assigner-3.json 0
-# prints: host call 16 (assign): ω₇ = 0
+# prints: host call 16 (assign): φ₇ = 0
 # prints: the test vector says: 1308944
 ```
 
@@ -519,10 +519,10 @@ node bin/host.ts ../vectors/stf/accumulate/tiny/assign_from_non_assigner-3.json 
 
 ```sh
 node bin/host.ts ../vectors/stf/accumulate/tiny/assign_from_non_assigner-1.json 1
-# prints: host call 16 (assign): ω₇ = HUH
+# prints: host call 16 (assign): φ₇ = HUH
 ```
 
-The first service holds core 0 and hands it over: ω₇ = 0, `OK`. The second isn't core
+The first service holds core 0 and hands it over: φ₇ = 0, `OK`. The second isn't core
 0's assigner, so it gets `HUH`, and its code, written to expect that, carries on. Both
 runs in the *Host calls* panel, answers by name.
 

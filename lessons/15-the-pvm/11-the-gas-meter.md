@@ -74,7 +74,7 @@ The machine gets a purse: its gas, the flag, and a new way to stop.
 /** How a step ends (GP's ε): carry on, finish, fail, run out of gas, fault, or call the host. */
 export type Exit = "continue" | "halt" | "panic" | "oog" | { fault: number } | { host: number };
 
-/** The machine's state: the program, ı, the registers ω, the memory μ, and its gas. */
+/** The machine's state: the program, ı, the registers φ, the memory μ, and its gas. */
 export type Machine = {
   program: Program;
   pc: number;
