@@ -90,3 +90,22 @@
 }
 #picture-zoom::backdrop { background: rgba(0, 0, 0, 0.8); }
 #picture-zoom img { display: block; max-width: 96vw; max-height: 94vh; object-fit: contain; border-radius: 8px; }
+
+/* Under an Add to / Replace in snippet: the whole file after it, its changed lines marked */
+.vp-doc details.whole-file { margin: 6px 0 20px; }
+.vp-doc details.whole-file > summary { font-size: 13px; }
+.vp-doc details.whole-file pre {
+  margin: 8px 0 0;
+  padding: 16px 0;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: var(--vp-code-block-bg);
+  font-family: var(--vp-font-family-mono);
+  font-size: var(--vp-code-font-size);
+  line-height: var(--vp-code-line-height);
+}
+.vp-doc details.whole-file .line { display: inline-block; min-width: 100%; padding: 0 24px; box-sizing: border-box; }
+.vp-doc details.whole-file .line.changed {
+  background: var(--vp-code-line-highlight-color);
+  box-shadow: inset 3px 0 var(--vp-c-brand-1);
+}

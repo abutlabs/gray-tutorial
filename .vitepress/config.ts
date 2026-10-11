@@ -7,8 +7,12 @@ import type MarkdownIt from "markdown-it";
 import type { ShikiTransformer } from "shiki";
 import { readParts } from "../tools/lessons.ts";
 import { LEGEND, writeRedirects } from "./urls.ts";
+import { type Snapshot, wholeFiles } from "../tools/snapshots.ts";
 
 const parts = readParts();
+// each Add to / Replace in snippet's whole file, worked out once (restart `npm run site` to
+// see a lesson's edits in them)
+const whole = wholeFiles();
 
 export default defineConfig({
   title: "Gray Tutorial",
@@ -53,6 +57,8 @@ export default defineConfig({
 // A label line above a code block ("**Add to** `src/x.ts`") becomes a tab on the block, and
 // its bold word a link to the list of labels in 0.1 (as the Book's Ferris icons link to theirs).
 // A ```text block right after a Run block is its output (tools/output.ts): it gets an Output tab.
+// Under an Add to / Replace in snippet, a fold holds the whole file after it, the lines it
+// changed marked: the Book keeps a listing's whole file one click away too.
 function snippetLabels(md: MarkdownIt): void {
   const LABEL = /^\*\*(New file|Add to|Replace in|Rewrite|Run(?:, expect it to fail)?)\*\*(?: `[^`]+`)?$/;
   const KIND: Record<string, string> = {
@@ -75,6 +81,12 @@ function snippetLabels(md: MarkdownIt): void {
         words.splice(close + 1, 0, new state.Token("link_close", "a", -1));
         words.splice(open, 0, link);
       }
+      const snap = whole.get(`${state.env.relativePath}:${(t[i].map?.[0] ?? -1) + 1}`);
+      if ((m[1] === "Add to" || m[1] === "Replace in") && snap) {
+        const fold = new state.Token("html_block", "", 0);
+        fold.content = wholeFileFold(snap);
+        t.splice(i + 4, 0, fold);
+      }
       if (m[1].startsWith("Run") && t[i + 4]?.type === "fence" && t[i + 4].info.trim() === "text") {
         const tab = new state.Token("html_block", "", 0);
         tab.content = '<p class="snippet-label output"><strong>Output</strong></p>\n';
@@ -82,6 +94,14 @@ function snippetLabels(md: MarkdownIt): void {
       }
     }
   });
+}
+
+function wholeFileFold(snap: Snapshot): string {
+  const escape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const lines = (snap.lines.at(-1) === "" ? snap.lines.slice(0, -1) : snap.lines)
+    .map((l, k) => `<span class="line${snap.changed.has(k) ? " changed" : ""}">${escape(l)}</span>`);
+  return `<details class="whole-file" v-pre><summary>The whole <code>${escape(snap.path)}</code> after this step</summary>`
+    + `<pre><code>${lines.join("\n")}</code></pre></details>\n`;
 }
 
 // A comment line in a shell block (`# prints: ...`, `# fails with: ...`) is for reading:
