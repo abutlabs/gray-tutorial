@@ -94,8 +94,23 @@ and core 1 gets 4, just either side of the line.
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/assurances.ts' imported from …/client/test/assurances.test.ts
+...
+✖ test/assurances.test.ts (191.1ms)
+...
+ℹ tests 158
+ℹ suites 0
+ℹ pass 157
+ℹ fail 1
+...
+```
+
+Red: `src/assurances.ts` doesn't exist yet. It's three small functions that build on one
+another, so they come together, and the next Run turns the new tests green at once.
 
 ## The code
 
@@ -135,18 +150,35 @@ export function nowAvailable(
 }
 ```
 
-`bitAt` is [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md)'s `bit`, flipped: `>> (c % 8)` instead of `>> (7 - (i % 8))`,
-least significant first instead of most. (And it answers `true` or `false`.)
+`bitAt` is [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md)'s `bit`, flipped:
+
+```ts
+  return ((bitfield[Math.floor(c / 8)] >> (c % 8)) & 1) === 1;
+```
+
+`>> (c % 8)` instead of `>> (7 - (i % 8))`: least significant first instead of most. (And
+it answers `true` or `false`.)
 
 **Run**
 
 ```sh
 npm test
-# prints: bits are packed least significant first: 0x05 is cores 0 and 2
-# prints: 𝐑: a report becomes available when more than two thirds of κ hold its data
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ bits are packed least significant first: 0x05 is cores 0 and 2 (10.1ms)
+✔ 𝐑: a report becomes available when more than two thirds of κ hold its data (144.7ms)
+✔ on tiny, 5 of 6 validators make a report available, and 4 don't (1.1ms)
+...
+ℹ tests 160
+ℹ suites 0
+ℹ pass 160
+ℹ fail 0
+...
+reported 160 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733586523
+...
 ```
 
 53 reports became available across the accepted vectors, every one of them in the right
@@ -196,9 +228,13 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/available.ts ../vectors/stf/assurances/tiny/some_assurances-1.json
-# prints: core   0: 5 of 6 hold its data: available!
-# prints: core   1: 4 of 6 hold its data: still waiting
-# prints: reported to Grafana
+```
+
+```text
+core   0: 5 of 6 hold its data: available!
+core   1: 4 of 6 hold its data: still waiting
+reports that became available: 1
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=available-1791733590339
 ```
 
 Now the full-size version, `../vectors/stf/assurances/full/some_assurances-1.json`. Its
@@ -220,14 +256,15 @@ vectors sit exactly on the line, one validator either side, which is precisely w
 ```
 
 "More than two thirds", written another way: at least ⌊2n/3⌋ + 1, compared with `>=`.
-Your `3 * assured > 2 * validators` and lasair's threshold agree for every n. Two whole-
-number spellings of the same fraction; pick the one you can check in your head.
+Your `3 * assured > 2 * validators` and lasair's threshold agree for every n: two
+whole-number spellings of the same fraction. Pick the one you can check in your head.
 
 </details>
 
 ## What you have
 
 Your client can read a bitfield the right way round, count assurances per core, and say
-which reports just became available.
+which reports just became available. A report that never gets there can't sit on its
+core forever, though: [lesson 11.2](./02-timeouts.md) decides when a core lets go.
 
 Next: [11.2 Timeouts](./02-timeouts.md)

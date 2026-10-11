@@ -3,7 +3,6 @@
 A core holds one report at a time, so a report that never becomes available would block
 its core forever. JAM won't allow that. This lesson writes the rule for when a core lets
 go: the report made it, the report took too long, or the ground shifted under it.
-Then Part 11 is done.
 
 ## What the Gray Paper says
 
@@ -11,7 +10,7 @@ Then Part 11 is done.
 when any of these holds:
 
 1. **p became available** ([lesson 11.1](./01-available.md)): its job on the core is done. It moves on to be
-   accumulated (Part 17).
+   accumulated ([Part 17](../17-accumulation/index.md)).
 2. **p timed out**: the block's slot is at least p's `registered_slot` + U, where
    **U = 5** slots. Thirty seconds to gather its assurances, or it's out.
 3. **The validator set changed size**: |κ| ≠ |κ′|. Every pending report goes. The Gray
@@ -61,6 +60,31 @@ export function nowAvailable(
 
 `cores[core] as PendingReport` tells TypeScript what you already know: `availableCores`
 only returns cores that hold a report.
+
+A split like this changes the shape, not the behaviour, so the tests you have should
+still pass:
+
+**Run**
+
+```sh
+npm test
+```
+
+```text
+...
+✔ bits are packed least significant first: 0x05 is cores 0 and 2 (0.8ms)
+✔ 𝐑: a report becomes available when more than two thirds of κ hold its data (177.3ms)
+✔ on tiny, 5 of 6 validators make a report available, and 4 don't (0.8ms)
+...
+ℹ tests 160
+ℹ suites 0
+ℹ pass 160
+ℹ fail 0
+...
+reported 160 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733590641
+```
+
+Same tests, same 160 passes: the shape changed, and nothing else did.
 
 ## The tests
 
@@ -114,14 +138,7 @@ at slot 11 (11 < 12), and gone at 12. The vector `no_assurances_with_stale_repor
 has exactly that case at tiny size. `{ ...pending, registered_slot: 7 }` copies a real
 pending report with one field changed.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: does not provide an export named
-```
-
-## The code
+A stub that never lets go, with U already in place:
 
 **Add to** `src/assurances.ts`
 
@@ -129,6 +146,50 @@ npm test
 /** U: the slots a report may wait on its core for its data to become available. */
 export const AVAILABILITY_TIMEOUT = 5;
 
+export function clearCores(
+  cores: (PendingReport | null)[],
+  available: number[], // the cores whose report became available
+  slot: number, // this block's slot
+  resized: boolean, // |κ| ≠ |κ′|
+): (PendingReport | null)[] {
+  return cores;
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ ρ‡: a core lets go of a report once available, timed out, or the set resizes (29.3ms)
+✖ a report registered at slot 7 may wait through slot 11, and times out at 12 (15.4ms)
+...
+ℹ tests 162
+ℹ suites 0
+ℹ pass 160
+ℹ fail 2
+...
+test at test/assurances.test.ts:75:1
+✖ a report registered at slot 7 may wait through slot 11, and times out at 12 (15.4ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+...
+    actual: [ { guarantee: [Object], registered_slot: 7 } ],
+    expected: [ null ],
+...
+```
+
+Two reds. The second is the shorter to read: at slot 12, the report registered at slot 7
+should be gone (`expected: [ null ]`), and the stub kept it, `registered_slot: 7` and all.
+
+## The code
+
+**Replace in** `src/assurances.ts`
+
+```ts
 /**
  * ρ‡ (GP §11): a core lets go of its report when the report became available, when it
  * has waited U slots, or when the number of validators changed.
@@ -151,11 +212,21 @@ export function clearCores(
 
 ```sh
 npm test
-# prints: ρ‡: a core lets go of a report once available, timed out, or the set resizes
-# prints: a report registered at slot 7 may wait through slot 11, and times out at 12
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ ρ‡: a core lets go of a report once available, timed out, or the set resizes (314.1ms)
+✔ a report registered at slot 7 may wait through slot 11, and times out at 12 (0.4ms)
+...
+ℹ tests 162
+ℹ suites 0
+ℹ pass 162
+ℹ fail 0
+...
+reported 162 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733601118
+...
 ```
 
 87 cores freed across the accepted vectors, 6 on tiny and 81 on full, and every core
@@ -206,9 +277,12 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/release.ts ../vectors/stf/assurances/tiny/no_assurances_with_stale_report-1.json
-# prints: core   0 at slot 12: timed out (waiting since 7)
-# prints: core   1 at slot 12: stays
-# prints: reported to Grafana
+```
+
+```text
+core   0 at slot 12: timed out (waiting since 7)
+core   1 at slot 12: stays
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=release-1791733608115
 ```
 
 Two reports, nobody assuring either, and two different fates: one has waited its five
@@ -248,7 +322,9 @@ easier to test one at a time.
 
 ## What you have
 
-Part 11, done: your client reads every assurance, makes reports available, and frees
-the cores of reports that made it, ran out of time, or outlived their validator set.
+Your client reads every assurance, makes reports available, and frees the cores of
+reports that made it, ran out of time, or outlived their validator set. Like the court
+of Part 10, it still believes every assurance it's handed; [lesson 11.3](./03-bad-assurances.md) refuses the
+broken ones.
 
 Next: [11.3 Bad assurances](./03-bad-assurances.md)

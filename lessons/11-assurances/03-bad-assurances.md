@@ -95,16 +95,72 @@ for (const config of [TINY, FULL]) {
 (the vectors' `curr_validators`) and the cores. Every vector then gets one test: accepted
 (`null`) or refused for the reason the vector gives.
 
+A stub that accepts every assurance:
+
+**Add to** `src/assurances.ts`
+
+```ts
+export function assuranceError(
+  assurances: Assurance[],
+  parent: Bytes, // H_P: the parent block's hash
+  keys: Bytes[],
+  cores: (PendingReport | null)[],
+): string | null {
+  return null;
+}
+```
+
 **Run, expect it to fail**
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+✖ an assurance for a core with nothing on it is refused (0.8ms)
+✖ stf/assurances/tiny/assurance_for_not_engaged_core-1.json: accepted or refused, as the vector says (0.5ms)
+✖ stf/assurances/tiny/assurance_with_bad_attestation_parent-1.json: accepted or refused, as the vector says (0.3ms)
+✔ stf/assurances/tiny/assurances_for_stale_report-1.json: accepted or refused, as the vector says (0.2ms)
+✖ stf/assurances/tiny/assurances_with_bad_signature-1.json: accepted or refused, as the vector says (0.3ms)
+✖ stf/assurances/tiny/assurances_with_bad_validator_index-1.json: accepted or refused, as the vector says (0.2ms)
+✖ stf/assurances/tiny/assurers_not_sorted_or_unique-1.json: accepted or refused, as the vector says (0.2ms)
+✖ stf/assurances/tiny/assurers_not_sorted_or_unique-2.json: accepted or refused, as the vector says (0.2ms)
+✔ stf/assurances/tiny/no_assurances-1.json: accepted or refused, as the vector says (0.2ms)
+✔ stf/assurances/tiny/no_assurances_with_stale_report-1.json: accepted or refused, as the vector says (0.2ms)
+✔ stf/assurances/tiny/some_assurances-1.json: accepted or refused, as the vector says (13.1ms)
+✔ stf/assurances/tiny/val_set_size_change_clears_pending_reports-1.json: accepted or refused, as the vector says (1.7ms)
+✖ stf/assurances/full/assurance_for_not_engaged_core-1.json: accepted or refused, as the vector says (11.0ms)
+✖ stf/assurances/full/assurance_with_bad_attestation_parent-1.json: accepted or refused, as the vector says (12.5ms)
+✔ stf/assurances/full/assurances_for_stale_report-1.json: accepted or refused, as the vector says (91.9ms)
+✖ stf/assurances/full/assurances_with_bad_signature-1.json: accepted or refused, as the vector says (17.8ms)
+✖ stf/assurances/full/assurances_with_bad_validator_index-1.json: accepted or refused, as the vector says (29.7ms)
+✖ stf/assurances/full/assurers_not_sorted_or_unique-1.json: accepted or refused, as the vector says (10.7ms)
+✖ stf/assurances/full/assurers_not_sorted_or_unique-2.json: accepted or refused, as the vector says (10.0ms)
+...
+ℹ tests 185
+ℹ suites 0
+ℹ pass 172
+ℹ fail 13
+...
+test at test/assurances.test.ts:96:1
+✖ an assurance for a core with nothing on it is refused (0.8ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + null
+  - 'core_not_engaged'
+...
+```
+
+Thirteen reds, and look at the pattern in the list: every vector meant to fail is red,
+on both sizes, and every vector meant to pass is already green, because the stub accepts
+everything. The first failure says it in one line: `core_not_engaged` expected, `null`
+given.
 
 ## The code
 
-**Add to** `src/assurances.ts`
+**Replace in** `src/assurances.ts`
 
 ```ts
 import { assuranceSigned } from "./block.ts";
@@ -135,18 +191,34 @@ export function assuranceError(
 }
 ```
 
-Five rules, five lines, in the order above. `every` asks whether all the assurances keep
-a rule. `ordered` compares each assurance with the one before it, and `engaged` walks
+Five rules, five lines, in the order above:
+
+```ts
+  if (!assurances.every((a) => toHex(a.anchor) === toHex(parent))) return "bad_attestation_parent";
+  if (!assurances.every((a) => a.validator_index < keys.length)) return "bad_validator_index";
+```
+
+and so on down. `every` asks whether all the assurances keep a rule. `ordered` compares each assurance with the one before it, and `engaged` walks
 every core and asks: a bit set here, with nothing on the core?
 
 **Run**
 
 ```sh
 npm test
-# prints: an assurance for a core with nothing on it is refused
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ an assurance for a core with nothing on it is refused (0.3ms)
+...
+ℹ tests 185
+ℹ suites 0
+ℹ pass 185
+ℹ fail 0
+...
+reported 185 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733612505
+...
 ```
 
 ## Watch it
@@ -188,8 +260,21 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/check-assurances.ts
-# prints: assurances_with_bad_signature-1: bad_signature
-# prints: some_assurances-1: accepted
+```
+
+```text
+assurance_for_not_engaged_core-1: core_not_engaged
+assurance_with_bad_attestation_parent-1: bad_attestation_parent
+assurances_for_stale_report-1: accepted
+assurances_with_bad_signature-1: bad_signature
+assurances_with_bad_validator_index-1: bad_validator_index
+assurers_not_sorted_or_unique-1: not_sorted_or_unique_assurers
+assurers_not_sorted_or_unique-2: not_sorted_or_unique_assurers
+no_assurances-1: accepted
+no_assurances_with_stale_report-1: accepted
+some_assurances-1: accepted
+val_set_size_change_clears_pending_reports-1: accepted
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=assurance-check-1791733621501
 ```
 
 Eleven vectors, eleven verdicts, and no "the vector says" anywhere: your rules and the
@@ -228,6 +313,8 @@ waits for everything cheaper.
 ## What you have
 
 Assurances that are checked, not trusted: five rules, and every official assurances
-vector, tiny and full, accepted or refused just as it should be.
+vector, tiny and full, accepted or refused just as it should be. Part 11 is done. A
+report reaches a core in the first place because guarantors vouch for it, and
+[Part 12](../12-guarantees/index.md) checks their guarantees.
 
 Next: [Part 12 · Guarantees](../12-guarantees/index.md)
