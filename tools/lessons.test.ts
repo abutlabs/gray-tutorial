@@ -174,7 +174,7 @@ test("the next lesson and the hardening pass are links, to the right place", () 
 // before the lesson its entry links (the one that builds it). An entry may join words
 // ("Trie, leaf and branch"); each word counts on its own. Parts are checked as they're
 // brought in line (backlog 25), until every part is.
-const NEW_WORDS_CHECKED = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+const NEW_WORDS_CHECKED = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]);
 const wordsOf = (term: string) => term.replace(/\s*\([^)]*\)/g, "").split(/,\s*|\s+and\s+/)
   .map((w) => w.trim().toLowerCase()).filter(Boolean);
 const newWords = (text: string) => [...(/^## New words\n([\s\S]*?)(?=^## )/m.exec(text)?.[1] ?? "")
@@ -209,7 +209,8 @@ test("every new word is in the glossary, and every glossary word is brought in b
 });
 
 // Where the body first uses a new word, it's in italics (WRITING.md), so the reader can
-// match it to its definition. Bold is for labels, not words.
+// match it to its definition. Bold is for labels, not words; a bold sentence, a step's
+// title ("**Unlock, again and again.**"), is a label, and the word in it isn't flagged.
 test("a new word is not bold where the body first uses it", () => {
   const bold: string[] = [];
   for (const l of checkedLessons()) {
@@ -218,7 +219,9 @@ test("a new word is not bold where the body first uses it", () => {
     for (const w of newWords(text).filter((w) => !w.startsWith("`"))) {
       const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const first = new RegExp(`(?<![\\w-])${escaped}(?:s|es)?(?![\\w-])`, "i").exec(body);
-      if (first && body.slice(first.index - 2, first.index) === "**") bold.push(`${l.file}: **${first[0]}**`);
+      if (!first || body.slice(first.index - 2, first.index) !== "**") continue;
+      const title = body.slice(first.index, body.indexOf("**", first.index)).trimEnd().endsWith(".");
+      if (!title) bold.push(`${l.file}: **${first[0]}**`);
     }
   }
   assert.deepEqual(bold, []);

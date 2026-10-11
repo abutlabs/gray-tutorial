@@ -22,11 +22,11 @@ All three are in the [glossary](../glossary.md).
 
 §9 lists five privileges, χ:
 
-- the **manager**, χ_M, may change all the others at once (with `bless`);
-- an **assigner** for each core, χ_A, may set that core's authorizer queue (`assign`);
-- the **delegator**, χ_V, may choose the next validators' keys (`designate`);
-- the **registrar**, χ_R, may create services with small ids of its choosing (`new`);
-- the **always-accumulate** services, χ_Z, accumulate every block ([lesson 17.1](./01-a-blocks-accumulation.md)'s `free`).
+- the *manager*, χ_M, may change all the others at once (with `bless`);
+- an *assigner* for each core, χ_A, may set that core's authorizer queue (`assign`);
+- the *delegator*, χ_V, may choose the next validators' keys (`designate`);
+- the *registrar*, χ_R, may create services with small ids of its choosing (`new`);
+- the *always-accumulate* services, χ_Z, accumulate every block ([lesson 17.1](./01-a-blocks-accumulation.md)'s `free`).
 
 The test vectors name the first four after the host call each one allows: `bless`,
 `assign`, `designate` and `register`. Your client uses the same names.

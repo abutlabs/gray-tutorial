@@ -16,8 +16,11 @@ deck. This lesson keeps the chain's randomness, η, fresh, one block at a time.
 - **VRF.** A signature whose output is random, yet can't be chosen by the signer: for a
   given key and message it comes out one way only, and anyone can check it. *Example:*
   the header's 96-byte `entropy_source`.
+- **Optional field.** A field written with a `?`, which an object may leave out; reading a
+  missing one gives `undefined`. *Example:* `output: { err?: string }`, a vector's output,
+  which carries an error or doesn't.
 
-All three are in the [glossary](../glossary.md).
+All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 

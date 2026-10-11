@@ -40,8 +40,8 @@ that's the order the next round hands them out in.
 
 ![The gift's block in rounds. Round 1 runs service 0 with its one operand; it uses 255,437 gas and sends service 1 a transfer of 100 with the memo "gift" and 80,000 gas. Round 2 runs service 1: first 100 goes into its balance, from 227,714, then it runs with the transfer as its input and uses 61,711 gas, sending nothing. So there is nothing for a round 3, and Δ+ stops.](./images/04-rounds.svg)
 
-The Gray Paper's names: the loop is **Δ+**, one round **Δ\***, one service in a round
-**Δ₁**. Δ₁'s inputs are **i^T ⌢ i^U**: transfers, then operands.
+The Gray Paper's names: the loop is *Δ+*, one round *Δ\**, one service in a round
+*Δ₁*. Δ₁'s inputs are *i^T ⌢ i^U*: transfers, then operands.
 
 > [!NOTE]
 > **The simple road.** Δ+ also keeps a gas budget for the whole block, max(G_T, G_A · C +
