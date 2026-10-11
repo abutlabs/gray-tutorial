@@ -36,12 +36,14 @@ the `0x`.
 Section 3 (*Notational Conventions*) names the building blocks. Two you'll meet on nearly
 every page:
 
-- **𝔹**, the octet strings, which the paper calls *blobs*. 𝔹ₙ are the ones of length n.
+- **𝔹**, octet strings of any length, which the paper calls *blobs*. 𝔹ₙ are the ones of
+  exactly n bytes, a fixed length.
 - **ℍ = 𝔹₃₂**, 32-byte values. Every hash in JAM is one.
 
 It also draws a firm line: *"an octet is always serialized to itself, whereas a natural
-number may be serialized as a sequence of potentially several octets"*. The byte 5 and
-the number 5 are different creatures in JAM. Your client keeps them apart from the start.
+number may be serialized as a sequence of potentially several octets"*. Written out, the
+byte 5 is always the one byte `05`, while the number 5 may take one byte or several ([Part
+2](../02-codec/index.md)). Your client keeps byte strings, `Bytes`, apart from numbers from the start.
 
 ## The tests
 
@@ -126,8 +128,9 @@ test at test/bytes.test.ts:6:1
 ...
 ```
 
-Red, and both tests caught the stub: `'' !== '0x0102ff'`, the empty text the stub gave
-against the hex the test wanted. (Text comes in quotes, so an empty answer still shows.)
+Red, and both tests caught the stub. The first says `'' !== '0x0102ff'`: the empty text
+the stub gave, against the hex the test wanted. The second, further down, says `'' !==
+'0x'`. (Text comes in quotes, so an empty answer still shows.)
 
 ## The code
 
@@ -174,7 +177,7 @@ Last time the code gave a wrong answer. This time it crashes, and a crash leaves
    the lines inside Node and find the first one in your own code: `at fromHex
    (…/client/src/bytes.ts:13:21)`. That's line 13, the inside of `fromHex`. The line below
    it, in `test/bytes.test.ts`, is the test that called it.
-2. **The dashboard.** *Tests failed* says 2, and *Test results* has two `FAIL` lines with
+2. **The dashboard.** *Tests failed* says 2, and *Failed tests* has two `FAIL` lines with
    the same message. Two tests, one cause: both call `fromHex`. And `toHex` is fine: its
    assertions come first, and they passed.
 
@@ -226,7 +229,8 @@ crashes, find the first line of the stack trace that's yours.
 <details>
 <summary>lasair: hex by hand, in <code>lib/serialization.ml</code></summary>
 
-OCaml has no hex built in, so lasair does it one *nibble* (half a byte) at a time:
+OCaml's standard library has no bytes-to-hex function, so lasair does it one *nibble*
+(half a byte) at a time:
 
 ```ocaml
 (** Convert bytes to hex string for debugging *)

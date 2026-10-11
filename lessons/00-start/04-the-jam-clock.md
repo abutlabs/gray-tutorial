@@ -190,7 +190,7 @@ Four places tell you what happened:
 1. **The test output.** One test failed, `slot 0 is the first six seconds of the JAM
    Common Era`, and below it: `1 !== 0`. Your code said 1 where the test wanted 0. The
    other test, *an hour is 600 slots*, passed.
-2. **The dashboard.** *Tests failed* now says 1, and *Test results* has a `FAIL` line
+2. **The dashboard.** *Tests failed* now says 1, and *Failed tests* has a `FAIL` line
    with the same message. Every run is kept, so you can put this run next to the last
    one.
 
