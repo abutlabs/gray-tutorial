@@ -1,8 +1,8 @@
 # A work-package
 
 In [Part 2](../02-codec/index.md) you encoded a single work item. Nobody sends a work item on its own, though.
-Items travel in a *work-package*: a parcel of up to sixteen jobs, addressed to one of
-JAM's cores, with a permission slip stapled to the front.
+Items travel in a *work-package*: a parcel of up to sixteen jobs, for one of JAM's cores
+(the package doesn't say which; its report will), with a permission slip stapled to the front.
 
 ## New words
 
@@ -29,8 +29,9 @@ All three are in the [glossary](../glossary.md).
   (`auth_code_host`, a service, and `auth_code_hash`, which code in it), hands it a token
   (`authorization`) and its settings (`authorizer_config`).
 
-You'll run an authorizer in a much later part. Today the package is a shape to encode,
-and almost every piece of it is already in your client.
+Running an authorizer is a guarantor's job, done before a package reaches any block.
+Block import never runs one, so neither will the client you build here. Today the package
+is a shape to encode, and almost every piece of it is already in your client.
 
 Appendix C encodes it in this order: ℰ₄ of the code host, the code hash, the context,
 then the token, the config and the items, each with its length in front.

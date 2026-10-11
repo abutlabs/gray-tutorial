@@ -12,8 +12,9 @@ into the chain. Everything from [Part 3](./index.md) meets here.
 - **Availability specification.** How to find a package's data again: its hash, its
   bundle's length, the erasure root and shard count, and its exported segments' root and
   count. *Example:* a report's `package_spec`.
-- **Erasure coding.** Chopping data into one piece per validator so cleverly that any
-  third of the pieces can rebuild it all. *Example:* 6 shards on tiny, 1,023 on full.
+- **Erasure coding.** Chopping data into one piece per validator so cleverly that just over
+  a third of the pieces can rebuild it all. *Example:* 1,023 shards on full, any 342 of
+  which will do; on tiny, 6, any 3.
 - **Bundle.** A work-package with everything needed to refine it again: its extrinsics,
   and the segments it imports, with their proofs. *Example:* its length is in a report's
   `package_spec`.
@@ -38,7 +39,8 @@ hash, the length of its *bundle* (the package plus everything needed to re-run i
 segments it exported.
 
 What are erasure shards? Before a report counts, its bundle is chopped into pieces, one
-for every validator, cut so cleverly that any third of them can rebuild the whole thing.
+for every validator, cut so cleverly that just over a third of them (any 342 of the 1,023
+on full) can rebuild the whole thing.
 Hence `erasure_shards`: one per validator. Which means, for the first time, tiny and full
 vectors differ: 6 shards on tiny, 1,023 on full.
 
@@ -205,9 +207,12 @@ let encode_work_report (r : work_report) : bytes =
   encode_tuple [pkg; ctx; core; auth; gas; trace; srl; res]
 ```
 
-Read that comment twice. Encode `core_index` as one plain byte and every tiny vector
-still passes, because tiny's cores are 0 and 1. Only full, with cores up to 340, catches
-it. That's why you test both.
+Read that comment twice. Encode `core_index` as one plain byte and every vector here
+still passes: both sizes' vectors put their report on core 3 (a codec vector needn't be a
+real chain's), and a real tiny chain's cores only go up to 1. Only a core of 128 or more,
+which only full has (up to 340), shows the mistake, and no binary vector in this tutorial
+carries one. Some rules no test catches for you: this one
+you get right by reading it.
 
 </details>
 
