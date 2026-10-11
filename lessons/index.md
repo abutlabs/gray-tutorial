@@ -56,8 +56,8 @@ first.
 Each lesson explains a piece of the Gray Paper, gives you the code for it in small
 snippets, and has you run it. You assemble the snippets into your own client in
 `client/`, run the tests, and watch it grow, from an empty folder to a program that
-imports JAM blocks and agrees byte for byte with the official test vectors. From the
-first lesson on, it reports every run to Grafana, so you can watch what it does.
+imports JAM blocks and agrees byte for byte with the official test vectors. From
+[lesson 0.3](./00-start/03-watch-your-client.md) on, it reports every run to Grafana, so you can watch what it does.
 
 ## Lessons
 
@@ -208,13 +208,13 @@ first lesson on, it reports every run to Grafana, so you can watch what it does.
 
 ## Still to be written
 
-The road from here to a full block importer, part by part. The parts are written in
-this order, and each one is checked end to end before it is published here.
+The road from here to a full block importer, part by part, in about the order the parts
+will be written. Each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
 | 16 · Host calls (rest) | upgrade, yield, provide, bless, designate, the inner machine | App. B |
-| 17 · Accumulation (rest) | new and ejected services, the other privileged calls, the block's gas budget | §12 |
+| 17 · Accumulation (rest) | the other privileged calls, the block's gas budget | §12 |
 | 19 · Block import (rest) | real blocks through every step, the block-import traces (needs [Part 8](./08-safrole/index.md)'s Bandersnatch for η′) | §4, §5 |
 | 20 · Facing the fuzzer | the conformance fuzzer's protocol | |

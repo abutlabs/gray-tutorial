@@ -1,12 +1,13 @@
 # Set up the project
 
 Four things to set up, then you never think about them again: Node, the tutorial's own
-tools, the observability stack, and an empty client. Ten minutes, tops. You need git,
+tools, the observability stack, and an empty client. About ten minutes of your time,
+plus the downloads (the test vectors are about 1.4 GB). You need git,
 VS Code (or any editor) and Docker Desktop.
 
 ## New words
 
-- **Node.** The program that runs JavaScript (and, from version 26, TypeScript) outside a
+- **Node.** The program that runs JavaScript (and, in recent versions, TypeScript) outside a
   browser. *Example:* `node --version` says which one you have.
 - **nvm.** A tool that installs Node versions and switches between them. *Example:*
   `nvm use` switches to the version the project asks for.
@@ -37,11 +38,12 @@ node --version
 
 It should say `v26.` and something.
 
-Why Node 26? It runs TypeScript files directly: it strips off the type annotations and
-runs what's left. No build step, so the code you type is the code that runs. (The types
-still get checked, by the TypeScript compiler `tsc`, whenever you ask.) Node 26 also has
-the newest JavaScript built-ins, like turning bytes into hex, which you'll meet in [lesson
-1.1](../01-bytes-and-numbers/01-bytes-and-hex.md).
+Why Node 26? Like other recent versions, it runs TypeScript files directly: it strips off
+the type annotations and runs what's left. No build step, so the code you type is the
+code that runs. (The types still get checked, by the TypeScript compiler `tsc`, whenever
+you ask.) Node 26 also has the newest JavaScript built-ins, like turning bytes into hex,
+which you'll meet in [lesson 1.1](../01-bytes-and-numbers/01-bytes-and-hex.md), and it's
+the version every lesson is checked with.
 
 ## The tutorial's tools
 

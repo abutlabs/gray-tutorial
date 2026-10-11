@@ -41,8 +41,8 @@ equation (§4, *Overview*):
 σ′ ≡ Υ(σ, B)
 ```
 
-- **σ** (sigma) is the chain's state before a block: seventeen parts, from validator
-  keys to service accounts to the last few blocks.
+- **σ** (sigma) is the chain's state before a block: seventeen parts, sixteen fixed ones
+  from validator keys to the last few blocks, plus the service accounts.
 - **B** is the block.
 - **σ′** (sigma prime) is the state after it.
 - **Υ** (upsilon) is the **state-transition function**, the machine that turns one into
@@ -85,14 +85,13 @@ above each snippet says what to do with it:
   test first and watch it go red, because a test that has never failed has never proved
   anything.
 
-Inside a **Run** block, a line `# prints: fail 0` names text the output will contain, and
-`# fails with: ...` the error you should see. They are notes, not commands: don't type
-them (the website's copy button leaves them out). Some Run blocks are followed by the
-output itself, in a block of its own (*Output* on the website): put it next to your
-terminal. A line `...` marks where lines are cut, and `…` a part that changes from run to
-run; times, durations and run ids will differ too. Paths are inside `client/`. A code block
-with no label above it is for reading. On the website, a label is a link back to this
-list.
+After each **Run** block comes the output you should see, in a block of its own
+(*Output* on the website; an `npm install` has none, since it only prints downloads): put
+it next to your terminal. A line `...` marks where lines are cut, and `…` a part that
+changes from run to run; times, durations and run ids will differ too. Paths are inside
+`client/`. A code block with no label above it is for reading, unless the words around it
+say to type it and where, as the setup commands in [lesson 0.2](./02-set-up-the-project.md) do. On the
+website, a label is a link back to this list.
 
 Every lesson is checked before you see it: a script follows it from an empty folder,
 applies every snippet and runs every **Run** block. If anything breaks, the lesson

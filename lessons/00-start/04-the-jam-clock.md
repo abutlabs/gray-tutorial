@@ -199,8 +199,8 @@ Four places tell you what happened:
 > [!NOTE]
 > *Tests: all (npm test)* comes from `.vscode/launch.json`, which the tutorial ships. Two
 > more work in any lesson: *Tests: the open file* runs the test file you're looking at,
-> and *Program: the open file* the program. The programs you've made so far have one
-> each: *Program: hello (0.3)* and *Program: now (0.4)*.
+> and *Program: the open file* the program. Each program gets one of its own:
+> *Program: hello (0.3)*, and *Program: now (0.4)* for the program you'll make below.
 
 The fix is one word:
 
