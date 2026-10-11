@@ -63,7 +63,7 @@ lesson. `npm test` checks those links, and that each lesson ends with a link to 
 1. **What the Gray Paper says**: the rule, quoted or paraphrased, with its section
    (§11, *Refinement Context*; Appendix C). Check every quote against the 0.8.0 tex.
 2. **The code**: test-driven development where it helps (the test, then the code), each
-   in a labelled snippet. Call it that, test-driven development, never "test-first".
+   in a labelled snippet.
 3. **Run**: the tests pass, the types check.
 4. **lasair**, folded in `<details>`: the same rule in lasair's OCaml, quoted from the
    source (say when comments are trimmed), with a sentence on reading it.
@@ -82,6 +82,12 @@ for the sake of 100% fuzz compatibility.
 
 **Fun.** Friendly, playful, curious: short sentences, vivid analogies, the odd joke, a
 little drama when a test goes red. Never at the cost of accuracy, never padding.
+
+**Honest, not flattering.** Never praise the Gray Paper or JAM ("it thinks of
+everything"). The Gray Paper is still being improved, and new versions change rules:
+explain why a rule exists, and when one looks odd or likely to change, say so plainly.
+Use the common software-engineering name for a practice (test-driven development), never
+a coined one.
 
 Plain words, no em-dashes. Explain why, not only what. Every claim about lasair, the
 vectors or the Gray Paper is checked against the source before it is written.
