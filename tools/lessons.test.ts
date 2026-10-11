@@ -172,14 +172,11 @@ test("the next lesson and the hardening pass are links, to the right place", () 
 // New words and the glossary agree: every word a lesson's New words brings in has a
 // glossary entry, and every glossary word is brought in by some lesson's New words, at or
 // before the lesson its entry links (the one that builds it). An entry may join words
-// ("Trie, leaf and branch"); each word counts on its own. Parts are checked as they're
-// brought in line (backlog 25), until every part is.
-const NEW_WORDS_CHECKED = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]);
+// ("Trie, leaf and branch"); each word counts on its own.
 const wordsOf = (term: string) => term.replace(/\s*\([^)]*\)/g, "").split(/,\s*|\s+and\s+/)
   .map((w) => w.trim().toLowerCase()).filter(Boolean);
 const newWords = (text: string) => [...(/^## New words\n([\s\S]*?)(?=^## )/m.exec(text)?.[1] ?? "")
   .matchAll(/^- \*\*(.+?)\.\*\*/gm)].flatMap(([, term]) => wordsOf(term));
-const checkedLessons = () => parts.filter((p) => NEW_WORDS_CHECKED.has(p.number)).flatMap((p) => p.lessons);
 
 test("every new word is in the glossary, and every glossary word is brought in by a lesson", () => {
   const order = parts.flatMap((p) => p.lessons).map((l) => l.file);
@@ -193,15 +190,14 @@ test("every new word is in the glossary, and every glossary word is brought in b
     const lesson = /\(\[\d+\.\d+\]\(\.\/([^)]+)\)\)\s*$/.exec(entry)?.[1];
     if (term) for (const w of wordsOf(term)) glossary.set(w, lesson ? order.indexOf(lesson) : -1);
   }
-  const checked = new Set(checkedLessons().map((l) => l.file));
   const problems: string[] = [];
-  for (const file of checked) {
+  for (const file of order) {
     for (const w of newWords(readFileSync(join(LESSONS, file), "utf8"))) {
       if (!glossary.has(w)) problems.push(`${file}: "${w}" isn't in the glossary`);
     }
   }
   for (const [w, at] of glossary) {
-    if (!checked.has(order[at])) continue;
+    if (at < 0) continue; // an entry that links no one lesson
     const from = broughtIn.get(w);
     if (from === undefined || from > at) problems.push(`glossary "${w}" (${order[at]}): no New words up to there`);
   }
@@ -213,7 +209,7 @@ test("every new word is in the glossary, and every glossary word is brought in b
 // title ("**Unlock, again and again.**"), is a label, and the word in it isn't flagged.
 test("a new word is not bold where the body first uses it", () => {
   const bold: string[] = [];
-  for (const l of checkedLessons()) {
+  for (const l of parts.flatMap((p) => p.lessons)) {
     const text = readFileSync(join(LESSONS, l.file), "utf8");
     const body = prose(text.replace(/^## New words\n[\s\S]*?(?=^## )/m, (m) => m.replace(/[^\n]/g, " ")));
     for (const w of newWords(text).filter((w) => !w.startsWith("`"))) {

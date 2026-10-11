@@ -87,8 +87,10 @@ recommends.
 0. **New words**: right under the opening paragraph, every term the lesson uses for the
    first time (a JAM word, a Gray Paper symbol, a programming word a newcomer may not
    know), each with a one-line plain-English definition and a tiny concrete example. Add
-   each one to `lessons/glossary.md` too (plain English, example, the symbol, the lesson).
-   A word used before it's defined is a bug.
+   each one to `lessons/glossary.md` too (plain English, example, the symbol, the lesson
+   that builds it). A word used before it's defined is a bug. `npm test` checks the two
+   lists agree: every new word has a glossary entry, and every glossary word is in some
+   lesson's New words, at or before the lesson its entry links.
 1. **What the Gray Paper says**: the rule, quoted or paraphrased, with its section
    (§11, *Refinement Context*; Appendix C). Check every quote against the 0.8.0 tex.
 2. **The code**: test-driven development where it helps (the test, then the code), each
@@ -171,7 +173,8 @@ teaching. What we take from it, each with its reason. "Checked" means a test enf
   give the minimum ("for now, all you need to know is ...") and link forward. *Why:* the
   tutorial reads as one connected whole, and a promise never leaves the reader stuck.
 - **Italics for a new word.** In the body, a term from *New words* is in italics where it's
-  first used. *Why:* the reader can match the use to the definition.
+  first used, never bold (checked; a bold step title is a label, and may hold one).
+  *Why:* the reader can match the use to the definition.
 - **Tangents in a note.** A side story (why `bigint`, how Node strips types) goes in a
   `> [!NOTE]` box. *Why:* the main line reads straight, and the curious still find it.
 - **Name the simple road.** Where a lesson takes the simple way on purpose, say so, and link
