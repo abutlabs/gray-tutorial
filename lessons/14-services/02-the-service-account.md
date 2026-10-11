@@ -205,6 +205,14 @@ lose precision past 2^53).
 `serviceCode` finds a service's code the simplest way there is: the state value whose
 hash is the account's code hash. Lessons to come, from [Part 15](../15-the-pvm/index.md) on, run that code, and they all start here.
 
+> [!NOTE]
+> **The simple road.** `serviceCode` hashes every value in the state until one matches.
+> The Gray Paper keeps a service's code where its preimages go, under C(s, ℰ₄(2^32 − 2) ⌢
+> the code hash) ([lesson 6.2](../06-state-and-merklization/02-state-keys.md)), and only there counts: the same bytes in another service's
+> preimages aren't this service's code. A real client builds that one key and looks it
+> up. (6.2's `preimageKey` takes the data, not its hash, so it can't build it as it
+> stands.) The [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) has it.
+
 **Run**
 
 ```sh
