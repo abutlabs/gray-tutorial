@@ -61,8 +61,24 @@ test("the bootstrap service spends 243 gas to reach its first host call", () => 
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/pvm/gas.ts' does not provide an export named 'runWithGas'
+...
+✖ test/gas.test.ts (222.0ms)
+...
+ℹ tests 424
+ℹ suites 0
+ℹ pass 423
+ℹ fail 1
+...
+```
+
+Red: `src/pvm/gas.ts` doesn't export the meter yet. This one gets no stub on purpose: a
+meter that never charges would let the endless loop in the first test run forever, and
+a test that hangs teaches nothing. A missing export fails fast.
 
 ## The code
 
@@ -138,15 +154,35 @@ needs `gas.ts` (which already needs `machine.ts`). `stepWithGas` notes the opcod
 stepping, because `step` moves ı on: afterwards, the question is whether the instruction
 that just ran was a terminator.
 
+> [!NOTE]
+> **The simple road.** The Gray Paper charges the block that ı is *in*, from its start
+> (𝔏(ı)). `stepWithGas` charges the block starting *at* ı. That's the same whenever ı
+> starts a block, and so far it always does. A machine started or resumed in the middle
+> of a block, as [Part 16](../16-host-calls/index.md)'s inner machines can be, needs 𝔏; the [hardening
+> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds it.
+
 **Run**
 
 ```sh
 npm test
-# prints: an endless loop runs out of gas: each lap pays 15, until there's too little
-# prints: the bootstrap service spends 243 gas to reach its first host call
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ an endless loop runs out of gas: each lap pays 15, until there's too little (0.7ms)
+✔ a block is paid for in full before any of it runs (0.2ms)
+✔ the bootstrap service spends 243 gas to reach its first host call (23.3ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (209.6ms)
+...
+ℹ tests 438
+ℹ suites 0
+ℹ pass 438
+ℹ fail 0
+...
+reported 438 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791737125469
+...
 ```
 
 ## Watch it
@@ -206,10 +242,22 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/gas.ts
-# prints: block at  92078 costs 26, leaving 959
-# prints: stops: {"host":2} at 121489, having spent 243
-# prints: stops: "oog" at 121410, having spent 68
-# prints: reported to Grafana
+```
+
+```text
+with 1000 gas:
+  block at      5 costs 15, leaving 985
+  block at  92078 costs 26, leaving 959
+  block at 123687 costs 27, leaving 932
+  block at 121410 costs 73, leaving 859
+  block at 121467 costs 102, leaving 757
+  stops: {"host":2} at 121489, having spent 243
+with 100 gas:
+  block at      5 costs 15, leaving 85
+  block at  92078 costs 26, leaving 59
+  block at 123687 costs 27, leaving 32
+  stops: "oog" at 121410, having spent 68
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=gas-1791737130606
 ```
 
 The same 38 steps as [lesson 15.8](./08-a-real-program.md), now in five payments: 15, 26 ([lesson 15.10](./10-the-pipeline.md)'s block),
@@ -233,16 +281,14 @@ it couldn't afford. The *Gas* panel has both runs.
 
 The same check, in the middle of lasair's run loop. One difference: lasair prices
 `block_start inf p`, the start of whichever block p is in (the Gray Paper's 𝔏). Your
-meter prices the block starting at ı. That's the same thing whenever ı starts a block,
-and so far it always does. A machine started in the middle of a block is a later story,
-in `HARDENING.md`.
+meter prices the block starting at ı: the simple road in the note above.
 
 </details>
 
 ## What you have
 
 A complete PVM: every instruction, memory, a real program's setup, host calls as a way
-out, and gas, priced and charged the Gray Paper's way. Part 15, done. Next, the host
-answers back.
+out, and gas, priced and charged the Gray Paper's way. Part 15, done. The machine can ask
+the host for things; in [Part 16](../16-host-calls/index.md), the host answers back.
 
 Next: [Part 16 · Host calls](../16-host-calls/index.md)

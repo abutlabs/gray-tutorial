@@ -85,8 +85,24 @@ loads cost what one does. A load whose address comes from another load must wait
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/pvm/gas.ts' does not provide an export named 'blockCost'
+...
+✖ test/gas.test.ts (216.8ms)
+...
+ℹ tests 424
+ℹ suites 0
+ℹ pass 423
+ℹ fail 1
+...
+```
+
+Red: `src/pvm/gas.ts` doesn't export `blockCost` yet. The model CPU is four small
+functions, one per Gray Paper transition, that only work together, so they come in one
+snippet.
 
 ## The code
 
@@ -222,11 +238,27 @@ order.
 
 ```sh
 npm test
-# prints: a load that needs another's answer waits for it
-# prints: a real block: the bootstrap service's first costs 26, not the 91 its cycles add to
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ one instruction on its own costs its cycles: the 3 is the pipeline's overhead (0.3ms)
+✔ independent loads run side by side: four cost no more than one, a fifth waits (0.3ms)
+✔ a load that needs another's answer waits for it (0.3ms)
+✔ move_reg is free, and the wait follows the value through it (0.2ms)
+✔ there's one divide unit: two divides take turns (0.3ms)
+✔ a real block: the bootstrap service's first costs 26, not the 91 its cycles add to (13.1ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (254.0ms)
+...
+ℹ tests 435
+ℹ suites 0
+ℹ pass 435
+ℹ fail 0
+...
+reported 435 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791737113888
+...
 ```
 
 ## Watch it
@@ -275,10 +307,18 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/pipeline.ts
-# prints: cycle  2  E W W W W
-# prints: cycle 28  . F F F F
-# prints: the block at 92078 costs 26 gas
-# prints: reported to Grafana
+```
+
+```text
+cycle  1  W W W W
+cycle  2  E W W W W
+cycle  3  F E E E E
+cycle  4  . E E E E
+cycle 18  . E E E F
+cycle 28  . F F F F
+cycle 29  . . . . .
+the block at 92078 costs 26 gas
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=pipeline-1791737119776
 ```
 
 One column per instruction in the buffer: the stack-pointer add, the three stores and the
@@ -317,6 +357,6 @@ blocks, the two give the same cost every time.
 ## What you have
 
 A price for every basic block, worked out the Gray Paper's way. One piece of gas is left:
-the meter that charges those prices as the machine runs.
+the meter that charges those prices as the machine runs, and [lesson 15.11](./11-the-gas-meter.md) builds it.
 
 Next: [15.11 The gas meter](./11-the-gas-meter.md)
