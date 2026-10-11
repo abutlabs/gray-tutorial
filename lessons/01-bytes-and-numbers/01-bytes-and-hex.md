@@ -178,7 +178,7 @@ Last time the code gave a wrong answer. This time it crashes, and a crash leaves
    can't read as hex. So what can't it read? The `x`. `toHex` puts `0x` on the front, so
    `fromHex` has to take it off before Node sees the rest.
 4. **The debugger.** See it for yourself, as in [lesson 0.4](../00-start/04-the-jam-clock.md): a breakpoint on line 13
-   of `src/bytes.ts`, then *Tests: bytes (1.1)* in *Run and Debug*, and <kbd>F5</kbd>.
+   of `src/bytes.ts`, then *Tests: all (npm test)* in *Run and Debug*, and <kbd>F5</kbd>.
    In *Variables*, `hex` is the whole `0x0102ff`, `0x` and all, about to go to Node.
 
 The fix:

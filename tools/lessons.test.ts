@@ -123,9 +123,10 @@ test("every lesson closes with What you have", () => {
   }
 });
 
-// .vscode/launch.json hands the debugger over in 1.2 (WRITING.md): each test file and
-// program made up to then has a configuration, named for the lesson that makes it.
-test("every test file and program up to 1.2 has a debug configuration, named for its lesson", () => {
+// .vscode/launch.json hands the debugger over in 1.2 (WRITING.md): each program made up to
+// then has a configuration, named for the lesson that makes it. Tests have only the two
+// for any lesson: all of them, and the open file.
+test("every program up to 1.2 has a debug configuration, named for its lesson", () => {
   const launch = JSON.parse(readFileSync(join(ROOT, ".vscode", "launch.json"), "utf8").replace(/^\s*\/\/.*$/gm, ""));
   const madeIn = new Map<string, string>();
   for (const l of lessonsThrough("1.2")) {
@@ -139,6 +140,6 @@ test("every test file and program up to 1.2 has a debug configuration, named for
     assert.equal(madeIn.get(path), lesson, `"${c.name}" runs ${path}, which lesson ${lesson} makes`);
     named.push(path);
   }
-  const runnable = [...madeIn.keys()].filter((p) => /^(test\/.+\.test\.ts|bin\/.+\.ts)$/.test(p));
-  assert.deepEqual(named.sort(), runnable.sort());
+  const programs = [...madeIn.keys()].filter((p) => p.startsWith("bin/"));
+  assert.deepEqual(named.sort(), programs.sort());
 });

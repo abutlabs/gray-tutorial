@@ -186,8 +186,8 @@ Four places tell you what happened:
 4. **The debugger.** Step 3 worked it out; a *debugger* lets you watch it happen. In
    `src/time.ts`, click just left of line 12's number, the `return` line. A red dot
    appears: a *breakpoint*. Open *Run and Debug* (<kbd>⇧⌘D</kbd>, or
-   <kbd>Ctrl+Shift+D</kbd> on Windows and Linux), pick *Tests: time (0.4)* at the top,
-   and press <kbd>F5</kbd>. The test pauses on line 12, and the debugger's *Variables* list
+   <kbd>Ctrl+Shift+D</kbd> on Windows and Linux), pick *Tests: all (npm test)* at the
+   top, and press <kbd>F5</kbd>. The test pauses on line 12, and the debugger's *Variables* list
    shows `ms: 0`: the first assertion, 12:00:00 sharp. Press <kbd>F5</kbd> to go on, and it
    pauses again with `ms: 5999`, the second. In the *Debug Console* (next to the
    terminal), type `ms / (SLOT_SECONDS * 1000)` and press Enter: `0.9998333333333334`,
@@ -195,10 +195,10 @@ Four places tell you what happened:
    and click the red dot to remove it.
 
 > [!NOTE]
-> *Tests: time (0.4)* comes from `.vscode/launch.json`, which the tutorial ships. It has
-> a configuration for each test file and program up to [lesson 1.2](../01-bytes-and-numbers/02-numbers.md) (the later ones fail
-> with "Cannot find module" until you get there), plus three that work for any lesson:
-> *Tests: all (npm test)*, *Tests: the open file* and *Program: the open file*.
+> *Tests: all (npm test)* comes from `.vscode/launch.json`, which the tutorial ships. Two
+> more work in any lesson: *Tests: the open file* runs the test file you're looking at,
+> and *Program: the open file* the program. The programs you've made so far have one
+> each: *Program: hello (0.3)* and *Program: now (0.4)*.
 
 The fix is one word:
 

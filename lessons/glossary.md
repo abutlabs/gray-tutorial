@@ -106,7 +106,7 @@ fail, then writing the code that makes it pass. *Example:* [lesson 0.4](./00-sta
 
 **Debugger.** A tool that pauses a running program so you can read its variables, then
 lets it go on. In VS Code, *Run and Debug*, with the configurations in
-`.vscode/launch.json`. *Example:* *Tests: time (0.4)*. ([0.4](./00-start/04-the-jam-clock.md))
+`.vscode/launch.json`. *Example:* *Tests: all (npm test)*. ([0.4](./00-start/04-the-jam-clock.md))
 
 **Breakpoint.** A line where the debugger pauses the program: click left of the line's
 number, and a red dot appears. *Example:* line 12 of `src/time.ts`, where `slotAt`

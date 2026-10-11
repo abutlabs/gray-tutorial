@@ -1,8 +1,10 @@
 {
   // Run and Debug (⇧⌘D): pick a configuration, press F5. A breakpoint pauses the code on
   // its line. Node runs the .ts files itself, so there's no build and no source maps.
-  // runtimeVersion "26" takes Node 26 from nvm, whatever your default Node is.
-  // Lessons 0.3 to 1.2 have a configuration each; after 1.2, adding them is up to you.
+  // runtimeVersion "26" takes Node 26 from nvm, whatever your default Node is. What the
+  // code prints shows in the Debug Console: VS Code starts Node itself, with no shell in
+  // between, so your shell's startup files can't slow or break the launch.
+  // The programs of lessons 0.3 and 0.4 have one each; after 1.2, adding them is up to you.
   "version": "0.2.0",
   "configurations": [
     {
@@ -14,7 +16,6 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["test"],
       "autoAttachChildProcesses": true,
-      "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"]
     },
     {
@@ -26,7 +27,6 @@
       "runtimeArgs": ["--test"],
       "program": "${file}",
       "autoAttachChildProcesses": true,
-      "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"]
     },
     {
@@ -36,7 +36,6 @@
       "cwd": "${workspaceFolder}/client",
       "runtimeVersion": "26",
       "program": "${file}",
-      "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"]
     },
     {
@@ -46,19 +45,6 @@
       "cwd": "${workspaceFolder}/client",
       "runtimeVersion": "26",
       "program": "${workspaceFolder}/client/bin/hello.ts",
-      "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
-    },
-    {
-      "name": "Tests: time (0.4)",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/client",
-      "runtimeVersion": "26",
-      "runtimeArgs": ["--test"],
-      "program": "${workspaceFolder}/client/test/time.test.ts",
-      "autoAttachChildProcesses": true,
-      "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"]
     },
     {
@@ -68,31 +54,6 @@
       "cwd": "${workspaceFolder}/client",
       "runtimeVersion": "26",
       "program": "${workspaceFolder}/client/bin/now.ts",
-      "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
-    },
-    {
-      "name": "Tests: bytes (1.1)",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/client",
-      "runtimeVersion": "26",
-      "runtimeArgs": ["--test"],
-      "program": "${workspaceFolder}/client/test/bytes.test.ts",
-      "autoAttachChildProcesses": true,
-      "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
-    },
-    {
-      "name": "Tests: js-numbers (1.2)",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/client",
-      "runtimeVersion": "26",
-      "runtimeArgs": ["--test"],
-      "program": "${workspaceFolder}/client/test/js-numbers.test.ts",
-      "autoAttachChildProcesses": true,
-      "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"]
     }
   ]

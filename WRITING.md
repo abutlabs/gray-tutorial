@@ -70,10 +70,11 @@ to `PUBLISHED` in `.vitepress/urls.ts`. A page that moves or is renumbered: add 
 to the same section. A renamed heading: put `<a id="old-id"></a>` on the line above it.
 `tools/urls.test.ts` checks all three, and that every `#section` link lands on a heading.
 
-**Debug configurations stop at 1.2.** `.vscode/launch.json` has a configuration for each
-test file and program from lessons 0.3 to 1.2 (0.4 teaches the debugger, 1.2 hands it
-over), plus three for any file. Later lessons don't add any or mention them: the reader
-makes their own, a habit 1.2 recommends.
+**Debug configurations stop at 1.2.** `.vscode/launch.json` has three for any lesson (all
+the tests, the open test file, the open program) and one for each program up to 1.2, none
+for single test files. 0.4 teaches the debugger and 1.2 hands it over; later lessons
+don't add configurations or mention them: the reader makes their own, a habit 1.2
+recommends.
 
 ## Shape
 
