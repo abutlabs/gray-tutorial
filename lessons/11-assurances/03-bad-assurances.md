@@ -4,7 +4,7 @@ So far your client has believed every assurance it was handed. A real block can 
 broken one: signed with the wrong key, anchored on the wrong block, claiming a core that
 has nothing on it. A client must refuse such a block outright. This lesson writes down
 the five rules an assurance must keep, and checks them against every assurances test
-vector, including the six that are meant to fail.
+vector, including the six on each size that are meant to fail.
 
 ## New words
 

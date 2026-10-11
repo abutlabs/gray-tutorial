@@ -147,8 +147,8 @@ one on the losing side.
 ```ts
   return verifyEd25519(fault.key, voteMessage(fault.vote, fault.target), fault.signature);
 ```
- And `recordOffenders` reuses `sorted`, since ψ_O is a set like
-the other three.
+
+And `recordOffenders` reuses `sorted`, since ψ_O is a set like the other three.
 
 **Run**
 
@@ -235,7 +235,7 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 Put it next to [lesson 10.1](./01-votes-and-verdicts.md)'s `bin/verdicts.ts` on the same vector, and the whole trial
 reads like a story. Report `0x7b0a…` was judged bad, so the two validators who
 guaranteed it are culprits. Report `0x11da…` was judged good, and validator `0x4418…`
-(validator 0, from [lesson 5.3](../05-hashing-and-signatures/03-signatures.md)) had voted "invalid" on it: a fault. Now try
+(validator 0, whose key [lesson 6.3](../06-state-and-merklization/03-reading-the-state.md) printed as κ0) had voted "invalid" on it: a fault. Now try
 `progress_with_bad_signatures-2.json`, where the second culprit's "evidence" is a
 forgery. The *Offenders* panel lists every offender.
 

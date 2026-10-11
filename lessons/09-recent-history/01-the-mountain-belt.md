@@ -1,8 +1,9 @@
 # The mountain belt
 
 Every JAM block remembers a little of the blocks before it, and one thing it keeps is a
-running commitment to *every accumulation output ever*. Bridges to other chains read it,
-so it has to be small, cheap to extend, and checkable with tools those chains already
+running commitment to *every accumulation output ever*. Bridges to other chains read it
+(a bridge is a program on another chain, Ethereum say, that checks what happened on
+JAM), so it has to be small, cheap to extend, and checkable with tools those chains already
 have. JAM's answer is a **Merkle mountain belt**: a row of perfect little Merkle trees,
 "mountains", of sizes 1, 2, 4, 8 and so on. Appending an item is exactly like adding 1 to
 a binary number. Really. You'll see it. By the end of this lesson your client keeps the
@@ -15,7 +16,8 @@ belt, and its one-hash summary, exactly as the test vectors do.
 - **Peak.** One mountain's root, or ∅ where the belt has no mountain of that size.
   *Example:* after 5 items the peaks are [a hash, ∅, a hash].
 - **Super-peak.** One hash for the whole belt, made from its peaks. *Example:* the
-  `beefy_root` in each recent block.
+  `beefy_root` in each recent block, named for BEEFY, the way validators sign that hash
+  for bridges.
 - **Keccak-256.** Ethereum's hash function. It gives 32 bytes, like Blake2b, but different
   ones. *Example:* Keccak-256 of nothing at all starts `0xc5d24601`.
 
@@ -26,7 +28,8 @@ All four are in the [glossary](../glossary.md).
 Appendix E (*Merkle Mountain Ranges and Belts*). A belt is a list of *peaks*: peak i is
 the root of a mountain of 2^i items, or ∅ if there's no mountain of that size.
 
-**Appending** an item l (the function A): start at place 0, carrying l.
+**Appending** an item l (the function A, which the Gray Paper defines through a helper,
+P, that calls itself once per place): start at place 0, carrying l.
 
 - If the place is empty, the carried hash rests there. Done.
 - If there's a mountain there, merge: the carried hash becomes H(peak ⌢ carried), the
@@ -232,7 +235,7 @@ The merge is two lines in the loop:
     peaks[i] = null;
 ```
 
-The Gray Paper writes appending as a recursion, P; `appendToBelt` is the same thing as a
+The Gray Paper writes A's helper P as a recursion; `appendToBelt` is the same thing as a
 loop, carrying one hash along the places. `superPeak` stays recursive, just as the Gray
 Paper writes it: fold all but the last, then join the last on.
 

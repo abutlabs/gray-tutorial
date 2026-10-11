@@ -1,8 +1,10 @@
 # Signed and counted
 
 A guarantee is a promise with signatures on it: "we ran this work, and this is the
-report". This lesson checks that every signature is real and made by a guarantor of the
-right core. Then it writes down who signed: the **reporters**, which the statistics
+report". This lesson checks that every signature is real: made with the key of the
+validator it names, in the assignment the guarantee answers to. (Whether that validator
+was assigned to the report's core is a check of its own, in [lesson
+12.4](./04-bad-guarantees.md).) Then it writes down who signed: the **reporters**, which the statistics
 ([Part 18](../18-statistics/index.md)) will credit for the work.
 
 ## What the Gray Paper says
