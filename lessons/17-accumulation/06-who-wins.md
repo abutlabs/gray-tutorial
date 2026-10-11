@@ -314,6 +314,22 @@ export function accumulateRound(
 }
 ```
 
+Most of that is [lesson 17.4](./04-rounds.md)'s round. What's new is four lines: the round takes the privileges
+it starts with, hands them to every run, keeps what each run left them as, and merges
+them when every run is done:
+
+```ts
+  privileges = NO_PRIVILEGES, // χ as the round starts
+  ...
+    const a = { id: s, accounts: mine, checkpoint, code, entropy, inputs, privileges };
+  ...
+    powers.set(s, result.privileged);
+  ...
+  const { privileges: next, queues } = mergePrivileges(privileges, powers);
+```
+
+(`checkpoint` only moved to a line of its own, to keep that line short.)
+
 And the block carries them from round to round:
 
 **Replace in** `src/accumulate.ts`
@@ -396,6 +412,20 @@ export function accumulateBlock(
   const after = { ...state, slot, accounts, privileges, ready, accumulated };
   return { state: after, statistics, queues };
 }
+```
+
+The same idea, one level up. The privileges start from the state, each round's merge is
+the next round's start, the last one goes back into the state, and the queues the rounds
+set are kept (a later round's over an earlier's):
+
+```ts
+  let privileges = state.privileges;
+  ...
+    for (const [c, queue] of round.queues) queues.set(c, queue);
+  ...
+    privileges = round.privileges;
+  ...
+  const after = { ...state, slot, accounts, privileges, ready, accumulated };
 ```
 
 The new queues go back beside the statistics. [Part 13](../13-authorization/index.md)'s ϕ will take them when
