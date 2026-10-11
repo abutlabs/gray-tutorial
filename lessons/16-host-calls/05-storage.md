@@ -148,6 +148,17 @@ export function accountFromJson(json: AccountJson): Account {
 }
 ```
 
+`read` is a lookup. `write` has six steps, in this order:
+
+1. **Charge** the gas, before anything else: out of gas, it stops there.
+2. **Read** the key from memory, and the value too, unless its length is 0.
+3. **Panic** if either can't be read.
+4. **Work out the account as it would be after**: one item more for a new key, one fewer
+   for a deleted one, and the bytes to match ([lesson 14.2](../14-services/02-the-service-account.md)'s footprint).
+5. **FULL** if that account's minimum balance is more than its balance. Nothing changes.
+6. **Commit**: store or delete, keep the new footprint, and give back the old value's
+   length, or NONE.
+
 **Add to** `src/host.ts`
 
 ```ts
@@ -203,9 +214,18 @@ export function write(m: Machine, accounts: Map<number, Account>, s: number): Ho
 ```
 
 `write` works out the account as it would be after the write, with [lesson 14.2](../14-services/02-the-service-account.md)'s
-footprint sums, and only commits to it if the minimum balance is covered. The vectors'
-accounts arrive with their items and bytes already counted, so adding and taking away is
-all it takes to keep them right.
+footprint sums, and only commits to it if the minimum balance is covered. That's step 5:
+
+```ts
+  if (minimumBalance(after) > after.balance) {
+    m.registers[7] = FULL;
+    return "continue";
+  }
+```
+
+FULL isn't a crash: the machine carries on, and the service reads φ₇ and decides what to
+do. The vectors' accounts arrive with their items and bytes already counted, so adding and
+taking away is all it takes to keep them right.
 
 **Replace in** `src/host.ts`
 
@@ -270,8 +290,8 @@ reported 456 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=
 
 Across the accumulate vectors, eight services in seven vectors (`always_accumulate-2`,
 `process_one_immediate_report-1` and both `same_round_storage_isolation` among them) now
-finish with the vectors' gas to the unit and the vectors' storage to the byte. [Part
-17](../17-accumulation/index.md), which builds each service's inputs from the work reports, puts them all in tests. Most
+finish with the vectors' gas to the unit and the vectors' storage to the byte. [Lesson
+16.7](./07-a-services-inputs.md), which builds each service's inputs from the work reports, puts them all in tests. Most
 write a key called "last". Forty more services get as far as `checkpoint`, the next host
 call.
 
