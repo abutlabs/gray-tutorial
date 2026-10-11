@@ -150,8 +150,22 @@ doesn't, since by then it's closed. The vectors only cross Y from further away (
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/safrole.ts' does not provide an export named 'outsideIn'
+...
+✖ test/safrole.test.ts (204.6ms)
+...
+ℹ tests 72
+ℹ suites 0
+ℹ pass 71
+ℹ fail 1
+...
+```
+
+Red: `src/safrole.ts` doesn't export `outsideIn` yet.
 
 ## The code
 
@@ -217,11 +231,22 @@ twice.
 
 ```sh
 npm test
-# prints: Z: outside in, from both ends to the middle
-# prints: the tickets mark: in the block that closes a full lottery, and in no other
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ Z: outside in, from both ends to the middle (0.7ms)
+...
+✔ the tickets mark: in the block that closes a full lottery, and in no other (300.3ms)
+...
+ℹ tests 78
+ℹ suites 0
+ℹ pass 78
+ℹ fail 0
+...
+reported 78 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791730482308
+...
 ```
 
 The tickets mark is right in every accepted vector: present in the two that close a full
@@ -270,9 +295,24 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/lottery.ts ../vectors/stf/safrole/tiny/publish-tickets-with-mark-4.json
-# prints: 12 of 12 tickets: a tickets mark
-# prints: slot   1 of the next epoch: ticket 11, 0xff0aa173…
-# prints: reported to Grafana
+```
+
+```text
+slot 3 → 11, the lottery closes at phase 10
+12 of 12 tickets: a tickets mark
+slot   0 of the next epoch: ticket 0, 0x00e51b1c…
+slot   1 of the next epoch: ticket 11, 0xff0aa173…
+slot   2 of the next epoch: ticket 1, 0x015d2d6f…
+slot   3 of the next epoch: ticket 10, 0xff039ff7…
+slot   4 of the next epoch: ticket 2, 0x20164381…
+slot   5 of the next epoch: ticket 9, 0xf4aac2fb…
+slot   6 of the next epoch: ticket 3, 0x420cb7b0…
+slot   7 of the next epoch: ticket 8, 0xe12c22d4…
+slot   8 of the next epoch: ticket 4, 0x4c82dbb7…
+slot   9 of the next epoch: ticket 7, 0xd96bb363…
+slot  10 of the next epoch: ticket 5, 0x5af49b10…
+slot  11 of the next epoch: ticket 6, 0xd6feae23…
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=lottery-1791730487634
 ```
 
 Read the ticket column down: 0, 11, 1, 10, 2, 9, … the zip of two lists, one counting
@@ -303,6 +343,7 @@ back. Same order, a different way to see it. Try a few slots by hand: both give 
 ## What you have
 
 The lottery's endgame: closing on time, announcing the winners, and seating them, outside
-in, in the epoch they'll seal.
+in, in the epoch they'll seal. [Lesson 8.5](./05-one-step-of-safrole.md) puts
+every piece together into one step of Safrole.
 
 Next: [8.5 One step of Safrole](./05-one-step-of-safrole.md)

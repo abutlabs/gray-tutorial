@@ -74,8 +74,22 @@ the accumulator and the sealers. Only γ_Z is left out. Two more check the marks
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/safrole.ts' does not provide an export named 'safroleFromJson'
+...
+✖ test/safrole.test.ts (185.8ms)
+...
+ℹ tests 72
+ℹ suites 0
+ℹ pass 71
+ℹ fail 1
+...
+```
+
+Red: `src/safrole.ts` doesn't export `safroleFromJson` yet.
 
 ## The code
 
@@ -185,10 +199,20 @@ reset the lottery, write the marks. Every line of it is a lesson you've done.
 
 ```sh
 npm test
-# prints: a whole step of Safrole: the state and both marks, for each block without tickets
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ a whole step of Safrole: the state and both marks, for each block without tickets (648.7ms)
+...
+ℹ tests 79
+ℹ suites 0
+ℹ pass 79
+ℹ fail 0
+...
+reported 79 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791730491045
+...
 ```
 
 22 whole steps, every field right: 10 on tiny, 12 on full. The 11 accepted vectors left
@@ -247,10 +271,16 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
-# prints: a new epoch: true
-# prints: validators moved along one set; offenders zeroed: 1
-# prints: the whole state after matches the vector: true
-# prints: reported to Grafana
+```
+
+```text
+slot 45 → 48
+η₀ stirred: 0x03170a2e… → 0xa0243a82…
+a new epoch: true
+validators moved along one set; offenders zeroed: 1
+sealers: fallback keys; tickets mark: false
+the whole state after matches the vector: true
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=safrole-1791730495403
 ```
 
 That's the busiest vector of all: a new epoch, an offender, fallback sealers. Try the
@@ -283,6 +313,7 @@ vectors handed you that output as `input.entropy`. The line after it is your
 ## What you have
 
 Safrole, end to end, for every block that brings no tickets: the whole state after it, and
-both marks for its header, right on every vector it can run.
+both marks for its header, right on every vector it can run. Part 9 builds the other memory every block
+updates: the recent history of the chain itself.
 
 Next: [Part 9 · Recent history](../09-recent-history/index.md)

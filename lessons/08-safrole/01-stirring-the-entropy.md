@@ -79,14 +79,7 @@ Some vectors describe blocks that must be *rejected*: a bad slot, a bad ticket. 
 `output` is an `err`, and their state doesn't change at all. Rejecting blocks comes later
 in Part 8, so for now the test skips them, and counts the rest: 15 on tiny, 18 on full.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-## The code
+A stub that stirs nothing in: the entropy comes back as it went.
 
 **New file** `src/safrole.ts`
 
@@ -95,6 +88,53 @@ npm test
 // keeps the chain's randomness fresh.
 
 import type { Bytes } from "./bytes.ts";
+
+export function nextEntropy(entropy: Bytes[], vrfOutput: Bytes, newEpoch: boolean): Bytes[] {
+  return entropy;
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ η′: each block stirs its VRF output into η₀, and a new epoch moves the history (2.3ms)
+...
+ℹ tests 72
+ℹ suites 0
+ℹ pass 71
+ℹ fail 1
+...
+test at test/safrole.test.ts:17:1
+✖ η′: each block stirs its VRF output into η₀, and a new epoch moves the history (2.3ms)
+  AssertionError [ERR_ASSERTION]: stf/safrole/tiny/enact-epoch-change-with-no-tickets-1.json
+  + actual - expected
+
+    [
+  +   '0x03170a2e7597b7b7e3d84c05391d139a62b157e78786d8c082f29dcf4c111314',
+  -   '0xa0243a82952899598fcbc74aff0df58a71059a9882d4416919055c5d64bf2a45',
+      '0xee155ace9c40292074cb6aff8c9ccdd273c81648ff1149ef36bcea6ebb8a3e25',
+      '0xbb30a42c1e62f0afda5f0a4e8a562f7a13a24cea00ee81917b86b89e801314aa',
+      '0xe88bd757ad5b9bedf372d8d3f0cf6c962a469db61a265f6418e1ffed86da29ec'
+    ]
+
+      at TestContext.<anonymous> (…/client/test/safrole.test.ts:25:14)
+...
+```
+
+Red on the first vector, and only in the first entry: η₀ should have been stirred. The
+other three are right by luck, because that block doesn't start an epoch, so they stay
+put anyway.
+
+## The code
+
+**Replace in** `src/safrole.ts`
+
+```ts
 import { concatBytes } from "./bytes.ts";
 import { entropyHistory } from "./epoch.ts";
 import { blake2b256 } from "./hash.ts";
@@ -115,10 +155,20 @@ One hash for the accumulator, and [lesson 7.1](../07-time-and-shuffling/01-epoch
 
 ```sh
 npm test
-# prints: η′: each block stirs its VRF output into η₀, and a new epoch moves the history
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ η′: each block stirs its VRF output into η₀, and a new epoch moves the history (386.3ms)
+...
+ℹ tests 72
+ℹ suites 0
+ℹ pass 72
+ℹ fail 0
+...
+reported 72 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791730458811
+...
 ```
 
 33 scenarios, and your η′ matches every one. That includes `skip-epochs-1`, where the
@@ -168,9 +218,17 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/entropy.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
-# prints: slot 10 → 15: a new epoch
-# prints: η′ matches the vector: true
-# prints: reported to Grafana
+```
+
+```text
+slot 10 → 15: a new epoch
+VRF output 0x92e69aed566b11bf…
+η0  0xf164ce89b1048859…  →  0x760612c571119ba1…
+η1  0xee155ace9c402920…  →  0xf164ce89b1048859…
+η2  0xbb30a42c1e62f0af…  →  0xee155ace9c402920…
+η3  0xe88bd757ad5b9bed…  →  0xbb30a42c1e62f0af…
+η′ matches the vector: true
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=entropy-1791730462383
 ```
 
 Look at the four η lines: a staircase. Each old value steps down one row, η₀'s to η₁,
@@ -199,6 +257,7 @@ will too.
 
 ## What you have
 
-The randomness at the heart of Safrole: stirred every block, set aside every epoch.
+The randomness at the heart of Safrole: stirred every block, set aside every epoch. A new epoch moves more than entropy:
+[lesson 8.2](./02-rotating-the-validators.md) moves the validator sets along with it.
 
 Next: [8.2 Rotating the validators](./02-rotating-the-validators.md)

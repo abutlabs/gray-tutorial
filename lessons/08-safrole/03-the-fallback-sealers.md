@@ -68,19 +68,63 @@ where the fallback happened: post_state's γ_S holds `keys` instead of `tickets`
 out η′ and κ′ with lessons [8.1](./01-stirring-the-entropy.md) and [8.2](./02-rotating-the-validators.md)'s own functions, so your whole Safrole so far is on
 trial, not just F.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: does not provide an export named
-```
-
-## The code
+A stub that hands every slot the same key, all zeros:
 
 **Add to** `src/safrole.ts`
 
 ```ts
 import type { Config } from "./config.ts";
+
+export function fallbackKeys(config: Config, r: Bytes, validators: ValidatorKey[]): Bytes[] {
+  return Array(config.epoch_length).fill(new Uint8Array(32));
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ F: an epoch without a full lottery is sealed by keys picked from κ′ by hash (201.1ms)
+...
+ℹ tests 74
+ℹ suites 0
+ℹ pass 73
+ℹ fail 1
+...
+test at test/safrole.test.ts:82:1
+✖ F: an epoch without a full lottery is sealed by keys picked from κ′ by hash (201.1ms)
+  AssertionError [ERR_ASSERTION]: stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+  + actual - expected
+
+    [
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000',
+  +   '0x0000000000000000000000000000000000000000000000000000000000000000'
+  -   '0x9326edb21e5541717fde24ec085000b28709847b8aab1ac51f84e94b37ca1b66',
+  -   '0xdee6d555b82024f1ccf8a1e37e60fa60fd40b1958c4bb3006af78647950e1b91',
+...
+```
+
+Red: twelve slots, twelve zero keys, where the vector has twelve real validators' keys.
+
+## The code
+
+**Replace in** `src/safrole.ts`
+
+```ts
 import { decodeFixed, encodeFixed } from "./codec/numbers.ts";
 
 /**
@@ -105,10 +149,20 @@ eight numbers per hash.
 
 ```sh
 npm test
-# prints: F: an epoch without a full lottery is sealed by keys picked from κ′ by hash
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ F: an epoch without a full lottery is sealed by keys picked from κ′ by hash (279.6ms)
+...
+ℹ tests 74
+ℹ suites 0
+ℹ pass 74
+ℹ fail 0
+...
+reported 74 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791730474850
+...
 ```
 
 12 fallback epochs, every sealer of every slot right: 5 on tiny, 7 on full, where each
@@ -155,9 +209,23 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/sealers.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
-# prints: slot   0 of the epoch: validator 2
-# prints: the sealers match the vector: true
-# prints: reported to Grafana
+```
+
+```text
+slot   0 of the epoch: validator 2
+slot   1 of the epoch: validator 1
+slot   2 of the epoch: validator 5
+slot   3 of the epoch: validator 0
+slot   4 of the epoch: validator 0
+slot   5 of the epoch: validator 3
+slot   6 of the epoch: validator 1
+slot   7 of the epoch: validator 5
+slot   8 of the epoch: validator 1
+slot   9 of the epoch: validator 1
+slot  10 of the epoch: validator 4
+slot  11 of the epoch: validator 1
+the sealers match the vector: true
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=sealers-1791730478835
 ```
 
 Count them up: validator 1 seals 5 of the 12 slots, validators 2, 3 and 4 just one each.
@@ -195,6 +263,7 @@ carries the old η₁.)
 ## What you have
 
 A Plan B for every epoch: sealers chosen by hash from the new validators, the same on
-every node.
+every node. Plan A is the lottery itself: [lesson 8.4](./04-the-lotterys-winners.md) seats its
+winners.
 
 Next: [8.4 The lottery's winners](./04-the-lotterys-winners.md)

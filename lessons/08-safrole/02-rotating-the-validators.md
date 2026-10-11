@@ -127,8 +127,22 @@ The vectors name the sets in Greek: `iota`, `gamma_k`, `kappa`, `lambda`. (`gamm
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/safrole.ts' does not provide an export named 'rotateValidators'
+...
+✖ test/safrole.test.ts (214.5ms)
+...
+ℹ tests 72
+ℹ suites 0
+ℹ pass 71
+ℹ fail 1
+...
+```
+
+Red: `src/safrole.ts` doesn't export `rotateValidators` yet.
 
 ## The code
 
@@ -179,10 +193,20 @@ their hex strings are.)
 
 ```sh
 npm test
-# prints: at a new epoch the validator sets move along one, with offenders zeroed
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ at a new epoch the validator sets move along one, with offenders zeroed (596.3ms)
+...
+ℹ tests 73
+ℹ suites 0
+ℹ pass 73
+ℹ fail 0
+...
+reported 73 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791730466785
+...
 ```
 
 14 rotations checked, and 19 blocks where nothing moved. One vector,
@@ -238,9 +262,15 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/rotation.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
-# prints: slot 45 → 48: a new epoch
-# prints: pending   4418 ad93 cab2 f30a 8b8c ab00  →  cab2 0000 4418 8b8c ad93 f30a
-# prints: reported to Grafana
+```
+
+```text
+slot 45 → 48: a new epoch
+staging   cab2 ab00 4418 8b8c ad93 f30a  →  cab2 ab00 4418 8b8c ad93 f30a
+pending   4418 ad93 cab2 f30a 8b8c ab00  →  cab2 0000 4418 8b8c ad93 f30a
+active    ab00 f30a 8b8c 4418 ad93 cab2  →  4418 ad93 cab2 f30a 8b8c ab00
+previous  4418 cab2 8b8c f30a ab00 ad93  →  ab00 f30a 8b8c 4418 ad93 cab2
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=rotation-1791730470419
 ```
 
 Read it like a slide puzzle. The six validators are an old cast, `4418` is [lesson 5.3](../05-hashing-and-signatures/03-signatures.md)'s
@@ -273,6 +303,7 @@ key; with a handful of offenders, that's just as quick as your `Set`.
 
 ## What you have
 
-Validator sets that change hands at every epoch, with cheaters left at the door.
+Validator sets that change hands at every epoch, with cheaters left at the door. The new set has to seal the
+epoch's blocks; when the lottery doesn't fill every slot, [lesson 8.3](./03-the-fallback-sealers.md)'s Plan B does.
 
 Next: [8.3 The fallback sealers](./03-the-fallback-sealers.md)
