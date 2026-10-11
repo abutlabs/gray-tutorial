@@ -114,8 +114,22 @@ can't pass.
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/state.ts' does not provide an export named 'readEntropy'
+...
+✖ test/state.test.ts (197.3ms)
+...
+ℹ tests 61
+ℹ suites 0
+ℹ pass 60
+ℹ fail 1
+...
+```
+
+Red: `src/state.ts` doesn't export `readEntropy` yet, nor the other readers.
 
 ## The code
 
@@ -168,12 +182,22 @@ nothing new: it's Part 2's decoding, pointed at Part 6's keys.
 
 ```sh
 npm test
-# prints: τ: the time before each block is the slot of the block before it
-# prints: η: each epoch mark carries η₀ and η₁ from the state before its block
-# prints: κ: real assurances check out with the validators' keys from the state
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ τ: the time before each block is the slot of the block before it (171.5ms)
+✔ η: each epoch mark carries η₀ and η₁ from the state before its block (158.7ms)
+✔ κ: real assurances check out with the validators' keys from the state (787.6ms)
+...
+ℹ tests 66
+ℹ suites 0
+ℹ pass 66
+ℹ fail 0
+...
+reported 66 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728965838
+...
 ```
 
 Look at what the κ test just did: real assurances from real blocks (Part 4), checked
@@ -230,10 +254,15 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/read-state.ts ../vectors/traces/safrole/00000012.json
-# prints: τ, the time: slot 11
-# prints: η0: 0xcf7f084efbeefbda10df98970c403993cfc0039f1c240ba4f2ff075890a1a83b
-# prints: κ0: ed25519 0x4418fb8c85bb3985394a8c2756d3643457ce614546202a2f50b093d762499ace
-# prints: reported to Grafana
+```
+
+```text
+τ, the time: slot 11
+η0: 0xcf7f084efbeefbda10df98970c403993cfc0039f1c240ba4f2ff075890a1a83b
+...
+κ0: ed25519 0x4418fb8c85bb3985394a8c2756d3643457ce614546202a2f50b093d762499ace
+...
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=read-state-1791728969293
 ```
 
 Block 12 of the `safrole` trace starts an epoch, and its state says the time is slot 11:
@@ -266,6 +295,7 @@ and every key comes out wrong. Try it, and watch the κ test go red.
 ## What you have
 
 Your client can read the state: find any component by its key, decode it with the codecs
-it already has, and trust it, because three independent witnesses agree.
+it already has, and trust it, because three independent witnesses agree. Part 7 turns to
+time itself: epochs, and the shuffle that deals validators out to cores.
 
 Next: [Part 7 · Time and shuffling](../07-time-and-shuffling/index.md)

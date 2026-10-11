@@ -108,14 +108,7 @@ value in the state, it asks: is this value sitting exactly where a preimage of *
 would sit? If so, it's a preimage, and its request has to be there too. At the end, the
 keys named this way and the keys in the state must be the same 21, no more, no fewer.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-# fails with: Cannot find module
-```
-
-## The code
+A stub, with every key the same: 31 zero bytes.
 
 **New file** `src/state.ts`
 
@@ -123,6 +116,65 @@ npm test
 // State keys (GP App. D): where in the state trie each part of the state lives.
 
 import type { Bytes } from "./bytes.ts";
+
+export function componentKey(i: number): Bytes {
+  return new Uint8Array(31);
+}
+
+export function accountKey(s: number): Bytes {
+  return new Uint8Array(31);
+}
+
+export function serviceItemKey(s: number, h: Bytes): Bytes {
+  return new Uint8Array(31);
+}
+
+export function preimageKey(s: number, p: Bytes): Bytes {
+  return new Uint8Array(31);
+}
+
+export function requestKey(s: number, h: Bytes, l: number): Bytes {
+  return new Uint8Array(31);
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ C(i): a component's key is its number, then 30 zero bytes (1.9ms)
+✖ C(255, s): an account's key spreads the service id out, with zeros between (0.2ms)
+✖ every key of a real state, named: 16 components, an account, preimages, requests (3.4ms)
+...
+ℹ tests 63
+ℹ suites 0
+ℹ pass 60
+ℹ fail 3
+...
+test at test/state.test.ts:8:1
+✖ C(i): a component's key is its number, then 30 zero bytes (1.9ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + '0x00000000000000000000000000000000000000000000000000000000000000'
+  - '0x0b000000000000000000000000000000000000000000000000000000000000'
+
+      at TestContext.<anonymous> (…/client/test/state.test.ts:9:10)
+...
+```
+
+All three caught the stub. Component 11's key should start with its number, `0b`;
+the stub's is all zeros, like every other key it makes.
+
+## The code
+
+**Replace in** `src/state.ts`
+
+```ts
 import { concatBytes } from "./bytes.ts";
 import { encodeFixed } from "./codec/numbers.ts";
 import { blake2b256 } from "./hash.ts";
@@ -174,11 +226,22 @@ export function requestKey(s: number, h: Bytes, l: number): Bytes {
 
 ```sh
 npm test
-# prints: C(i): a component's key is its number, then 30 zero bytes
-# prints: every key of a real state, named: 16 components, an account, preimages, requests
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ C(i): a component's key is its number, then 30 zero bytes (0.4ms)
+...
+✔ every key of a real state, named: 16 components, an account, preimages, requests (17.8ms)
+...
+ℹ tests 63
+ℹ suites 0
+ℹ pass 63
+ℹ fail 0
+...
+reported 63 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728959119
+...
 ```
 
 All 21 keys, accounted for. Two of the service's entries are preimages (the
@@ -274,10 +337,16 @@ account.
 
 ```sh
 node bin/state.ts ../vectors/traces/fallback/00000001.json
-# prints: C(8): κ, the validators
-# prints: C(255, 0): an account
-# prints: the header promises it: true
-# prints: reported to Grafana
+```
+
+```text
+...
+depth  8    2017-byte value  C(8): κ, the validators
+...
+depth  1      89-byte value  C(255, 0): an account
+...
+the header promises it: true
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=state-1791728962505
 ```
 
 The same 21 leaves as [lesson 6.1](./01-the-state-trie.md), now with names. The one alone at depth 1 is service
@@ -312,6 +381,7 @@ has the same recipe a second time, as `state_key_from_index_service` in
 ## What you have
 
 A map of the state: for any key, which part of JAM it holds, and for any part of JAM,
-its key.
+its key. [Lesson 6.3](./03-reading-the-state.md) reads what's there: the time, the
+entropy, the validators.
 
 Next: [6.3 Reading the state](./03-reading-the-state.md)

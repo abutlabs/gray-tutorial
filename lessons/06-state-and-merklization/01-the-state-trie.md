@@ -124,16 +124,60 @@ test("each header promises the state before its block, by its root: 400 real sta
 
 The `trie` vectors write their hex without `0x`, so the test adds it for `fromHex`.
 
+A stub so the tests can run: the type of an entry, and a root that's always zeros.
+
+**New file** `src/trie.ts`
+
+```ts
+// The state trie (GP App. D): one 32-byte root that commits to every key and value in the
+// state. Change any value anywhere, and the root changes.
+
+import type { Bytes } from "./bytes.ts";
+
+export type KeyValue = { key: Bytes; value: Bytes };
+
+export function stateRoot(entries: KeyValue[]): Bytes {
+  return new Uint8Array(32);
+}
+```
+
 **Run, expect it to fail**
 
 ```sh
 npm test
-# fails with: Cannot find module
 ```
+
+```text
+...
+✖ the trie vectors: from no entries at all to ten (1.5ms)
+✖ each header promises the state before its block, by its root: 400 real states (1.0ms)
+...
+ℹ tests 60
+ℹ suites 0
+ℹ pass 58
+ℹ fail 2
+...
+test at test/trie.test.ts:7:1
+✖ the trie vectors: from no entries at all to ten (1.5ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + '0x0000000000000000000000000000000000000000000000000000000000000000'
+  - '0x99ecb1509d2cbc16bab389714e5933932977e742472fcd9277d67f45699e076a'
+
+      at TestContext.<anonymous> (…/client/test/trie.test.ts:17:12)
+...
+```
+
+Red, but look at which vector it fell on. The first trie vector is the empty state, and
+the Gray Paper says an empty trie's root is 32 zero bytes: the stub got that one right
+by accident. Every other root, and every real state, it got wrong.
 
 ## The code
 
-**New file** `src/trie.ts`
+The real trie replaces the stub, file and all:
+
+**Rewrite** `src/trie.ts`
 
 ```ts
 // The state trie (GP App. D): one 32-byte root that commits to every key and value in the
@@ -211,11 +255,21 @@ A few things to notice:
 
 ```sh
 npm test
-# prints: the trie vectors: from no entries at all to ten
-# prints: each header promises the state before its block, by its root: 400 real states
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ the trie vectors: from no entries at all to ten (3.6ms)
+✔ each header promises the state before its block, by its root: 400 real states (2491.0ms)
+...
+ℹ tests 60
+ℹ suites 0
+ℹ pass 60
+ℹ fail 0
+...
+reported 60 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728952545
+...
 ```
 
 About fifty lines, and your client computes the state root of real JAM states, up to 273
@@ -266,10 +320,33 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/state.ts ../vectors/traces/fallback/00000001.json
-# prints: depth  1  0xff00
-# prints: 21 entries, state root 0xd6e78dc07a9ae915ada8306bf0da89b11044a2d4ee71ae0c5faf61f34f6b3a0c
-# prints: the header promises it: true
-# prints: reported to Grafana
+```
+
+```text
+depth 11  0x001f00d80020000f54baff5df8254cd8565b0ae7128494d27595b5ff15c665  5-byte value, in the leaf
+depth 11  0x003f00f4004e00375cb1b4c052ebb735f8db5d35cced61f8c918fd873aaa80  159322-byte value, hashed
+depth 10  0x006200e5005e009a783dea6395f0002b98566c47f6d17f33ac790f6a687e5f  50-byte value, hashed
+depth  9  0x00cc007a00980005854520370befe282935ed398114c060b435946c98d4fc1  5-byte value, in the leaf
+depth  8  0x01000000000000000000000000000000000000000000000000000000000000  514-byte value, hashed
+depth  8  0x02000000000000000000000000000000000000000000000000000000000000  5120-byte value, hashed
+depth  8  0x03000000000000000000000000000000000000000000000000000000000000  103-byte value, hashed
+depth  8  0x04000000000000000000000000000000000000000000000000000000000000  2547-byte value, hashed
+depth  8  0x05000000000000000000000000000000000000000000000000000000000000  4-byte value, in the leaf
+depth  8  0x06000000000000000000000000000000000000000000000000000000000000  128-byte value, hashed
+depth  8  0x07000000000000000000000000000000000000000000000000000000000000  2017-byte value, hashed
+depth  8  0x08000000000000000000000000000000000000000000000000000000000000  2017-byte value, hashed
+depth  8  0x09000000000000000000000000000000000000000000000000000000000000  2017-byte value, hashed
+depth  8  0x0a000000000000000000000000000000000000000000000000000000000000  2-byte value, in the leaf
+depth  8  0x0b000000000000000000000000000000000000000000000000000000000000  4-byte value, in the leaf
+depth  8  0x0c000000000000000000000000000000000000000000000000000000000000  21-byte value, in the leaf
+depth  8  0x0d000000000000000000000000000000000000000000000000000000000000  307-byte value, hashed
+depth  8  0x0e000000000000000000000000000000000000000000000000000000000000  12-byte value, in the leaf
+depth  8  0x0f000000000000000000000000000000000000000000000000000000000000  12-byte value, in the leaf
+depth  4  0x10000000000000000000000000000000000000000000000000000000000000  1-byte value, in the leaf
+depth  1  0xff000000000000000000000000000000000000000000000000000000000000  89-byte value, hashed
+21 entries, state root 0xd6e78dc07a9ae915ada8306bf0da89b11044a2d4ee71ae0c5faf61f34f6b3a0c
+the header promises it: true
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=state-1791728955705
 ```
 
 Twenty-one entries, one root, and the header agrees. Now read the leaves, in key order,
@@ -322,6 +399,7 @@ three cases off like the Gray Paper's own definition.
 ## What you have
 
 The function every JAM node runs after every block: the state root. Your client can now
-check that a header's `parent_state_root` really is the state it came from.
+check that a header's `parent_state_root` really is the state it came from. A root is all
+it gives, though: which key holds what? [Lesson 6.2](./02-state-keys.md) maps the keys.
 
 Next: [6.2 State keys](./02-state-keys.md)
