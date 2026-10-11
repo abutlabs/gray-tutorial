@@ -44,6 +44,7 @@ const started = Date.now();
 for (const [i, lesson] of lessons.slice(0, last + 1).entries()) {
   const running = i >= first;
   if (running) console.log(`\n${lesson.id} ${lesson.title}`);
+  if (running) rmSync(join(OUTPUTS, lesson.id), { recursive: true, force: true }); // none left from an older run
   for (const step of lesson.steps) {
     const where = `lessons/${lesson.file}:${step.line}`;
     if (step.kind === "file") {
