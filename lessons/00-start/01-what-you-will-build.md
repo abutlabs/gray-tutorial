@@ -141,11 +141,12 @@ at the repo root serves them with search and copy buttons.
 
 ## Stuck?
 
-From the repo root:
+From the repo root, `compare` shows how your client differs from the client after a
+lesson (here 2.3), and `catch-up` makes your client that client:
 
 ```sh
-npm run compare -- 2.3     # how your client differs from the client after lesson 2.3
-npm run catch-up -- 2.3    # make your client the client after lesson 2.3
+npm run compare -- 2.3
+npm run catch-up -- 2.3
 ```
 
 `catch-up` backs your files up to `.backup/` first, so nothing is ever lost.

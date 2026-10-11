@@ -122,9 +122,12 @@ hold `# prints: text` or `# fails with: text` lines: the output must contain tha
 
 ## Before publishing a lesson
 
+`verify` follows every lesson from an empty client; `check` typechecks and tests the
+tools and builds the website (which finds dead links).
+
 ```sh
-npm run verify        # every lesson, from an empty client
-npm run check         # tools typecheck and tests, website build (dead links)
+npm run verify
+npm run check
 ```
 
 Then read the lesson rendered in VS Code's preview and on the website.

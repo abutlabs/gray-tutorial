@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
-import { LESSONS, readParts } from "./lessons.ts";
+import { LESSONS, ROOT, readParts } from "./lessons.ts";
 
 const parts = readParts();
 const home = readFileSync(join(LESSONS, "index.md"), "utf8");
@@ -64,4 +64,22 @@ test("visual tutorial verification: every picture exists, is used, has alt text,
   for (const f of files.filter((f) => /\.(png|jpe?g|gif|webp|svg)$/i.test(f))) {
     assert.ok(shown.has(join(LESSONS, f)), `lessons/${f} is shown by a lesson`);
   }
+});
+
+// zsh, macOS's shell, doesn't read # as a comment unless told to: a pasted
+// `npm install   # the tools` asks npm for packages named "#", "the" and "tools".
+// A comment gets a line of its own (the website leaves those out when copying).
+test("commands paste safely: no shell line has a comment after its command", () => {
+  const docs = readdirSync(LESSONS, { recursive: true }).map(String).filter((f) => f.endsWith(".md"))
+    .map((f) => join(LESSONS, f)).concat(["README.md", "WRITING.md", "HARDENING.md"].map((f) => join(ROOT, f)));
+  const bad: string[] = [];
+  for (const doc of docs) {
+    let shell: boolean | undefined;
+    for (const [i, line] of readFileSync(doc, "utf8").split("\n").entries()) {
+      const fence = /^\s*```(\w*)/.exec(line);
+      if (fence) shell = shell === undefined ? /^(sh|bash|zsh|shell)$/.test(fence[1]) : undefined;
+      else if (shell && /^\s*[^#\s].*\s#/.test(line)) bad.push(`${doc.slice(ROOT.length)}:${i + 1}: ${line.trim()}`);
+    }
+  }
+  assert.deepEqual(bad, []);
 });

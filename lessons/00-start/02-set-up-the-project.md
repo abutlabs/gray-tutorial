@@ -22,13 +22,20 @@ VS Code (or any editor) and Docker Desktop.
 ## Node 26
 
 The repo's `.nvmrc` says `26`. With [nvm](https://github.com/nvm-sh/nvm), at the repo
-root:
+root, install it once:
 
 ```sh
-nvm install      # once
-nvm use          # in every new terminal
-node --version   # v26.something
+nvm install
 ```
+
+Then, in every new terminal, switch to it and check:
+
+```sh
+nvm use
+node --version
+```
+
+It should say `v26.` and something.
 
 Why Node 26? It runs TypeScript files directly: it strips off the type annotations and
 runs what's left. No build step, so the code you type is the code that runs. (The types
@@ -38,11 +45,13 @@ the newest JavaScript built-ins, like turning bytes into hex, which you'll meet 
 
 ## The tutorial's tools
 
-Still at the repo root, once:
+Still at the repo root, once: `npm install` fetches the website and the lesson tools,
+and `npm run vectors` downloads the official test vectors (about 1.4 GB, into
+`vectors/`).
 
 ```sh
-npm install       # the website and the lesson tools
-npm run vectors   # the official test vectors: about 1.4 GB, into vectors/
+npm install
+npm run vectors
 ```
 
 ## The observability stack
@@ -52,11 +61,12 @@ look at, Prometheus for numbers, Loki for events: the same stack lasair reports 
 It runs in Docker, so start Docker Desktop first.
 
 The stack is its own repo, [abutlabs/observability](https://github.com/abutlabs/observability).
-Clone it next door, so the two folders sit side by side, and start it:
+Clone it next door, so the two folders sit side by side, and start it. `cd ..` takes
+you to the folder that holds `gray-tutorial/`, and the clone is needed only once:
 
 ```sh
-cd ..                     # the folder that holds gray-tutorial/
-git clone https://github.com/abutlabs/observability.git    # once
+cd ..
+git clone https://github.com/abutlabs/observability.git
 cd observability
 ./obs up
 cd ../gray-tutorial

@@ -36,12 +36,12 @@ Written and checked on macOS. Linux should work the same way; on Windows, use WS
 ## Where things go
 
 The tutorial expects the observability stack in a folder beside it. Clone both into
-any folder of your own:
+any folder of your own (`YOUR-NAME/gray-tutorial` is your fork of this repository):
 
 ```sh
 mkdir jam && cd jam
 git clone https://github.com/abutlabs/observability.git
-git clone git@github.com:YOUR-NAME/gray-tutorial.git    # your fork of this repository
+git clone git@github.com:YOUR-NAME/gray-tutorial.git
 cd gray-tutorial
 ```
 
@@ -58,14 +58,21 @@ jam/
 
 ## Start
 
-In the `gray-tutorial` folder:
+In the `gray-tutorial` folder, get Node 26 (nvm reads it from `.nvmrc`, installs it the
+first time, then switches to it) and check it, since nothing below works without it:
 
 ```sh
-nvm install           # Node 26, from .nvmrc: installs it the first time, then switches to it
-node --version        # must say v26; if not, nothing below works
-npm install           # the website and the tools
-../observability/obs up   # the observability stack, from the folder beside this one
-npm run vectors       # the official test vectors, about 1.4 GB, into vectors/
+nvm install
+node --version
+```
+
+It must say `v26`. Then the website and the tools, the observability stack (from the
+folder beside this one), and the official test vectors (about 1.4 GB, into `vectors/`):
+
+```sh
+npm install
+../observability/obs up
+npm run vectors
 ```
 
 nvm switches Node in one terminal only. Every new terminal starts on your default Node
@@ -88,12 +95,15 @@ Grafana's *gray-tutorial* folder: start at *0 · Your client*
 tutorial, from *1 · Basics* to *7 · Accumulation and import*. Grafana's own Home page
 belongs to the stack and shows its networks, not your client.
 
-Then start the website, in a new terminal of its own (it keeps running until Ctrl-C):
+Then start the website, in a new terminal of its own (it keeps running until Ctrl-C).
+A new terminal starts on your default Node, so switch first:
 
 ```sh
-nvm use               # a new terminal: Node 26 again
-npm run site          # the lessons at http://localhost:5173; your browser opens there
+nvm use
+npm run site
 ```
+
+The lessons are at http://localhost:5173, and your browser opens there.
 
 Start at its first page, or at [lessons/index.md](lessons/index.md). There are two ways to
 read the lessons:
@@ -119,22 +129,24 @@ tools/           how the lessons are checked
 
 This repository ignores `client/`: your code never lands in the tutorial's history, and
 `git pull` brings new lessons without touching it. To keep a history of your own, and a
-copy on GitHub, make `client/` a repository of its own:
+copy on GitHub, make `client/` a repository of its own (`git init`), with a
+`.gitignore` that keeps downloaded packages out of it:
 
 ```sh
 cd client
-git init                                  # client/ becomes its own repository
-printf 'node_modules/\n' > .gitignore     # keep downloaded packages out of it
+git init
+printf 'node_modules/\n' > .gitignore
 git add .
 git commit -m "My JAM client"
 ```
 
 Then create an empty repository on GitHub (no README, licence or .gitignore, so the
 first push goes in cleanly), for example `my-jam-client`, private if you like, and link
-it up:
+it up, with your GitHub name for `YOUR-NAME` (for abutlabs, the first line would be
+`git remote add origin git@github.com:abutlabs/my-jam-client.git`):
 
 ```sh
-git remote add origin git@github.com:YOUR-NAME/my-jam-client.git  #ie. git remote add origin git@github.com:abutlabs/my-jam-client.git
+git remote add origin git@github.com:YOUR-NAME/my-jam-client.git
 git branch -M main
 git push -u origin main
 ```

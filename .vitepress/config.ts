@@ -4,6 +4,7 @@
 
 import { defineConfig } from "vitepress";
 import type MarkdownIt from "markdown-it";
+import type { ShikiTransformer } from "shiki";
 import { readParts } from "../tools/lessons.ts";
 
 const parts = readParts();
@@ -17,7 +18,7 @@ export default defineConfig({
   // Grafana and the stack are on localhost on purpose; every other link must resolve
   ignoreDeadLinks: [/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/],
   lastUpdated: false,
-  markdown: { config: snippetLabels },
+  markdown: { config: snippetLabels, codeTransformers: [shellComments()] },
   themeConfig: {
     search: { provider: "local" },
     nav: [{ text: "JAM learning", link: "https://abutlabs.github.io/jam-learning/" }],
@@ -55,4 +56,18 @@ function snippetLabels(md: MarkdownIt): void {
       if (m) t[i].attrJoin("class", `snippet-label ${KIND[m[1]]}`);
     }
   });
+}
+
+// A comment line in a shell block (`# prints: ...`, `# fails with: ...`) is for reading:
+// the copy button leaves it out, so what you paste is only the commands.
+function shellComments(): ShikiTransformer {
+  return {
+    name: "shell-comments",
+    line(node, line) {
+      const shell = /^(sh|bash|zsh|shell)$/.test(this.options.lang);
+      if (shell && /^\s*#/.test(this.source.split("\n")[line - 1] ?? "")) {
+        this.addClassToHast(node, "vp-copy-ignore");
+      }
+    },
+  };
 }
