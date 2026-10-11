@@ -1,7 +1,7 @@
 # What instructions cost
 
 A program that loops forever would stall every validator running it. JAM's answer is
-**gas**: a service gets a budget, and every piece of code it runs is paid for before it
+*gas*: a service gets a budget, and every piece of code it runs is paid for before it
 runs. In Gray Paper 0.8.0 the price is set by a little thought experiment: imagine a
 modern CPU running the code, and count its cycles. That takes two parts, the price list
 and the CPU. This lesson is the price list: what each instruction costs.

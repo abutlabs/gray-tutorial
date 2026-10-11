@@ -2,7 +2,7 @@
 
 So far the machine only has registers: thirteen numbers. Real programs need room: a
 stack for function calls, data to read, places to write results. This lesson gives the
-PVM its **memory**, 4 gigabytes of address space of which a program can touch only the
+PVM its *memory*, 4 gigabytes of address space of which a program can touch only the
 pages it's been given, and the thirty instructions that load and store.
 
 ## New words

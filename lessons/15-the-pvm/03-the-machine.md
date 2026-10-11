@@ -31,7 +31,7 @@ step can also end with *halt* (finished well) or *panic* (finished badly).
 
 **Ψ** steps until ε is anything but ▸.
 
-**Basic blocks** (A.3): a *basic block* starts at 0, and right after every **terminator**:
+*Basic blocks* (A.3): a basic block starts at 0, and right after every *terminator*:
 `trap`, `fallthrough`, jumps and branches. These are the instructions that can send ı
 somewhere other than the next instruction. The rule that matters: **a jump or branch
 may only land at the start of a basic block**, or the machine panics. A branch checks

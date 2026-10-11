@@ -17,8 +17,11 @@ one rule your client follows from here on.
 - **Bitwise operator.** One that works on a number's bits: `|` (or), `&` (and), `^`
   (xor) and the shifts `<<`, `>>`, `>>>`. *Example:* `6 & 3` is 2 (binary 110 and 011
   share only the 2s bit).
+- **Gas.** JAM's measure of computing work: every program gets a budget of it, and every
+  step it takes is paid for from that budget. *Example:* 2^64 − 70 is a gas amount, and
+  needs a `bigint`.
 
-All four are in the [glossary](../glossary.md).
+All five are in the [glossary](../glossary.md).
 
 ## The secret
 

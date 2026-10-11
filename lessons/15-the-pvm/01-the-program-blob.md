@@ -1,6 +1,6 @@
 # The program blob
 
-[Part 15](./index.md) is the big one: the **PVM**, the Polkadot Virtual Machine, the little computer
+[Part 15](./index.md) is the big one: the *PVM*, the Polkadot Virtual Machine, the little computer
 inside every JAM node that runs services' code. Before it can run anything, though, it
 has to *unpack* it. A service's code arrives as one long preimage ([lesson 14.1](../14-services/01-providing-preimages.md)), and
 inside it, like nesting dolls, are a label, a memory layout, and finally the program the
@@ -37,9 +37,9 @@ memory.)
 
 **3. The PVM blob** (App. A, deblob): ℰ(|j|) ⌢ ℰ₁(z) ⌢ ℰ(|c|), then:
 
-- j, the **jump table**: |j| entries of z bytes each, the places an indirect jump may land;
-- c, the **code**: the *instructions*, byte after byte;
-- k, the **opcode bitmask**: one bit per byte of c, saying which bytes *start* an
+- j, the *jump table*: |j| entries of z bytes each, the places an indirect jump may land;
+- c, the *code*: the *instructions*, byte after byte;
+- k, the *opcode bitmask*: one bit per byte of c, saying which bytes *start* an
   instruction. Instructions take 1 to 16 bytes, so without k you couldn't tell an
   opcode from an argument. Bits are packed least significant first, like [lesson 11.1](../11-assurances/01-available.md)'s
   bitfields.
