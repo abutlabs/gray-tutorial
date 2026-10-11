@@ -61,6 +61,8 @@ node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 48
 21 9e 53 2e 2a 00 00 00 00 00 00 00 2a 00 00 00
 ```
 
+![The work item's first 60 bytes, field after field: service 16909060 as 04 03 02 01 (ℰ₄), code_hash as its 32 bytes, both gas limits 42 as 2a and seven zeros (ℰ₈), export_count 4 as 04 00 (ℰ₂), and the payload as its length 5 then its five bytes, with 176 more bytes after](./images/06-work-item-bytes.svg)
+
 Read the first bytes against the JSON:
 
 - `04 03 02 01` is `service`, 16909060, as ℰ₄. In hex 16909060 is `0x01020304`, written

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 742 300" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">
+<style>
+  text { fill: #3c3c43; text-anchor: middle; }
+  .value, .enc, .offset { fill: #67676c; font-size: 13px; }
+  .bytes { fill: #1b1b1f; }
+  .offset { text-anchor: start; }
+  .field { stroke-width: 1.5; }
+  .f0 { fill: #e8f0fe; stroke: #5b8def; }
+  .f1 { fill: #e6f6ef; stroke: #3fa97a; }
+  .rest { fill: none; stroke: #9a9aa0; stroke-dasharray: 5 4; }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #dfdfd6; }
+    .value, .enc, .offset { fill: #a8a8a0; }
+    .bytes { fill: #ffffff; }
+    .f0 { fill: #1e2a44; stroke: #7aa2f7; }
+    .f1 { fill: #1b3329; stroke: #4fc08d; }
+  }
+</style>
+<text class="name" x="76.2" y="22">service</text>
+<text class="value" x="76.2" y="42">16909060</text>
+<rect class="field f0" x="16" y="54" width="120.4" height="44" rx="6"/>
+<text class="bytes" x="76.2" y="82">04 03 02 01</text>
+<text class="enc" x="76.2" y="120">ℰ₄</text>
+<text class="offset" x="16" y="140">0</text>
+<text class="name" x="248.8" y="22">code_hash</text>
+<text class="value" x="248.8" y="42">0x70a5…532e</text>
+<rect class="field f1" x="142.4" y="54" width="212.8" height="44" rx="6"/>
+<text class="bytes" x="248.8" y="82">70 a5 08 29 … 9e 53 2e</text>
+<text class="enc" x="248.8" y="120">32 bytes, as is</text>
+<text class="offset" x="142.4" y="140">4</text>
+<text class="name" x="471.80000000000007" y="22">refine_gas_limit</text>
+<text class="value" x="471.80000000000007" y="42">42</text>
+<rect class="field f0" x="361.20000000000005" y="54" width="221.20000000000002" height="44" rx="6"/>
+<text class="bytes" x="471.80000000000007" y="82">2a 00 00 00 00 00 00 00</text>
+<text class="enc" x="471.80000000000007" y="120">ℰ₈</text>
+<text class="offset" x="361.20000000000005" y="140">36</text>
+<text class="name" x="126.60000000000001" y="172">accumulate_gas_limit</text>
+<text class="value" x="126.60000000000001" y="192">42</text>
+<rect class="field f1" x="16" y="204" width="221.20000000000002" height="44" rx="6"/>
+<text class="bytes" x="126.60000000000001" y="232">2a 00 00 00 00 00 00 00</text>
+<text class="enc" x="126.60000000000001" y="270">ℰ₈</text>
+<text class="offset" x="16" y="290">44</text>
+<text class="name" x="307.6" y="172">export_count</text>
+<text class="value" x="307.6" y="192">4</text>
+<rect class="field f0" x="243.20000000000002" y="204" width="128.8" height="44" rx="6"/>
+<text class="bytes" x="307.6" y="232">04 00</text>
+<text class="enc" x="307.6" y="270">ℰ₂</text>
+<text class="offset" x="243.20000000000002" y="290">52</text>
+<text class="name" x="467.6" y="172">payload</text>
+<text class="value" x="467.6" y="192">0x0102030405</text>
+<rect class="field f1" x="378" y="204" width="179.20000000000002" height="44" rx="6"/>
+<text class="bytes" x="467.6" y="232">05 01 02 03 04 05</text>
+<text class="enc" x="467.6" y="270">ℰ(5), then 5 bytes</text>
+<text class="offset" x="378" y="290">54</text>
+<text class="offset" x="563.2" y="290">60</text>
+<rect class="field rest" x="563.2" y="204" width="162.4" height="44" rx="6"/>
+<text class="enc" x="644.4000000000001" y="232">… 176 more bytes</text>
+</svg>

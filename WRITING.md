@@ -46,6 +46,16 @@ least for every new panel a lesson sends the reader to.
   sits in its part's `images/`, has alt text and fits; and that every image is shown by
   some lesson.
 
+## Diagrams
+
+Where an idea is a shape (bytes in a row, a trie, a queue), draw it, as the Rust Book draws
+its hardest ideas. A diagram is an SVG drawn by `tools/diagrams.ts` from data checked
+against the source (a vector's real bytes, the Gray Paper's rule): add a function and its
+path to `DIAGRAMS`, then `npm run diagrams`. `tools/diagrams.test.ts` checks every
+committed SVG is what the code draws, so the two never drift. Monospace text, light and
+dark colours in the SVG's own style, no wider than about 880 units so it shows at full
+size; in the lesson, the picture alone with real alt text, like a screenshot.
+
 ## Where
 
 `lessons/NN-part-name/NN-lesson-name.md`. The numbers give the order and the lesson's id

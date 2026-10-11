@@ -12,6 +12,7 @@
     "catch-up": "node tools/need-node.mjs && node tools/compare.ts --write",
     "verify": "node tools/need-node.mjs && node tools/verify.ts",
     "screenshots": "node tools/need-node.mjs && node tools/screenshots.ts",
+    "diagrams": "node tools/need-node.mjs && node tools/diagrams.ts",
     "test": "node tools/need-node.mjs && node --test \"tools/*.test.ts\"",
     "typecheck": "tsc -p tools",
     "check": "node tools/need-node.mjs && npm run typecheck && npm test && npm run site:build"
