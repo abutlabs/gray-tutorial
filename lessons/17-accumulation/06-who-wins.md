@@ -134,8 +134,23 @@ test("a core changes hands for the whole block, with a new queue", () => {
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/accumulate.ts' does not provide an export named 'mergePrivileges'
+...
+✖ test/accumulate.test.ts (173.3ms)
+...
+ℹ tests 469
+ℹ suites 0
+ℹ pass 468
+ℹ fail 1
+...
+```
+
+Red: `src/accumulate.ts` doesn't export `mergePrivileges` yet. R comes first, then the
+block's state learns to carry the privileges from round to round.
 
 ## The code
 
@@ -377,17 +392,33 @@ export function accumulateBlock(
 }
 ```
 
-The new queues go back beside the statistics. Part 13's ϕ will take them when Part 19
-puts a whole block together.
+The new queues go back beside the statistics. [Part 13](../13-authorization/index.md)'s ϕ will take them when
+[Part 19](../19-block-import/index.md) puts a whole block together.
 
 **Run**
 
 ```sh
 npm test
-# prints: who wins: the manager's change over the holder's, the holder's over nobody's
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ assign_from_non_assigner-1: the block ends as the vector says (552.7ms)
+✔ assign_from_non_assigner-2: the block ends as the vector says (538.2ms)
+✔ assign_from_non_assigner-3: the block ends as the vector says (570.0ms)
+...
+✔ who wins: the manager's change over the holder's, the holder's over nobody's (0.4ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (572.3ms)
+...
+ℹ tests 540
+ℹ suites 0
+ℹ pass 540
+ℹ fail 0
+...
+reported 540 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791739213626
+...
 ```
 
 ## Watch it
@@ -424,8 +455,16 @@ to the end of the `for` loop.)
 
 ```sh
 node bin/accumulate.ts ../vectors/stf/accumulate/tiny/assign_from_non_assigner-3.json
-# prints: assigners: 0,0 → 1,0
-# prints: service 0: 1 digest(s), 0 transfer(s), 1308944 gas
+```
+
+```text
+slot 45: 1 new report(s), 0 waiting
+accumulated: 0x6af0ea4c
+still waiting: 0
+assigners: 0,0 → 1,0
+service 0: 1 digest(s), 0 transfer(s), 1308944 gas
+  the vector says: 1 digest(s), 0 transfer(s), 1308944 gas
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791739226282
 ```
 
 Service 0 held both cores, gave core 0 to service 1, and the block agrees: core 0's
@@ -459,6 +498,7 @@ R listens to.
 ## What you have
 
 Privileges that survive the round they're changed in, settled the Gray Paper's way: the
-manager first, then the holder. Forty official vectors match as whole blocks.
+manager first, then the holder. Forty official vectors match as whole blocks. Services so
+far only come and change; [lesson 17.7](./07-ejecting-a-service.md) lets one go.
 
 Next: [17.7 Ejecting a service](./07-ejecting-a-service.md)

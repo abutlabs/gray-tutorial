@@ -200,8 +200,24 @@ test("the assigner hands core 0 to service 1", () => {
 
 ```sh
 npm test
-# fails with: does not provide an export named
 ```
+
+```text
+...
+SyntaxError: The requested module '../src/host.ts' does not provide an export named 'CORE'
+...
+✖ test/host.test.ts (184.2ms)
+...
+ℹ tests 506
+ℹ suites 0
+ℹ pass 501
+ℹ fail 5
+...
+```
+
+Red: `src/host.ts` doesn't export `CORE` yet, nor the privileges and `assign`. The record,
+a run's powers and the call come together, then the host learns to keep the powers
+through a checkpoint.
 
 ## The code
 
@@ -447,10 +463,29 @@ it isn't, `startPowers` gets `undefined`, and its default steps in.
 
 ```sh
 npm test
-# prints: the assigner hands core 0 to service 1
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ assign_from_non_assigner-1: service 1 ends as the vector says (685.6ms)
+✔ assign_from_non_assigner-2: service 0 ends as the vector says (654.0ms)
+✔ assign_from_non_assigner-3: service 0 ends as the vector says (1486.2ms)
+...
+✔ the assigner hands core 0 to service 1 (576.3ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (251.5ms)
+...
+✔ assign: the assigner hands a core on, and a checkpoint keeps the change (1.1ms)
+✔ assign refuses: no such core, not the core's assigner, not a service id (2.7ms)
+...
+ℹ tests 535
+ℹ suites 0
+ℹ pass 535
+ℹ fail 0
+...
+reported 535 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791739196226
+...
 ```
 
 ## Watch it
@@ -511,15 +546,36 @@ used above the line it's written on.
 
 ```sh
 node bin/host.ts ../vectors/stf/accumulate/tiny/assign_from_non_assigner-3.json 0
-# prints: host call 16 (assign): φ₇ = 0
-# prints: the test vector says: 1308944
+```
+
+```text
+host call 2 (fetch): φ₇ = 122, 1999367 gas left
+...
+host call 16 (assign): φ₇ = 0, 742165 gas left
+host call 1 (grow_heap): φ₇ = 55, 721031 gas left
+host call 100 (log, from JIP-1): φ₇ = WHAT, 703828 gas left
+host call 5 (write): φ₇ = 1, 695155 gas left
+the service stops: "halt", using 1308944 gas
+the test vector says: 1308944
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791739203939
 ```
 
 **Run**
 
 ```sh
 node bin/host.ts ../vectors/stf/accumulate/tiny/assign_from_non_assigner-1.json 1
-# prints: host call 16 (assign): φ₇ = HUH
+```
+
+```text
+host call 2 (fetch): φ₇ = 122, 1999367 gas left
+...
+host call 16 (assign): φ₇ = HUH, 746254 gas left
+host call 1 (grow_heap): φ₇ = 55, 725096 gas left
+host call 100 (log, from JIP-1): φ₇ = WHAT, 707763 gas left
+host call 5 (write): φ₇ = 1, 699061 gas left
+the service stops: "halt", using 1305017 gas
+the test vector says: 1305017
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791739204669
 ```
 
 The first service holds core 0 and hands it over: φ₇ = 0, `OK`. The second isn't core
@@ -559,6 +615,7 @@ right now. Same answers; your way is shorter to read.
 
 A record of who holds which privilege, and the first privileged call: a core's assigner
 can hand it on, with a new queue, and a failure takes it back. Three more official
-service runs match.
+service runs match. Every service in a round starts from the same privileges, though, so
+two can change the same one: [lesson 17.6](./06-who-wins.md) decides who wins.
 
 Next: [17.6 Who wins](./06-who-wins.md)

@@ -39,9 +39,16 @@ Inside a round the services go in order of their ids, and so do the transfers th
 that's the order the next round hands them out in.
 
 The Gray Paper's names: the loop is **Δ+**, one round **Δ\***, one service in a round
-**Δ₁**. Δ₁'s inputs are **i^T ⌢ i^U**: transfers, then operands. Δ+ also keeps a gas
-budget for the whole block, which only matters for blocks too big to be valid; this lesson
-takes every report in round 1 and leaves the budget to the hardening pass.
+**Δ₁**. Δ₁'s inputs are **i^T ⌢ i^U**: transfers, then operands.
+
+> [!NOTE]
+> **The simple road.** Δ+ also keeps a gas budget for the whole block, max(G_T, G_A · C +
+> the always-accumulate gas): reports join round 1 only while their gas still fits, and
+> the rest wait for a later round. This lesson takes every report in round 1. One
+> official vector needs the budget: in `recreate_service_ejected_in_earlier_round-1`, the
+> two reports ask for 22,000,000 gas, tiny's budget is 20,000,000, so the second report
+> waits for round 2. That vector isn't among this part's tests; the [hardening
+> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the budget.
 
 ## The tests
 
@@ -108,10 +115,34 @@ by hand, with `accumulateRound`.
 
 ```sh
 npm test
-# fails with: fail 3
 ```
 
-Three red: the gift never arrives.
+```text
+...
+✖ transfer_for_live_service-1: the block ends as the vector says (360.3ms)
+...
+✖ the gift arrives a round later: the money first, then service 1 runs (80.8ms)
+✖ a transfer to a service with no code: the money arrives, and nothing runs (1.0ms)
+...
+ℹ tests 529
+ℹ suites 0
+ℹ pass 526
+ℹ fail 3
+...
+test at test/accumulate.test.ts:177:1
+✖ the gift arrives a round later: the money first, then service 1 runs (80.8ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 227714n
+  - 227814n
+...
+```
+
+Three red: the gift never arrives. Read the second: the receiver's balance is 227,714
+where the vector has 227,814, the hundred that never came. These fail on an assertion,
+not a missing name: the tests use only functions you already have, so the red is the
+rule itself, missing.
 
 ## The code
 
@@ -296,10 +327,25 @@ each round has less gas to share than the one before.
 
 ```sh
 npm test
-# prints: the gift arrives a round later: the money first, then service 1 runs
-# prints: fail 0
-# prints: reported
 npm run typecheck
+```
+
+```text
+...
+✔ transfer_for_live_service-1: the block ends as the vector says (109.0ms)
+...
+✔ the gift arrives a round later: the money first, then service 1 runs (97.6ms)
+✔ a transfer to a service with no code: the money arrives, and nothing runs (1.5ms)
+...
+✔ the reported packages: each one's hash and exports root, sorted by hash (280.6ms)
+...
+ℹ tests 529
+ℹ suites 0
+ℹ pass 529
+ℹ fail 0
+...
+reported 529 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791739179951
+...
 ```
 
 ## Watch it
@@ -361,9 +407,17 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 node bin/accumulate.ts ../vectors/stf/accumulate/tiny/transfer_for_live_service-1.json
-# prints: service 0: 1 digest(s), 0 transfer(s), 255437 gas
-# prints: service 1: 0 digest(s), 1 transfer(s), 61711 gas
-# prints: the vector says: 0 digest(s), 1 transfer(s), 61711 gas
+```
+
+```text
+slot 43: 1 new report(s), 0 waiting
+accumulated: 0x774935b6
+still waiting: 0
+service 0: 1 digest(s), 0 transfer(s), 255437 gas
+  the vector says: 1 digest(s), 0 transfer(s), 255437 gas
+service 1: 0 digest(s), 1 transfer(s), 61711 gas
+  the vector says: 0 digest(s), 1 transfer(s), 61711 gas
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791739188404
 ```
 
 Two services, two rounds: service 0 with its one digest in round 1, service 1 with its
@@ -403,6 +457,7 @@ used.
 ## What you have
 
 A block's accumulation in rounds: transfers sent, carried over, and delivered, the money
-before the code. Thirty-seven official vectors now match as whole blocks.
+before the code. Thirty-seven official vectors now match as whole blocks. Money is one
+thing a service can hand on; [lesson 17.5](./05-privileges.md) turns to rights.
 
 Next: [17.5 Privileges](./05-privileges.md)
