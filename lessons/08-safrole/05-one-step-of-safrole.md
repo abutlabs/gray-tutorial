@@ -98,6 +98,17 @@ Red: `src/safrole.ts` doesn't export `safroleFromJson` yet.
 
 ## The code
 
+`safroleStep` takes Safrole's state and one block, and does six things, in order:
+
+1. **Is it a new epoch?** The block's epoch against the previous block's ([lesson 7.1](../07-time-and-shuffling/01-epochs.md)).
+2. **Stir the entropy**, and at a new epoch move it along one ([lesson 8.1](./01-stirring-the-entropy.md)).
+3. **At a new epoch, rotate the validators**, keeping offenders out ([lesson 8.2](./02-rotating-the-validators.md)).
+4. **Choose the sealers:** the lottery's winners if it closed full ([lesson 8.4](./04-the-lotterys-winners.md)); if not,
+   at a new epoch, the fallback keys ([lesson 8.3](./03-the-fallback-sealers.md)); otherwise, keep this epoch's.
+5. **At a new epoch, empty the ticket accumulator.**
+6. **Write the two marks:** the epoch mark at a new epoch, the tickets mark when the
+   lottery closes.
+
 **Add to** `src/safrole.ts`
 
 ```ts
@@ -197,8 +208,23 @@ check in the next program tells them apart. `safroleFromJson` is to Safrole's st
 `fromJson` is to a codec: the vectors' form, with its Greek names, turned into your
 client's.
 
-`safroleStep` itself reads like a summary of [Part 8](./index.md): stir, rotate, choose the sealers,
-reset the lottery, write the marks. Every line of it is a lesson you've done.
+`safroleStep` itself reads like a summary of [Part 8](./index.md), the six steps in order. Every line of
+it is a lesson you've done. The one place three lessons meet is step 4, the sealers:
+
+```ts
+  let sealers = before.sealers;
+  if (sealedByTickets(config, before.time, slot, before.accumulator)) {
+    sealers = { tickets: outsideIn(before.accumulator) };
+  } else if (newEpoch) {
+    sealers = { keys: fallbackKeys(config, entropy[2], validators.active) };
+  }
+```
+
+The order matters. `sealedByTickets` is true only at a new epoch that follows straight on
+from a lottery that closed full, so the winners are tried first. Any other new epoch falls
+back to keys picked from η′₂ and κ′: `entropy[2]` and `validators.active` are the values
+*after* this block's stir and rotation, as F(η′₂, κ′) asks. In the middle of an epoch
+neither branch runs, and the sealers stay as they are.
 
 **Run**
 
