@@ -34,7 +34,7 @@ A **ticket** (§6) is an anonymous lottery entry. Every epoch, validators submit
 for the right to author blocks in the next one, and the best tickets win slots. Each
 ticket says which of its owner's tries it is (`attempt`, one byte), and carries a **ring
 VRF proof**: 784 bytes of cryptography that prove *some* validator made it without
-revealing *which*. You'll check those proofs in Part 8. Today they're just 784 bytes.
+revealing *which*. You'll check those proofs in [Part 8](../08-safrole/index.md). Today they're just 784 bytes.
 
 A **preimage** is the data behind a hash. Services can ask for data by its hash, and
 anyone can then deliver it in a block: the requesting service's id (ℰ₄) and the data
@@ -44,7 +44,7 @@ Each part is a sequence with its length in front.
 
 ## A shortcut for vector tests
 
-Part 4 checks a lot of vectors, each at both sizes. One helper registers both tests in
+[Part 4](./index.md) checks a lot of vectors, each at both sizes. One helper registers both tests in
 one line:
 
 **Add to** `test/vectors.ts`
@@ -126,7 +126,7 @@ export type Preimage = Value<typeof Preimage>;
 export const PreimagesExtrinsic = seq(Preimage);
 ```
 
-Nothing new under the sun: records and sequences, the bricks from Part 2. The only
+Nothing new under the sun: records and sequences, the bricks from [Part 2](../02-codec/index.md). The only
 surprise is how *big* a ticket is. Those 784 bytes are the price of anonymity.
 
 **Run**

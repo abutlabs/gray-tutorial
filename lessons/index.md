@@ -41,7 +41,7 @@ for that part of the Gray Paper on [JAM learning](https://abutlabs.github.io/jam
 There's no wrong way to read it, though. To start further in, or to catch up after a
 break, run `npm run catch-up -- 14.2` at the repo root: it makes your client the client
 after [lesson 14.2](./14-services/02-the-service-account.md), your own files saved to
-`.backup/` first. Then `npm install` in `client/`, and begin Part 15, the PVM, right
+`.backup/` first. Then `npm install` in `client/`, and begin [Part 15](./15-the-pvm/index.md), the PVM, right
 there. `npm run compare -- 14.2` shows how
 yours differs instead.
 
@@ -216,5 +216,5 @@ this order, and each one is checked end to end before it is published here.
 | 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
 | 16 · Host calls (rest) | upgrade, yield, provide, bless, designate, the inner machine | App. B |
 | 17 · Accumulation (rest) | new and ejected services, the other privileged calls, the block's gas budget | §12 |
-| 19 · Block import (rest) | real blocks through every step, the block-import traces (needs Part 8's Bandersnatch for η′) | §4, §5 |
+| 19 · Block import (rest) | real blocks through every step, the block-import traces (needs [Part 8](./08-safrole/index.md)'s Bandersnatch for η′) | §4, §5 |
 | 20 · Facing the fuzzer | the conformance fuzzer's protocol | |

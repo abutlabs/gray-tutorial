@@ -137,6 +137,19 @@ test("every mention of another lesson is a link to it", () => {
   assert.deepEqual(plain, []);
 });
 
+// And every part: "Part 8" links to Part 8's page, wherever it's mentioned.
+test("every mention of a part is a link to its page", () => {
+  const numbers = new Set(parts.map((p) => p.number));
+  const plain: string[] = [];
+  for (const md of pages) {
+    const text = prose(readFileSync(join(LESSONS, md), "utf8"));
+    for (const [mention, n] of text.matchAll(/\bParts?\s+(\d+)/g)) {
+      if (numbers.has(Number(n))) plain.push(`${md}: ${mention}`);
+    }
+  }
+  assert.deepEqual(plain, []);
+});
+
 // The code font means "exactly this code", and `bigint`s isn't code (the Book's style guide).
 test("no word is half code: two `bigint` values, not two `bigint`s", () => {
   const mixed: string[] = [];

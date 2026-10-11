@@ -192,7 +192,7 @@ check in the next program tells them apart. `safroleFromJson` is to Safrole's st
 `fromJson` is to a codec: the vectors' form, with its Greek names, turned into your
 client's.
 
-`safroleStep` itself reads like a summary of Part 8: stir, rotate, choose the sealers,
+`safroleStep` itself reads like a summary of [Part 8](./index.md): stir, rotate, choose the sealers,
 reset the lottery, write the marks. Every line of it is a lesson you've done.
 
 **Run**
@@ -313,7 +313,7 @@ vectors handed you that output as `input.entropy`. The line after it is your
 ## What you have
 
 Safrole, end to end, for every block that brings no tickets: the whole state after it, and
-both marks for its header, right on every vector it can run. Part 9 builds the other memory every block
+both marks for its header, right on every vector it can run. [Part 9](../09-recent-history/index.md) builds the other memory every block
 updates: the recent history of the chain itself.
 
 Next: [Part 9 · Recent history](../09-recent-history/index.md)

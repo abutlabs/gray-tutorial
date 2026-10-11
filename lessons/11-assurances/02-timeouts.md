@@ -324,7 +324,7 @@ easier to test one at a time.
 
 Your client reads every assurance, makes reports available, and frees the cores of
 reports that made it, ran out of time, or outlived their validator set. Like the court
-of Part 10, it still believes every assurance it's handed; [lesson 11.3](./03-bad-assurances.md) refuses the
+of [Part 10](../10-disputes/index.md), it still believes every assurance it's handed; [lesson 11.3](./03-bad-assurances.md) refuses the
 broken ones.
 
 Next: [11.3 Bad assurances](./03-bad-assurances.md)

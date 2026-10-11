@@ -42,7 +42,7 @@ export function culpritSigned(culprit: Culprit): boolean {
 }
 ```
 
-`culpritSigned` builds the same message as before, through its new home, so Part 10's
+`culpritSigned` builds the same message as before, through its new home, so [Part 10](../10-disputes/index.md)'s
 tests should all still pass:
 
 **Run**
@@ -65,7 +65,7 @@ npm test
 reported 188 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734301991
 ```
 
-Green, Part 10's offender tests among them: the message has a new home, and nothing else
+Green, [Part 10](../10-disputes/index.md)'s offender tests among them: the message has a new home, and nothing else
 changed.
 
 ## The tests

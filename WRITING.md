@@ -150,7 +150,7 @@ teaching. What we take from it, each with its reason. "Checked" means a test enf
 - **Quote what you explain.** After a long snippet, quote again the two to four lines the
   text explains, where it explains them. *Why:* nobody has to scroll back to find "the line
   with `#at`".
-- **Link every reference.** "lesson 2.3" is always a link (checked). When a lesson uses
+- **Link every reference.** "lesson 2.3" and "Part 8" are always links (checked). When a lesson uses
   something a later one explains, give the minimum ("for now, all you need to know is ...")
   and link forward. *Why:* the tutorial reads as one connected whole, and a promise never
   leaves the reader stuck.

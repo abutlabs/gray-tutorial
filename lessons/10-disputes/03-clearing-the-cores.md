@@ -23,7 +23,7 @@ change ρ again later in the same block.
 
 ## The cores
 
-ρ gets its own file, since Parts 11 and 12 will lean on it too:
+ρ gets its own file, since [Part 11](../11-assurances/index.md) and [Part 12](../12-guarantees/index.md) will lean on it too:
 
 **New file** `src/cores.ts`
 

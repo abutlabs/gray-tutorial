@@ -6,7 +6,7 @@ the exact bytes ℰ produces. Decode the bytes into the JSON's values, encode th
 back into the very same bytes, and your codec agrees with every other client's. No
 partial credit.
 
-Everything in Part 2 gets used here: [lesson 2.1](./01-fixed-width-integers.md)'s fixed widths, [lesson 2.2](./02-compact-naturals.md)'s compact
+Everything in [Part 2](./index.md) gets used here: [lesson 2.1](./01-fixed-width-integers.md)'s fixed widths, [lesson 2.2](./02-compact-naturals.md)'s compact
 naturals, [lesson 2.3](./03-writer-and-reader.md)'s Writer and Reader, and lessons [2.4](./04-codecs.md) and [2.5](./05-sequences-and-records.md)'s codecs, sequences
 and records.
 
@@ -124,7 +124,7 @@ helper the tests import, like `test/grafana.ts`.
 ## The structures
 
 Two structures from the Gray Paper, both about *work*: what a service asks a core to
-compute. You'll get to know them properly in Part 3. Today they're just shapes to
+compute. You'll get to know them properly in [Part 3](../03-work-and-reports/index.md). Today they're just shapes to
 encode.
 
 **The refinement context** (§11, *Refinement Context*) describes the chain as a

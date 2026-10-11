@@ -12,7 +12,7 @@ it doesn't get to step up: its keys are swapped for zeros.
 
 | Set | Name | Who they are |
 | --- | --- | --- |
-| ι | staging | next in line, chosen by a privileged service (Part 17) |
+| ι | staging | next in line, chosen by a privileged service ([Part 17](../17-accumulation/index.md)) |
 | γ_P | pending | active from the next epoch |
 | κ | active | validating right now |
 | λ | previous | last epoch's, still needed to check what they signed |

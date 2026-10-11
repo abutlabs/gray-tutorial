@@ -150,7 +150,7 @@ export function extrinsicHash(config: Config, extrinsic: Extrinsic): Bytes {
 
 The Gray Paper's three steps close the function: `parts` is step 1,
 `parts.map(blake2b256)` is step 2, and `blake2b256(concatBytes(...))` is step 3. The two
-twists are plain records from Part 2, built for this one job. They aren't exported:
+twists are plain records from [Part 2](../02-codec/index.md), built for this one job. They aren't exported:
 nothing else in the client needs them.
 
 **Run**
@@ -287,7 +287,7 @@ Your version reuses the codecs you already trust, so it has one less place to be
 ## What you have
 
 A client that checks two promises in every block: the link to its parent, and the
-contents of its extrinsic. One kind of promise is left in Part 5: signatures, a
+contents of its extrinsic. One kind of promise is left in [Part 5](./index.md): signatures, a
 validator's word that *it* made something.
 
 Next: [5.3 Signatures](./03-signatures.md)

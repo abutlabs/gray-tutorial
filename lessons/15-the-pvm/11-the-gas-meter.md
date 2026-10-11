@@ -288,7 +288,7 @@ meter prices the block starting at ı: the simple road in the note above.
 ## What you have
 
 A complete PVM: every instruction, memory, a real program's setup, host calls as a way
-out, and gas, priced and charged the Gray Paper's way. Part 15, done. The machine can ask
+out, and gas, priced and charged the Gray Paper's way. [Part 15](./index.md), done. The machine can ask
 the host for things; in [Part 16](../16-host-calls/index.md), the host answers back.
 
 Next: [Part 16 · Host calls](../16-host-calls/index.md)

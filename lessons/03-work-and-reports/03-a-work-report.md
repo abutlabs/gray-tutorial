@@ -3,7 +3,7 @@
 The package went in (3.1). Each item came back as a digest (3.2). Now the paperwork that
 wraps it all up: the **work-report**, the receipt a core produces for one whole
 work-package. Validators sign it, pass it around, check it, and finally fold its results
-into the chain. Everything from Part 3 meets here.
+into the chain. Everything from [Part 3](./index.md) meets here.
 
 ## New words
 
@@ -210,9 +210,9 @@ it. That's why you test both.
 
 ## What you have
 
-Part 3's paperwork, complete: package in, digests out, and the report that binds them,
+[Part 3](./index.md)'s paperwork, complete: package in, digests out, and the report that binds them,
 all byte for byte with the official vectors at both sizes. Reports reach the chain
-inside blocks, along with tickets, preimages, assurances and disputes: Part 4 encodes a
+inside blocks, along with tickets, preimages, assurances and disputes: [Part 4](../04-blocks/index.md) encodes a
 whole block.
 
 Next: [Part 4 · Blocks](../04-blocks/index.md)

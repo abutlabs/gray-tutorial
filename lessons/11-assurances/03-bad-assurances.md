@@ -313,7 +313,7 @@ waits for everything cheaper.
 ## What you have
 
 Assurances that are checked, not trusted: five rules, and every official assurances
-vector, tiny and full, accepted or refused just as it should be. Part 11 is done. A
+vector, tiny and full, accepted or refused just as it should be. [Part 11](./index.md) is done. A
 report reaches a core in the first place because guarantors vouch for it, and
 [Part 12](../12-guarantees/index.md) checks their guarantees.
 

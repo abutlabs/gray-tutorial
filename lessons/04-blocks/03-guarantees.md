@@ -85,7 +85,7 @@ export type ReportGuarantee = Value<typeof ReportGuarantee>;
 export const GuaranteesExtrinsic = seq(ReportGuarantee);
 ```
 
-The whole work-report from Part 3 slots straight in as one field. Every piece you've
+The whole work-report from [Part 3](../03-work-and-reports/index.md) slots straight in as one field. Every piece you've
 built so far is a brick for the next.
 
 The report has a size-dependent part (its erasure shards, [lesson 3.3](../03-work-and-reports/03-a-work-report.md)) only in its

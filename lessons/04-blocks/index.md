@@ -6,7 +6,7 @@ the cores, availability promises, disputes. This part encodes all of it, piece b
 until your client can read a whole block, checked against the official vectors.
 
 By the end of this part your client reads any JAM block, at either size, and can show you
-every byte of it. Checking one is Part 5's job.
+every byte of it. Checking one is [Part 5](../05-hashing-and-signatures/index.md)'s job.
 
 **Builds on** the foundations alone, [Parts 0 to 2](../index.md#lessons).
 

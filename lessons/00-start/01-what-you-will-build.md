@@ -13,7 +13,7 @@ read most of the Gray Paper, one rule at a time, with code running beside it. Sn
 - **JAM.** A blockchain protocol that blends ideas from Polkadot and Ethereum: anyone can
   put a program (a *service*) on it, and the work for those programs runs in parallel on
   many *cores*. The name comes from "join-accumulate", part of its model of computing.
-  *Example:* in Part 15 you'll run a real JAM service's code.
+  *Example:* in [Part 15](../15-the-pvm/index.md) you'll run a real JAM service's code.
 - **Gray Paper (GP).** JAM's specification: the document that defines every rule, mostly
   in maths. It is still being improved, and new versions change rules; this tutorial
   follows version 0.8.0. *Example:* "§4" means its section 4.

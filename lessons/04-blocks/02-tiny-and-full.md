@@ -224,6 +224,6 @@ Your `Assurance(config)` takes the size as an argument every time, so it can't f
 
 A client that knows JAM comes in two sizes, and codecs that change shape to match.
 Three of the five extrinsic parts done. [Lesson 4.3](./03-guarantees.md) adds the fourth:
-guarantees, Part 3's reports with signatures behind them.
+guarantees, [Part 3](../03-work-and-reports/index.md)'s reports with signatures behind them.
 
 Next: [4.3 Guarantees](./03-guarantees.md)

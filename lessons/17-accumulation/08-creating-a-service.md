@@ -400,7 +400,7 @@ handed out.
 ## What you have
 
 Services that make services: paid for, numbered so nobody can aim, and the registrar's
-small ids. Fifty-four official vectors pass as whole blocks, and Part 17 is done.
+small ids. Fifty-four official vectors pass as whole blocks, and [Part 17](./index.md) is done.
 The chain also keeps score of who did all this work: [Part 18](../18-statistics/index.md) builds the
 statistics, for validators, cores and services.
 

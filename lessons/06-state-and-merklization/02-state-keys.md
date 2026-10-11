@@ -62,7 +62,7 @@ What a service keeps comes in three kinds, and each makes its h differently:
 
 Hashing h makes every key exactly 31 bytes, whatever went in, and the Gray Paper points
 out the bonus: a client never needs the original storage key back, only its hash. This
-lesson builds preimages and requests. Storage arrives in Part 14, when your client
+lesson builds preimages and requests. Storage arrives in [Part 14](../14-services/index.md), when your client
 starts writing it.
 
 ## The tests

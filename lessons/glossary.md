@@ -52,7 +52,7 @@ curly φ the PVM's registers.
 
 **JAM.** A blockchain protocol that blends ideas from Polkadot and Ethereum: anyone can put
 a program (a service) on it, and the work for those programs runs in parallel on many
-cores. *Example:* in Part 15 you run a real service's code.
+cores. *Example:* in [Part 15](./15-the-pvm/index.md) you run a real service's code.
 ([0.1](./00-start/01-what-you-will-build.md))
 
 **Gray Paper (GP).** JAM's specification: the document that defines every rule, mostly in

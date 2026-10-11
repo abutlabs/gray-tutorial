@@ -444,7 +444,7 @@ only have integers. Try it: 3 segments, (195 + 63) / 64 = 4.
 ## What you have
 
 All three scorecards: each validator's for the epoch ([lesson 18.1](./01-who-did-what.md)), and each core's
-and each service's for the block, matching every reports and preimages vector. Part 18 is
+and each service's for the block, matching every reports and preimages vector. [Part 18](./index.md) is
 done. Every part so far built one piece of a block's state transition on its own;
 [Part 19](../19-block-import/index.md) starts putting them together, with the order the Gray Paper asks for.
 

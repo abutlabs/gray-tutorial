@@ -5,7 +5,7 @@ must be *authorized*, by an **authorizer**: a small program, identified by a has
 decides whether a package may run. Each core keeps a short list of authorizers it
 currently accepts, its **pool**, and a long line of them waiting their turn, its
 **queue**. Every block, the pool changes a little: one goes out, one comes in. This
-lesson keeps the pools moving, and it's all of Part 13.
+lesson keeps the pools moving, and it's all of [Part 13](./index.md).
 
 ## What the Gray Paper says
 
@@ -363,7 +363,7 @@ and that comment didn't. Comments go stale; tests don't.
 
 ## What you have
 
-Part 13, done: every core's pool of authorizers, kept moving block by block, checked on
+[Part 13](./index.md), done: every core's pool of authorizers, kept moving block by block, checked on
 the vectors and on 99 real blocks. An authorizer lets work onto a core for a service.
 [Part 14](../14-services/index.md) opens up the services themselves.
 

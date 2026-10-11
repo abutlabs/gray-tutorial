@@ -383,7 +383,7 @@ clock, without sending a single message.
 
 Your first JAM rule, its tests, and a clock that reports every slot as it begins. From
 here on, every lesson's `npm test` lands in Grafana. The clock was a single number; nearly
-everything else in JAM is bytes, and numbers too big for JavaScript's own. Part 1 starts
+everything else in JAM is bytes, and numbers too big for JavaScript's own. [Part 1](../01-bytes-and-numbers/index.md) starts
 there.
 
 Next: [Part 1 · Bytes and numbers](../01-bytes-and-numbers/index.md)

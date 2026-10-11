@@ -303,7 +303,7 @@ last item into the gap exactly as yours does: `work.(index) <- work.(remaining -
 ## What you have
 
 A shuffle every node agrees on: give it a list and a hash, and every JAM client in the
-world deals the same hand. Part 8 puts epochs, entropy and shuffles to work in
+world deals the same hand. [Part 8](../08-safrole/index.md) puts epochs, entropy and shuffles to work in
 Safrole, the lottery that picks who makes each block.
 
 Next: [Part 8 · Safrole](../08-safrole/index.md)

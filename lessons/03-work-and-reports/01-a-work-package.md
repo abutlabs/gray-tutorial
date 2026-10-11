@@ -1,6 +1,6 @@
 # A work-package
 
-In Part 2 you encoded a single work item. Nobody sends a work item on its own, though.
+In [Part 2](../02-codec/index.md) you encoded a single work item. Nobody sends a work item on its own, though.
 Items travel in a **work-package**: a parcel of up to sixteen jobs, addressed to one of
 JAM's cores, with a permission slip stapled to the front.
 
@@ -88,7 +88,7 @@ export type WorkPackage = Value<typeof WorkPackage>;
 ```
 
 Look at what *isn't* there: no new codec. `context` is the whole `RefineContext` record,
-`items` is a `seq` of whole `WorkItem` records, and the codec machinery from Part 2 just
+`items` is a `seq` of whole `WorkItem` records, and the codec machinery from [Part 2](../02-codec/index.md) just
 nests them. Records inside records inside a list: it's bricks all the way down.
 
 **Run**

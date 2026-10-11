@@ -145,6 +145,6 @@ let ult (a : int64) (b : int64) = Int64.unsigned_compare a b < 0
 
 One rule for every number in your client, `number` up to 32 bits and `bigint` for 64,
 and three tests that keep JavaScript's quirks in plain sight. Bytes and numbers are the
-raw material. Part 2 builds what turns any JAM value into them and back: the codec.
+raw material. [Part 2](../02-codec/index.md) builds what turns any JAM value into them and back: the codec.
 
 Next: [Part 2 · The codec](../02-codec/index.md)

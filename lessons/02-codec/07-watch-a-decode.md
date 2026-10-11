@@ -8,7 +8,7 @@ to your terminal and to Grafana, like everything else your client does.
 ## New words
 
 - **Decode trace.** A list of every field a decoder read, with where its bytes were.
-  (Not a block trace, the recorded run of blocks from Part 19.) *Example:* `0..4 service`.
+  (Not a block trace, the recorded run of blocks from [Part 19](../19-block-import/index.md).) *Example:* `0..4 service`.
 - **Field path.** A field's place inside a value, from the outside in, with dots.
   *Example:* `import_segments.0.index`: the index of the first imported segment.
 - **Innermost field.** A field with no fields inside it: a number, a hash, a length.
@@ -369,7 +369,7 @@ step traces of later parts, say *which step* made it wrong, while it happens.
 ## What you have
 
 A codec that can tell you, byte by byte, what it read, and a program that shows any
-decode in the terminal and in Grafana. The codec is done. Part 3 uses it on the
+decode in the terminal and in Grafana. The codec is done. [Part 3](../03-work-and-reports/index.md) uses it on the
 paperwork JAM's work travels in: work-packages, their results, and the reports that
 bind them.
 

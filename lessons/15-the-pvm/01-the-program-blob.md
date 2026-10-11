@@ -1,6 +1,6 @@
 # The program blob
 
-Part 15 is the big one: the **PVM**, the Polkadot Virtual Machine, the little computer
+[Part 15](./index.md) is the big one: the **PVM**, the Polkadot Virtual Machine, the little computer
 inside every JAM node that runs services' code. Before it can run anything, though, it
 has to *unpack* it. A service's code arrives as one long preimage ([lesson 14.1](../14-services/01-providing-preimages.md)), and
 inside it, like nesting dolls, are a label, a memory layout, and finally the program the

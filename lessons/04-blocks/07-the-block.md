@@ -168,9 +168,9 @@ Yours sits on `record`, `seq` and friends: the same block, a lot less code to ge
 
 ## What you have
 
-Part 4, done: your client reads any JAM block, at either size, and can show you every
+[Part 4](./index.md), done: your client reads any JAM block, at either size, and can show you every
 byte of it. What it can't do yet is check one. A block names its parent by *hash*, and
-promises its extrinsic by hash, and is sealed with signatures. Part 5 brings the
+promises its extrinsic by hash, and is sealed with signatures. [Part 5](../05-hashing-and-signatures/index.md) brings the
 cryptography.
 
 Next: [Part 5 · Hashing and signatures](../05-hashing-and-signatures/index.md)

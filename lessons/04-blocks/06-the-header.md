@@ -24,7 +24,7 @@ All three are in the [glossary](../glossary.md).
 | --- | --- |
 | `parent` | the parent block's header hash: the link in the chain |
 | `parent_state_root` | the state root after the parent block |
-| `extrinsic_hash` | a hash committing to this block's extrinsic (Part 4's five bags) |
+| `extrinsic_hash` | a hash committing to this block's extrinsic ([Part 4](./index.md)'s five bags) |
 | `slot` | the timeslot ([lesson 0.4](../00-start/04-the-jam-clock.md)), ℰ₄ |
 | `epoch_mark` | at an epoch's first block only: fresh randomness, and the keys of the validators for the epoch that's starting |
 | `tickets_mark` | once per epoch, when the ticket lottery closes: the winning ticket for every slot of the next epoch |

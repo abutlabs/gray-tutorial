@@ -20,7 +20,7 @@ All three are in the [glossary](../glossary.md).
 ## What the Gray Paper says
 
 §3 (*Notational Conventions*): H(m) is **Blake2b** with a 256-bit (32-byte) output, as
-defined in RFC 7693. JAM hashes *encodings*: to hash a value, encode it (Part 2), then
+defined in RFC 7693. JAM hashes *encodings*: to hash a value, encode it ([Part 2](../02-codec/index.md)), then
 hash the bytes.
 
 §5 (*The Header*): a header's `parent` is the hash of its parent block's header,
@@ -131,7 +131,7 @@ export function headerHash(config: Config, header: Header): Bytes {
 }
 ```
 
-Encode, then hash. Every hash in JAM works this way, which is why Part 2 had to be byte
+Encode, then hash. Every hash in JAM works this way, which is why [Part 2](../02-codec/index.md) had to be byte
 perfect: one wrong byte in the encoding, and the hash is a stranger.
 
 **Run, expect it to fail**

@@ -1,6 +1,6 @@
 # Stirring the entropy
 
-Part 8 is **Safrole**, JAM's block-production engine. It answers the big question of
+[Part 8](./index.md) is **Safrole**, JAM's block-production engine. It answers the big question of
 every blockchain: *who gets to make the next block?* JAM's answer is a lottery whose
 winners stay secret until their slot comes, and a lottery is only fair if its randomness
 is. So Safrole starts where every good card game does: with a thorough shuffle of the
@@ -77,7 +77,7 @@ test("η′: each block stirs its VRF output into η₀, and a new epoch moves t
 
 Some vectors describe blocks that must be *rejected*: a bad slot, a bad ticket. Their
 `output` is an `err`, and their state doesn't change at all. Rejecting blocks comes later
-in Part 8, so for now the test skips them, and counts the rest: 15 on tiny, 18 on full.
+in [Part 8](./index.md), so for now the test skips them, and counts the rest: 15 on tiny, 18 on full.
 
 A stub that stirs nothing in: the entropy comes back as it went.
 

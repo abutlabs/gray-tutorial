@@ -4,7 +4,7 @@ A JAM service can't download things. If it needs some data, say a new version of
 own code or a large file, it can only ask for it *by its hash and length*, and wait. Some
 later block brings the data in its preimages extrinsic ([lesson 4.1](../04-blocks/01-tickets-and-preimages.md)), the chain checks
 it really is what was asked for (its hash says so), and hands it over. This lesson is
-that handover, and it starts Part 14.
+that handover, and it starts [Part 14](./index.md).
 
 ## What the Gray Paper says
 

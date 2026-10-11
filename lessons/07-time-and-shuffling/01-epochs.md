@@ -25,7 +25,7 @@ Two things happen exactly then:
 Why keep old randomness? Some decisions must use randomness nobody could have steered
 when the decision was set up. Randomness from a finished epoch is fixed, and the ticket
 lottery and the block sealers lean on it. (η₀ itself changes every block, using a
-Bandersnatch VRF output. That's Part 8.)
+Bandersnatch VRF output. That's [Part 8](../08-safrole/index.md).)
 
 ## The tests
 
@@ -75,7 +75,7 @@ test("at a new epoch the entropy history moves along one; otherwise it stays", (
 
 The `safrole` trace's state after block n is the state before block n + 1, so
 `traceState("safrole", n + 1)` is block n's *after*. And `after.slice(1)` is η′₁ to η′₃:
-η′₀ is left out on purpose, since it changes every block and needs Part 8.
+η′₀ is left out on purpose, since it changes every block and needs [Part 8](../08-safrole/index.md).
 
 A stub, with a chain where time stands still: every slot in epoch 0, and an entropy
 history that never moves along.

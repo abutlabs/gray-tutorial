@@ -1,7 +1,7 @@
 # Reading the state
 
 You know where everything in the state lives ([lesson 6.2](./02-state-keys.md)). Time to open the boxes. Each
-value in the state is an *encoding*, so the codecs you built in Part 2 can read it. This
+value in the state is an *encoding*, so the codecs you built in [Part 2](../02-codec/index.md) can read it. This
 lesson reads three components, the time, the entropy and the validators, and checks each
 one against something completely independent: the blocks themselves.
 
@@ -10,7 +10,7 @@ one against something completely independent: the blocks themselves.
 - **Validator key.** Everything the chain knows about one validator: four keys for four
   jobs, 336 bytes in all. *Example:* its Ed25519 key signs assurances.
 - **Bandersnatch key.** The key a validator uses for the ticket lottery and to seal
-  blocks (Part 8). *Example:* the first 32 of the 336 bytes.
+  blocks ([Part 8](../08-safrole/index.md)). *Example:* the first 32 of the 336 bytes.
 - **BLS key.** A 144-byte key for signatures that can be combined into one. *Example:*
   bytes 64 to 207 of a validator key.
 
@@ -176,7 +176,7 @@ export function readValidators(entries: KeyValue[]): ValidatorKey[] {
 
 `component` does the work: build the key with C(i), find its entry, decode the value.
 The three readers just say which component and which codec. Reading the state is
-nothing new: it's Part 2's decoding, pointed at Part 6's keys.
+nothing new: it's [Part 2](../02-codec/index.md)'s decoding, pointed at [Part 6](./index.md)'s keys.
 
 **Run**
 
@@ -200,14 +200,14 @@ reported 66 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=y
 ...
 ```
 
-Look at what the κ test just did: real assurances from real blocks (Part 4), checked
-with Ed25519 (Part 5) against keys your client read out of a real state (Part 6) with its
-own codecs (Part 2). And [lesson 6.1](./01-the-state-trie.md) already proved that state is the one the header
+Look at what the κ test just did: real assurances from real blocks ([Part 4](../04-blocks/index.md)), checked
+with Ed25519 ([Part 5](../05-hashing-and-signatures/index.md)) against keys your client read out of a real state ([Part 6](./index.md)) with its
+own codecs ([Part 2](../02-codec/index.md)). And [lesson 6.1](./01-the-state-trie.md) already proved that state is the one the header
 promised. Four parts of the tutorial, in one `assert`.
 
 One honest footnote. The rule says assurances are signed by κ′, the validators *after*
 the block, and your test used κ, *before* it. In these traces the validators never change
-(ι, κ and λ hold the same six), so the two agree. When sets start rotating, in Part 8,
+(ι, κ and λ hold the same six), so the two agree. When sets start rotating, in [Part 8](../08-safrole/index.md),
 the difference will matter.
 
 ## Watch it
@@ -295,7 +295,7 @@ and every key comes out wrong. Try it, and watch the κ test go red.
 ## What you have
 
 Your client can read the state: find any component by its key, decode it with the codecs
-it already has, and trust it, because three independent witnesses agree. Part 7 turns to
+it already has, and trust it, because three independent witnesses agree. [Part 7](../07-time-and-shuffling/index.md) turns to
 time itself: epochs, and the shuffle that deals validators out to cores.
 
 Next: [Part 7 · Time and shuffling](../07-time-and-shuffling/index.md)

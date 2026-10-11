@@ -386,7 +386,7 @@ the same block, which is how a gap like this can sit unnoticed.
 ## What you have
 
 The whole reports step, checked: thirteen checks on the guarantees, fourteen on the reports,
-and every reports vector accepted or refused exactly as it should be. Part 12 is done.
+and every reports vector accepted or refused exactly as it should be. [Part 12](./index.md) is done.
 One rule leaned on something you haven't built: [lesson 12.4](./04-bad-guarantees.md)'s authorizer pools.
 [Part 13](../13-authorization/index.md) keeps them moving, block by block.
 

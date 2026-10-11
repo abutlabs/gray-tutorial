@@ -330,9 +330,9 @@ small bridge. Both clients lean on a specialist here, just as with Blake2b.
 
 ## What you have
 
-Part 5, done. Your client can check a block's links (hashes), its contents (the
+[Part 5](./index.md), done. Your client can check a block's links (hashes), its contents (the
 extrinsic hash), and who signed what (Ed25519). Guarantees and dispute votes are signed
 the same way, with their own prefixes; you'll check them in the parts that process them.
-Every header also commits to the whole state, by its root: Part 6 computes that root.
+Every header also commits to the whole state, by its root: [Part 6](../06-state-and-merklization/index.md) computes that root.
 
 Next: [Part 6 · State and Merklization](../06-state-and-merklization/index.md)

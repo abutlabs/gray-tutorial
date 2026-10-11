@@ -4,7 +4,7 @@ Every service has an **account**: a record of who it is and what it owns. Its co
 hash), its balance, the least gas it'll accept to do work, and a running tally of how
 much state it takes up, because storage on JAM isn't free. A service must keep enough
 balance to cover what it stores, like a deposit. This lesson reads the account out of
-the state, and checks the tally adds up. Then Part 14 is done.
+the state, and checks the tally adds up. Then [Part 14](./index.md) is done.
 
 ## What the Gray Paper says
 
@@ -291,7 +291,7 @@ holds 18,446,744,073,709,551,615.
 
 ## What you have
 
-Part 14, done: services get the data they asked for, and your client can read any
+[Part 14](./index.md), done: services get the data they asked for, and your client can read any
 service's account and check that its footprint and its balance add up. That code
 `serviceCode` found is a program for a machine you haven't built yet: [Part 15](../15-the-pvm/index.md) builds
 the PVM that runs it.
