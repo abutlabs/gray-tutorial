@@ -25,9 +25,25 @@ checked against the same official test vectors, but it isn't built for speed.
 Stuck on a word? Every JAM word, Gray Paper symbol and programming term is in the
 [glossary](./glossary.md), in plain English with an example.
 
-You don't need to know the Gray Paper, cryptography or blockchains to begin: each idea
-arrives when it's needed, with an example first. You do need to be at ease reading a
-little TypeScript or JavaScript.
+## Who it's for
+
+Anyone curious how JAM works inside, willing to build a client to find out. You don't need
+to know the Gray Paper, cryptography or blockchains to begin: each idea arrives when it's
+needed, with an example first. You do need to be at ease reading a little TypeScript or
+JavaScript.
+
+## How to read it
+
+In order is the way: each lesson builds on the ones before, and your client grows with
+them. Each part's page says what your client can do at its end, and links self-test cards
+for that part of the Gray Paper on [JAM learning](https://abutlabs.github.io/jam-learning/).
+
+There's no wrong way to read it, though. To start further in, or to catch up after a
+break, run `npm run catch-up -- 14.2` at the repo root: it makes your client the client
+after [lesson 14.2](./14-services/02-the-service-account.md), your own files saved to
+`.backup/` first. Then `npm install` in `client/`, and begin Part 15, the PVM, right
+there. `npm run compare -- 14.2` shows how
+yours differs instead.
 
 **Building a JAM Prize implementation?** This tutorial gives you a whole client's code, and
 some lessons show lasair's, another Prize entry. The Prize rules ask teams to build

@@ -6,6 +6,9 @@ builds the host's side of the conversation: first the loop that answers, then th
 calls an accumulating service needs, a few at a time, until a real accumulation matches
 the test vectors down to the last unit of gas.
 
+By the end of this part your client answers the host calls of a service accumulating,
+and thirteen official accumulate vectors pass.
+
 - [16.1 Calling the host](./01-calling-the-host.md)
 - [16.2 Fetch](./02-fetch.md)
 - [16.3 Growing the heap](./03-growing-the-heap.md)
@@ -15,3 +18,6 @@ the test vectors down to the last unit of gas.
 - [16.7 A service's inputs](./07-a-services-inputs.md)
 - [16.8 Lookup](./08-lookup.md)
 - [16.9 Asking for preimages](./09-asking-for-preimages.md)
+
+**Test yourself:** [E · PVM invocations and host calls (Appendix B)](https://abutlabs.github.io/jam-learning/lasair/exam.html?chapter=e-invocations),
+self-test cards on JAM learning.

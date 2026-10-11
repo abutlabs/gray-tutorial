@@ -16,3 +16,6 @@ and agrees with the official test vectors, byte for byte.
 - [2.5 Sequences and records](./05-sequences-and-records.md)
 - [2.6 The first test vectors](./06-the-first-test-vectors.md)
 - [2.7 Watch a decode](./07-watch-a-decode.md)
+
+**Test yourself:** [E · Serialization and Merklization (Appendices C and D)](https://abutlabs.github.io/jam-learning/lasair/exam.html?chapter=e-codec-merklization),
+self-test cards on JAM learning.

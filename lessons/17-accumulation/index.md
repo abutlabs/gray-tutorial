@@ -7,6 +7,10 @@ simplest block, then reports that wait for others, then transfers between servic
 sent and then delivered, then the privileges a few services hold. The block's gas
 budget comes later.
 
+By the end of this part your client accumulates whole blocks: waiting reports, transfers,
+privileges, and services ejected and created. Fifty-four official vectors pass as whole
+blocks.
+
 - [17.1 A block's accumulation](./01-a-blocks-accumulation.md)
 - [17.2 Waiting reports](./02-waiting-reports.md)
 - [17.3 Sending a transfer](./03-sending-a-transfer.md)
@@ -15,3 +19,6 @@ budget comes later.
 - [17.6 Who wins](./06-who-wins.md)
 - [17.7 Ejecting a service](./07-ejecting-a-service.md)
 - [17.8 Creating a service](./08-creating-a-service.md)
+
+**Test yourself:** [Ch. 12 Accumulation](https://abutlabs.github.io/jam-learning/lasair/exam.html?chapter=ch12-accumulation),
+self-test cards on JAM learning.

@@ -4,5 +4,8 @@ JAM's clock has two hands: the slot, every six seconds, and the epoch, every hou
 part teaches your client to read both, and then to shuffle: JAM deals validators out to
 cores with a shuffle everyone can repeat, from randomness nobody could steer.
 
+By the end of this part your client reads slots and epochs, and shuffles a list from a
+hash exactly the way every other JAM client does.
+
 - [7.1 Epochs](./01-epochs.md)
 - [7.2 The shuffle](./02-the-shuffle.md)
