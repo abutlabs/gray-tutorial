@@ -6,6 +6,16 @@ just finished. At each new epoch everyone shuffles one step along, like a relay 
 handing over batons. And if a validator was caught cheating ([lesson 4.4](../04-blocks/04-disputes.md)'s disputes),
 it doesn't get to step up: its keys are swapped for zeros.
 
+## New words
+
+- **Validator sets.** Four lists of validators: κ the active ones, λ last epoch's, γ_P the
+  next epoch's (pending), and ι the ones queued after that (staging). *Example:* at a new
+  epoch, γ_P becomes κ.
+- **Offender.** A validator convicted in a dispute: its keys are kept out of the sets
+  that come next. *Example:* ψ_O, the state's list of offenders' Ed25519 keys.
+
+Both are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
 §6 (*Key Rotation*). The state holds four sets of validator keys:
@@ -21,7 +31,7 @@ At a new epoch, everyone moves along one: κ′ = γ_P, λ′ = κ, and γ′_P 
 stays, since only that privileged service changes it. In any other block, nothing moves.
 
 **Φ** is the bouncer at the door. It goes through ι, and every validator whose Ed25519
-key is among the **offenders** (ψ′_O, the keys convicted in disputes) gets replaced by a
+key is among the *offenders* (ψ′_O, the keys convicted in disputes) gets replaced by a
 key of all zeros: 336 zero bytes. The slot is kept, so everyone else keeps their place
 in the list, but the key is useless. Nobody can sign with a zero key.
 

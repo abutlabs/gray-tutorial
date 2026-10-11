@@ -1,10 +1,23 @@
 # Stirring the entropy
 
-[Part 8](./index.md) is **Safrole**, JAM's block-production engine. It answers the big question of
+[Part 8](./index.md) is *Safrole*, JAM's block-production engine. It answers the big question of
 every blockchain: *who gets to make the next block?* JAM's answer is a lottery whose
 winners stay secret until their slot comes, and a lottery is only fair if its randomness
 is. So Safrole starts where every good card game does: with a thorough shuffle of the
 deck. This lesson keeps the chain's randomness, η, fresh, one block at a time.
+
+## New words
+
+- **Safrole.** JAM's way of choosing who makes each block: a lottery run one epoch ahead,
+  with a fallback when it fizzles. *Example:* this whole part, put together in
+  [lesson 8.5](./05-one-step-of-safrole.md).
+- **Entropy.** η. Randomness the chain gathers from every block, so that no one can
+  predict the future lotteries. *Example:* η₀, stirred by every block.
+- **VRF.** A signature whose output is random, yet can't be chosen by the signer: for a
+  given key and message it comes out one way only, and anyone can check it. *Example:*
+  the header's 96-byte `entropy_source`.
+
+All three are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
@@ -13,7 +26,7 @@ accumulator:
 
 > η′₀ = H(η₀ ⌢ Y(H_v))
 
-H_v is the header's `entropy_source` ([lesson 4.6](../04-blocks/06-the-header.md)): a 96-byte Bandersnatch **VRF**
+H_v is the header's `entropy_source` ([lesson 4.6](../04-blocks/06-the-header.md)): a 96-byte Bandersnatch *VRF*
 signature by the block's author. Y(H_v) is its *output*, 32 bytes of randomness with a
 special property. The author can't choose it: for a given key and message, a VRF's
 output comes out one way only. Yet everyone can check it was made honestly. So

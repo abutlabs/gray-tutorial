@@ -10,9 +10,19 @@ result: closing it, announcing the winners, and handing out their slots.
 (Entering a ticket takes a Bandersnatch ring proof, which waits for its library. The
 winners, though, are already in the state, so everything here works today.)
 
+## New words
+
+- **Ticket accumulator.** γ_A. The best tickets entered so far in this epoch's lottery, at
+  most E of them, sorted by id, lowest first. *Example:* empty again when an epoch begins.
+- **Outside-in order.** Z. The order the winning tickets take their slots: the first, the
+  last, the second, the second to last, and so on inwards. *Example:* slot 0 gets the best
+  ticket, slot 1 the worst of the winners.
+
+Both are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
-§6. The state keeps γ_A, the **ticket accumulator**: the best tickets entered so far,
+§6. The state keeps γ_A, the *ticket accumulator*: the best tickets entered so far,
 at most E of them, sorted by id. A ticket's id is random (a VRF output), and lower is
 better.
 
@@ -26,7 +36,7 @@ of 12 on tiny. Then two things can happen:
   directly (e′ = e + 1), the block before was past the close (m ≥ Y), and the lottery
   was full, then γ′_S is the winners. Otherwise it's [lesson 8.3](./03-the-fallback-sealers.md)'s fallback.
 
-Either way the winners go in **outside-in** order, Z: the first, the last, the second,
+Either way the winners go in *outside-in* order, Z: the first, the last, the second,
 the second to last, and so on inwards. Slot 0 gets the best ticket, slot 1 the worst of
 the winners, slot 2 the second best.
 

@@ -1,12 +1,19 @@
 # The fallback sealers
 
-Every slot of an epoch needs a **sealer**: the one validator allowed to make that slot's
+Every slot of an epoch needs a *sealer*: the one validator allowed to make that slot's
 block. Normally a lottery decides, with secret tickets ([lesson 8.4](./04-the-lotterys-winners.md)). But lotteries can
 fizzle: too few tickets get entered, or no blocks arrive in the epoch's closing slots
 when the lottery would close, or the chain skips whole epochs. JAM never
 lets a slot go unclaimed, so there's a Plan B: pick the sealers straight from the
 validators, by hash. Everyone can work it out, so it isn't secret, but nobody could have
 steered it. This lesson builds Plan B.
+
+## New words
+
+- **Sealer.** The one validator allowed to make a slot's block. *Example:* the fallback
+  sealers, picked from the entropy when the lottery didn't fill the epoch.
+
+It's in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 

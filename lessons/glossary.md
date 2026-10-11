@@ -445,6 +445,18 @@ the future lotteries. ([8.1](./08-safrole/01-stirring-the-entropy.md))
 **Safrole.** JAM's way of choosing who makes each block: a lottery run one epoch ahead.
 ([8.5](./08-safrole/05-one-step-of-safrole.md))
 
+**Ticket accumulator.** γ_A. The best tickets entered so far in this epoch's lottery, at
+most E of them, sorted by id, lowest first. *Example:* empty again when an epoch begins.
+([8.4](./08-safrole/04-the-lotterys-winners.md))
+
+**Outside-in order.** Z. The order the winning tickets take their slots: the first, the
+last, the second, the second to last, and so on inwards. *Example:* slot 0 gets the best
+ticket, slot 1 the worst of the winners. ([8.4](./08-safrole/04-the-lotterys-winners.md))
+
+**VRF.** A signature whose output is random, yet can't be chosen by the signer: for a given
+key and message it comes out one way only, and anyone can check it. *Example:* the
+header's 96-byte `entropy_source`. ([8.1](./08-safrole/01-stirring-the-entropy.md))
+
 **Ring VRF proof.** Cryptography proving that *some* validator in a set made something,
 without saying which. *Example:* every ticket carries a 784-byte one.
 ([4.1](./04-blocks/01-tickets-and-preimages.md))
