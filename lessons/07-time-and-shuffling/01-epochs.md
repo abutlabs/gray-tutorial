@@ -1,14 +1,26 @@
 # Epochs
 
-A slot is six seconds. An **epoch** is a run of slots, 600 of them on the full network:
+A slot is six seconds. An *epoch* is a run of slots, 600 of them on the full network:
 one hour. On tiny it's 12 slots, a brisk 72 seconds. Most of JAM happens slot by slot,
 but a few things happen only when a new epoch begins: the validator set can change, the
 ticket lottery starts over, and the chain's randomness is set aside for later. This
 lesson teaches your client to tell epochs apart, and to spot the moment one turns over.
 
+## New words
+
+- **Epoch.** A run of slots: 600 (one hour) on the full network, 12 on tiny. The
+  validators and the block lottery change when one begins. *Example:* slots 0 to 599 are
+  epoch 0.
+- **Phase.** Where a slot falls within its epoch, counted from 0. *Example:* on tiny,
+  slot 13 is epoch 1, phase 1.
+- **Entropy accumulator.** η₀: the randomness every block stirs a little more into.
+  *Example:* when an epoch ends, its value moves along to η₁.
+
+All three are in the [glossary](../glossary.md).
+
 ## What the Gray Paper says
 
-§6 (*Timekeeping*): a slot's epoch is e = ⌊slot / E⌋, and its **phase**, where it falls
+§6 (*Timekeeping*): a slot's epoch is e = ⌊slot / E⌋, and its *phase*, where it falls
 within the epoch, is m = slot mod E. A block starts a new epoch when its epoch, e′, is
 greater than the epoch of the block before it, e. (The block before it is the one whose
 slot is τ, the time in the state: [lesson 6.3](../06-state-and-merklization/03-reading-the-state.md).)
@@ -17,7 +29,7 @@ Two things happen exactly then:
 
 - **The header carries an epoch mark** ([lesson 4.6](../04-blocks/06-the-header.md)): η₀, η₁ and the next validators.
 - **The entropy history moves along one.** η ([lesson 6.3](../06-state-and-merklization/03-reading-the-state.md)) is four hashes. η₀ is the
-  *accumulator*: every block stirs fresh randomness into it. η₁, η₂ and η₃ are what η₀
+  *entropy accumulator*: every block stirs fresh randomness into it. η₁, η₂ and η₃ are what η₀
   was at the end of each of the last three epochs. So at a new epoch, η′₁ is the old η₀,
   η′₂ the old η₁, η′₃ the old η₂, and the oldest is forgotten. In any other block, they
   stay as they are.

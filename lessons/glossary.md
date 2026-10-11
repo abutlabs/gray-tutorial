@@ -292,6 +292,13 @@ that day was slot 1. ([0.4](./00-start/04-the-jam-clock.md))
 network. Validators and the block-making lottery change at epoch boundaries.
 ([7.1](./07-time-and-shuffling/01-epochs.md))
 
+**Phase.** m. Where a slot falls within its epoch, counted from 0: the slot mod E.
+*Example:* on tiny, slot 13 is epoch 1, phase 1. ([7.1](./07-time-and-shuffling/01-epochs.md))
+
+**Entropy accumulator.** η₀. The randomness every block stirs a little more into; at each
+new epoch its value moves along to η₁. *Example:* the first of η's four hashes.
+([7.1](./07-time-and-shuffling/01-epochs.md))
+
 **Configuration.** The numbers that make one JAM bigger than another: validators, cores,
 epoch length. *Example:* `TINY` has 6 validators and 2 cores.
 ([4.2](./04-blocks/02-tiny-and-full.md))
