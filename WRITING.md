@@ -53,6 +53,13 @@ least for every new panel a lesson sends the reader to.
 the part's name and which links its lessons. `lessons/index.md` links every part and
 lesson. `npm test` checks those links, and that each lesson ends with a link to the next.
 
+**Addresses stay.** The site is public, so a page's address keeps working once it's
+published, as the Rust Book keeps its old chapters' addresses. A new page: add its address
+to `PUBLISHED` in `.vitepress/urls.ts`. A page that moves or is renumbered: add `"old":
+"new"` to `MOVED`, and the build leaves a page at the old address that sends the reader on,
+to the same section. A renamed heading: put `<a id="old-id"></a>` on the line above it.
+`tools/urls.test.ts` checks all three, and that every `#section` link lands on a heading.
+
 ## Shape
 
 0. **New words**: right under the opening paragraph, every term the lesson uses for the

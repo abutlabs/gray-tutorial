@@ -6,6 +6,7 @@ import { defineConfig } from "vitepress";
 import type MarkdownIt from "markdown-it";
 import type { ShikiTransformer } from "shiki";
 import { readParts } from "../tools/lessons.ts";
+import { LEGEND, writeRedirects } from "./urls.ts";
 
 const parts = readParts();
 
@@ -19,6 +20,8 @@ export default defineConfig({
   ignoreDeadLinks: [/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/],
   lastUpdated: false,
   markdown: { config: snippetLabels, codeTransformers: [shellComments()] },
+  // pages that moved keep their old address, as a page that sends the reader on
+  buildEnd: (site) => writeRedirects(site.outDir, site.site.base),
   themeConfig: {
     // every word you type must match, so "ready queue" finds the ready queue first
     search: { provider: "local", options: { miniSearch: { searchOptions: { combineWith: "AND" } } } },
@@ -49,7 +52,6 @@ export default defineConfig({
 
 // A label line above a code block ("**Add to** `src/x.ts`") becomes a tab on the block, and
 // its bold word a link to the list of labels in 0.1 (as the Book's Ferris icons link to theirs).
-const LEGEND = "/00-start/01-what-you-will-build.md#how-a-lesson-works";
 function snippetLabels(md: MarkdownIt): void {
   const LABEL = /^\*\*(New file|Add to|Replace in|Rewrite|Run(?:, expect it to fail)?)\*\*(?: `[^`]+`)?$/;
   const KIND: Record<string, string> = {
