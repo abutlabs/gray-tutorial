@@ -227,7 +227,7 @@ Red, and both new tests with it. (Your fifth planted bug.) The trail:
    side, yours first. Don't read them, *measure* them: the expected one is 64 hex digits
    after the `0x`, yours is 128. Your hash is twice too long. The chain test failed too,
    on the very first link.
-2. **The dashboard.** *Tests failed* says 2, and *Test results* has both `FAIL` lines. One
+2. **The dashboard.** *Tests failed* says 2, and *Failed tests* has both `FAIL` lines. One
    cause, two symptoms: every hash is wrong, so every link is.
 
    ![Failed tests panel](./images/01-failed-tests.png)
@@ -236,9 +236,10 @@ Red, and both new tests with it. (Your fifth planted bug.) The trail:
    library picks its own default: the biggest. JAM's H is Blake2b with a *32-byte* output,
    and a library can't know that. You have to say so.
 
-This is what a known-answer test is for. Without the hash of nothing pinned to a published
-value, the chain test alone would only tell you "every link is broken", and the hunt
-would start in the encoding. The fix is one argument:
+This is what a known-answer test is for. Without the hash of nothing pinned to a value
+anyone can check (`python3 -c "import hashlib; print(hashlib.blake2b(b'',
+digest_size=32).hexdigest())"` prints it), the chain test alone would only tell you "every
+link is broken", and the hunt would start in the encoding. The fix is one argument:
 
 **Replace in** `src/hash.ts`
 
@@ -316,9 +317,10 @@ node bin/chain.ts
 reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=chain-1791728701859
 ```
 
-On the dashboard, the *Chain* panel lists all hundred blocks: slot, hash, and `linked:
-true` for every one after the first. (Block 1's parent is the genesis header, which isn't
-in the trace, so its link stays unchecked.)
+On the **2 · Blocks and state** dashboard, the *Chain* panel lists all hundred blocks:
+slot, hash, and `linked: true` for every one after the first. (Block 1's parent is the
+genesis header, in the trace's own `genesis.json`. This walk doesn't read it, so that first
+link stays unchecked.)
 
 ![Chain panel](./images/01-chain.png)
 
@@ -342,8 +344,9 @@ on a well-tested library here.
 
 ## What you have
 
-A hash function, and proof that your encoding of headers is exact: if it were off by a
-single byte, not one of those 99 links would hold. A header makes a second promise by
+A hash function, and proof that your encoding of headers is exact for every field these
+headers carry: a byte off anywhere in them would break a link. (None of them has a tickets
+mark; [lesson 4.6](../04-blocks/06-the-header.md)'s `header_1` covers that one.) A header makes a second promise by
 hash, about everything its block carries: [lesson 5.2](./02-the-extrinsic-hash.md)
 checks it.
 

@@ -42,7 +42,8 @@ Three details, and each one matters:
   "I hold my piece" can never be replayed as "this report is good".
 - **ℰ(parent, bitfield)** is just the two side by side: a hash and a fixed-size bitfield
   encode as themselves. The parent is the block's parent hash, and an assurance's
-  `anchor` must be exactly that (§11 again), so your code signs the anchor. ([Lesson 11.3](../11-assurances/03-bad-assurances.md)
+  `anchor` must be exactly that (§11 again), so your code puts the anchor in the
+  parent's place. ([Lesson 11.3](../11-assurances/03-bad-assurances.md)
   checks that the two really are the same.)
 
 ## Another library
@@ -236,8 +237,9 @@ A thin wrapper, with the arguments in the order you'd say them: *who* signed *wh
 the signature. (The library wants them the other way round; now only one line of your
 client has to remember that.)
 
-Blocks and tickets are signed with a different kind of key, Bandersnatch. That one
-arrives with the ticket lottery.
+Blocks and tickets are signed with a different kind of key, Bandersnatch. Its keys turn
+up with the ticket lottery in [Part 8](../08-safrole/index.md); checking its signatures needs a library
+this tutorial doesn't add yet.
 
 **Run**
 
@@ -312,7 +314,7 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 ```
 
 Caught! Validator 1's assurance carries a signature its key never made. The new
-*Assurances* panel on the dashboard lists each one: the validator, `signed: true` or
+*Assurances* panel, on the **2 · Blocks and state** dashboard, lists each one: the validator, `signed: true` or
 `false`, its key and its bitfield. Then point it at
 `../vectors/stf/assurances/full/some_assurances-1.json` and watch 1,023 validators
 check out.
@@ -322,7 +324,9 @@ check out.
 <details>
 <summary>lasair: the dollar sign, in <code>conformance/assurances_stf.ml</code></summary>
 
-lasair met the same `$`, and settled it the same way, by trying both:
+lasair met the same `$`, and settled it by asking, then checking both against the vectors.
+(Its comment calls the `$` "binary string"; the Gray Paper's §3 says it marks ASCII text.
+Either way, the bytes are the letters without it.)
 
 ```ocaml
 (* Note: Graypaper uses \token{\$jam_available} but per dakk's clarification,
