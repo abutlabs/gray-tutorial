@@ -225,9 +225,9 @@ SyntaxError: The requested module '../src/belt.ts' does not provide an export na
 ...
 SyntaxError: The requested module '../src/host.ts' does not provide an export named 'collapseYield'
 ...
-ℹ tests 438
+ℹ tests 446
 ℹ suites 0
-ℹ pass 435
+ℹ pass 443
 ℹ fail 3
 ...
 ```
@@ -674,12 +674,12 @@ npm run typecheck
 ...
 ✔ yield: a hash for the chain; a halt's 32-byte output takes its place (0.248916ms)
 ...
-ℹ tests 569
+ℹ tests 577
 ℹ suites 0
-ℹ pass 569
+ℹ pass 577
 ℹ fail 0
 ...
-reported 569 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769507532
+reported 577 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769507532
 ...
 ```
 

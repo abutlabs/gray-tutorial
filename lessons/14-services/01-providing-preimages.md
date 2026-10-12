@@ -186,9 +186,9 @@ npm test
 ✖ 67 real preimages: stored, and their requests marked with the block's slot (37.4ms)
 ✖ the preimages vectors, as state entries (18.1ms)
 ...
-ℹ tests 385
+ℹ tests 393
 ℹ suites 0
-ℹ pass 383
+ℹ pass 391
 ℹ fail 2
 ...
 test at test/services.test.ts:27:1
@@ -267,12 +267,12 @@ npm run typecheck
 ✔ 67 real preimages: stored, and their requests marked with the block's slot (295.3ms)
 ✔ the preimages vectors, as state entries (19.8ms)
 ...
-ℹ tests 385
+ℹ tests 393
 ℹ suites 0
-ℹ pass 385
+ℹ pass 393
 ℹ fail 0
 ...
-reported 385 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736048893
+reported 393 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736048893
 ...
 ```
 

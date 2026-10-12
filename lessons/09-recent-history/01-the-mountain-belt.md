@@ -164,9 +164,9 @@ npm test
 ✖ appending is counting in binary: mountains of 1, 2, 4... (1.9ms)
 ✖ the belt after each block of the history vectors, and its super-peak (0.9ms)
 ...
-ℹ tests 82
+ℹ tests 90
 ℹ suites 0
-ℹ pass 80
+ℹ pass 88
 ℹ fail 2
 ...
 test at test/belt.test.ts:16:1
@@ -259,12 +259,12 @@ npm run typecheck
 ✔ appending is counting in binary: mountains of 1, 2, 4... (0.9ms)
 ✔ the belt after each block of the history vectors, and its super-peak (16.7ms)
 ...
-ℹ tests 82
+ℹ tests 90
 ℹ suites 0
-ℹ pass 82
+ℹ pass 90
 ℹ fail 0
 ...
-reported 82 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731459401
+reported 90 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731459401
 ...
 ```
 

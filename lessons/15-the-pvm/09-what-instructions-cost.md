@@ -117,9 +117,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/gas.ts' imp
 ...
 ✖ test/gas.test.ts (94.0ms)
 ...
-ℹ tests 424
+ℹ tests 432
 ℹ suites 0
-ℹ pass 423
+ℹ pass 431
 ℹ fail 1
 ...
 ```
@@ -280,12 +280,12 @@ npm run typecheck
 ...
 ✔ the reported packages: each one's hash and exports root, sorted by hash (229.1ms)
 ...
-ℹ tests 429
+ℹ tests 437
 ℹ suites 0
-ℹ pass 429
+ℹ pass 437
 ℹ fail 0
 ...
-reported 429 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736897027
+reported 437 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736897027
 ...
 ```
 

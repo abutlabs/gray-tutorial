@@ -168,9 +168,9 @@ npm test
 ...
 ✖ a report anchored on a block nobody remembers is refused (1.3ms)
 ...
-ℹ tests 378
+ℹ tests 386
 ℹ suites 0
-ℹ pass 345
+ℹ pass 353
 ℹ fail 33
 ...
 test at test/guarantors.test.ts:209:1
@@ -274,12 +274,12 @@ npm run typecheck
 ...
 ✔ a report anchored on a block nobody remembers is refused (0.6ms)
 ...
-ℹ tests 378
+ℹ tests 386
 ℹ suites 0
-ℹ pass 378
+ℹ pass 386
 ℹ fail 0
 ...
-reported 378 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734631104
+reported 386 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734631104
 ...
 ```
 

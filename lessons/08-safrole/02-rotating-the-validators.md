@@ -36,8 +36,8 @@ key of all zeros: 336 zero bytes. The slot is kept, so everyone else keeps their
 in the list, but the key is useless. Nobody can sign with a zero key.
 
 (The new pending set also gets a fresh Bandersnatch *ring root*, γ′_Z, which lets
-validators prove they're in the set without saying who they are. That needs Bandersnatch,
-so it waits.)
+validators prove they're in the set without saying who they are. That needs Bandersnatch's
+arithmetic: [lesson 8.8](./08-the-ring-root.md).)
 
 ## The tests
 

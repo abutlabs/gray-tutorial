@@ -76,9 +76,9 @@ SyntaxError: The requested module '../src/pvm/gas.ts' does not provide an export
 ...
 ✖ test/gas.test.ts (222.0ms)
 ...
-ℹ tests 424
+ℹ tests 432
 ℹ suites 0
-ℹ pass 423
+ℹ pass 431
 ℹ fail 1
 ...
 ```
@@ -184,12 +184,12 @@ npm run typecheck
 ...
 ✔ the reported packages: each one's hash and exports root, sorted by hash (209.6ms)
 ...
-ℹ tests 438
+ℹ tests 446
 ℹ suites 0
-ℹ pass 438
+ℹ pass 446
 ℹ fail 0
 ...
-reported 438 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791737125469
+reported 446 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791737125469
 ...
 ```
 

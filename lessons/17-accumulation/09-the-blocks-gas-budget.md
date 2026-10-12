@@ -184,9 +184,9 @@ npm test
 ...
 ✖ a block over budget: the second report waits a round, after the eject it needs (121.250583ms)
 ...
-ℹ tests 563
+ℹ tests 571
 ℹ suites 0
-ℹ pass 561
+ℹ pass 569
 ℹ fail 2
 ...
 ✖ recreate_service_ejected_in_earlier_round-1: the block ends as the vector says (142.776875ms)
@@ -361,12 +361,12 @@ npm run typecheck
 ...
 ✔ a block over budget: the second report waits a round, after the eject it needs (133.31825ms)
 ...
-ℹ tests 563
+ℹ tests 571
 ℹ suites 0
-ℹ pass 563
+ℹ pass 571
 ℹ fail 0
 ...
-reported 563 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769462885
+reported 571 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769462885
 ...
 ```
 

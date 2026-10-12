@@ -168,9 +168,9 @@ npm test
 ...
 SyntaxError: The requested module '../src/host.ts' does not provide an export named 'eject'
 ...
-ℹ tests 440
+ℹ tests 448
 ℹ suites 0
-ℹ pass 438
+ℹ pass 446
 ℹ fail 2
 ...
 ```
@@ -358,12 +358,12 @@ npm run typecheck
 ✔ eject: a service that named its ejector goes, and its balance goes to the ejector (0.3ms)
 ✔ eject refuses: itself, a stranger, or a preimage forgotten too recently (0.1ms)
 ...
-ℹ tests 553
+ℹ tests 561
 ℹ suites 0
-ℹ pass 553
+ℹ pass 561
 ℹ fail 0
 ...
-reported 553 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740202859
+reported 561 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740202859
 ...
 ```
 

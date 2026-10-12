@@ -417,6 +417,66 @@
    }
   },
   {
+   "id": 104,
+   "type": "logs",
+   "title": "VRF output",
+   "description": "What bin/vrf.ts read from real blocks: each header's entropy source, its VRF output, and η′₀ stirred with it.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"vrf\", run_id=~\"$run_id\"} | json | line_format \"block {{.n}}, slot {{.slot}}: entropy source {{.source}}  VRF output {{.output}}  η′₀ {{.eta0}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 68,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
+   "id": 105,
+   "type": "logs",
+   "title": "Seals",
+   "description": "What bin/seals.ts found for real blocks: who made each one, whether a winning ticket or a fallback key sealed it, and whether its seal and entropy source check out.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"seals\", run_id=~\"$run_id\"} | json | line_format \"block {{.n}}, slot {{.slot}}: validator {{.author}}, by {{.by}}: {{.verdict}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 76,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
    "id": 103,
    "type": "row",
    "collapsed": false,
@@ -424,7 +484,7 @@
    "title": "Part 9 · Recent history",
    "gridPos": {
     "x": 0,
-    "y": 68,
+    "y": 84,
     "w": 24,
     "h": 1
    }
@@ -454,7 +514,7 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 69,
+    "y": 85,
     "w": 24,
     "h": 10
    }
@@ -484,7 +544,7 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 79,
+    "y": 95,
     "w": 24,
     "h": 10
    }

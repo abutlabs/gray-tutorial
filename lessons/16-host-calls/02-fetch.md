@@ -112,9 +112,9 @@ SyntaxError: The requested module '../src/host.ts' does not provide an export na
 ...
 ✖ test/host.test.ts (241.1ms)
 ...
-ℹ tests 439
+ℹ tests 447
 ℹ suites 0
-ℹ pass 438
+ℹ pass 446
 ℹ fail 1
 ...
 ```
@@ -295,12 +295,12 @@ npm run typecheck
 ✔ part of an item: from byte φ₈, and at most φ₉ bytes of it (0.2ms)
 ✔ an item accumulation doesn't have: NONE; nowhere to put it: panic (0.6ms)
 ...
-ℹ tests 447
+ℹ tests 455
 ℹ suites 0
-ℹ pass 447
+ℹ pass 455
 ℹ fail 0
 ...
-reported 447 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738018596
+reported 455 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738018596
 ...
 ```
 

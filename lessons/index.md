@@ -2,7 +2,7 @@
 
 We will build a TypeScript JAM client per the [Gray Paper](https://graypaper.com/) specifications, _from scratch_.
 
-The Gray Tutorial is designed for learnability and observability. By the end of this tutorial, your JAM client will be able to pass the official test vectors, _byte for byte_. Our goal is to make onboarding JAM protocol developers more approachable. Therefore we will build a concrete JAM implementation.
+The Gray Tutorial is designed for learnability and observability. By the end of this tutorial, your JAM client will be able to pass the official test vectors, _byte for byte_. Our goal is to make onboarding JAM protocol developers more approachable. Therefore we will build a  guided JAM implementation from the ground up.
 
 ## Start here
 
@@ -19,14 +19,14 @@ Stuck on a word? Every JAM word, Gray Paper symbol and programming term is in th
 ## Who it's for
 
 Anyone curious how JAM works inside, willing to build a client to find out. You don't need
-to know the Gray Paper, cryptography or blockchains to begin: each idea arrives when it's
-needed, with an example first. You do need to be at ease reading a little TypeScript or JavaScript.
+to know the Gray Paper before you get started. Each concept arrives when it's
+needed, with an example first. Typescript experience recommended.
 
 ## How to read it
 
-In order is the way: each lesson builds on the ones before, and your client grows with
-them. Each part's page says what your client can do at its end, and links self-test cards
-for that part of the Gray Paper on [JAM learning](https://abutlabs.github.io/jam-learning/).
+Each lesson builds on the ones before, and your client grows with
+them. Each part's page says what your client can do at its end, and links self-test
+for that part of the Gray Paper on our [JAM learning Site](https://abutlabs.github.io/jam-learning/lasair/exam.html).
 
 There's no wrong way to read it, though. To start further in, or to catch up after a
 break, run `npm run catch-up -- 14.2` at the repo root: it makes your client the client
@@ -36,7 +36,7 @@ there. `npm run compare -- 14.2` shows how
 yours differs instead.
 
 **Building a JAM Prize implementation?** This tutorial gives you a whole client's code, and
-some lessons show lasair's, another Prize entry. The Prize rules ask teams to build
+some lessons show lasair's implementation. The Prize rules ask teams to build
 clean-room and to declare any implementation code they view: read
 [the note on the Prize rules](https://abutlabs.github.io/jam-learning/lasair/index.html#prize-rules)
 first.
@@ -52,7 +52,7 @@ imports JAM blocks and agrees byte for byte with the official test vectors. From
 ## Built next to an OCaml client
 
 This tutorial is built with reference to [Lasair](https://github.com/abutlabs/lasair), another JAM client. Lasair aims to run as validators on the real network, the machines that
-make and check its blocks, fast enough to keep up. TypeScript is not optimized for production blockchain clients. This tutorial aims at understanding instead.
+make and check its blocks, fast enough to keep up. TypeScript is not optimized for production blockchain clients. This tutorial aims at understanding instead. After 
 
 | | lasair | Your Gray Tutorial client |
 | --- | --- | --- |
@@ -126,6 +126,10 @@ make and check its blocks, fast enough to keep up. TypeScript is not optimized f
 - [8.3 The fallback sealers](./08-safrole/03-the-fallback-sealers.md)
 - [8.4 The lottery's winners](./08-safrole/04-the-lotterys-winners.md)
 - [8.5 One step of Safrole](./08-safrole/05-one-step-of-safrole.md)
+- [8.6 The VRF output](./08-safrole/06-the-vrf-output.md)
+- [8.7 Entering tickets](./08-safrole/07-entering-tickets.md)
+- [8.8 The ring root](./08-safrole/08-the-ring-root.md)
+- [8.9 Seals](./08-safrole/09-seals.md)
 
 **[Part 9 · Recent history](./09-recent-history/index.md)**
 
@@ -221,6 +225,5 @@ will be written. Each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 8 · Safrole (rest) | the VRF output, entering tickets, and with Bandersnatch the ring root and seals | §6, App. G |
 | 19 · Block import (rest) | the whole state, the header's checks, real blocks through every step: the block-import traces | §4, §5, App. D |
 | 20 · Facing the fuzzer | the conformance fuzzer's protocol, a target, test sessions from the traces | |

@@ -38,6 +38,9 @@ mkdirSync(TANGLED, { recursive: true });
 for (const name of readdirSync(TANGLED)) {
   if (name !== "node_modules") rmSync(join(TANGLED, name), { recursive: true, force: true });
 }
+// npm's record of what node_modules held last time: kept, it can make npm install skip a
+// package a lesson has just added to package.json
+rmSync(join(TANGLED, "node_modules", ".package-lock.json"), { force: true });
 
 let failures = 0, runs = 0;
 const started = Date.now();

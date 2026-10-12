@@ -186,9 +186,9 @@ npm test
 ✖ β′: the last block learns its state root, the new one joins, eight are kept (197.8ms)
 ✔ β in real states: the newest block remembered is the block before (366.2ms)
 ...
-ℹ tests 84
+ℹ tests 92
 ℹ suites 0
-ℹ pass 83
+ℹ pass 91
 ℹ fail 1
 ...
 test at test/history.test.ts:17:1
@@ -274,12 +274,12 @@ npm run typecheck
 ✔ β′: the last block learns its state root, the new one joins, eight are kept (7.5ms)
 ✔ β in real states: the newest block remembered is the block before (408.1ms)
 ...
-ℹ tests 84
+ℹ tests 92
 ℹ suites 0
-ℹ pass 84
+ℹ pass 92
 ℹ fail 0
 ...
-reported 84 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731468082
+reported 92 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731468082
 ...
 ```
 

@@ -98,9 +98,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/host.ts' import
 ...
 ✖ test/host.test.ts (166.8ms)
 ...
-ℹ tests 439
+ℹ tests 447
 ℹ suites 0
-ℹ pass 438
+ℹ pass 446
 ℹ fail 1
 ...
 ```
@@ -199,12 +199,12 @@ npm run typecheck
 ✔ too poor to ask: a host call can run out of gas too (0.2ms)
 ✔ 28 host calls, numbered as in the GP: fetch is 2, provide 27 (0.1ms)
 ...
-ℹ tests 442
+ℹ tests 450
 ℹ suites 0
-ℹ pass 442
+ℹ pass 450
 ℹ fail 0
 ...
-reported 442 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738006180
+reported 450 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738006180
 ...
 ```
 

@@ -163,9 +163,9 @@ npm test
 ...
 ✖ a guarantee signed by an offender is refused (1.6ms)
 ...
-ℹ tests 285
+ℹ tests 293
 ℹ suites 0
-ℹ pass 254
+ℹ pass 262
 ℹ fail 31
 ...
 test at test/guarantors.test.ts:177:1
@@ -261,12 +261,12 @@ npm run typecheck
 ✔ the reported packages: each one's hash and exports root, sorted by hash (2656.3ms)
 ✔ a guarantee signed by an offender is refused (4.8ms)
 ...
-ℹ tests 285
+ℹ tests 293
 ℹ suites 0
-ℹ pass 285
+ℹ pass 293
 ℹ fail 0
 ...
-reported 285 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734610469
+reported 293 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734610469
 ...
 ```
 

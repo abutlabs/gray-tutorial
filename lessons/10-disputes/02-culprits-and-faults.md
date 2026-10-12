@@ -107,9 +107,9 @@ SyntaxError: The requested module '../src/disputes.ts' does not provide an expor
 ...
 ✖ test/disputes.test.ts (250.2ms)
 ...
-ℹ tests 85
+ℹ tests 93
 ℹ suites 0
-ℹ pass 84
+ℹ pass 92
 ℹ fail 1
 ...
 ```
@@ -173,12 +173,12 @@ npm run typecheck
 ✔ a forged guarantee is caught (3.0ms)
 ✔ the offenders mark names this block's offenders, and ψ′_O keeps them all (152.3ms)
 ...
-ℹ tests 91
+ℹ tests 99
 ℹ suites 0
-ℹ pass 91
+ℹ pass 99
 ℹ fail 0
 ...
-reported 91 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731886863
+reported 99 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731886863
 ...
 ```
 

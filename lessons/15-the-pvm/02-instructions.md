@@ -113,9 +113,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/instruction
 ...
 ✖ test/instructions.test.ts (114.4ms)
 ...
-ℹ tests 391
+ℹ tests 399
 ℹ suites 0
-ℹ pass 390
+ℹ pass 398
 ℹ fail 1
 ...
 ```
@@ -376,12 +376,12 @@ npm run typecheck
 ✔ three instructions by hand: load_imm, add_64, and a jump back (0.7ms)
 ✔ the bootstrap service: 39,849 instructions, all known, every jump on target (84.8ms)
 ...
-ℹ tests 393
+ℹ tests 401
 ℹ suites 0
-ℹ pass 393
+ℹ pass 401
 ℹ fail 0
 ...
-reported 393 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736324569
+reported 401 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736324569
 ...
 ```
 

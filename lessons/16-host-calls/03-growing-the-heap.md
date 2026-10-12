@@ -150,9 +150,9 @@ SyntaxError: The requested module '../src/host.ts' does not provide an export na
 ...
 ✖ test/host.test.ts (230.5ms)
 ...
-ℹ tests 439
+ℹ tests 447
 ℹ suites 0
-ℹ pass 438
+ℹ pass 446
 ℹ fail 1
 ...
 ```
@@ -276,12 +276,12 @@ npm run typecheck
 ✔ growing it by 3 pages costs 121 more gas a page, and page 52 is writable now (0.1ms)
 ✔ service 1729 accumulates on exactly the 16,417 gas the test vector says (45.7ms)
 ...
-ℹ tests 450
+ℹ tests 458
 ℹ suites 0
-ℹ pass 450
+ℹ pass 458
 ℹ fail 0
 ...
-reported 450 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738028819
+reported 458 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738028819
 ...
 ```
 

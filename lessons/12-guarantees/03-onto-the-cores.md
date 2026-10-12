@@ -98,9 +98,9 @@ SyntaxError: The requested module '../src/cores.ts' does not provide an export n
 ...
 ✖ test/guarantors.test.ts (315.7ms)
 ...
-ℹ tests 186
+ℹ tests 194
 ℹ suites 0
-ℹ pass 185
+ℹ pass 193
 ℹ fail 1
 ...
 ```
@@ -154,12 +154,12 @@ npm run typecheck
 ✔ ρ′: each guaranteed report takes its core, registered at the block's slot (682.3ms)
 ✔ the reported packages: each one's hash and exports root, sorted by hash (218.4ms)
 ...
-ℹ tests 192
+ℹ tests 200
 ℹ suites 0
-ℹ pass 192
+ℹ pass 200
 ℹ fail 0
 ...
-reported 192 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734328669
+reported 200 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734328669
 ...
 ```
 

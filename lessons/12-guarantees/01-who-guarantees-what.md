@@ -55,6 +55,7 @@ export type Config = {
   epoch_length: number; // E: timeslots in an epoch
   epoch_tail_start: number; // Y: the slot of an epoch at which the ticket lottery closes
   rotation_period: number; // R: slots between reshuffles of the guarantors
+  max_tickets_per_extrinsic: number; // K: tickets a block may carry
 };
 
 export const TINY: Config = {
@@ -64,6 +65,7 @@ export const TINY: Config = {
   epoch_length: 12,
   epoch_tail_start: 10,
   rotation_period: 4,
+  max_tickets_per_extrinsic: 3,
 };
 
 export const FULL: Config = {
@@ -73,6 +75,7 @@ export const FULL: Config = {
   epoch_length: 600,
   epoch_tail_start: 500,
   rotation_period: 10,
+  max_tickets_per_extrinsic: 16,
 };
 ```
 
@@ -172,9 +175,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/guarantors.ts' 
 ...
 ✖ test/guarantors.test.ts (335.0ms)
 ...
-ℹ tests 186
+ℹ tests 194
 ℹ suites 0
-ℹ pass 185
+ℹ pass 193
 ℹ fail 1
 ...
 ```
@@ -268,12 +271,12 @@ npm run typecheck
 ✔ every guarantor of every accepted report is assigned to that report's core (2296.7ms)
 ✔ a guarantor from another core is caught (0.9ms)
 ...
-ℹ tests 188
+ℹ tests 196
 ℹ suites 0
-ℹ pass 188
+ℹ pass 196
 ℹ fail 0
 ...
-reported 188 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734292556
+reported 196 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734292556
 ...
 ```
 

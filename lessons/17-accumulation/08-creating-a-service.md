@@ -176,9 +176,9 @@ npm test
 ...
 SyntaxError: The requested module '../src/host.ts' does not provide an export named 'newIds'
 ...
-ℹ tests 440
+ℹ tests 448
 ℹ suites 0
-ℹ pass 438
+ℹ pass 446
 ℹ fail 2
 ...
 ```
@@ -349,12 +349,12 @@ npm run typecheck
 ✔ new: a service pays for another, which gets the next id, or the registrar's choice (0.3ms)
 ✔ new refuses: gratis from a non-manager, not enough money, a registrar's id taken (0.3ms)
 ...
-ℹ tests 561
+ℹ tests 569
 ℹ suites 0
-ℹ pass 561
+ℹ pass 569
 ℹ fail 0
 ...
-reported 561 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740238119
+reported 569 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740238119
 ...
 ```
 

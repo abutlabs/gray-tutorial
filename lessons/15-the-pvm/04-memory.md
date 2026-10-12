@@ -120,9 +120,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/memory.ts' 
 ...
 ✖ test/memory.test.ts (178.7ms)
 ...
-ℹ tests 397
+ℹ tests 405
 ℹ suites 0
-ℹ pass 396
+ℹ pass 404
 ℹ fail 1
 ...
 ```
@@ -297,12 +297,12 @@ npm run typecheck
 ✔ store 8 bytes, load them back, and load one as a signed byte (1.6ms)
 ✔ no page there: a fault at the page's address; below 2^16: a panic (0.6ms)
 ...
-ℹ tests 399
+ℹ tests 407
 ℹ suites 0
-ℹ pass 399
+ℹ pass 407
 ℹ fail 0
 ...
-reported 399 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736620345
+reported 407 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736620345
 ...
 ```
 

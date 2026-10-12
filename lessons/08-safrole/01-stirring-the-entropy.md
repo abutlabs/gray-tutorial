@@ -36,8 +36,8 @@ special property. The author can't choose it: for a given key and input (here, a
 label and the block's seal), a VRF's output comes out one way only. Yet everyone can check it was made honestly. So
 nobody, not even the author, can steer what goes into η.
 
-Computing Y needs Bandersnatch, which this tutorial hasn't got yet. The `safrole` test
-vectors hand it to you instead, as `input.entropy`. And the rest of η′ is [lesson 7.1](../07-time-and-shuffling/01-epochs.md)'s
+Computing Y is [lesson 8.6](./06-the-vrf-output.md)'s job. Until then, the `safrole` test vectors hand it to you,
+as `input.entropy`. And the rest of η′ is [lesson 7.1](../07-time-and-shuffling/01-epochs.md)'s
 history: moved along one at a new epoch, unchanged otherwise.
 
 ## The tests
@@ -272,8 +272,8 @@ let accumulate_entropy eta0 input_entropy =
 
 The same one-liner as yours, fed the same `input.entropy` from the same vectors. lasair's
 real block importer goes one step further: it starts from the 96-byte signature in the
-header and computes Y itself, with a Bandersnatch library. Once your client has one, it
-will too.
+header and computes Y itself, with a Bandersnatch library. Your client will too, in
+[lesson 8.6](./06-the-vrf-output.md), with nothing more than a hash.
 
 </details>
 

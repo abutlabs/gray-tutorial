@@ -116,9 +116,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/machine.ts'
 ...
 ✖ test/machine.test.ts (101.6ms)
 ...
-ℹ tests 394
+ℹ tests 402
 ℹ suites 0
-ℹ pass 393
+ℹ pass 401
 ℹ fail 1
 ...
 ```
@@ -320,12 +320,12 @@ npm run typecheck
 ✔ a loop adds 10 + 9 + … + 1, and returning through r0 halts (1.3ms)
 ✔ a jump must land at the start of a basic block, or the machine panics (0.6ms)
 ...
-ℹ tests 396
+ℹ tests 404
 ℹ suites 0
-ℹ pass 396
+ℹ pass 404
 ℹ fail 0
 ...
-reported 396 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736334899
+reported 404 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736334899
 ...
 ```
 

@@ -66,12 +66,12 @@ npm test
 ✔ a forged guarantee is caught (7.8ms)
 ✔ the offenders mark names this block's offenders, and ψ′_O keeps them all (319.2ms)
 ...
-ℹ tests 188
+ℹ tests 196
 ℹ suites 0
-ℹ pass 188
+ℹ pass 196
 ℹ fail 0
 ...
-reported 188 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734301991
+reported 196 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734301991
 ```
 
 Green, [Part 10](../10-disputes/index.md)'s offender tests among them: the message has a new home, and nothing else
@@ -174,9 +174,9 @@ SyntaxError: The requested module '../src/guarantors.ts' does not provide an exp
 ...
 ✖ test/guarantors.test.ts (259.6ms)
 ...
-ℹ tests 186
+ℹ tests 194
 ℹ suites 0
-ℹ pass 185
+ℹ pass 193
 ℹ fail 1
 ...
 ```
@@ -230,12 +230,12 @@ npm run typecheck
 ✔ every accepted guarantee is signed by its guarantors, and 𝐆 lists them once each (726.5ms)
 ✔ a forged guarantee signature is caught (1.6ms)
 ...
-ℹ tests 190
+ℹ tests 198
 ℹ suites 0
-ℹ pass 190
+ℹ pass 198
 ℹ fail 0
 ...
-reported 190 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734316847
+reported 198 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734316847
 ...
 ```
 

@@ -221,9 +221,9 @@ SyntaxError: The requested module '../src/host.ts' does not provide an export na
 ...
 ✖ test/host.test.ts (184.2ms)
 ...
-ℹ tests 506
+ℹ tests 514
 ℹ suites 0
-ℹ pass 501
+ℹ pass 509
 ℹ fail 5
 ...
 ```
@@ -492,12 +492,12 @@ npm run typecheck
 ✔ assign: the assigner hands a core on, and a checkpoint keeps the change (1.1ms)
 ✔ assign refuses: no such core, not the core's assigner, not a service id (2.7ms)
 ...
-ℹ tests 535
+ℹ tests 543
 ℹ suites 0
-ℹ pass 535
+ℹ pass 543
 ℹ fail 0
 ...
-reported 535 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791739196226
+reported 543 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791739196226
 ...
 ```
 

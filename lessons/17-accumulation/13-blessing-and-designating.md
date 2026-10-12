@@ -230,9 +230,9 @@ npm test
 ...
 SyntaxError: The requested module '../src/host.ts' does not provide an export named 'bless'
 ...
-ℹ tests 541
+ℹ tests 549
 ℹ suites 0
-ℹ pass 535
+ℹ pass 543
 ℹ fail 6
 ...
 ```
@@ -636,12 +636,12 @@ npm run typecheck
 ✔ bless: every privilege at once, and the always-accumulate services (0.214834ms)
 ✔ designate: the delegator picks the next validators; a count tiny can't have, HUH (1.675125ms)
 ...
-ℹ tests 580
+ℹ tests 588
 ℹ suites 0
-ℹ pass 580
+ℹ pass 588
 ℹ fail 0
 ...
-reported 580 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769561954
+reported 588 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769561954
 ...
 ```
 

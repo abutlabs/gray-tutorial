@@ -149,9 +149,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/arithmetic.
 ...
 ✖ test/arithmetic.test.ts (224.2ms)
 ...
-ℹ tests 400
+ℹ tests 408
 ℹ suites 0
-ℹ pass 399
+ℹ pass 407
 ℹ fail 1
 ...
 ```
@@ -386,12 +386,12 @@ npm run typecheck
 ...
 ✔ the reported packages: each one's hash and exports root, sorted by hash (211.3ms)
 ...
-ℹ tests 408
+ℹ tests 416
 ℹ suites 0
-ℹ pass 408
+ℹ pass 416
 ℹ fail 0
 ...
-reported 408 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736632944
+reported 416 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736632944
 ...
 ```
 

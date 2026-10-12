@@ -105,9 +105,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/bits.ts' im
 ...
 ✖ test/bits.test.ts (275.0ms)
 ...
-ℹ tests 415
+ℹ tests 423
 ℹ suites 0
-ℹ pass 414
+ℹ pass 422
 ℹ fail 1
 ...
 ```
@@ -199,12 +199,12 @@ npm run typecheck
 ...
 ✔ the reported packages: each one's hash and exports root, sorted by hash (266.6ms)
 ...
-ℹ tests 419
+ℹ tests 427
 ℹ suites 0
-ℹ pass 419
+ℹ pass 427
 ℹ fail 0
 ...
-reported 419 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736873566
+reported 427 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736873566
 ...
 ```
 

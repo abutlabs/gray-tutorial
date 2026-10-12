@@ -128,9 +128,9 @@ npm test
 ...
 ✖ a fault must have voted against the verdict (75.0ms)
 ...
-ℹ tests 157
+ℹ tests 165
 ℹ suites 0
-ℹ pass 146
+ℹ pass 154
 ℹ fail 11
 ...
 test at test/disputes.test.ts:231:1
@@ -216,12 +216,12 @@ npm run typecheck
 ...
 ✔ a fault must have voted against the verdict (6.9ms)
 ...
-ℹ tests 157
+ℹ tests 165
 ℹ suites 0
-ℹ pass 157
+ℹ pass 165
 ℹ fail 0
 ...
-reported 157 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791732278807
+reported 165 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791732278807
 ...
 ```
 

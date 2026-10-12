@@ -77,12 +77,12 @@ npm test
 ✔ 𝐑: a report becomes available when more than two thirds of κ hold its data (177.3ms)
 ✔ on tiny, 5 of 6 validators make a report available, and 4 don't (0.8ms)
 ...
-ℹ tests 160
+ℹ tests 168
 ℹ suites 0
-ℹ pass 160
+ℹ pass 168
 ℹ fail 0
 ...
-reported 160 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733590641
+reported 168 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733590641
 ```
 
 Same tests, same 160 passes: the shape changed, and nothing else did.
@@ -172,9 +172,9 @@ npm test
 ✖ ρ‡: a core lets go of a report once available, timed out, or the set resizes (29.3ms)
 ✖ a report registered at slot 7 may wait through slot 11, and times out at 12 (15.4ms)
 ...
-ℹ tests 162
+ℹ tests 170
 ℹ suites 0
-ℹ pass 160
+ℹ pass 168
 ℹ fail 2
 ...
 test at test/assurances.test.ts:81:1
@@ -225,12 +225,12 @@ npm run typecheck
 ✔ ρ‡: a core lets go of a report once available, timed out, or the set resizes (314.1ms)
 ✔ a report registered at slot 7 may wait through slot 11, and times out at 12 (0.4ms)
 ...
-ℹ tests 162
+ℹ tests 170
 ℹ suites 0
-ℹ pass 162
+ℹ pass 170
 ℹ fail 0
 ...
-reported 162 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733601118
+reported 170 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733601118
 ...
 ```
 

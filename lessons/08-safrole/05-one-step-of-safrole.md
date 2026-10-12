@@ -16,11 +16,13 @@ Nothing new in principle: it's §6, all at once. A few last rules join in:
 - **γ′_A**: a new epoch starts a new lottery, so the ticket accumulator starts again, from
   only the block's own tickets. Otherwise it keeps its tickets, plus any the block brings.
 
-And three things this step can't do yet, all for the same reason, Bandersnatch:
+And three things this step can't do yet, all to do with the Bandersnatch VRF:
 
-- **blocks that bring tickets**: a ticket's id is the output of its ring proof;
-- **γ′_Z**, the ring root of the new pending set;
-- **rejecting bad blocks**, most of which come down to checking tickets.
+- **blocks that bring tickets**: a ticket's id is the output of its ring proof ([lessons
+  8.6](./06-the-vrf-output.md) and [8.7](./07-entering-tickets.md));
+- **γ′_Z**, the ring root of the new pending set ([lesson 8.8](./08-the-ring-root.md));
+- **rejecting bad blocks**, most of which come down to checking tickets ([lessons 8.7](./07-entering-tickets.md)
+  and [8.8](./08-the-ring-root.md)).
 
 So `safroleStep` takes blocks with no tickets, and its test skips the rest, honestly
 counted.
@@ -344,7 +346,8 @@ vectors handed you that output as `input.entropy`. The line after it is your
 ## What you have
 
 Safrole, end to end, for every block that brings no tickets: the whole state after it, and
-both marks for its header, right on every vector it can run. [Part 9](../09-recent-history/index.md) builds the other memory every block
-updates: the recent history of the chain itself.
+both marks for its header, right on every vector it can run. The next four lessons fill
+in what it still takes on trust, starting with the one value the vectors hand over every
+block: the VRF output, in [lesson 8.6](./06-the-vrf-output.md).
 
-Next: [Part 9 · Recent history](../09-recent-history/index.md)
+Next: [8.6 The VRF output](./06-the-vrf-output.md)

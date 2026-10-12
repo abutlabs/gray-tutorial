@@ -107,9 +107,9 @@ npm test
 ...
 SyntaxError: The requested module '../src/host.ts' does not provide an export named 'upgrade'
 ...
-ℹ tests 530
+ℹ tests 538
 ℹ suites 0
-ℹ pass 528
+ℹ pass 536
 ℹ fail 2
 ...
 ✖ upgrade_service-1: the block ends as the vector says (49.372625ms)
@@ -226,12 +226,12 @@ npm run typecheck
 ...
 ✔ upgrade: new code and new least gases, for 1,028 gas (0.158584ms)
 ...
-ℹ tests 565
+ℹ tests 573
 ℹ suites 0
-ℹ pass 565
+ℹ pass 573
 ℹ fail 0
 ...
-reported 565 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769486717
+reported 573 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769486717
 ...
 ```
 

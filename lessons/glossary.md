@@ -212,6 +212,10 @@ Pushgateway (for numbers) behind them. *Example:* the *Chain* panel, on *2 · Bl
 state*, lists 100 blocks.
 ([0.3](./00-start/03-watch-your-client.md))
 
+**WebAssembly.** A compact program format that JavaScript engines run at close to native
+speed, so a library written in Rust can run in Node. *Example:* the Bandersnatch library.
+([8.8](./08-safrole/08-the-ring-root.md))
+
 ## Bytes and encoding
 
 **Byte (octet).** Eight bits: a number from 0 to 255. The GP says *octet*, and writes a
@@ -490,6 +494,33 @@ filled: the winning ticket for every slot of the next epoch. *Example:* 12 ticke
 **Sealer and seal.** The sealer is the validator allowed to make the block in a slot; the
 seal is its signature on the header. When the lottery didn't fill the epoch, fallback
 sealers are picked from the entropy instead. ([8.3](./08-safrole/03-the-fallback-sealers.md))
+
+**Output point.** The first 32 bytes of a Bandersnatch VRF signature: a point on the curve
+that only the signer's key makes for that input. *Example:* the first 32 bytes of a header's
+`entropy_source`. ([8.6](./08-safrole/06-the-vrf-output.md))
+
+**SHA-512.** A hash function, like Blake2b, with a 64-byte result. *Example:* the VRF output
+is the first 32 bytes of one. ([8.6](./08-safrole/06-the-vrf-output.md))
+
+**Ticket id.** A ticket's score in the lottery: the VRF output of its ring proof; lower is
+better. *Example:* `0x00e51b1c…` beats `0x20164381…`. ([8.6](./08-safrole/06-the-vrf-output.md))
+
+**Attempt, attempts allowed.** n. Which of its tickets a validator enters, from 0 up to
+n − 1, where n = ⌈2E / |γ′_P|⌉. *Example:* 4 attempts each on tiny, 2 on full.
+([8.7](./08-safrole/07-entering-tickets.md))
+
+**Ring root.** γ_Z. A 144-byte commitment to a ring of Bandersnatch keys, which ring proofs
+are checked against. *Example:* a new one at every epoch, for γ′_P.
+([8.8](./08-safrole/08-the-ring-root.md))
+
+**Padding point.** The stand-in for a missing key in a ring, or for one that isn't a point
+on the curve. *Example:* an offender's zeroed key. ([8.8](./08-safrole/08-the-ring-root.md))
+
+**Unsigned header.** ℰ_U(H). A header's bytes without the seal at the end: what the seal
+signs. *Example:* 201 of a 297-byte header's bytes. ([8.9](./08-safrole/09-seals.md))
+
+**Ticket-sealed block.** A block sealed by the holder of the slot's winning ticket, not by a
+fallback key. *Example:* blocks 48 to 83 of the `safrole` trace. ([8.9](./08-safrole/09-seals.md))
 
 ## Work, cores and reports
 

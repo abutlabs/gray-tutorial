@@ -197,12 +197,12 @@ while you're still online:
 
 1. **The test vectors**: `npm run vectors`, done above.
 2. **The stack's Docker images**: `./obs up` once, done above too. Docker keeps them.
-3. **The two packages later lessons add** ([lessons 5.1](../05-hashing-and-signatures/01-hashes.md)
-   and [5.3](../05-hashing-and-signatures/03-signatures.md)): in `client/`, run the command
+3. **The three packages later lessons add** ([lessons 5.1](../05-hashing-and-signatures/01-hashes.md),
+   [5.3](../05-hashing-and-signatures/03-signatures.md) and [8.8](../08-safrole/08-the-ring-root.md)): in `client/`, run the command
    below. It fills npm's cache without changing your `package.json`.
 
 ```sh
-npm install --no-save @noble/hashes@2.4.0 @noble/curves@2.4.0
+npm install --no-save @noble/hashes@2.4.0 @noble/curves@2.4.0 @typeberry/native@0.5.1-4e90642
 ```
 
 On the plane, where a lesson says `npm install`, type `npm install --offline`: npm takes

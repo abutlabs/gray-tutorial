@@ -115,9 +115,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/assurances.ts' 
 ...
 ✖ test/assurances.test.ts (191.1ms)
 ...
-ℹ tests 158
+ℹ tests 166
 ℹ suites 0
-ℹ pass 157
+ℹ pass 165
 ℹ fail 1
 ...
 ```
@@ -185,12 +185,12 @@ npm run typecheck
 ✔ 𝐑: a report becomes available when more than two thirds of κ hold its data (144.7ms)
 ✔ on tiny, 5 of 6 validators make a report available, and 4 don't (1.1ms)
 ...
-ℹ tests 160
+ℹ tests 168
 ℹ suites 0
-ℹ pass 160
+ℹ pass 168
 ℹ fail 0
 ...
-reported 160 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733586523
+reported 168 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733586523
 ...
 ```
 

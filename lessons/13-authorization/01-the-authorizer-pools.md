@@ -208,9 +208,9 @@ npm test
 ✖ α′ on the authorizations vectors (3.9ms)
 ✔ α′ through 99 real blocks, with the authorizers their own guarantees used (540.6ms)
 ...
-ℹ tests 382
+ℹ tests 390
 ℹ suites 0
-ℹ pass 379
+ℹ pass 387
 ℹ fail 3
 ...
 ```
@@ -280,12 +280,12 @@ npm run typecheck
 ...
 ✔ the reported packages: each one's hash and exports root, sorted by hash (465.4ms)
 ...
-ℹ tests 382
+ℹ tests 390
 ℹ suites 0
-ℹ pass 382
+ℹ pass 390
 ℹ fail 0
 ...
-reported 382 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734931482
+reported 390 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734931482
 ...
 ```
 

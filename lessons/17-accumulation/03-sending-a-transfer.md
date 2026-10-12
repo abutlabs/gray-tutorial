@@ -161,9 +161,9 @@ SyntaxError: The requested module '../src/host.ts' does not provide an export na
 ...
 ✖ test/host.test.ts (171.9ms)
 ...
-ℹ tests 499
+ℹ tests 507
 ℹ suites 0
-ℹ pass 489
+ℹ pass 497
 ℹ fail 10
 ...
 ```
@@ -383,12 +383,12 @@ npm run typecheck
 ✔ transfer: the money leaves at once, and a checkpoint keeps what was sent (0.2ms)
 ✔ transfer refuses: no such service, too little gas, too little money (0.2ms)
 ...
-ℹ tests 526
+ℹ tests 534
 ℹ suites 0
-ℹ pass 526
+ℹ pass 534
 ℹ fail 0
 ...
-reported 526 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738822352
+reported 534 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738822352
 ...
 ```
 

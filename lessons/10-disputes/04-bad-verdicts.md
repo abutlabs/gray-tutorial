@@ -131,9 +131,9 @@ npm test
 ...
 ✖ a split that's neither good, bad nor wonky is refused (1.6ms)
 ...
-ℹ tests 125
+ℹ tests 133
 ℹ suites 0
-ℹ pass 114
+ℹ pass 122
 ℹ fail 11
 ...
 test at test/disputes.test.ts:194:1
@@ -217,12 +217,12 @@ npm run typecheck
 ...
 ✔ a split that's neither good, bad nor wonky is refused (9.7ms)
 ...
-ℹ tests 125
+ℹ tests 133
 ℹ suites 0
-ℹ pass 125
+ℹ pass 133
 ℹ fail 0
 ...
-reported 125 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791732266078
+reported 133 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791732266078
 ...
 ```
 

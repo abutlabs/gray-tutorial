@@ -118,9 +118,9 @@ SyntaxError: The requested module '../src/services.ts' does not provide an expor
 ...
 ✖ test/services.test.ts (191.3ms)
 ...
-ℹ tests 383
+ℹ tests 391
 ℹ suites 0
-ℹ pass 382
+ℹ pass 390
 ℹ fail 1
 ...
 ```
@@ -227,12 +227,12 @@ npm run typecheck
 ✔ service 0 in real state: its code beside it, and its footprint adding up (11.3ms)
 ✔ footprints and minimum balances: 510 accounts in the accumulate vectors (294.1ms)
 ...
-ℹ tests 387
+ℹ tests 395
 ℹ suites 0
-ℹ pass 387
+ℹ pass 395
 ℹ fail 0
 ...
-reported 387 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736058671
+reported 395 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736058671
 ...
 ```
 

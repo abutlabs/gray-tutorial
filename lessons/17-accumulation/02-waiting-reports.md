@@ -137,9 +137,9 @@ SyntaxError: The requested module '../src/accumulate.ts' does not provide an exp
 ...
 ✖ test/accumulate.test.ts (174.3ms)
 ...
-ℹ tests 465
+ℹ tests 473
 ℹ suites 0
-ℹ pass 464
+ℹ pass 472
 ℹ fail 1
 ...
 ```
@@ -388,12 +388,12 @@ npm run typecheck
 ...
 ✔ the reported packages: each one's hash and exports root, sorted by hash (216.4ms)
 ...
-ℹ tests 515
+ℹ tests 523
 ℹ suites 0
-ℹ pass 515
+ℹ pass 523
 ℹ fail 0
 ...
-reported 515 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738811802
+reported 523 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738811802
 ...
 ```
 

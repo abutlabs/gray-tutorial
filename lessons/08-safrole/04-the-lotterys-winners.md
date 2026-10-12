@@ -7,7 +7,7 @@ to seal. Nobody knows who holds a winning ticket until that validator makes its 
 nobody can plan an attack on the next block's author. This lesson handles the lottery's
 result: closing it, announcing the winners, and handing out their slots.
 
-(Entering a ticket takes a Bandersnatch ring proof, which waits for its library. The
+(Entering a ticket waits for [lesson 8.7](./07-entering-tickets.md), and checking its ring proof for [lesson 8.8](./08-the-ring-root.md). The
 winners, though, are already in the state, so everything here works today.)
 
 ## New words

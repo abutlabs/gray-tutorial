@@ -115,9 +115,9 @@ SyntaxError: The requested module '../src/host.ts' does not provide an export na
 ...
 ✖ test/host.test.ts (274.9ms)
 ...
-ℹ tests 439
+ℹ tests 447
 ℹ suites 0
-ℹ pass 438
+ℹ pass 446
 ℹ fail 1
 ...
 ```
@@ -279,12 +279,12 @@ npm run typecheck
 ✔ read finds it again; writing an empty value deletes it (0.1ms)
 ✔ FULL: a service can't keep more than its balance covers (0.2ms)
 ...
-ℹ tests 456
+ℹ tests 464
 ℹ suites 0
-ℹ pass 456
+ℹ pass 464
 ℹ fail 0
 ...
-reported 456 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738256886
+reported 464 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738256886
 ...
 ```
 

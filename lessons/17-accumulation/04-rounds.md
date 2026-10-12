@@ -135,9 +135,9 @@ npm test
 ✖ the gift arrives a round later: the money first, then service 1 runs (80.8ms)
 ✖ a transfer to a service with no code: the money arrives, and nothing runs (1.0ms)
 ...
-ℹ tests 529
+ℹ tests 537
 ℹ suites 0
-ℹ pass 526
+ℹ pass 534
 ℹ fail 3
 ...
 test at test/accumulate.test.ts:184:1
@@ -350,12 +350,12 @@ npm run typecheck
 ...
 ✔ the reported packages: each one's hash and exports root, sorted by hash (280.6ms)
 ...
-ℹ tests 529
+ℹ tests 537
 ℹ suites 0
-ℹ pass 529
+ℹ pass 537
 ℹ fail 0
 ...
-reported 529 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791739179951
+reported 537 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791739179951
 ...
 ```
 

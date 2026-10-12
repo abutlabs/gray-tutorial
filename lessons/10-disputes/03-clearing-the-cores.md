@@ -140,9 +140,9 @@ npm test
 ✖ ρ†: a report judged bad or wonky is taken off its core (35.0ms)
 ✖ ρ†: wonky clears a core too, and good leaves it be (13.8ms)
 ...
-ℹ tests 93
+ℹ tests 101
 ℹ suites 0
-ℹ pass 91
+ℹ pass 99
 ℹ fail 2
 ...
 test at test/disputes.test.ts:138:1
@@ -197,12 +197,12 @@ npm run typecheck
 ✔ ρ†: a report judged bad or wonky is taken off its core (184.6ms)
 ✔ ρ†: wonky clears a core too, and good leaves it be (0.5ms)
 ...
-ℹ tests 93
+ℹ tests 101
 ℹ suites 0
-ℹ pass 93
+ℹ pass 101
 ℹ fail 0
 ...
-reported 93 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731896437
+reported 101 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731896437
 ...
 ```
 

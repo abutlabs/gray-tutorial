@@ -145,9 +145,9 @@ npm test
 ...
 SyntaxError: The requested module '../src/host.ts' does not provide an export named 'provide'
 ...
-ℹ tests 536
+ℹ tests 544
 ℹ suites 0
-ℹ pass 532
+ℹ pass 540
 ℹ fail 4
 ...
 ```
@@ -479,12 +479,12 @@ npm run typecheck
 ...
 ✔ provide: a preimage for a service that asked for it, once (0.333959ms)
 ...
-ℹ tests 573
+ℹ tests 581
 ℹ suites 0
-ℹ pass 573
+ℹ pass 581
 ℹ fail 0
 ...
-reported 573 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769533387
+reported 581 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769533387
 ...
 ```
 

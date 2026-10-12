@@ -160,9 +160,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/disputes.ts' im
 ...
 ✖ test/disputes.test.ts (220.3ms)
 ...
-ℹ tests 85
+ℹ tests 93
 ℹ suites 0
-ℹ pass 84
+ℹ pass 92
 ℹ fail 1
 ...
 ```
@@ -281,12 +281,12 @@ npm run typecheck
 ✔ each judged report joins the set of its verdict's outcome (385.9ms)
 ✔ a forged vote is caught (8.9ms)
 ...
-ℹ tests 88
+ℹ tests 96
 ℹ suites 0
-ℹ pass 88
+ℹ pass 96
 ℹ fail 0
 ...
-reported 88 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731877727
+reported 96 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731877727
 ...
 ```
 

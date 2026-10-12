@@ -165,9 +165,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/accumulate.ts' 
 ...
 ✖ test/accumulate.test.ts (298.3ms)
 ...
-ℹ tests 460
+ℹ tests 468
 ℹ suites 0
-ℹ pass 459
+ℹ pass 467
 ℹ fail 1
 ...
 ```
@@ -255,12 +255,12 @@ npm run typecheck
 ...
 ✔ the reported packages: each one's hash and exports root, sorted by hash (290.7ms)
 ...
-ℹ tests 468
+ℹ tests 476
 ℹ suites 0
-ℹ pass 468
+ℹ pass 476
 ℹ fail 0
 ...
-reported 468 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738499570
+reported 476 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738499570
 ...
 ```
 

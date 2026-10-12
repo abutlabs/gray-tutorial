@@ -1,0 +1,523 @@
+# The ring root
+
+Two things in Safrole need real cryptography, not just a hash. Every ticket carries a
+*ring proof*, which says "one of these validators made me" without saying which, and it
+must be checked. And the set of validators it's checked against, the *ring*, is
+summed up in γ_Z, the ring root, which changes whenever the validators do. Both need the
+Bandersnatch curve's arithmetic, so this lesson brings in a library that has it. By the end
+of it your client checks every ticket's proof, makes each new epoch's ring root, and passes
+all 46 safrole vectors.
+
+## New words
+
+- **Ring root.** γ_Z, 144 bytes. A commitment to a list of Bandersnatch keys, the ring:
+  short to keep, and enough to check a ring proof against. *Example:* a new one at every
+  epoch, from the validators just rotated into γ_P.
+- **Padding point.** The stand-in for a missing key in a ring, or for one that isn't a point on
+  the curve. *Example:* an offender's key, zeroed by [lesson 8.2](./02-rotating-the-validators.md), becomes padding.
+- **WebAssembly.** A compact program format that JavaScript engines run at close to native
+  speed, so a library written in Rust can run in Node. *Example:* the Bandersnatch library
+  this lesson installs.
+
+All three are in the [glossary](../glossary.md).
+
+## What the Gray Paper says
+
+§6 and Appendix G, in plain steps:
+
+1. **The ring root.** At a new epoch, γ′_Z = 𝒪(the Bandersnatch keys of γ′_P): the ring
+   root of the validators who will be active in the *next* epoch. Tickets entered this
+   epoch are for that epoch, so they're checked against its validators. Within an epoch,
+   γ′_Z = γ_Z.
+2. **The ring has a fixed size.** A key that isn't a point on the curve becomes the
+   *padding point*, and the ring is filled up with padding to the chain's validator count:
+   6 on tiny, 1,023 on full.
+3. **A ticket's proof** must check out against γ′_Z, for the input X_T ⌢ η′₂ ⌢ its attempt
+   (X_T is "jam_ticket_seal", the same `$` rule as [lesson 5.3](../05-hashing-and-signatures/03-signatures.md)'s "jam_available"). η′₂ is two
+   epochs' old entropy, fixed before anyone could have made a ticket for it.
+4. **A proof that fails** makes the block invalid: `bad_ticket_proof`.
+
+That's [lesson 8.7](./07-entering-tickets.md)'s last missing rule.
+
+### A library, not code of your own
+
+Making a ring root and checking a ring proof is serious cryptography: elliptic curves,
+pairings, and a structured reference string of 590 KB. Writing it would be its own
+tutorial, and getting it one byte wrong would make every check fail. So your client uses
+`@typeberry/native`, a library made by another JAM team, Fluffy Labs, for their client,
+typeberry. It wraps ark-vrf, the Rust library the Gray Paper points to, as native code and
+as WebAssembly. Your client calls three of its functions: `ringCommitment`,
+`batchVerifyTickets`, and in [lesson 8.9](./09-seals.md), `verifySeal`.
+
+Two honest notes. The library makes rings of 6 or 1,023 keys only, the two sizes the
+official networks use; that's all your client needs. And it checks a block's ring proofs
+all together, in one go: when one fails it can't say which, so neither can your client.
+
+## Install it
+
+**Rewrite** `package.json`
+
+```json
+{
+  "name": "jam-client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./test/grafana.ts --test-reporter-destination=stdout \"test/**/*.test.ts\"",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@noble/curves": "2.4.0",
+    "@noble/hashes": "2.4.0",
+    "@typeberry/native": "0.5.1-4e90642"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.4",
+    "typescript": "7.0.2"
+  }
+}
+```
+
+**Run**
+
+```sh
+npm install
+```
+
+## The tests
+
+The vectors' Safrole state has γ_Z:
+
+**Replace in** `test/safrole.test.ts`
+
+```ts
+/** The parts of a safrole vector's state the lessons use so far. */
+type SafroleState = {
+  tau: number;
+  eta: string[];
+  iota: unknown[];
+  gamma_k: unknown[];
+  kappa: unknown[];
+  lambda: unknown[];
+  post_offenders: string[];
+  gamma_a: unknown[]; // γ_A: the lottery's best tickets so far
+  gamma_s: { keys?: string[]; tickets?: unknown[] }; // γ_S: the sealers, keys or tickets
+  gamma_z: string; // γ_Z: the ring root of γ_P
+};
+```
+
+**Add to** `test/safrole.test.ts`
+
+```ts
+import { ringRootOf } from "../src/safrole.ts";
+
+test("γ′_Z: at a new epoch, the ring root of the new pending validators", () => {
+  let roots = 0;
+  for (const { config, name, vector, newEpoch } of acceptedVectors()) {
+    if (!newEpoch) continue;
+    const offenders: Bytes[] = vector.pre_state.post_offenders.map(fromHex);
+    const { pending }: ValidatorSets = rotateValidators(validatorSets(vector.pre_state), offenders);
+    const root: string = toHex(ringRootOf(config, pending));
+    assert.equal(root, vector.post_state.gamma_z, name);
+    if (vector.post_state.gamma_z !== vector.pre_state.gamma_z) roots++;
+  }
+  assert.equal(roots, 13); // 6 tiny, 7 full: a new root, whenever the keys changed
+});
+
+test("a forged ring proof: bad_ticket_proof", () => {
+  for (const config of [TINY, FULL]) {
+    const name = `stf/safrole/${config.name}/publish-tickets-no-mark-5.json`;
+    const vector = vectorJson(name) as SafroleVector;
+    const before: Safrole = safroleFromJson(vector.pre_state);
+    const entered = vector.input.extrinsic.map((t) => TicketEnvelope.fromJson(t));
+    const error: string | null = safroleError(config, before, vector.input.slot, entered);
+    assert.equal(error, "bad_ticket_proof", name);
+  }
+});
+```
+
+[Lesson 8.5](./05-one-step-of-safrole.md)'s whole-step test now checks γ′_Z too, since γ_Z is about to join your `Safrole`.
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+SyntaxError: The requested module '../src/safrole.ts' does not provide an export named 'ringRootOf'
+...
+ℹ tests 74
+ℹ suites 0
+ℹ pass 73
+ℹ fail 1
+...
+```
+
+Red: no `ringRootOf` yet.
+
+## The code
+
+The library first, in the file that already holds [lesson 8.6](./06-the-vrf-output.md)'s `vrfOutput`:
+
+**Add to** `src/bandersnatch.ts`
+
+```ts
+import { bandersnatch } from "@typeberry/native";
+
+/** The Bandersnatch library, started once: it loads native or WebAssembly code first. */
+const library = await bandersnatch.default();
+
+/**
+ * 𝒪 (GP App. G): the ring root of some Bandersnatch keys, the 144 bytes ring proofs are
+ * checked against. The ring has a fixed size, the chain's validator count: missing keys,
+ * and keys that aren't points on the curve (such as an offender's zeros), are padding.
+ */
+export function ringRoot(keys: Bytes[], size: number): Bytes {
+  const padding = Array.from({ length: size - keys.length }, () => new Uint8Array(32));
+  const result = library.ringCommitment(concatBytes(...keys, ...padding));
+  if (result[0] !== 0) throw new Error("the Bandersnatch library made no ring root");
+  return Uint8Array.from(result.subarray(1)); // a plain copy: the library may hand back a Buffer
+}
+
+/** A ring proof (784 bytes) and the input it claims to be made for. */
+export type RingProof = { proof: Bytes; input: Bytes };
+
+/**
+ * Whether every ring proof checks out against the ring root, a ring of `size` keys: made
+ * by one of the ring's keys, for its input. All or nothing: the library checks them in
+ * one batch, so it can't say which proof failed.
+ */
+export function ringProofsHold(root: Bytes, size: number, proofs: RingProof[]): boolean {
+  if (proofs.length === 0) return true;
+  const data = concatBytes(...proofs.flatMap((p) => [p.proof, p.input]));
+  return library.batchVerifyTickets(size, root, data, proofs[0].input.length)[0] === 0;
+}
+```
+
+```ts
+const library = await bandersnatch.default();
+```
+
+The library loads its native code (or its WebAssembly, where there's none for your
+computer) when it starts, which takes a moment, so it starts once, when the file is first
+imported. `await` at the top of a module waits for it before anything uses it.
+
+```ts
+  return Uint8Array.from(result.subarray(1)); // a plain copy: the library may hand back a Buffer
+```
+
+Each answer starts with a status byte: 0 for done. A *Buffer* is Node's own kind of byte
+array; your tests compare plain `Uint8Array` values, so `ringRoot` copies the root into one.
+
+Then Safrole keeps γ_Z:
+
+**Replace in** `src/safrole.ts`
+
+```ts
+import { ringRoot, ringProofsHold } from "./bandersnatch.ts";
+
+/** Safrole's part of the state (GP §6), as your client keeps it. */
+export type Safrole = {
+  time: number; // τ: the slot of the most recent block
+  entropy: Bytes[]; // η
+  validators: ValidatorSets; // ι, γ_P, κ, λ
+  accumulator: TicketBody[]; // γ_A: the lottery's best tickets so far
+  sealers: Sealers; // γ_S
+  ringRoot: Bytes; // γ_Z: the ring root of γ_P's Bandersnatch keys
+};
+
+/** Safrole's state as the test vectors write it, under the Gray Paper's Greek names. */
+export type SafroleJson = {
+  tau: number;
+  eta: string[];
+  iota: unknown[];
+  gamma_k: unknown[];
+  kappa: unknown[];
+  lambda: unknown[];
+  gamma_a: unknown[];
+  gamma_s: { keys?: string[]; tickets?: unknown[] };
+  gamma_z: string;
+};
+
+/** Safrole's state, from the vectors' JSON. */
+export function safroleFromJson(json: SafroleJson): Safrole {
+  const keys = (list: unknown[]) => list.map((key) => ValidatorKey.fromJson(key));
+  const tickets = (list: unknown[]) => list.map((ticket) => TicketBody.fromJson(ticket));
+  const { keys: fallback, tickets: winners } = json.gamma_s;
+  return {
+    time: json.tau,
+    entropy: json.eta.map(fromHex),
+    validators: {
+      staging: keys(json.iota),
+      pending: keys(json.gamma_k),
+      active: keys(json.kappa),
+      previous: keys(json.lambda),
+    },
+    accumulator: tickets(json.gamma_a),
+    sealers: winners ? { tickets: tickets(winners) } : { keys: (fallback ?? []).map(fromHex) },
+    ringRoot: fromHex(json.gamma_z),
+  };
+}
+```
+
+**Add to** `src/safrole.ts`
+
+```ts
+/** γ_Z (GP §6): the ring root of some validators' Bandersnatch keys, in a ring as big as
+ * the chain's validator set. */
+export function ringRootOf(config: Config, validators: ValidatorKey[]): Bytes {
+  return ringRoot(validators.map((v) => v.bandersnatch), config.validators_count);
+}
+
+/** X_T (GP §6): the context of a ticket's ring proof, "$jam_ticket_seal" without the $. */
+const TICKET_SEAL = new TextEncoder().encode("jam_ticket_seal");
+
+/** What a ticket's ring proof signs: X_T ⌢ η′₂ ⌢ its attempt, one byte. */
+export function ticketInput(eta2: Bytes, attempt: number): Bytes {
+  return concatBytes(TICKET_SEAL, eta2, Uint8Array.of(attempt));
+}
+```
+
+`safroleStep` makes a new ring root at each new epoch:
+
+**Replace in** `src/safrole.ts`
+
+```ts
+/**
+ * One block of Safrole (GP §6): the state after it, and the two marks its header must
+ * carry. Its tickets join the lottery: each one's id is its proof's VRF output, and the
+ * lottery keeps the E lowest ids, old and new (none old at a new epoch).
+ */
+export function safroleStep(
+  config: Config,
+  before: Safrole,
+  slot: number, // the block's slot, τ′
+  vrfOutput: Bytes, // Y(H_v), from the block's entropy source
+  offenders: Bytes[], // ψ′_O: Ed25519 keys convicted in disputes
+  tickets: TicketEnvelope[] = [], // the block's tickets extrinsic, already checked
+) {
+  const newEpoch = epochOf(config, slot) > epochOf(config, before.time);
+  const entropy = nextEntropy(before.entropy, vrfOutput, newEpoch);
+  const validators = newEpoch ? rotateValidators(before.validators, offenders) : before.validators;
+  let sealers = before.sealers;
+  if (sealedByTickets(config, before.time, slot, before.accumulator)) {
+    sealers = { tickets: outsideIn(before.accumulator) };
+  } else if (newEpoch) {
+    sealers = { keys: fallbackKeys(config, entropy[2], validators.active) };
+  }
+  const entered = tickets.map((t) => ({ id: ticketId(t), attempt: t.attempt }));
+  const kept = newEpoch ? [] : before.accumulator; // a new epoch starts a new lottery
+  const accumulator = [...kept, ...entered].sort(byId).slice(0, config.epoch_length);
+  const ring = newEpoch ? ringRootOf(config, validators.pending) : before.ringRoot; // γ′_Z
+  const after: Safrole = { time: slot, entropy, validators, accumulator, sealers, ringRoot: ring };
+  // the epoch mark: η₀ and η₁ as they were, and γ′_P, the validators after next, by two keys
+  const keys = validators.pending.map(({ bandersnatch, ed25519 }) => ({ bandersnatch, ed25519 }));
+  const epochMark: EpochMark | null = newEpoch
+    ? { entropy: before.entropy[0], tickets_entropy: before.entropy[1], validators: keys }
+    : null;
+  const marked = ticketsMark(config, before.time, slot, before.accumulator);
+  return { after, epochMark, ticketsMark: marked };
+}
+```
+
+```ts
+  const ring = newEpoch ? ringRootOf(config, validators.pending) : before.ringRoot; // γ′_Z
+```
+
+And `safroleError` checks the proofs, last, since they're the slow part:
+
+**Replace in** `src/safrole.ts`
+
+```ts
+/**
+ * Why Safrole refuses a block (GP §6), or null if it doesn't: its slot isn't after the last
+ * block's (bad_slot); it brings tickets once the lottery has closed, or more than K
+ * (unexpected_ticket); a ticket's attempt is n or more (bad_ticket_attempt); the ids don't
+ * go strictly up (bad_ticket_order); one is in the lottery already (duplicate_ticket); or
+ * a ring proof doesn't check out against γ′_Z (bad_ticket_proof).
+ */
+export function safroleError(
+  config: Config,
+  before: Safrole,
+  slot: number,
+  tickets: TicketEnvelope[],
+  offenders: Bytes[] = [], // ψ′_O, for γ′_P at a new epoch
+): string | null {
+  if (slot <= before.time) return "bad_slot";
+  const open = phaseOf(config, slot) < config.epoch_tail_start;
+  if (tickets.length > (open ? config.max_tickets_per_extrinsic : 0)) return "unexpected_ticket";
+  if (tickets.length === 0) return null;
+  const newEpoch = epochOf(config, slot) > epochOf(config, before.time);
+  const { pending } = newEpoch ? rotateValidators(before.validators, offenders) : before.validators;
+  const n = attemptsAllowed(config, pending.length); // γ′_P's size
+  if (tickets.some((t) => t.attempt >= n)) return "bad_ticket_attempt";
+  const ids = tickets.map((t) => toHex(ticketId(t)));
+  if (ids.some((id, i) => i > 0 && id <= ids[i - 1])) return "bad_ticket_order";
+  const held = new Set(before.accumulator.map((t) => toHex(t.id)));
+  if (ids.some((id) => held.has(id))) return "duplicate_ticket";
+  const ring = newEpoch ? ringRootOf(config, pending) : before.ringRoot; // γ′_Z
+  const eta2 = newEpoch ? before.entropy[1] : before.entropy[2]; // η′₂
+  const proofs = tickets.map((t) => ({ proof: t.signature, input: ticketInput(eta2, t.attempt) }));
+  if (!ringProofsHold(ring, config.validators_count, proofs)) return "bad_ticket_proof";
+  return null;
+}
+```
+
+```ts
+  const ring = newEpoch ? ringRootOf(config, pending) : before.ringRoot; // γ′_Z
+  const eta2 = newEpoch ? before.entropy[1] : before.entropy[2]; // η′₂
+```
+
+At a new epoch the ring is the one this block makes, and η′₂ is η₁, moved along one
+([lesson 8.1](./01-stirring-the-entropy.md)). It needs the offenders now, for γ′_P, so it takes them as its last argument.
+
+**Run**
+
+```sh
+npm test
+npm run typecheck
+```
+
+```text
+...
+✔ a whole step of Safrole: the state and both marks, for each block without tickets (1528.694583ms)
+...
+✔ γ′_Z: at a new epoch, the ring root of the new pending validators (1461.491125ms)
+✔ a forged ring proof: bad_ticket_proof (15.362583ms)
+...
+ℹ tests 85
+ℹ suites 0
+ℹ pass 85
+ℹ fail 0
+...
+reported 85 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791771407614
+...
+```
+
+Every safrole vector passes now: 33 accepted blocks, ring roots and all, and 13 refused.
+
+## Watch it
+
+`bin/safrole.ts` shows the ring root, and passes the offenders on:
+
+**Rewrite** `bin/safrole.ts`
+
+```ts
+// Runs one block of Safrole from a safrole test vector, tickets and all, tells what
+// happened (or why the block is refused), and checks the result against the vector.
+// Usage: node bin/safrole.ts <vector.json>, e.g.
+//        node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
+
+import { readFileSync } from "node:fs";
+import { isDeepStrictEqual } from "node:util";
+import { fromHex, toHex } from "../src/bytes.ts";
+import { FULL, TINY } from "../src/config.ts";
+import { Run } from "../src/obs.ts";
+import { safroleError, safroleFromJson, safroleStep, ticketId } from "../src/safrole.ts";
+import { TicketEnvelope } from "../src/block.ts";
+
+const [file] = process.argv.slice(2);
+const config = file.includes("/full/") ? FULL : TINY;
+const { input, pre_state, post_state, output } = JSON.parse(readFileSync(file, "utf8"));
+const before = safroleFromJson(pre_state);
+const offenders = pre_state.post_offenders.map(fromHex);
+const tickets = input.extrinsic.map((t: unknown) => TicketEnvelope.fromJson(t));
+
+const run = new Run("safrole");
+const told = (what: string) => {
+  console.log(what);
+  run.event("told", { what });
+};
+const short = (hash: Uint8Array) => `${toHex(hash).slice(0, 10)}…`;
+for (const t of tickets) told(`a ticket: attempt ${t.attempt}, id ${short(ticketId(t))}`);
+const error = safroleError(config, before, input.slot, tickets, offenders);
+if (error) {
+  told(`refused: ${error} (the vector says: ${output.err})`);
+  const link = await run.report();
+  if (link) console.log(`reported to Grafana: ${link}`);
+  process.exit(0);
+}
+const step = safroleStep(config, before, input.slot, fromHex(input.entropy), offenders, tickets);
+const { after, epochMark, ticketsMark } = step;
+told(`slot ${before.time} → ${after.time}`);
+told(`η₀ stirred: ${short(before.entropy[0])} → ${short(after.entropy[0])}`);
+told(`a new epoch: ${epochMark !== null}`);
+const zeroed = after.validators.pending.filter((k) => k.ed25519.every((b) => b === 0)).length;
+if (epochMark) told(`validators moved along one set; offenders zeroed: ${zeroed}`);
+const ring = toHex(after.ringRoot) === toHex(before.ringRoot) ? "unchanged" : "new";
+told(`ring root γ_Z: ${ring}, ${short(after.ringRoot)}`);
+const sealers = "tickets" in after.sealers ? "the lottery's winners" : "fallback keys";
+told(`sealers: ${sealers}; tickets mark: ${ticketsMark !== null}`);
+const best = after.accumulator[0]; // the lowest id: the best ticket
+const held = after.accumulator.length;
+if (best) told(`the lottery holds ${held} ticket(s), the best ${short(best.id)}`);
+const matches = isDeepStrictEqual(after, safroleFromJson(post_state));
+told(`the whole state after matches the vector: ${matches}`);
+const link = await run.report();
+if (link) console.log(`reported to Grafana: ${link}`);
+```
+
+**Run**
+
+```sh
+node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+node bin/safrole.ts ../vectors/stf/safrole/tiny/publish-tickets-no-mark-5.json
+```
+
+```text
+slot 10 → 15
+η₀ stirred: 0xf164ce89… → 0x760612c5…
+a new epoch: true
+validators moved along one set; offenders zeroed: 0
+ring root γ_Z: new, 0xa778826f…
+sealers: fallback keys; tickets mark: false
+the whole state after matches the vector: true
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=safrole-1791771413102
+a ticket: attempt 3, id 0x34341918…
+a ticket: attempt 1, id 0x5af49b10…
+a ticket: attempt 3, id 0xd6feae23…
+refused: bad_ticket_proof (the vector says: bad_ticket_proof)
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=safrole-1791771413261
+```
+
+A new epoch, a new ring root; and three tickets whose ids are in order and whose attempts
+are fine, refused anyway: their proofs don't check out.
+
+<details>
+<summary>lasair: ark-vrf too, in <code>rust/bandersnatch-ffi/src/lib.rs</code></summary>
+
+lasair wraps ark-vrf itself, in a small Rust library of its own that OCaml calls. Its
+ring root, comments trimmed:
+
+```rust
+    let mut ring: Vec<AffinePoint> = Vec::with_capacity(ring_size);
+    for i in 0..ring_size {
+        let key_slice = &keys_bytes[i * 32..(i + 1) * 32];
+        match AffinePoint::deserialize_compressed_unchecked(key_slice) {
+            Ok(point) => ring.push(point),
+            Err(_) => {
+                // Use padding point for undecodable keys
+                ring.push(RingProofParams::padding_point());
+            }
+        }
+    }
+```
+
+Step 2, line for line: each key that decodes as a point stays, and any other becomes the
+padding point. The comment it trims explains one subtle choice: `unchecked` decodes a key
+without a stricter test (that the point is in the curve's main subgroup), because ark-vrf
+skips that test too, and a stricter client would turn some keys into padding and make a
+different ring root. No vector has such a key, so the HARDENING list keeps it, for the
+fuzzer.
+
+</details>
+
+## What you have
+
+Safrole with real cryptography: ring roots for each new set of validators, and ticket
+proofs checked against them. All 46 safrole vectors pass. One check is left, on every
+block rather than every ticket: is the block's seal real? [Lesson 8.9](./09-seals.md).
+
+Next: [8.9 Seals](./09-seals.md)

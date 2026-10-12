@@ -127,9 +127,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/program.ts'
 ...
 ✖ test/program.test.ts (173.8ms)
 ...
-ℹ tests 388
+ℹ tests 396
 ℹ suites 0
-ℹ pass 387
+ℹ pass 395
 ℹ fail 1
 ...
 ```
@@ -221,12 +221,12 @@ npm run typecheck
 ✔ a real service's code: metadata, then a standard program that ends it exactly (12.7ms)
 ✔ its PVM blob: 39,849 instructions, and all 1,601 jumps land on one (22.6ms)
 ...
-ℹ tests 390
+ℹ tests 398
 ℹ suites 0
-ℹ pass 390
+ℹ pass 398
 ℹ fail 0
 ...
-reported 390 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736314079
+reported 398 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736314079
 ...
 ```
 

@@ -141,9 +141,9 @@ npm test
 ✖ stf/assurances/full/assurers_not_sorted_or_unique-1.json: accepted or refused, as the vector says (10.7ms)
 ✖ stf/assurances/full/assurers_not_sorted_or_unique-2.json: accepted or refused, as the vector says (10.0ms)
 ...
-ℹ tests 185
+ℹ tests 193
 ℹ suites 0
-ℹ pass 172
+ℹ pass 180
 ℹ fail 13
 ...
 test at test/assurances.test.ts:104:1
@@ -215,12 +215,12 @@ npm run typecheck
 ...
 ✔ an assurance for a core with nothing on it is refused (0.3ms)
 ...
-ℹ tests 185
+ℹ tests 193
 ℹ suites 0
-ℹ pass 185
+ℹ pass 193
 ℹ fail 0
 ...
-reported 185 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733612505
+reported 193 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733612505
 ...
 ```
 

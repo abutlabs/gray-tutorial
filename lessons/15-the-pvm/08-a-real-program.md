@@ -137,9 +137,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/standard.ts
 ...
 ✖ test/standard.test.ts (186.7ms)
 ...
-ℹ tests 420
+ℹ tests 428
 ℹ suites 0
-ℹ pass 419
+ℹ pass 427
 ℹ fail 1
 ...
 ```
@@ -277,12 +277,12 @@ npm run typecheck
 ✔ ecalli stops the machine to call the host, and stays on the ecalli (0.6ms)
 ✔ a real service starts: the bootstrap service runs until it calls fetch (50.1ms)
 ...
-ℹ tests 423
+ℹ tests 431
 ℹ suites 0
-ℹ pass 423
+ℹ pass 431
 ℹ fail 0
 ...
-reported 423 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736885963
+reported 431 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736885963
 ...
 ```
 

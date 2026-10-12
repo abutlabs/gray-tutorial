@@ -143,9 +143,9 @@ npm test
 ✖ unlikely does nothing but move on (0.1ms)
 ✖ every branch in the GP's tables has a comparison: 16 of them (0.6ms)
 ...
-ℹ tests 414
+ℹ tests 422
 ℹ suites 0
-ℹ pass 408
+ℹ pass 416
 ℹ fail 6
 ...
 test at test/branches.test.ts:20:1
@@ -266,12 +266,12 @@ npm run typecheck
 ...
 ✔ the reported packages: each one's hash and exports root, sorted by hash (203.9ms)
 ...
-ℹ tests 414
+ℹ tests 422
 ℹ suites 0
-ℹ pass 414
+ℹ pass 422
 ℹ fail 0
 ...
-reported 414 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736644236
+reported 422 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736644236
 ...
 ```
 

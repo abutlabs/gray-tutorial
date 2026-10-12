@@ -15,7 +15,7 @@ const COMMIT = "d3c089c9a1d5352ad353626d7a2db8589f137b2a"; // what TAG pointed t
 const FOLDERS = [
   "lib", "codec", "trie", "shuffle", "erasure", "stf",
   "traces/fallback", "traces/safrole", "traces/storage", "traces/storage_light",
-  "traces/preimages", "traces/preimages_light",
+  "traces/preimages", "traces/preimages_light", "traces/fuzzy", "traces/fuzzy_light",
 ];
 const DIR = join(ROOT, "vectors");
 
