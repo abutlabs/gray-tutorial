@@ -253,7 +253,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 Now the full-size version, `../vectors/stf/assurances/full/some_assurances-1.json`. Its
 cores alternate: 683 of 1023, *available*; 682 of 1023, *still waiting*. The test
 vectors sit exactly on the line, one validator either side, which is precisely where a
-`>=` instead of a `>` would be caught. The *Availability* panel lists every core.
+`>=` instead of a `>` would be caught. The *Availability* panel, on the **4 · Checks**
+dashboard, lists every core.
 
 ![Availability panel](./images/01-availability.png)
 

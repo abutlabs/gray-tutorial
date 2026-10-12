@@ -14,8 +14,9 @@ when any of these holds:
 2. **p timed out**: the block's slot is at least p's `registered_slot` + U, where
    **U = 5** slots. Thirty seconds to gather its assurances, or it's out.
 3. **The validator set changed size**: |κ| ≠ |κ′|. Every pending report goes. The Gray
-   Paper calls it "timed out early": the assurances were counted against the old set,
-   and with a new number of validators the arithmetic no longer means anything.
+   Paper only says such reports "can be viewed as having timed out early". A likely
+   reason: each report's data was cut into one piece per validator ([lesson 3.3](../03-work-and-reports/03-a-work-report.md)), and a
+   set of another size no longer matches its pieces.
 
 Otherwise p stays, and waits another block.
 
@@ -136,8 +137,9 @@ test("a report registered at slot 7 may wait through slot 11, and times out at 1
 });
 ```
 
-The second test pins the timeout's edge: a report registered at slot 7 is still welcome
-at slot 11 (11 < 12), and gone at 12. The vector `no_assurances_with_stale_report-1`
+The second test pins the timeout's edge: a report registered at slot 7 still holds its
+core at slot 11 (11 < 12), and lets it go at 12, though that block's assurances can still
+make it available. The vector `no_assurances_with_stale_report-1`
 has exactly that case at tiny size. `{ ...pending, registered_slot: 7 }` copies a real
 pending report with one field changed.
 
@@ -291,7 +293,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 Two reports, nobody assuring either, and two different fates: one has waited its five
 slots, the other has only waited one. Try
 `val_set_size_change_clears_pending_reports-1.json`, where κ goes from 6 validators to
-3 and the waiting report is swept away. The *Releases* panel shows each core's fate.
+3 and the waiting report is swept away. The *Releases* panel, on **4 · Checks**, shows each
+core's fate.
 
 ![Releases panel](./images/02-releases.png)
 
