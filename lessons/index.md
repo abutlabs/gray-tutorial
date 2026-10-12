@@ -1,9 +1,8 @@
 # Gray Tutorial
 
-We will build a Typescript JAM client per the [Gray Paper](https://graypaper.com/) specifications, _from scratch_. 
+We will build a TypeScript JAM client per the [Gray Paper](https://graypaper.com/) specifications, _from scratch_.
 
-The Gray Tutorial is designed for learnability and obvservability. By the end of this turtorial, your JAM client will by able to pass the official test vectors, _byte for byte_. Our goal is make onboarding JAM protocol developers more approachable. Therefore we will build a concrete JAM implemenation.
-
+The Gray Tutorial is designed for learnability and observability. By the end of this tutorial, your JAM client will be able to pass the official test vectors, _byte for byte_. Our goal is to make onboarding JAM protocol developers more approachable. Therefore we will build a concrete JAM implementation.
 
 ## Start here
 
@@ -50,10 +49,10 @@ snippets, and has you run it. You assemble the snippets into your own client in
 imports JAM blocks and agrees byte for byte with the official test vectors. From
 [lesson 0.3](./00-start/03-watch-your-client.md) on, it reports every run to Grafana, so you can watch what it does.
 
-## Built next to a OCaml client
+## Built next to an OCaml client
 
-This tutorial is build with reference to [Lasair](https://github.com/abutlabs/lasair), another JAM client. Lasir aims to run as validators on the real network, the machines that
-make and check its blocks, fast enough to keep up. Typescript is not optimized for production blockchain clients. This tutorial aims at understanding instead. 
+This tutorial is built with reference to [Lasair](https://github.com/abutlabs/lasair), another JAM client. Lasair aims to run as validators on the real network, the machines that
+make and check its blocks, fast enough to keep up. TypeScript is not optimized for production blockchain clients. This tutorial aims at understanding instead.
 
 | | lasair | Your Gray Tutorial client |
 | --- | --- | --- |
