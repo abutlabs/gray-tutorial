@@ -478,7 +478,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 ```
 
 Service 0 reads its input, sends the gift (φ₇ = 0 is `OK`), and stops having used exactly
-the vector's gas, the transfer's 80,000 included. The *Host calls* panel shows the call
+the vector's gas, the transfer's 80,000 included. The *Host calls* panel, on **7 · Accumulation and import**,
+shows the call
 and, just before the end, the transfer. Service 1's balance hasn't moved yet: that's
 [lesson 17.4](./04-rounds.md).
 
@@ -496,7 +497,7 @@ and, just before the end, the transfer. Service 1's balance hasn't moved yet: th
 ```
 
 Two checks where yours has one. lasair keeps balances in OCaml's 64-bit `int64`, where
-taking 100 from 30 doesn't give −70: it wraps around to a huge number. So it first asks
+taking 100 from 30 gives −70, which read as unsigned is a huge number. So it first asks
 whether the amount is more than the balance at all. And `unsigned_compare` is [lesson 1.2](../01-bytes-and-numbers/02-numbers.md)'s
 trap again: from 2^63 up, an `int64` looks negative. A `bigint` has neither problem.
 

@@ -13,8 +13,8 @@ of them about waiting.
 - **Ready queue.** ω. Where reports with dependencies wait: one list for each slot of an
   epoch, used like a ring. *Example:* a report arriving at slot 43 on tiny waits in list
   43 mod 12 = 7.
-- **Accumulated history.** ξ. For each of the last E slots, the set of work-packages that
-  were accumulated in it. *Example:* after slot 44, its newest set holds A and D.
+- **Accumulated history.** ξ. For each of the last E blocks, the set of work-packages that
+  were accumulated in it. *Example:* after the block at slot 44, its newest set holds A and D.
 - **Unlock.** A waiting report is free to go once its last dependency has been accumulated,
   possibly earlier in the very same block. *Example:* A accumulates, so D, waiting for A,
   goes right after it.
@@ -35,13 +35,15 @@ All four are in the [glossary](../glossary.md).
    packages are now done, which may free others; repeat until nothing more is free.
 4. **Accumulate** the reports going now, then the unlocked ones in that order, in one
    round ([lesson 17.1](./01-a-blocks-accumulation.md)).
-5. **Remember.** The history moves on one slot: the oldest set drops off, and a new set
-   with everything just accumulated goes on the end. The queue's list for this slot gets
-   this block's new waiters, and every other list loses whatever is now done. Lists for
+5. **Remember.** The history moves on one block: the oldest set drops off, and a new set
+   with everything just accumulated goes on the end. The queue's list for this slot is
+   replaced by this block's new waiters (what had waited there an epoch is given up), and
+   every other list loses whatever is now done. Lists for
    slots the chain skipped since the last block are emptied: their reports have waited a
    whole epoch, and are given up.
 
-The Gray Paper's names: the history is **ξ** (its union **ξ∪**), the queue **ω**, the new
+The Gray Paper's names: the history is **ξ** (its union, written as ξ with a brace over it,
+is **ξ∪** here), the queue **ω**, the new
 waiters **R^Q**, a report's dependencies **D(r)**. Taking done packages out of a queue is
 **E**, the unlocking loop is **Q**, the hashes of some reports **P**. Everything that goes
 this block is **R\* = R! ⌢ Q(q)**. The queue's list for this block is ω[τ′ mod E].
@@ -418,7 +420,7 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 A comes in, D was waiting for it, both go, nobody's left waiting, and service 1729's two
 digests use exactly the vector's gas. Try the chains:
 `node bin/accumulate.ts ../vectors/stf/accumulate/tiny/enqueue_and_unlock_chain-4.json`.
-The *Accumulate* panel shows each block's line, then its services.
+The *Accumulate* panel, on **7 · Accumulation and import**, shows each block's line, then its services.
 
 ![Accumulate panel](./images/02-accumulate.png)
 

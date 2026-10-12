@@ -9,8 +9,8 @@ services change the same privilege in one round.
 
 ## New words
 
-- **Privilege.** A right that only one service holds at a time. The chain keeps who
-  holds which in χ. *Example:* service 0 is core 0's assigner.
+- **Privilege.** A right held by one service (or, for always-accumulate, by a list of
+  them). The chain keeps who holds which in χ. *Example:* service 0 is core 0's assigner.
 - **Assigner.** For each core, the service that may set the core's authorizer queue, and
   hand that right to another service. *Example:* service 0 hands core 0 to service 1.
 - **Authorizer queue.** For each core, 80 authorizer hashes, one of which joins the core's
@@ -29,7 +29,8 @@ All three are in the [glossary](../glossary.md).
 - the *always-accumulate* services, χ_Z, accumulate every block ([lesson 17.1](./01-a-blocks-accumulation.md)'s `free`).
 
 The test vectors name the first four after the host call each one allows: `bless`,
-`assign`, `designate` and `register`. Your client uses the same names.
+`assign`, `designate`, and `register` (though the registrar's call is `new`). Your client
+uses the same names.
 
 `assign` is host call 16 (Appendix B.7, Ω_A). In plain steps:
 
@@ -42,8 +43,8 @@ The test vectors name the first four after the host call each one allows: `bless
 
 And the checkpoint rule holds again: the privileges and the queues are part of what a run
 can change, so a failure undoes the changes made since its last checkpoint, and a
-checkpoint keeps them. In the Gray Paper they sit in ψ, the state a run works on, next to
-the accounts: queues ϕ, privileges χ, in both X and Y.
+checkpoint keeps them. In the Gray Paper they sit in the run's partial state (e, in both X
+and Y), next to the accounts: queues ϕ, privileges χ.
 
 ## The tests
 
@@ -592,7 +593,7 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 
 The first service holds core 0 and hands it over: φ₇ = 0, `OK`. The second isn't core
 0's assigner, so it gets `HUH`, and its code, written to expect that, carries on. Both
-runs in the *Host calls* panel, answers by name.
+runs in the *Host calls* panel, on **7 · Accumulation and import**, answers by name.
 
 ![Host calls panel](./images/05-host-calls.png)
 

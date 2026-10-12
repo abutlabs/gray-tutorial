@@ -676,7 +676,7 @@ segment-root lookups name. *Example:* report D depends on package A.
 epoch, used as a ring. *Example:* a report arriving at slot 43 on tiny waits in list 7.
 ([17.2](./17-accumulation/02-waiting-reports.md))
 
-**Accumulated history.** ξ. For each of the last E slots, the set of work-packages
+**Accumulated history.** ξ. For each of the last E blocks, the set of work-packages
 accumulated in it; dependencies are checked against it.
 ([17.2](./17-accumulation/02-waiting-reports.md))
 
@@ -697,7 +697,8 @@ the ones its last checkpoint kept. *Example:* two sent, one before the checkpoin
 ([17.3](./17-accumulation/03-sending-a-transfer.md))
 
 **Δ+ (accumulating in rounds).** The loop over a block's rounds: one round, then another
-for the transfers it sent, until a round sends none. *Example:* a block with one transfer
+for the transfers it sent, until a round sends none (or, with the gas budget, until no
+reports are left either). *Example:* a block with one transfer
 takes two rounds. ([17.4](./17-accumulation/04-rounds.md))
 
 **Delivery.** A transfer arriving, in the round after it was sent: its money goes into the
@@ -714,7 +715,7 @@ service two operands. ([16.7](./16-host-calls/07-a-services-inputs.md))
 operand starts with a 0. *Example:* service 1's only input in round 2.
 ([17.4](./17-accumulation/04-rounds.md))
 
-**Privilege.** χ. A right only one service holds at a time: the manager (χ_M, may change
+**Privilege.** χ. A right held by one service (always-accumulate, by a list): the manager (χ_M, may change
 the others), an assigner for each core (χ_A), the delegator (χ_V, picks the next
 validators), the registrar (χ_R, creates services with small ids), and the
 always-accumulate services (χ_Z). *Example:* service 0 is core 0's assigner.

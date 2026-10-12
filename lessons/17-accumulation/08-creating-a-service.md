@@ -2,9 +2,9 @@
 
 Services can make services. A running service calls `new` with the hash of the new one's
 code, pays its starting balance, and gets back the new service's id. This lesson builds
-the call, including the one place where JAM picks a number nobody could have guessed. Four
-more official vectors pass whole, among them one that ejects a service and then creates it
-again.
+the call, including one place where JAM picks a number nobody could have guessed. Four
+more official vectors pass whole, among them three that eject a service and then create
+one at the same id.
 
 ## New words
 
@@ -42,10 +42,14 @@ knows η′₀ until the block, so nobody can aim for an id.
 
 One honest note: no official vector creates a service at a public id, so that formula is
 checked against the Gray Paper and by hand, not by a vector. It's in
-[HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md), to confirm against the block-import traces.
+[HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md), to confirm against the conformance fuzzer (no block-import trace
+creates a service).
 
 **The round** already handles new accounts: [lesson 17.7](./07-ejecting-a-service.md) taught it that an id a run created
-joins the accounts after the round.
+joins the accounts after the round. One case surprises: a run that ejects service 2 and
+then creates a service at id 2 leaves the *old* service 2 in place. The id was there before
+the round and is there after, so to the Gray Paper's merge it is neither created (n) nor
+removed (m). Three of the new vectors do exactly that, and end with the old service 2.
 
 ## The tests
 
@@ -411,7 +415,8 @@ handed out.
 ## What you have
 
 Services that make services: paid for, numbered so nobody can aim, and the registrar's
-small ids. Fifty-four official vectors pass as whole blocks, and [Part 17](./index.md) is done.
+small ids. Fifty-four official vectors pass as whole blocks, and [Part 17](./index.md)'s lessons so far
+are done; the other privileged calls and the block's gas budget are still to be written.
 The chain also keeps score of who did all this work: [Part 18](../18-statistics/index.md) builds the
 statistics, for validators, cores and services.
 

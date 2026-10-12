@@ -38,7 +38,8 @@ might still need.
 **The round** needs one more rule. Each run works on its own copy of the accounts, so a
 run that ejected d left a copy without it. After the round, any account some run removed
 is removed, whatever the other runs' copies say: the Gray Paper's **(d ∪ n) \ m**, where
-m is every account some run removed. (n is the accounts runs created: [lesson 17.8](./08-creating-a-service.md).)
+m is every account some run removed. (n is each run's own account as it left it, plus any
+it created: [lesson 17.8](./08-creating-a-service.md).)
 
 ## The tests
 
@@ -388,7 +389,8 @@ the test vector says: 151715
 reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791740212297
 ```
 
-Service 0 ejects service 2 (`OK`), using exactly the vector's gas. The *Host calls* panel
+Service 0 ejects service 2 (`OK`), using exactly the vector's gas. The *Host calls* panel,
+on **7 · Accumulation and import**,
 has the call by name, and `node bin/accumulate.ts` on the same vector shows the block.
 
 ![Host calls panel](./images/07-host-calls.png)

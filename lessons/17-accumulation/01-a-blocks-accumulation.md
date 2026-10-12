@@ -44,8 +44,9 @@ in step 3 is the parallel accumulation function **Δ\***, and one service's part
 [lesson 16.7](../16-host-calls/07-a-services-inputs.md)'s work, is **Δ₁**. The statistics are **S(s) = (N(s), T(s), G(s))**, and the
 last-accumulation slot is an account's **a**, set to **τ′**.
 
-Left for later in this part: the queue ([lesson 17.2](./02-waiting-reports.md)); transfers ([lesson 17.3](./03-sending-a-transfer.md)); a gas budget
-for the whole block, which may split it into several rounds ([lesson 17.4](./04-rounds.md)); privileges
+Left for later in this part: the queue ([lesson 17.2](./02-waiting-reports.md)); transfers, and the rounds they make ([lessons 17.3](./03-sending-a-transfer.md)
+and [17.4](./04-rounds.md)); a gas budget for the whole block, which may split it into more rounds (still to be
+written); privileges
 (lessons [17.5](./05-privileges.md) and [17.6](./06-who-wins.md)); and services leaving and arriving (lessons [17.7](./07-ejecting-a-service.md) and
 [17.8](./08-creating-a-service.md)).
 
@@ -317,7 +318,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 Two services in one round, each writing its own key, each using exactly the vector's gas.
 Try `node bin/accumulate.ts ../vectors/stf/accumulate/tiny/same_code_different_services-1.json`:
 service 1730 has a digest but no code of its own, so it shows 1 digest and 0 gas, just as
-the vector does. The *Accumulate* panel lines the services up.
+the vector does. The *Accumulate* panel, on the **7 · Accumulation and import** dashboard (where all of
+[Part 17](./index.md)'s panels are), lines the services up.
 
 ![Accumulate panel](./images/01-accumulate.png)
 
@@ -334,7 +336,7 @@ the vector does. The *Accumulate* panel lines the services up.
 
 The same round, with the parts this lesson leaves for later: transfers' destinations join
 the services that run, new services join the accounts (n), removed ones leave them (m), and
-provided preimages land at the end (P). "Every accone reads the round's pre-state d" is
+provided preimages land at the end (the Gray Paper's I; lasair calls it P). "Every accone reads the round's pre-state d" is
 your fresh copy for each service.
 
 </details>

@@ -8,8 +8,9 @@ its official vector, receiver and all.
 ## New words
 
 - **Δ+ (accumulating in rounds).** The Gray Paper's loop over rounds: one round, then
-  another for the transfers it sent, and so on until a round sends none. *Example:* the
-  gift's block takes two rounds.
+  another for the transfers it sent, and so on until a round sends none (with the gas
+  budget, still to be written, reports left over make rounds too). *Example:* the gift's
+  block takes two rounds.
 - **Delivery.** What happens to a transfer in the round after it was sent: its money goes
   into the receiver's balance, and the transfer itself becomes one of the receiver's
   inputs. *Example:* service 1's balance grows by 100, then its code reads "gift".
@@ -49,8 +50,9 @@ The Gray Paper's names: the loop is *Δ+*, one round *Δ\**, one service in a ro
 > the rest wait for a later round. This lesson takes every report in round 1. One
 > official vector needs the budget: in `recreate_service_ejected_in_earlier_round-1`, the
 > two reports ask for 22,000,000 gas, tiny's budget is 20,000,000, so the second report
-> waits for round 2. That vector isn't among this part's tests; the [hardening
-> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the budget.
+> waits for round 2. That vector isn't among this part's tests; the budget is still to be
+> written (it's on the start page's list, and the [hardening
+> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) notes the vector).
 
 ## The tests
 
@@ -432,7 +434,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 ```
 
 Two services, two rounds: service 0 with its one digest in round 1, service 1 with its
-one transfer in round 2. Each line next to the vector's, in the *Accumulate* panel.
+one transfer in round 2. Each line next to the vector's, in the *Accumulate* panel on
+**7 · Accumulation and import**.
 
 ![Accumulate panel](./images/04-accumulate.png)
 
