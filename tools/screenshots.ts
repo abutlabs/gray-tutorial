@@ -88,6 +88,9 @@ const SHOTS: Shot[] = [
   { lesson: "18.1", panel: "Validator statistics" },
   { lesson: "18.2", panel: "Core and service activity" },
   { lesson: "19.1", panel: "Block import plan" },
+  { lesson: "19.2", panel: "Whole state" },
+  { lesson: "19.4", panel: "Block import" },
+  { lesson: "19.6", panel: "Block import" },
 ];
 
 const LOKI = "http://127.0.0.1:3100";

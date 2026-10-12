@@ -217,6 +217,11 @@ make and check its blocks, fast enough to keep up. TypeScript is not optimized f
 **[Part 19 · Block import](./19-block-import/index.md)**
 
 - [19.1 The order of things](./19-block-import/01-the-order-of-things.md)
+- [19.2 The whole state](./19-block-import/02-the-whole-state.md)
+- [19.3 Accounts from the state](./19-block-import/03-accounts-from-the-state.md)
+- [19.4 Importing a block](./19-block-import/04-importing-a-block.md)
+- [19.5 Work on the chain](./19-block-import/05-work-on-the-chain.md)
+- [19.6 Blocks to refuse](./19-block-import/06-blocks-to-refuse.md)
 
 ## Still to be written
 
@@ -225,5 +230,4 @@ will be written. Each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 19 · Block import (rest) | the whole state, the header's checks, real blocks through every step: the block-import traces | §4, §5, App. D |
 | 20 · Facing the fuzzer | the conformance fuzzer's protocol, a target, test sessions from the traces | |

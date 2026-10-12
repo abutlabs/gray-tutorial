@@ -216,6 +216,10 @@ state*, lists 100 blocks.
 speed, so a library written in Rust can run in Node. *Example:* the Bandersnatch library.
 ([8.8](./08-safrole/08-the-ring-root.md))
 
+**Helper function.** A small function that hides one detail, so the code calling it doesn't
+have to know it. *Example:* `storageValue` knows where an account keeps a value.
+([19.3](./19-block-import/03-accounts-from-the-state.md))
+
 ## Bytes and encoding
 
 **Byte (octet).** Eight bits: a number from 0 to 255. The GP says *octet*, and writes a
@@ -820,6 +824,31 @@ it accumulated, the transfers it received, the gas it used. *Example:* (1, 0, 29
 **Last-accumulation slot.** The slot in which a service last accumulated, kept in its
 account. *Example:* 43, after accumulating in slot 43.
 ([17.1](./17-accumulation/01-a-blocks-accumulation.md))
+
+**Account entry.** One thing a service keeps in the state under its own key: a storage
+value, a preimage, or a request's history. *Example:* 154 entries for service 0 of the
+`storage` trace before block 50. ([19.2](./19-block-import/02-the-whole-state.md))
+
+**Dictionary encoding.** How the state writes a map: how many pairs, then each pair, sorted
+by key. *Example:* χ_Z, each always-accumulate service's id and its gas.
+([19.2](./19-block-import/02-the-whole-state.md))
+
+**Header checks.** What a header must pass before anything else: its parent is the newest
+block remembered, its state root the state's, its slot later, its extrinsic hash right.
+*Example:* another block's child is refused with `bad_parent`. ([19.4](./19-block-import/04-importing-a-block.md))
+
+**Chained import.** Importing a trace block after block, each into the state your client
+made from the one before. *Example:* `bin/import.ts`. ([19.4](./19-block-import/04-importing-a-block.md))
+
+**β†.** The recent history halfway through a block: the newest block it remembers has its
+state root now, from this block's header. *Example:* reports are checked against β†.
+([19.5](./19-block-import/05-work-on-the-chain.md))
+
+**Canonical order.** The one order a set is written in, so every client writes the same
+bytes: sorted. *Example:* each slot's packages in ξ. ([19.5](./19-block-import/05-work-on-the-chain.md))
+
+**Fuzzy trace.** A block-import trace made with a service doing random work, with some
+blocks meant to be refused. *Example:* `fuzzy` blocks 37 to 39. ([19.6](./19-block-import/06-blocks-to-refuse.md))
 
 ## Statistics
 

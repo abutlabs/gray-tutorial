@@ -305,16 +305,6 @@ built it. The *Block import plan* panel keeps it.
 
 ![Block import plan panel](./images/01-block-import-plan.png)
 
-## What's next
-
-The next lessons of this part run real blocks through these waves and compare the whole
-state after each one with the official block-import traces. Two steps can't run on every
-real block yet, both for want of Bandersnatch. η′ mixes in randomness that only the
-block's header can give, the output of its entropy signature H_V, a Bandersnatch VRF
-signature ([lesson 8.1](../08-safrole/01-stirring-the-entropy.md) took that output
-ready-made from the test vectors). And γ′ can't take a block that brings tickets, or make
-the ring root γ′_Z at a new epoch ([lesson 8.5](../08-safrole/05-one-step-of-safrole.md)). That's the cryptography [Part 8](../08-safrole/index.md) left for later.
-
 <details>
 <summary>lasair: one long function, in <code>conformance/trace_runner.ml</code></summary>
 
@@ -334,13 +324,16 @@ and a few lines later:
 ```
 
 One order, no waves running side by side: simpler, and fast enough. Note
-`header.entropy_source`: that's H_V, the header's VRF signature, the piece your client
-still needs for η′.
+`header.entropy_source`: that's H_V, the header's VRF signature, whose output [lesson
+8.6](../08-safrole/06-the-vrf-output.md) reads.
 
 </details>
 
 ## What you have
 
 The plan of a block import: every step the Gray Paper lists, what it's made from, the
-order to run them in, and where you built each one. Running real blocks through it is the
-next step for this part, as *What's next* above describes.
+order to run them in, and where you built each one. To run real blocks through it, the
+client first needs the whole state at once, read from a real state and written back:
+[lesson 19.2](./02-the-whole-state.md).
+
+Next: [19.2 The whole state](./02-the-whole-state.md)

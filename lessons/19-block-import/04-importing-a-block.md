@@ -1,0 +1,631 @@
+# Importing a block
+
+Everything is in place: every step of a block, the whole state, and accounts the host calls
+can work on. This lesson puts them together into Υ: give it the state before a block and
+the block, and it gives back the state after, or the reason it refuses the block. Then the
+official traces check it, as hard as anything can be checked: the state root after every
+block must be the trace's, every byte of the state accounted for. By the end of this
+lesson the `fallback` and `safrole` traces import, all 200 blocks, every root right.
+
+## New words
+
+- **Header checks.** The checks a header must pass before anything else runs: its parent is
+  the newest block the state remembers, its state root is the state's, its slot comes later,
+  and its extrinsic hash is its extrinsic's. *Example:* a block whose parent is some other
+  block is refused with `bad_parent`.
+- **Chained import.** Importing a trace block after block, each into the state your client
+  made from the one before, from the first state on. *Example:* `bin/import.ts`.
+
+Both are in the [glossary](../glossary.md).
+
+## What the Gray Paper says
+
+§4: Υ(σ, B) = σ′, a block is valid only if every rule in every part holds, and the state
+after it is every step's result, in [lesson 19.1](./01-the-order-of-things.md)'s waves. In plain steps, as your client runs
+them:
+
+1. **The header** (§5): its parent and its state root, its slot after the state's τ, its
+   extrinsic hash ([lesson 5.2](../05-hashing-and-signatures/02-the-extrinsic-hash.md)).
+2. **Disputes** ([Part 10](../10-disputes/index.md)): ψ′, and ρ† without the reports judged bad or wonky.
+3. **Safrole** ([Part 8](../08-safrole/index.md)): η′, the validators, γ′; the header's three marks must be the ones
+   Safrole makes, and its seal must check out.
+4. **Assurances** ([Part 11](../11-assurances/index.md)): 𝐑, the reports now available, and ρ‡.
+5. **Guarantees** ([Part 12](../12-guarantees/index.md)): checked, then on their cores: ρ′.
+6. **Accumulation** ([Part 17](../17-accumulation/index.md)): the accounts, χ′, ι′, ϕ′, ω′, ξ′, θ′, and what it did.
+7. **The rest**: β′ ([Part 9](../09-recent-history/index.md)), α′ ([Part 13](../13-authorization/index.md)), π′ ([Part 18](../18-statistics/index.md)), and last δ′, the preimages provided
+   ([lesson 14.1](../14-services/01-providing-preimages.md)).
+
+If any step refuses the block, the block is refused whole, and the state stays as it was
+([lesson 11.3](../11-assurances/03-bad-assurances.md)'s rejected block). The traces name no errors, so the reasons are the vectors' names
+where a vector has one, and your client's own otherwise.
+
+## The tests
+
+Each trace step has the state before a block, the block, and the state after:
+
+**Add to** `test/import.test.ts`
+
+```ts
+import { importBlock } from "../src/import.ts";
+import type { Refused } from "../src/import.ts";
+import { Block } from "../src/block.ts";
+import type { Header } from "../src/block.ts";
+import { fromHex, toHex } from "../src/bytes.ts";
+import { TINY } from "../src/config.ts";
+import type { KeyValue } from "../src/trie.ts";
+import { stateRoot } from "../src/trie.ts";
+import { traceState, vectorJson } from "./vectors.ts";
+
+/** Block n of a trace, imported into the state before it: the state root it ends with (or
+ * why it was refused), and the root the trace says comes next. */
+function importTrace(family: string, n: number) {
+  const name = `traces/${family}/${String(n).padStart(8, "0")}.json`;
+  const trace = vectorJson(name) as TraceStep;
+  const before: KeyValue[] = trace.pre_state.keyvals.map((e) => ({
+    key: fromHex(e.key),
+    value: fromHex(e.value),
+  }));
+  const after: KeyValue[] | Refused = importBlock(TINY, before, Block(TINY).fromJson(trace.block));
+  const root: string = "error" in after ? after.error : toHex(stateRoot(after));
+  const refused = trace.post_state.state_root === trace.pre_state.state_root;
+  return { root, expected: refused ? "refused" : trace.post_state.state_root, after };
+}
+
+/** One step of a block-import trace: the state before, the block, the state after. */
+type TraceStep = {
+  pre_state: { state_root: string; keyvals: { key: string; value: string }[] };
+  block: unknown;
+  post_state: { state_root: string };
+};
+
+test("Υ on every block of the fallback and safrole traces: each state root, as the trace's", () => {
+  for (const family of ["fallback", "safrole"]) {
+    for (let n = 1; n <= 100; n++) {
+      const { root, expected } = importTrace(family, n);
+      assert.equal(root, expected, `${family} block ${n}`);
+    }
+  }
+});
+
+test("a block that isn't the next one is refused, and the state stays as it was", () => {
+  const { entries, block } = traceState("fallback", 10);
+  const next: Block = Block(TINY).fromJson(block);
+  const stale: Header = { ...next.header, parent: new Uint8Array(32) }; // not block 9
+  const result: KeyValue[] | Refused = importBlock(TINY, entries, { ...next, header: stale });
+  assert.deepEqual(result, { error: "bad_parent" });
+});
+```
+
+`importTrace` imports one block of a trace into the trace's own state before it, and
+returns the root your client ends with next to the trace's. A block the trace refuses
+leaves the root as it was, so `expected` says "refused" then.
+
+And a stub that refuses everything:
+
+**Add to** `src/import.ts`
+
+```ts
+import type { Config } from "./config.ts";
+import type { Block } from "./block.ts";
+import type { KeyValue } from "./trie.ts";
+
+/** A block refused: the rule it breaks, as the test vectors name it. */
+export type Refused = { error: string };
+
+/** Υ, for now: every block refused. */
+export function importBlock(
+  config: Config,
+  entries: KeyValue[],
+  block: Block,
+): KeyValue[] | Refused {
+  return { error: "not written yet" };
+}
+```
+
+**Run, expect it to fail**
+
+```sh
+npm test
+```
+
+```text
+...
+✖ Υ on every block of the fallback and safrole traces: each state root, as the trace's (1.746875ms)
+✖ a block that isn't the next one is refused, and the state stays as it was (1.300791ms)
+...
+ℹ tests 645
+ℹ suites 0
+ℹ pass 643
+ℹ fail 2
+...
+  AssertionError [ERR_ASSERTION]: fallback block 1
+  + actual - expected
+
+  + 'not written yet'
+  - '0x48dc323d05aa152a53fb4f38b690d8198994f9fdb86bf1a6300b306cc79f86f9'
+...
+```
+
+## The code
+
+Υ itself, short, because each step is a function of its own:
+
+**Replace in** `src/import.ts`
+
+```ts
+import { readState, writeState } from "./whole-state.ts";
+import { accumulateBlock } from "./accumulate.ts";
+import { providePreimages } from "./services.ts";
+
+/** A block refused: the rule it breaks, as the test vectors name it. */
+export type Refused = { error: string };
+
+/**
+ * Υ (GP §4): imports a block into a state, given as its entries. The state after the
+ * block, as entries; or why the block is refused, and then the state stays as it was.
+ * The steps are the earlier parts', each after everything it needs (lesson 19.1's waves).
+ */
+export function importBlock(
+  config: Config,
+  entries: KeyValue[],
+  block: Block,
+): KeyValue[] | Refused {
+  const state = readState(config, entries);
+  const headerProblem = checkHeader(config, state, entries, block);
+  if (headerProblem) return { error: headerProblem };
+  const judged = judgeDisputes(config, state, block); // ψ′, ρ†
+  if (refused(judged)) return judged;
+  const sealed = runSafrole(config, state, block, judged.judgements.offenders); // γ′, η′, κ′...
+  if (refused(sealed)) return sealed;
+  const assured = takeAssurances(state, block, judged.cores, sealed.validators.active); // 𝐑, ρ‡
+  if (refused(assured)) return assured;
+  const offenders = judged.judgements.offenders; // ψ′_O
+  const guaranteed = takeGuarantees(config, state, block, assured.cores, sealed, offenders); // ρ′
+  if (refused(guaranteed)) return guaranteed;
+  const slot = block.header.slot; // τ′
+  const accumulation = accumulateBlock(
+    config, accumulationState(state, sealed.entropy[0]), slot, assured.reports,
+  );
+  const after = nextState(config, state, block, {
+    judgements: judged.judgements, sealed, assured, guaranteed, accumulation,
+  });
+  return providePreimages(writeState(config, after), block.extrinsic.preimages, slot); // δ′
+}
+```
+
+Each step returns either what it made or `{ error }`, and `refused` tells which, so Υ
+stops at the first refusal. The header comes first, since nothing else is worth checking
+for a block that isn't the next one:
+
+**Add to** `src/import.ts`
+
+```ts
+import { toHex } from "./bytes.ts";
+import { extrinsicHash } from "./block.ts";
+import { stateRoot } from "./trie.ts";
+import type { State } from "./whole-state.ts";
+
+/** Whether a step refused the block. */
+const refused = (x: object): x is Refused => "error" in x;
+
+/**
+ * The header's own checks (GP §5): its parent is the newest block the state remembers, the
+ * state root before it is the state's, its slot is after the parent's and its extrinsic
+ * hash is its extrinsic's.
+ */
+export function checkHeader(
+  config: Config,
+  state: State,
+  entries: KeyValue[],
+  block: Block,
+): string | null {
+  const { header, extrinsic } = block;
+  const parent = state[3].history.at(-1);
+  if (parent && toHex(parent.header_hash) !== toHex(header.parent)) return "bad_parent";
+  if (toHex(stateRoot(entries)) !== toHex(header.parent_state_root)) return "bad_parent_state_root";
+  if (header.slot <= state[11]) return "bad_slot";
+  if (toHex(extrinsicHash(config, extrinsic)) !== toHex(header.extrinsic_hash)) {
+    return "bad_extrinsic_hash";
+  }
+  return null;
+}
+```
+
+Then disputes, Safrole, the assurances and the guarantees, each the earlier part's
+functions in a row:
+
+**Add to** `src/import.ts`
+
+```ts
+import type { Bytes } from "./bytes.ts";
+import { disputesError, judges, outcome, recordVerdicts, recordOffenders, clearJudged, offendersMark } from "./disputes.ts";
+import type { Safrole } from "./safrole.ts";
+import { safroleError, safroleStep, sealError } from "./safrole.ts";
+import { vrfOutput } from "./bandersnatch.ts";
+import { encode, fixedBytes, option, seq, seqN } from "./codec/codec.ts";
+import type { Codec } from "./codec/codec.ts";
+import { EpochMark, TicketBody } from "./block.ts";
+import { assuranceError, availableCores, nowAvailable, clearCores } from "./assurances.ts";
+import type { PendingReport } from "./cores.ts";
+import { placeReports } from "./cores.ts";
+import { ValidatorKey } from "./state.ts";
+import { guarantorAssignments, guaranteeError, reportError } from "./guarantors.ts";
+
+/** ψ′ and ρ† (Part 10): the block's disputes judged, and the cores without the reports
+ * found bad or wonky. */
+function judgeDisputes(config: Config, state: State, block: Block) {
+  const disputes = block.extrinsic.disputes;
+  const [time, active, previous] = [state[11], state[8], state[9]];
+  const error = disputesError(config, disputes, state[5], time, active, previous);
+  if (error) return { error };
+  const judged = disputes.verdicts.map((v) => {
+    const voters = judges(config, time, v.age, active, previous).length;
+    return { target: v.target, outcome: outcome(v, voters) };
+  });
+  const judgements = recordOffenders(recordVerdicts(state[5], judged), disputes); // ψ′
+  return { judgements, cores: clearJudged(state[10], judged) };
+}
+
+/** Safrole (Part 8): η′, the validators and γ′ after the block, once its tickets, its
+ * header's marks and its seal all check out. */
+function runSafrole(config: Config, state: State, block: Block, offenders: Bytes[]) {
+  const { header, extrinsic } = block;
+  const before: Safrole = {
+    time: state[11],
+    entropy: state[6],
+    validators: {
+      staging: state[7], pending: state[4].pending, active: state[8], previous: state[9],
+    },
+    accumulator: state[4].accumulator,
+    sealers: state[4].sealers,
+    ringRoot: state[4].ring_root,
+  };
+  const error = safroleError(config, before, header.slot, extrinsic.tickets, offenders);
+  if (error) return { error };
+  const output = vrfOutput(header.entropy_source);
+  const step = safroleStep(config, before, header.slot, output, offenders, extrinsic.tickets);
+  if (!sameValue(option(EpochMark), header.epoch_mark, step.epochMark)) {
+    return { error: "bad_epoch_mark" };
+  }
+  const marks = option(seqN(TicketBody, config.epoch_length));
+  if (!sameValue(marks, header.tickets_mark, step.ticketsMark)) {
+    return { error: "bad_tickets_mark" };
+  }
+  const convicted = offendersMark(extrinsic.disputes);
+  if (!sameValue(seq(fixedBytes(32)), header.offenders_mark, convicted)) {
+    return { error: "bad_offenders_mark" };
+  }
+  const after = step.after;
+  const author = after.validators.active[header.author_index]?.bandersnatch;
+  if (!author) return { error: "bad_validator_index" };
+  const sealProblem = sealError(config, header, author, after.sealers, after.entropy[3]);
+  return sealProblem ? { error: sealProblem } : after;
+}
+
+/** Whether two values encode to the same bytes: how a header's marks are compared. */
+function sameValue<T>(codec: Codec<T>, x: T, y: T): boolean {
+  return toHex(encode(codec, x)) === toHex(encode(codec, y));
+}
+
+/** The assurances (Part 11): the reports that became available, 𝐑, and the cores
+ * without them, or the ones that timed out, ρ‡. */
+function takeAssurances(
+  state: State,
+  block: Block,
+  cores: (PendingReport | null)[], // ρ†
+  validators: ValidatorKey[], // κ′
+) {
+  const assurances = block.extrinsic.assurances;
+  const keys = state[8].map((k) => k.ed25519);
+  const error = assuranceError(assurances, block.header.parent, keys, cores);
+  if (error) return { error };
+  const available = availableCores(cores, assurances, state[8].length);
+  const reports = nowAvailable(cores, assurances, state[8].length); // 𝐑
+  const resized = state[8].length !== validators.length;
+  return { reports, cores: clearCores(cores, available, block.header.slot, resized) };
+}
+
+/** The guarantees (Part 12): checked against the cores, the guarantors and the recent
+ * history, then their reports take their cores, ρ′. */
+function takeGuarantees(
+  config: Config,
+  state: State,
+  block: Block,
+  cores: (PendingReport | null)[], // ρ‡
+  sealed: Safrole, // for η′, κ′ and λ′
+  offenders: Bytes[], // ψ′_O
+) {
+  const { guarantees } = block.extrinsic;
+  const { slot } = block.header;
+  const { entropy, validators } = sealed;
+  const assignments = guarantorAssignments(
+    config, slot, entropy, validators.active, validators.previous, offenders,
+  );
+  const count = validators.active.length;
+  const error = guaranteeError(config, guarantees, slot, assignments, cores, state[1], count);
+  if (error) return { error };
+  const reports = guarantees.map((g) => g.report); // 𝐈
+  const problem = reportError(reports, state[3].history, pipeline(state), services(state));
+  if (problem) return { error: problem };
+  return { cores: placeReports(cores, guarantees, slot), reports };
+}
+```
+
+```ts
+  if (!sameValue(option(EpochMark), header.epoch_mark, step.epochMark)) {
+```
+
+Safrole makes the marks this block's header must carry ([lesson 8.5](../08-safrole/05-one-step-of-safrole.md)), and the header carries
+its own. They must be the same, byte for byte, which `sameValue` compares: two `null` values
+encode the same, and so do two equal marks.
+
+The report checks need two things the test vectors used to hand over: the packages
+already on their way, and what each service needs:
+
+**Add to** `src/import.ts`
+
+```ts
+import type { ServiceNeeds } from "./guarantors.ts";
+
+/** The packages already on their way through (GP §11): accumulated recently, waiting in
+ * the ready queue, or pending on a core. None of them may be reported again. */
+function pipeline(state: State): Set<string> {
+  const accumulated = state[15].flat().map(toHex);
+  const waiting = state[14].flat().map((w) => toHex(w.report.package_spec.hash));
+  const pending = state[10].flatMap((p) => (p ? [p.guarantee.report.package_spec.hash] : []));
+  return new Set([...accumulated, ...waiting, ...pending.map(toHex)]);
+}
+
+/** What the guarantee checks need of each service: its code hash and least item gas. */
+function services(state: State): Map<number, ServiceNeeds> {
+  return new Map([...state.accounts].map(([s, a]) => [s, a.info]));
+}
+```
+
+Then accumulation's state, made from the whole state and η′₀, and everything after it:
+
+**Add to** `src/import.ts`
+
+```ts
+import { fromHex } from "./bytes.ts";
+import { decode } from "./codec/codec.ts";
+import { headerHash } from "./block.ts";
+import type { AccumulationState } from "./accumulate.ts";
+import { outputsRoot } from "./accumulate.ts";
+import { recordBlock } from "./history.ts";
+import { reportedPackages } from "./cores.ts";
+import { nextPools, usedAuthorizers } from "./authorization.ts";
+import { updateValidatorStats, coreStats, serviceStats } from "./statistics.ts";
+import type { PastJudgements } from "./disputes.ts";
+import type { WorkReport } from "./work.ts";
+
+/** The state accumulation reads (lesson 17.2), from the whole state, and η′₀. */
+function accumulationState(state: State, entropy: Bytes): AccumulationState {
+  const privileges = state[12];
+  return {
+    slot: state[11],
+    accounts: state.accounts,
+    free: new Map(privileges.always_acc.map((x) => [x.id, x.gas])),
+    privileges: {
+      bless: privileges.bless,
+      assign: privileges.assign,
+      designate: privileges.designate,
+      register: privileges.register,
+    },
+    entropy,
+    ready: state[14].map((slot) =>
+      slot.map((w) => ({ report: w.report, dependencies: new Set(w.dependencies.map(toHex)) })),
+    ),
+    accumulated: state[15].map((packages) => new Set(packages.map(toHex))),
+  };
+}
+
+/** What the steps made, for the state after the block. */
+type Made = {
+  judgements: PastJudgements; // ψ′
+  sealed: Safrole;
+  assured: { reports: WorkReport[] };
+  guaranteed: { cores: (PendingReport | null)[]; reports: WorkReport[] };
+  accumulation: ReturnType<typeof accumulateBlock>;
+};
+
+/** σ′ but for δ′'s preimages: every component after the block, from what the steps made,
+ * and β′, α′ and π′, which come last. */
+function nextState(config: Config, state: State, block: Block, made: Made): State {
+  const { header, extrinsic } = block;
+  const { sealed, accumulation } = made;
+  const after = accumulation.state;
+  const recent = recordBlock(state[3], {
+    header_hash: headerHash(config, header),
+    parent_state_root: header.parent_state_root,
+    accumulate_root: outputsRoot(accumulation.outputs),
+    slot: header.slot,
+    work_packages: reportedPackages(extrinsic.guarantees),
+  }); // β′
+  const queues = state[2].map((q, c) => accumulation.queues.get(c) ?? q); // ϕ′
+  const used = usedAuthorizers(extrinsic.guarantees);
+  const statsBefore = { slot: state[11], current: state[13].vals_curr, last: state[13].vals_last };
+  const validatorStats = updateValidatorStats(
+    config, statsBefore, header.slot, header.author_index, extrinsic, sealed.validators.active,
+  );
+  const incoming = made.guaranteed.reports;
+  const activity = serviceStats(incoming, extrinsic.preimages, accumulation.statistics);
+  const byId = <T>(m: Map<number, T>) => [...m].sort(([x], [y]) => x - y);
+  const staging = accumulation.staging?.map((k) => decode(ValidatorKey, k)); // ι′, if chosen
+  return {
+    ...state,
+    1: nextPools(state[1], queues, used, header.slot), // α′
+    2: queues,
+    3: recent,
+    4: {
+      pending: sealed.validators.pending,
+      ring_root: sealed.ringRoot,
+      sealers: sealed.sealers,
+      accumulator: sealed.accumulator,
+    },
+    5: made.judgements,
+    6: sealed.entropy,
+    7: staging ?? sealed.validators.staging,
+    8: sealed.validators.active,
+    9: sealed.validators.previous,
+    10: made.guaranteed.cores,
+    11: header.slot,
+    12: {
+      ...after.privileges,
+      always_acc: byId(after.free).map(([id, gas]) => ({ id, gas })),
+    },
+    13: {
+      vals_curr: validatorStats.current,
+      vals_last: validatorStats.last,
+      cores: coreStats(config, incoming, made.assured.reports, extrinsic.assurances),
+      services: byId(activity).map(([id, record]) => ({ id, record })),
+    },
+    14: after.ready.map((waiting) =>
+      waiting.map((w) => ({ report: w.report, dependencies: [...w.dependencies].map(fromHex) })),
+    ),
+    15: after.accumulated.map((packages) => [...packages].map(fromHex)),
+    16: accumulation.outputs,
+    accounts: after.accounts,
+  };
+}
+```
+
+`nextState` is the state after the block but for δ′'s preimages, which Υ adds last, on the
+entries: [lesson 14.1](../14-services/01-providing-preimages.md)'s `providePreimages` already works on them. The service ids in χ_Z and
+π_S go in order, as a dictionary encodes them; so does everything else, since each
+earlier part made its piece in the Gray Paper's order.
+
+**Run**
+
+```sh
+npm test
+npm run typecheck
+```
+
+```text
+...
+✔ Υ on every block of the fallback and safrole traces: each state root, as the trace's (3796.79875ms)
+✔ a block that isn't the next one is refused, and the state stays as it was (1.238458ms)
+...
+ℹ tests 645
+ℹ suites 0
+ℹ pass 645
+ℹ fail 0
+...
+reported 645 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791773644549
+...
+```
+
+Two hundred real blocks: every one's state root is the trace's.
+
+## Watch it
+
+The tests import each block into the trace's own state before it. `bin/import.ts` goes
+further: from the trace's first state on, each block goes into the state *your client*
+made from the one before. Any byte wrong anywhere would carry on, and every root after it
+would be wrong.
+
+**New file** `bin/import.ts`
+
+```ts
+// Imports a whole block-import trace, block after block, each into the state your client
+// made from the one before: from the trace's first state on, nothing else is taken from
+// the trace but its blocks. Each state root is shown next to the trace's.
+// Usage: node bin/import.ts [family], "storage_light" if not given
+
+import { Block } from "../src/block.ts";
+import { fromHex, toHex } from "../src/bytes.ts";
+import { TINY } from "../src/config.ts";
+import { importBlock } from "../src/import.ts";
+import { Run } from "../src/obs.ts";
+import type { KeyValue } from "../src/trie.ts";
+import { stateRoot } from "../src/trie.ts";
+import { vectorJson } from "../test/vectors.ts";
+
+type TraceStep = {
+  pre_state: { keyvals: { key: string; value: string }[] };
+  block: unknown;
+  post_state: { state_root: string };
+};
+
+const family = process.argv[2] ?? "storage_light";
+const step = (n: number) =>
+  vectorJson(`traces/${family}/${String(n).padStart(8, "0")}.json`) as TraceStep;
+let state: KeyValue[] = step(1).pre_state.keyvals.map((e) => ({
+  key: fromHex(e.key),
+  value: fromHex(e.value),
+}));
+const run = new Run("import");
+let matched = 0;
+for (let n = 1; n <= 100; n++) {
+  const { block, post_state } = step(n);
+  const header = Block(TINY).fromJson(block).header;
+  const result = importBlock(TINY, state, Block(TINY).fromJson(block));
+  if (!("error" in result)) state = result; // a refused block leaves the state as it was
+  const root = toHex(stateRoot(state));
+  const same = root === post_state.state_root;
+  if (same) matched++;
+  const what = "error" in result ? `refused: ${result.error}` : "imported";
+  const compared = `root ${root.slice(0, 10)}… ${same ? "=" : "≠"} the trace's`;
+  console.log(`block ${n}, slot ${header.slot}: ${what}; ${compared}`);
+  run.event("block", { n, slot: header.slot, what, root: root.slice(0, 10), same });
+}
+console.log(`${matched} of 100 state roots as the trace's`);
+run.event("done", { family, matched });
+const link = await run.report();
+if (link) console.log(`reported to Grafana: ${link}`);
+```
+
+**Run**
+
+```sh
+node bin/import.ts safrole
+```
+
+```text
+block 1, slot 1: imported; root 0x48dc323d… = the trace's
+block 2, slot 2: imported; root 0x99275d5f… = the trace's
+block 3, slot 3: imported; root 0x391b7afd… = the trace's
+...
+block 98, slot 98: imported; root 0x797484f7… = the trace's
+block 99, slot 99: imported; root 0xd05254e8… = the trace's
+block 100, slot 100: imported; root 0x109f30f2… = the trace's
+100 of 100 state roots as the trace's
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=import-1791773655822
+```
+
+All 100: tickets entered, epochs changed, seals checked, and the same root at every step.
+The *Block import* panel, on **7 · Accumulation and import**, has each block.
+
+![Block import panel](./images/04-block-import.png)
+
+<details>
+<summary>lasair: the same order, in <code>conformance/trace_runner.ml</code></summary>
+
+```ocaml
+  (* Disputes FIRST (GP 0.8.0 judgments.tex + the overview dependency graph):
+     verdict ages are judged against the PRIOR epoch with the prior kappa/lambda,
+     and psi' depends only on (E_D, psi). The rest of the block is validated
+     against the post-disputes state: assurance bits against rho-dagger, new
+     guarantees against rho-double-dagger (from rho-dagger), and every Phi
+     (guarantor keys, the epoch mark, the ticket ring) nulls the POSTERIOR
+     offenders psi'_o. An invalid block -- disputes or otherwise -- is rejected
+     wholesale (post == pre; the caller answers with an Error). *)
+```
+
+The comment at the top of lasair's `import_block`, and the reason your `importBlock` runs
+`judgeDisputes` before anything else: the offenders it finds, ψ′_O, are who Safrole and the
+guarantor assignments leave out. After it, lasair goes step by step through one long
+function, each `let state = …` handing the next step the state the last one left. Its steps
+change the state's entries as they go; yours make values, and `nextState` puts them
+together once, at the end.
+
+</details>
+
+## What you have
+
+Υ, on real blocks: the `fallback` and `safrole` traces, 200 blocks, each root exactly the
+trace's, chained from genesis. Those blocks carry no work. The `storage` and `preimages`
+traces do, and they find two things your client still gets wrong: [lesson 19.5](./05-work-on-the-chain.md).
+
+Next: [19.5 Work on the chain](./05-work-on-the-chain.md)
