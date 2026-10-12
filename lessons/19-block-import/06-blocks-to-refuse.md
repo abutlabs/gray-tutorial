@@ -181,5 +181,7 @@ into the state your client made from the one before, every state root right; the
 blocks refused, the state left as it was. Every state-transition test vector passes too,
 safrole's proofs and ring roots included. That's what JAM's first milestone, M1, asks of a
 client: the conformance tests, and importing blocks. One thing is left: the official
-fuzzer doesn't run your tests, it talks to your client over a socket. That's the last part
-[still to be written](../index.md#still-to-be-written).
+fuzzer doesn't run your tests, it talks to your client over a socket. [Part
+20](../20-facing-the-fuzzer/index.md) teaches it to listen.
+
+Next: [Part 20 · Facing the fuzzer](../20-facing-the-fuzzer/index.md)

@@ -1,7 +1,7 @@
 {
  "uid": "gray-tutorial-accumulation",
- "title": "7 · Accumulation and import (Parts 16-19)",
- "description": "Host calls and accumulation, the statistics a block keeps, and block import: its plan, the whole state, and real blocks imported.",
+ "title": "7 · Accumulation and import (Parts 16-20)",
+ "description": "Host calls and accumulation, the statistics a block keeps, block import (its plan, the whole state, real blocks), and sessions with the fuzzer.",
  "tags": [
   "gray-tutorial"
  ],
@@ -107,7 +107,7 @@
    "type": "link",
    "title": "7 · Accumulation and import",
    "url": "/d/gray-tutorial-accumulation",
-   "tooltip": "7 · Accumulation and import (Parts 16-19)",
+   "tooltip": "7 · Accumulation and import (Parts 16-20)",
    "icon": "dashboard",
    "includeVars": true,
    "keepTime": true,
@@ -425,6 +425,79 @@
    "gridPos": {
     "x": 0,
     "y": 57,
+    "w": 24,
+    "h": 12
+   }
+  },
+  {
+   "id": 106,
+   "type": "row",
+   "collapsed": false,
+   "panels": [],
+   "title": "Part 20 · Facing the fuzzer",
+   "gridPos": {
+    "x": 0,
+    "y": 69,
+    "w": 24,
+    "h": 1
+   }
+  },
+  {
+   "id": 107,
+   "type": "logs",
+   "title": "Target",
+   "description": "Each message the target got in a session, and its answer.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"target\", run_id=~\"$run_id\"} | json | line_format \"{{.request}} → {{.reply}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 70,
+    "w": 24,
+    "h": 10
+   }
+  },
+  {
+   "id": 108,
+   "type": "logs",
+   "title": "Fuzz session",
+   "description": "What bin/fuzz.ts saw, block by block: the target's answer, and whether it is the trace's.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"fuzz\", run_id=~\"$run_id\"} | json | line_format \"{{if .n}}block {{.n}}, slot {{.slot}}: {{.said}}{{if eq .ok \\\"true\\\"}}, as the trace has it{{else}}, NOT as the trace has it{{end}}{{else}}{{.family}}: {{.agreed}} of 100 blocks as the trace has them{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 80,
     "w": 24,
     "h": 12
    }

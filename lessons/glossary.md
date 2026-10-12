@@ -880,6 +880,36 @@ bundle, plus its segments and their proof pages. *Example:* 12345 + 4 × 4104 = 
 *Example:* guarantees signed by 0 and 1, and by 2 and 3: four reporters.
 ([12.2](./12-guarantees/02-signed-and-counted.md))
 
+## Facing the fuzzer
+
+**Conformance fuzzer.** The JAM Prize's testing program: it makes blocks, often mutated
+into bad ones, has a client import them, and compares the state roots. ([20.1](./20-facing-the-fuzzer/01-speaking-the-protocol.md))
+
+**Unix socket.** A connection between two programs on one computer, through a file path,
+used like a network connection. *Example:* `/tmp/jam_target.sock`. ([20.1](./20-facing-the-fuzzer/01-speaking-the-protocol.md))
+
+**Frame.** One message on a stream of bytes: its length first, so the reader knows where it
+ends. *Example:* `21 00 00 00`, then 33 bytes. ([20.1](./20-facing-the-fuzzer/01-speaking-the-protocol.md))
+
+**Fuzz target.** A client answering the fuzzer: the other end of the socket. *Example:*
+`bin/target.ts`. ([20.2](./20-facing-the-fuzzer/02-a-target.md))
+
+**Lookup anchor.** The block a work-package read its preimages from while it was refined,
+named in its report by hash and slot. *Example:* a block from up to 24 slots ago, on tiny.
+([20.2](./20-facing-the-fuzzer/02-a-target.md))
+
+**Ancestry.** The last L blocks of a chain, by slot and header hash: what a client keeps to
+check lookup anchors. *Example:* 24 blocks on tiny. ([20.2](./20-facing-the-fuzzer/02-a-target.md))
+
+**Session.** One connection between the fuzzer and a target, from handshake to goodbye:
+one Initialize, then any number of blocks. *Example:* a trace's 100 blocks. ([20.3](./20-facing-the-fuzzer/03-a-session.md))
+
+**Environment variable.** A named setting a program reads from where it was started, not
+from its arguments. *Example:* `JAM_FUZZ_SPEC=tiny`. ([20.4](./20-facing-the-fuzzer/04-ready-to-be-fuzzed.md))
+
+**Docker image.** A program packaged with everything it needs to run, from the operating
+system up. *Example:* `node:26.11.1-bookworm-slim`. ([20.4](./20-facing-the-fuzzer/04-ready-to-be-fuzzed.md))
+
 ## The PVM
 
 **PVM.** The Polkadot Virtual Machine: a small, made-up computer, based on RISC-V, that

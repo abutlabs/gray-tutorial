@@ -91,6 +91,7 @@ const SHOTS: Shot[] = [
   { lesson: "19.2", panel: "Whole state" },
   { lesson: "19.4", panel: "Block import" },
   { lesson: "19.6", panel: "Block import" },
+  { lesson: "20.3", panel: "Fuzz session" },
 ];
 
 const LOKI = "http://127.0.0.1:3100";

@@ -52,7 +52,7 @@ imports JAM blocks and agrees byte for byte with the official test vectors. From
 ## Built next to an OCaml client
 
 This tutorial is built with reference to [Lasair](https://github.com/abutlabs/lasair), another JAM client. Lasair aims to run as validators on the real network, the machines that
-make and check its blocks, fast enough to keep up. TypeScript is not optimized for production blockchain clients. This tutorial aims at understanding instead. Abutlabs hopes that a creating solid Basis in the Gray-Tutorial, opens developers to working on the JAM protocol on other client teams.  
+make and check its blocks, fast enough to keep up. TypeScript is not optimized for production blockchain clients. This tutorial aims at understanding instead. Abutlabs hopes that creating a solid basis in the Gray Tutorial opens developers to working on the JAM protocol on other client teams.
 
 | | lasair | Your Gray Tutorial client |
 | --- | --- | --- |
@@ -223,11 +223,19 @@ make and check its blocks, fast enough to keep up. TypeScript is not optimized f
 - [19.5 Work on the chain](./19-block-import/05-work-on-the-chain.md)
 - [19.6 Blocks to refuse](./19-block-import/06-blocks-to-refuse.md)
 
-## Still to be written
+**[Part 20 · Facing the fuzzer](./20-facing-the-fuzzer/index.md)**
 
-The road from here to a full block importer, part by part, in about the order the parts
-will be written. Each one is checked end to end before it is published here.
+- [20.1 Speaking the protocol](./20-facing-the-fuzzer/01-speaking-the-protocol.md)
+- [20.2 A target](./20-facing-the-fuzzer/02-a-target.md)
+- [20.3 A session](./20-facing-the-fuzzer/03-a-session.md)
+- [20.4 Ready to be fuzzed](./20-facing-the-fuzzer/04-ready-to-be-fuzzed.md)
 
-| Part | You build | Gray Paper |
-| --- | --- | --- |
-| 20 · Facing the fuzzer | the conformance fuzzer's protocol, a target, test sessions from the traces | |
+<a id="still-to-be-written"></a>
+
+## After M1
+
+Every part is written: the road ends at a block importer, JAM's first milestone. A
+client that runs a real network goes further: the edge cases in
+[HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md), each with the
+case that needs it; speed, which M3 and M4 measure; and making blocks rather than only
+importing them, with networking, which M2 asks for. Those are for another tutorial.
