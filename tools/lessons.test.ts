@@ -29,32 +29,47 @@ test("the home page and each part's page link every lesson, titled as the lesson
 // part uses. And how to start there, as the Rust Book's introduction lets you skip: catch up
 // to the last lesson before it.
 test("each part's page says what it builds on and how to start there", () => {
-  const madeIn = new Map<string, number>(); // a client file, and the part that made it
+  // what the client's code exports ("src/work.ts WorkReport"), and the part that added it:
+  // a later part may add to a file an earlier one made, so names count, not files; and a
+  // test helper (test/vectors.ts's vectorFiles) is plumbing, not something to read first
+  const addedIn = new Map<string, number>();
+  const problems: string[] = [];
+  const exported = /^export (?:async )?(?:const|let|function|type|interface|class) (\w+)/gm;
+  const imported = /^import (?:type )?\{([^}]*)\} from "(\.{1,2}\/[^"]+)"/gm;
   for (const [i, p] of parts.entries()) {
     const used = new Set<number>();
     for (const l of p.lessons) {
       for (const s of l.steps) {
         if (s.kind !== "file") continue;
-        if (!madeIn.has(s.path)) madeIn.set(s.path, p.number);
-        for (const [, from] of s.code.matchAll(/from "(\.{1,2}\/[^"]+)"/g)) {
-          const part = madeIn.get(join(dirname(s.path), from));
-          if (part !== undefined && part > 2 && part !== p.number) used.add(part);
+        for (const [, name] of s.code.matchAll(exported)) {
+          if (!addedIn.has(`${s.path} ${name}`)) addedIn.set(`${s.path} ${name}`, p.number);
+        }
+        for (const [, names, from] of s.code.matchAll(imported)) {
+          const file = join(dirname(s.path), from);
+          if (!file.startsWith("src/")) continue;
+          for (const name of names.split(",").map((n) => n.trim().replace(/^type /, "").split(/\s+as\s+/)[0])) {
+            const part = name ? addedIn.get(`${file} ${name}`) : undefined;
+            if (part !== undefined && part > 2 && part !== p.number) used.add(part);
+          }
         }
       }
     }
     const index = readFileSync(join(LESSONS, p.dir, "index.md"), "utf8");
     if (i > 0) {
       const before = parts[i - 1].lessons.at(-1)!.id;
-      assert.ok(index.includes(`\`npm run catch-up -- ${before}\``), `${p.dir}/index.md starts you at ${before}`);
+      if (!index.includes(`\`npm run catch-up -- ${before}\``)) problems.push(`${p.dir}: start at ${before}`);
     }
     if (p.number < 3) continue;
-    const buildsOn = /^\*\*Builds on\*\*[\s\S]*?\n\n/m.exec(index)?.[0];
-    assert.ok(buildsOn, `${p.dir}/index.md has a "**Builds on**" paragraph`);
+    const buildsOn = /^\*\*Builds on\*\*[\s\S]*?\n\n/m.exec(index)?.[0] ?? "";
+    if (!buildsOn) problems.push(`${p.dir}: no "**Builds on**" paragraph`);
     const linked = [...buildsOn.matchAll(/\[([^\]]+)\]\(\.\.\/(\d+-[^/)]+)\/index\.md\)/g)]
       .map(([, text, dir]) => `${dir}: ${text.replace(/\s+/g, " ")}`);
     const expected = parts.filter((q) => used.has(q.number)).map((q) => `${q.dir}: ${q.title}`);
-    assert.deepEqual(linked, expected, `${p.dir}/index.md builds on the parts its code imports`);
+    for (const x of expected) if (!linked.includes(x)) problems.push(`${p.dir} builds on ${x}, unsaid`);
+    for (const x of linked) if (!expected.includes(x)) problems.push(`${p.dir} says it builds on ${x}, but doesn't`);
+    if (linked.join() !== expected.filter((x) => linked.includes(x)).join()) problems.push(`${p.dir}: parts out of order`);
   }
+  assert.deepEqual(problems, []);
 });
 
 test("each lesson ends by pointing to the next one", () => {

@@ -7,7 +7,8 @@ assignments, checks the guarantees' signatures, and puts new reports on free cor
 By the end of this part your client assigns guarantors, checks guarantees and reports,
 and accepts or refuses every reports vector exactly as it should.
 
-**Builds on** [Part 4 · Blocks](../04-blocks/index.md), [Part 5 · Hashing and
+**Builds on** [Part 3 · Work and reports](../03-work-and-reports/index.md), [Part 4 ·
+Blocks](../04-blocks/index.md), [Part 5 · Hashing and
 signatures](../05-hashing-and-signatures/index.md), [Part 6 · State and
 Merklization](../06-state-and-merklization/index.md), [Part 7 · Time and
 shuffling](../07-time-and-shuffling/index.md), [Part 8 · Safrole](../08-safrole/index.md),

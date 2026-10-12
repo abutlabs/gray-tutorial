@@ -11,7 +11,8 @@ By the end of this part your client accumulates whole blocks: waiting reports, t
 privileges, and services ejected and created. Fifty-four official vectors pass as whole
 blocks.
 
-**Builds on** [Part 4 · Blocks](../04-blocks/index.md), [Part 5 · Hashing and
+**Builds on** [Part 3 · Work and reports](../03-work-and-reports/index.md), [Part 4 ·
+Blocks](../04-blocks/index.md), [Part 5 · Hashing and
 signatures](../05-hashing-and-signatures/index.md), [Part 13 ·
 Authorization](../13-authorization/index.md), [Part 14 · Services and
 preimages](../14-services/index.md), [Part 15 · The PVM](../15-the-pvm/index.md) and [Part

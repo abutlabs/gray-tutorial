@@ -8,11 +8,12 @@ validators first.
 By the end of this part your client keeps all three scorecards, the validators', the
 cores' and the services', matching every reports and preimages vector.
 
-**Builds on** [Part 4 · Blocks](../04-blocks/index.md), [Part 6 · State and
+**Builds on** [Part 3 · Work and reports](../03-work-and-reports/index.md), [Part 4 ·
+Blocks](../04-blocks/index.md), [Part 6 · State and
 Merklization](../06-state-and-merklization/index.md), [Part 11 ·
 Assurances](../11-assurances/index.md), [Part 12 · Guarantees](../12-guarantees/index.md)
-and [Part 16 · Host calls](../16-host-calls/index.md), and on the foundations every part
-uses, [Parts 0 to 2](../index.md#lessons).
+and [Part 17 · Accumulation](../17-accumulation/index.md), and on the foundations every
+part uses, [Parts 0 to 2](../index.md#lessons).
 
 **Starting here?** At the repo root, `npm run catch-up -- 17.8` makes your client the one
 this part starts from; [How to read it](../index.md#how-to-read-it) says more.

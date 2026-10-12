@@ -7,8 +7,7 @@ moving, one in and one out, block by block.
 By the end of this part your client keeps every core's pool of authorizers moving,
 checked on the vectors and on 99 real blocks.
 
-**Builds on** [Part 4 · Blocks](../04-blocks/index.md) and [Part 6 · State and
-Merklization](../06-state-and-merklization/index.md), and on the foundations every part
+**Builds on** [Part 4 · Blocks](../04-blocks/index.md), and on the foundations every part
 uses, [Parts 0 to 2](../index.md#lessons).
 
 **Starting here?** At the repo root, `npm run catch-up -- 12.5` makes your client the one

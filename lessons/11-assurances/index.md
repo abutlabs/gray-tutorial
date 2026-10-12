@@ -9,7 +9,9 @@ the rules.
 By the end of this part your client counts assurances, makes reports available, clears
 the ones that waited too long, and handles every assurances vector, tiny and full.
 
-**Builds on** [Part 4 · Blocks](../04-blocks/index.md) and [Part 10 ·
+**Builds on** [Part 3 · Work and reports](../03-work-and-reports/index.md), [Part 4 ·
+Blocks](../04-blocks/index.md), [Part 5 · Hashing and
+signatures](../05-hashing-and-signatures/index.md) and [Part 10 ·
 Disputes](../10-disputes/index.md), and on the foundations every part uses, [Parts 0 to
 2](../index.md#lessons).
 

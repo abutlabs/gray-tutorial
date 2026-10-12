@@ -7,7 +7,8 @@ for a bad report, or voted against the truth, is named an offender and loses the
 By the end of this part your client is the court: every verdict, culprit and fault
 checked, and every disputes vector accepted or refused just as it should be.
 
-**Builds on** [Part 4 · Blocks](../04-blocks/index.md), [Part 5 · Hashing and
+**Builds on** [Part 3 · Work and reports](../03-work-and-reports/index.md), [Part 4 ·
+Blocks](../04-blocks/index.md), [Part 5 · Hashing and
 signatures](../05-hashing-and-signatures/index.md), [Part 6 · State and
 Merklization](../06-state-and-merklization/index.md) and [Part 7 · Time and
 shuffling](../07-time-and-shuffling/index.md), and on the foundations every part uses,
