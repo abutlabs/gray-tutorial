@@ -21,7 +21,7 @@ them, and β_B, the belt. Each new block does three things to them:
 
 1. **Fills in a blank.** The newest remembered block's state root couldn't be known when
    it was added, because a block's state root comes *after* the block. Now it is known:
-   it's this block's `parent_state_root` (H_r, [lesson 4.6](../04-blocks/06-the-header.md)). So it's written in.
+   it's this block's `parent_state_root` (H_R, [lesson 4.6](../04-blocks/06-the-header.md)). So it's written in.
 2. **Adds itself.** The block's accumulation outputs go onto the belt ([lesson 9.1](./01-the-mountain-belt.md)), and
    a new entry joins the list: its header hash, the belt's new super-peak, its slot, the
    packages it reported, and a state root of 32 zeros. The Gray Paper calls that zero
@@ -30,8 +30,9 @@ them, and β_B, the belt. Each new block does three things to them:
 
 The history vectors give the new block's parts ready-made: its header hash, its
 `parent_state_root`, the root of its accumulation outputs, its slot, and its reported
-packages. For now, all you need to know is that a block brings them; working them out
-yourself takes [Part 12](../12-guarantees/index.md) (the reported packages) and [Part 17](../17-accumulation/index.md) (the accumulation root).
+packages. For now, all you need to know is that a block brings them. [Part 12](../12-guarantees/index.md) works out
+the reported packages; the accumulation root needs the outputs that services hand back
+with the `yield` host call, which is still to be written.
 
 ## The records first
 
@@ -340,7 +341,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 
 Eight blocks, slots 42 to 49, and only the newest still waiting for its state root. Now
 read the belt backwards, as [lesson 9.1](./01-the-mountain-belt.md) taught you: 110001 in binary is 49, one
-accumulation root for each block so far. The *Recent history* panel shows it all.
+accumulation root for each block so far. The *Recent history* panel, on the **3 ·
+Consensus** dashboard, shows it all.
 
 ![Recent history panel](./images/02-recent-history.png)
 
