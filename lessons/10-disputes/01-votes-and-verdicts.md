@@ -145,8 +145,8 @@ test("a forged vote is caught", () => {
 
 `verdictWith` builds a fake verdict with blank signatures: plenty for testing the count.
 The signatures get their own test, on tiny only. A full verdict has 683 votes, and
-checking the 10,000-odd votes of all the full vectors would take your test run from
-about three seconds to about twelve.
+checking the 7,500-odd votes of the full vectors it would cover would take your test run
+from about three seconds to about ten.
 
 **Run, expect it to fail**
 
@@ -357,7 +357,7 @@ Two trials in one block: one report cleared, one condemned. Now try
 vote. Then `progress_with_verdict_signatures_from_previous_set-1.json`, judged by λ. And
 that report's hash, `0x0e5751c0…`, should ring a bell: it's the Blake2b of no bytes at
 all, from [lesson 5.1](../05-hashing-and-signatures/01-hashes.md). Test vectors need report hashes from somewhere! The *Verdicts*
-panel has every trial.
+panel, on the **4 · Checks** dashboard (where [Part 10](./index.md)'s panels are), has every trial.
 
 ![Verdicts panel](./images/01-verdicts.png)
 
@@ -374,9 +374,10 @@ let classify_verdict (k : validator_key list) (judgements : judgement_vote list)
 ```
 
 Four answers, not three: lasair rejects every other split as `VerdictBadSplit`. Its
-comment tells why it's there. An older version treated *any* split as wonky, like your
-`outcome` does today, and nobody noticed, because no test vector votes 3 of 5 or 342 of
-683. A rule the vectors never exercise is a rule you have to read the Gray Paper for.
+comment tells why it's there. An older version treated almost *any* split as wonky, as
+your `outcome` does today, and nobody noticed, because no test vector votes 3 of 5 or 342
+of 683. (One votes 1 of 5, which that version already refused; [lesson 10.4](./04-bad-verdicts.md) uses it.) A
+part of a rule the vectors never exercise is a part you have to read the Gray Paper for.
 
 </details>
 

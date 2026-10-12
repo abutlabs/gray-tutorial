@@ -12,7 +12,8 @@ disputes now agree with every disputes vector.
 - **Evidence.** What makes an accusation stick: the accused's own signature. *Example:* a
   culprit carries the guarantee its validator signed; a fault, the vote.
 - **Offender (ψ_O).** A validator found guilty; ψ_O holds the keys of every one so far.
-  Nobody is accused twice. *Example:* a culprit naming a key already in ψ_O sinks the block.
+  Nobody already found guilty can be accused again. *Example:* a culprit naming a key
+  already in ψ_O sinks the block.
 - **If and only if (⇔).** The Gray Paper's ⇔ says two things are true together or false
   together. *Example:* "the report is bad ⇔ the fault voted valid".
 
@@ -305,7 +306,7 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 
 Twenty-nine vectors and not one "the vector says": your client's disputes agree with all
 of them. `node bin/check-disputes.ts full` says the same of the full ones (give it a
-minute). The *Dispute checks* panel keeps the list.
+minute). The *Dispute checks* panel, on **4 · Checks**, keeps the list.
 
 ![Dispute checks panel](./images/05-dispute-checks.png)
 

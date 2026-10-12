@@ -97,7 +97,7 @@ for (const { config, name } of VERDICT_VECTORS) {
 disputes vector's verdicts must pass, including those the vector refuses for a culprit or
 a fault ([lesson 10.5](./05-bad-culprits-and-faults.md)'s business). The test runs every tiny vector, and only the two full
 ones that tiny can't have: a full verdict carries 683 signed votes, and checking every
-full vector takes the better part of a minute, on every `npm test`. Watch it, below,
+full vector takes about twenty seconds (more on a slower machine), on every `npm test`. Watch it, below,
 checks them all whenever you ask. One error name comes up in both lessons: in
 `progress_with_bad_signatures-2` the bad signature is a culprit's, so its verdicts pass
 here. The full vectors have one case tiny can't have: in
@@ -303,7 +303,7 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 Every line where the rules found a bad verdict agrees with the vector, and
 `node bin/check-disputes.ts full` says the same of the full vectors. The others show
 what's left for [lesson 10.5](./05-bad-culprits-and-faults.md): blocks whose verdicts are fine, refused for their culprits or
-faults. The *Dispute checks* panel keeps the list.
+faults. The *Dispute checks* panel, on the **4 · Checks** dashboard, keeps the list.
 
 ![Dispute checks panel](./images/04-dispute-checks.png)
 

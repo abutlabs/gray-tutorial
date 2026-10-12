@@ -1,8 +1,8 @@
 # Clearing the cores
 
 A trial has one more consequence, and it's the most practical one. Remember the cores
-from [Part 3](../03-work-and-reports/index.md): each one can hold a single guaranteed work-report while the validators make
-sure its data is available. If that report has just been judged bad, or wonky, it has no
+from [Part 3](../03-work-and-reports/index.md). Each one can hold a single guaranteed work-report (ρ, in [lesson
+6.2](../06-state-and-merklization/02-state-keys.md)'s table) while the validators make sure its data is available. If that report has just been judged bad, or wonky, it has no
 business sitting there. Out it goes, freeing the core for honest work. This lesson
 finishes what an honest block's disputes do to the state.
 
@@ -17,9 +17,9 @@ every core emptied whose report was judged **bad or wonky** in this block. Which
 is it? The verdict names a report by its hash, H(ℰ(report)), the very same hash
 [lesson 5.2](../05-hashing-and-signatures/02-the-extrinsic-hash.md) put in the extrinsic hash. So: hash each pending report, and compare.
 
-A good verdict leaves its report where it is. The ‡ is the Gray Paper's mark for
-"partway through the block": the assurances ([Part 11](../11-assurances/index.md)) and guarantees ([Part 12](../12-guarantees/index.md))
-change ρ again later in the same block.
+A good verdict leaves its report where it is. The † is the Gray Paper's mark for a point
+partway through the block, here just after the judgments: the assurances ([Part 11](../11-assurances/index.md)) make
+ρ‡ from it, and the guarantees ([Part 12](../12-guarantees/index.md)) make ρ′, later in the same block.
 
 ## The cores
 
@@ -271,7 +271,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 
 Both cores' reports were on trial in this block. Core 0's was judged bad, so it leaves;
 core 1's was judged good, so it stays. Run the `full` version of the same vector: 340 of
-341 cores keep their reports. The *Cores* panel shows which core was emptied, and why.
+341 cores keep their reports. The *Cores* panel, on the **4 · Checks** dashboard, shows
+which core was emptied, and why.
 
 ![Cores panel](./images/03-cores.png)
 
