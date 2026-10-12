@@ -50,9 +50,11 @@ making fourteen checks, in two groups.
     code hash (`bad_code_hash`), and asks for at least the service's minimum gas
     (`service_item_gas_too_low`).
 
-Rules 8 and 9 are one rule in the Gray Paper: every prerequisite and every looked-up
-package must be known. The vectors give a looked-up package that isn't known its own
-name, `segment_root_lookup_invalid`, so your client checks them separately.
+Rule 8 and the first half of rule 9 are one rule in the Gray Paper: every prerequisite and
+every looked-up package must be known. The second half, the right segments root, is a
+rule of its own, the equation after it. The vectors give a looked-up package that isn't
+known its own name too, `segment_root_lookup_invalid`, so your client checks rules 8 and 9
+separately.
 
 Two more rules this lesson leaves out: the report's *lookup* anchor must be at most L slots
 old, and must be one of the last L blocks' headers. Checking the second needs the header
@@ -364,7 +366,7 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 
 Forty-four vectors, and not one "the vector says": your client's reports step agrees with
 all of them. `node bin/check-guarantees.ts full` says the same of the full ones. The
-*Guarantee checks* panel keeps the list.
+*Guarantee checks* panel, on **4 · Checks**, keeps the list.
 
 ![Guarantee checks panel](./images/05-guarantee-checks.png)
 

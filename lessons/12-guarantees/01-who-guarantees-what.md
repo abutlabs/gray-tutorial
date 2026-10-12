@@ -350,11 +350,12 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 ```
 
 The block is at slot 14, but the guarantee was made at slot 10, in the last rotation.
-Validator 2 has since moved to core 1, yet its signature for core 0 still counts,
-because back then core 0 was its job. (And slot 10 was in the *previous epoch*, so
-the last rotation's hand was dealt from λ′ with η′₃.) Now try `wrong_assignment-1.json`:
-the same validator 2 signs for core 0 *this* rotation, where it belongs to core 1, and
-it's caught. The *Guarantors* panel shows each guarantee's check.
+Slot 10 was in the *previous epoch*, so the last rotation's hand was dealt from λ′ with
+η′₃, and its numbers count in λ′, this rotation's in κ′. The validator that signed as λ′'s
+2 (key `0x4418…`) is κ′'s 0 now, on core 1, yet its signature for core 0 still counts,
+because back then core 0 was its job. Now try `wrong_assignment-1.json`: κ′'s validator 2
+signs for core 0 *this* rotation, where it belongs to core 1, and it's caught. The
+*Guarantors* panel, on the **4 · Checks** dashboard, shows each guarantee's check.
 
 ![Guarantors panel](./images/01-guarantors.png)
 
@@ -362,6 +363,12 @@ it's caught. The *Guarantors* panel shows each guarantee's check.
 <summary>lasair: <code>guarantor_assignment</code>, in <code>conformance/stf_guarantees.ml</code></summary>
 
 ```ocaml
+(** GP 0.8.0 reporting_assurance.tex P(v, e, t): the core each of the [v]
+    validators of a key set guarantees at slot [t] -- three guarantors per
+    ACTIVE core (the first v/3 cores), base [floor(i/3) for i in N_v]
+    Fisher-Yates-shuffled by [entropy], rotated every R slots modulo the
+    active core count. Both the importer and live guarantee authoring use this
+    one function; the set size is LIVE (sets may resize). *)
 let guarantor_assignment ~(v : int) ~(entropy : bytes) ~(slot : int) : int array =
   let active = max 1 (v / 3) in
   let base = Array.init v (fun i -> i / 3) in

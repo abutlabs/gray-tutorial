@@ -342,8 +342,8 @@ vectors have four that tiny can't have, where the validator set has shrunk from 
 active last rotation but not now (`bad_core_index`), and one signed this rotation by
 validators 16, 450 and 1014, when only 6 exist (`bad_validator_index`). And two
 accepted: one from the last rotation, signed by validators 24, 578 and 603 of the old
-set, and one signed by validators 1, 4 and 5 of the new. The *Guarantee checks* panel
-keeps the list.
+set, and one signed by validators 1, 4 and 5 of the new. The *Guarantee checks* panel, on
+**4 · Checks**, keeps the list.
 
 ![Guarantee checks panel](./images/04-guarantee-checks.png)
 

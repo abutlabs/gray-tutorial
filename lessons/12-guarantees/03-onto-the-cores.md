@@ -164,7 +164,8 @@ reported 192 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=
 ```
 
 44 reports seated, and every reported list in order. Take the `.sort(…)` away and run
-the tests again: `high_work_report_gas-1` fails, at both sizes. Its guarantees list
+the tests again: `high_work_report_gas-1` fails (the tiny one stops the test first; the full
+one would too). Its guarantees list
 package `0x63c0…` before `0x3165…`, and the dictionary wants them the other way round.
 
 ## Watch it
@@ -227,8 +228,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 
 Core 0 gets `0x63c0…` and core 1 gets `0x3165…`, but the reported list starts with
 `0x3165…`: cores in core order, packages in hash order. Try `with_avail_assignments-1`,
-where one core is already taken and the new report takes a free one. The *Placed* panel
-shows both lists.
+where one core is already taken and the new report takes a free one. The *Placed* panel,
+on **4 · Checks**, shows both lists.
 
 ![Placed panel](./images/03-placed.png)
 
