@@ -52,7 +52,7 @@ imports JAM blocks and agrees byte for byte with the official test vectors. From
 ## Built next to an OCaml client
 
 This tutorial is built with reference to [Lasair](https://github.com/abutlabs/lasair), another JAM client. Lasair aims to run as validators on the real network, the machines that
-make and check its blocks, fast enough to keep up. TypeScript is not optimized for production blockchain clients. This tutorial aims at understanding instead. After 
+make and check its blocks, fast enough to keep up. TypeScript is not optimized for production blockchain clients. This tutorial aims at understanding instead. Abutlabs hopes that a creating solid Basis in the Gray-Tutorial, opens developers to working on the JAM protocol on other client teams.  
 
 | | lasair | Your Gray Tutorial client |
 | --- | --- | --- |
