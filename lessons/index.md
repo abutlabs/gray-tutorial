@@ -1,10 +1,9 @@
 # Gray Tutorial
 
-Build a JAM client from an empty folder, one small, tested step at a time, and learn how
-JAM works by building it. JAM is a blockchain protocol, and a *client* is the program that
-checks its blocks and works out the chain's state, the same way every other client does.
-Yours is in TypeScript, simplicity and observability first, and the official test vectors
-check it, byte for byte.
+We will build a Typescript JAM client per the [Gray Paper](https://graypaper.com/) specifications, _from scratch_. 
+
+The Gray Tutorial is designed for learnability and obvservability. By the end of this turtorial, your JAM client will by able to pass the official test vectors, _byte for byte_. Our goal is make onboarding JAM protocol developers more approachable. Therefore we will build a concrete JAM implemenation.
+
 
 ## Start here
 
@@ -22,8 +21,7 @@ Stuck on a word? Every JAM word, Gray Paper symbol and programming term is in th
 
 Anyone curious how JAM works inside, willing to build a client to find out. You don't need
 to know the Gray Paper, cryptography or blockchains to begin: each idea arrives when it's
-needed, with an example first. You do need to be at ease reading a little TypeScript or
-JavaScript.
+needed, with an example first. You do need to be at ease reading a little TypeScript or JavaScript.
 
 ## How to read it
 
@@ -52,12 +50,10 @@ snippets, and has you run it. You assemble the snippets into your own client in
 imports JAM blocks and agrees byte for byte with the official test vectors. From
 [lesson 0.3](./00-start/03-watch-your-client.md) on, it reports every run to Grafana, so you can watch what it does.
 
-## Next to a Prize client
+## Built next to a OCaml client
 
-lasair, another JAM client, and the other entries to the JAM Prize (a prize for
-independent JAM clients) aim to run as validators on the real network, the machines that
-make and check its blocks, fast enough to keep up. This tutorial aims at understanding
-instead. The same official test vectors check it, but it isn't built for speed.
+This tutorial is build with reference to [Lasair](https://github.com/abutlabs/lasair), another JAM client. Lasir aims to run as validators on the real network, the machines that
+make and check its blocks, fast enough to keep up. Typescript is not optimized for production blockchain clients. This tutorial aims at understanding instead. 
 
 | | lasair | Your Gray Tutorial client |
 | --- | --- | --- |
@@ -65,7 +61,7 @@ instead. The same official test vectors check it, but it isn't built for speed.
 | How it runs | compiled to machine code before it runs | Node strips the types and runs the JavaScript: it starts as bytecode, and the busiest parts become machine code as it runs |
 | 64-bit numbers | `Int64`: plain machine arithmetic | `bigint`: exact, but much slower |
 | Several cores | possible (OCaml 5); today threads serve the network, and a block imports on one core | one thread (Node could add worker threads; the tutorial doesn't need them) |
-| Built for | the JAM Prize: conformance, then speed | learning |
+| Built for | conformance, then speed | learning |
 
 ## Lessons
 
