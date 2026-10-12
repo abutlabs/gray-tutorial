@@ -3,8 +3,9 @@
 [Lesson 18.1](./01-who-did-what.md) kept score for validators, epoch by epoch. Cores and services get a scorecard
 too, but a short-lived one: it covers a single block, and the next block starts again
 from zero. This lesson builds both cards and checks them against every reports and
-preimages test vector. No vector checks a core's data load, so you'll work one out by
-hand as well.
+preimages test vector. No reports, assurances or statistics vector checks a core's data
+load (the block-import traces carry it, for when real blocks run through), so you'll work
+one out by hand as well.
 
 ## New words
 
@@ -54,7 +55,8 @@ a per-block basis": nothing carries over from the block before.
 A service gets a card only if it appears in at least one of the three.
 
 The Gray Paper's names: the cores' cards are **π_C**, the services' **π_S**. The reports
-taken on are **𝐈** (a bold I, [lesson 12.3](../12-guarantees/03-onto-the-cores.md)), the newly available ones **𝐑** (a bold R,
+taken on are **𝐈** (a bold I: the incoming reports, the ones [lesson 12.3](../12-guarantees/03-onto-the-cores.md) put onto
+cores), the newly available ones **𝐑** (a bold R,
 [lesson 11.1](../11-assurances/01-available.md)). For core c, it writes the work as R(c), with a plain R: a different thing,
 the sum of step 1. The bundle lengths are L(c), and the data load is
 
@@ -309,7 +311,7 @@ export function serviceStats(
 Both are sums, done once for each core or service. A few things to notice:
 
 - `assuredCount` is [lesson 11.1](../11-assurances/01-available.md)'s, which counted the same bits to decide availability.
-- Gas is a `bigint`, as everywhere since [Part 15](../15-the-pvm/index.md), so its sums start from `0n`.
+- Gas is a `bigint`, as it has been since [Part 3](../03-work-and-reports/index.md)'s `gas_used`, so its sums start from `0n`.
 - `Math.ceil` on `n * 65 / 64` is exact: dividing by 64, a power of two, never rounds in
   floating point.
 - `active` is a `Set`, so a service that both refined and accumulated gets one card,
@@ -418,7 +420,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 
 Core 0's report became available, so core 0 carries its data load: 12345 + 4 × 4104.
 Core 1 is popular too, with 4 assurances, but not popular enough: it carries nothing yet.
-Both runs land in the *Core and service activity* panel, one line per card.
+Both runs land in the *Core and service activity* panel, on the **7 · Accumulation and
+import** dashboard, one line per card.
 
 ![Core and service activity panel](./images/02-core-and-service-activity.png)
 
