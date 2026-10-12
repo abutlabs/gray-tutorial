@@ -4,7 +4,7 @@ The official fuzzer starts each target the same way: as a Docker image for Linux
 chips (`linux/amd64`), told what to do by a few environment variables, with nothing typed
 on a command line. This lesson packages your target that way. It's short, and it's the
 last: at the end of it, your client is a block importer that the conformance fuzzer could
-start and talk to, as it does every JAM Prize client.
+start and talk to, as it does every JAM client.
 
 ## New words
 

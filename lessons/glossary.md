@@ -882,7 +882,7 @@ bundle, plus its segments and their proof pages. *Example:* 12345 + 4 × 4104 = 
 
 ## Facing the fuzzer
 
-**Conformance fuzzer.** The JAM Prize's testing program: it makes blocks, often mutated
+**Conformance fuzzer.** The JAM testing program: it makes blocks, often mutated
 into bad ones, has a client import them, and compares the state roots. ([20.1](./20-facing-the-fuzzer/01-speaking-the-protocol.md))
 
 **Unix socket.** A connection between two programs on one computer, through a file path,

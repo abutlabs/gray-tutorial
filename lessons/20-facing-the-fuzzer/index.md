@@ -1,6 +1,6 @@
 # Part 20 · Facing the fuzzer
 
-The JAM Prize checks a client with its conformance fuzzer: a program that makes blocks,
+JAM  clients are checked agaisnt the conformance fuzzer: a program that makes blocks,
 breaks some on purpose, sends them to the client over a socket and compares every state
 root. This part teaches your client to talk to it: the protocol's messages, a target that
 keeps its states and answers, a session of your own to test it with, and the packaging the

@@ -1,6 +1,6 @@
 # Speaking the protocol
 
-Your client imports blocks. The official conformance fuzzer is how the JAM Prize checks
+Your client imports blocks. The official conformance fuzzer is how we check
 that: it makes blocks of its own, some of them broken on purpose, sends them to your client
 one at a time, and compares every state root with its own. It doesn't run your tests or
 read your code. It talks to your client over a socket, in a small protocol of its own, and
@@ -9,7 +9,7 @@ reads and writes every one of them, byte for byte as the protocol's examples hav
 
 ## New words
 
-- **Conformance fuzzer.** The JAM Prize's testing program: it makes blocks, often mutated
+- **Conformance fuzzer.** The testing program: it makes blocks, often mutated
   into bad ones, has a client import them, and compares the state roots. *Example:* the
   fuzzer sends a block, your client answers with a root, and the fuzzer checks it.
 - **Unix socket.** A connection between two programs on the same computer, through a file
