@@ -82,3 +82,4 @@ gk
 typeberry
 vrf
 abutlabs
+multicore
