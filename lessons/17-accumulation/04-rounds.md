@@ -9,7 +9,7 @@ its official vector, receiver and all.
 
 - **Δ+ (accumulating in rounds).** The Gray Paper's loop over rounds: one round, then
   another for the transfers it sent, and so on until a round sends none (with the gas
-  budget, still to be written, reports left over make rounds too). *Example:* the gift's
+  budget, [lesson 17.9](./09-the-blocks-gas-budget.md), reports left over make rounds too). *Example:* the gift's
   block takes two rounds.
 - **Delivery.** What happens to a transfer in the round after it was sent: its money goes
   into the receiver's balance, and the transfer itself becomes one of the receiver's
@@ -50,9 +50,7 @@ The Gray Paper's names: the loop is *Δ+*, one round *Δ\**, one service in a ro
 > the rest wait for a later round. This lesson takes every report in round 1. One
 > official vector needs the budget: in `recreate_service_ejected_in_earlier_round-1`, the
 > two reports ask for 22,000,000 gas, tiny's budget is 20,000,000, so the second report
-> waits for round 2. That vector isn't among this part's tests; the budget is still to be
-> written (it's on the start page's list, and the [hardening
-> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) notes the vector).
+> waits for round 2. That vector waits for [lesson 17.9](./09-the-blocks-gas-budget.md), which builds the budget.
 
 ## The tests
 

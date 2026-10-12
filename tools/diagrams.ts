@@ -348,12 +348,62 @@ ${parts.join("\n")}
 }
 
 /** Every diagram: where it goes, and what draws it. */
+/** Lesson 17.11's M_B (GP App. E) over three items: split in half, the first half rounded
+ * up; a node hashes "node" and its two halves; a half of one item is the item itself. */
+export function wellBalancedTree(): string {
+  const W = 200, H = 40;
+  type Box = { x: number; y: number; text: string; kind: string; note?: string };
+  const boxes: Box[] = [
+    { x: 230, y: 16, text: 'K("node" ⌢ n ⌢ c)', kind: "node", note: "the root, M_B([a, b, c])" },
+    { x: 90, y: 116, text: 'n = K("node" ⌢ a ⌢ b)', kind: "node", note: "the first half: 2 of 3" },
+    { x: 490, y: 116, text: "c", kind: "leaf", note: "a half of one: c itself" },
+    { x: 20, y: 216, text: "a", kind: "leaf" },
+    { x: 240, y: 216, text: "b", kind: "leaf" },
+  ];
+  const EDGES: [number, number][] = [[0, 1], [0, 2], [1, 3], [1, 4]];
+  const parts = EDGES.map(([from, to]) => {
+    const [f, t] = [boxes[from], boxes[to]];
+    const y1 = f.y + H + (f.note ? 24 : 0);
+    return `<line class="edge" x1="${f.x + W / 2}" y1="${y1}" x2="${t.x + W / 2}" y2="${t.y}"/>`;
+  });
+  for (const b of boxes) {
+    parts.push(
+      `<rect class="${b.kind}" x="${b.x}" y="${b.y}" width="${W}" height="${H}" rx="6"/>`,
+      `<text x="${b.x + W / 2}" y="${b.y + 25}">${escape(b.text)}</text>`,
+    );
+    if (b.note) parts.push(`<text class="note" x="${b.x + W / 2}" y="${b.y + H + 17}">${escape(b.note)}</text>`);
+  }
+  parts.push(
+    `<text class="note" x="350" y="286">a, b, c: the items, 36 bytes each (ℰ₄(s) ⌢ h); K: Keccak-256</text>`,
+    `<text class="note" x="350" y="306">one item alone is hashed: M_B([a]) = K(a)</text>`,
+  );
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">
+<style>
+  text { fill: #3c3c43; text-anchor: middle; }
+  .note { fill: #67676c; font-size: 12px; }
+  .edge { stroke: #9a9aa0; stroke-width: 1.5; }
+  .node { fill: #e8f0fe; stroke: #5b8def; stroke-width: 1.5; }
+  .leaf { fill: #e6f6ef; stroke: #3fa97a; stroke-width: 1.5; }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #dfdfd6; }
+    .note { fill: #a8a8a0; }
+    .edge { stroke: #6b6b72; }
+    .node { fill: #1e2a44; stroke: #7aa2f7; }
+    .leaf { fill: #1b3329; stroke: #4fc08d; }
+  }
+</style>
+${parts.join("\n")}
+</svg>
+`;
+}
+
 export const DIAGRAMS: Record<string, () => string> = {
   "02-codec/images/06-work-item-bytes.svg": workItemBytes,
   "06-state-and-merklization/images/01-state-trie.svg": stateTrie,
   "07-time-and-shuffling/images/02-shuffle-steps.svg": shuffleSteps,
   "08-safrole/images/04-ticket-contest.svg": ticketContest,
   "17-accumulation/images/04-rounds.svg": accumulationRounds,
+  "17-accumulation/images/11-well-balanced.svg": wellBalancedTree,
 };
 
 if (import.meta.main) {

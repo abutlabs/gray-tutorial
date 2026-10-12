@@ -204,6 +204,11 @@ instead. The same official test vectors check it, but it isn't built for speed.
 - [17.6 Who wins](./17-accumulation/06-who-wins.md)
 - [17.7 Ejecting a service](./17-accumulation/07-ejecting-a-service.md)
 - [17.8 Creating a service](./17-accumulation/08-creating-a-service.md)
+- [17.9 The block's gas budget](./17-accumulation/09-the-blocks-gas-budget.md)
+- [17.10 Upgrading a service](./17-accumulation/10-upgrading-a-service.md)
+- [17.11 What a service yields](./17-accumulation/11-what-a-service-yields.md)
+- [17.12 Providing a preimage](./17-accumulation/12-providing-a-preimage.md)
+- [17.13 Blessing and designating](./17-accumulation/13-blessing-and-designating.md)
 
 **[Part 18 · Statistics](./18-statistics/index.md)**
 
@@ -221,8 +226,6 @@ will be written. Each one is checked end to end before it is published here.
 
 | Part | You build | Gray Paper |
 | --- | --- | --- |
-| 8 · Safrole (rest) | Bandersnatch: entering tickets, the ring root, seals | §6, App. G |
-| 16 · Host calls (rest) | upgrade, yield, provide, bless, designate, the inner machine | App. B |
-| 17 · Accumulation (rest) | the other privileged calls, the block's gas budget | §12 |
-| 19 · Block import (rest) | real blocks through every step, the block-import traces (needs [Part 8](./08-safrole/index.md)'s Bandersnatch for η′ and γ′) | §4, §5 |
-| 20 · Facing the fuzzer | the conformance fuzzer's protocol | |
+| 8 · Safrole (rest) | the VRF output, entering tickets, and with Bandersnatch the ring root and seals | §6, App. G |
+| 19 · Block import (rest) | the whole state, the header's checks, real blocks through every step: the block-import traces | §4, §5, App. D |
+| 20 · Facing the fuzzer | the conformance fuzzer's protocol, a target, test sessions from the traces | |

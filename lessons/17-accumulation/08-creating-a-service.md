@@ -415,9 +415,8 @@ handed out.
 ## What you have
 
 Services that make services: paid for, numbered so nobody can aim, and the registrar's
-small ids. Fifty-four official vectors pass as whole blocks, and [Part 17](./index.md)'s lessons so far
-are done; the other privileged calls and the block's gas budget are still to be written.
-The chain also keeps score of who did all this work: [Part 18](../18-statistics/index.md) builds the
-statistics, for validators, cores and services.
+small ids. Fifty-four official vectors pass as whole blocks. Until now, every report in a
+block went in round 1, however much gas it asked for. A block only has so much:
+[lesson 17.9](./09-the-blocks-gas-budget.md) gives it a budget.
 
-Next: [Part 18 · Statistics](../18-statistics/index.md)
+Next: [17.9 The block's gas budget](./09-the-blocks-gas-budget.md)

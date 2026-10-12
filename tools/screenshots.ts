@@ -80,6 +80,8 @@ const SHOTS: Shot[] = [
   { lesson: "17.5", panel: "Host calls" },
   { lesson: "17.6", panel: "Accumulate" },
   { lesson: "17.7", panel: "Host calls" },
+  { lesson: "17.9", panel: "Accumulate" },
+  { lesson: "17.11", panel: "Accumulate" },
   { lesson: "18.1", panel: "Validator statistics" },
   { lesson: "18.2", panel: "Core and service activity" },
   { lesson: "19.1", panel: "Block import plan" },

@@ -626,6 +626,10 @@ ids below S are the registrar's. *Example:* 70,000 is public, 5 isn't.
 for it. Only the manager may give it. *Example:* gratis from anyone else: `HUH`.
 ([17.8](./17-accumulation/08-creating-a-service.md))
 
+**Upgrade.** A service replacing its own code hash and its least gas per item and per
+memo. *Example:* service 0's code hash goes from `0xdd0e…` to `0xc0f2…`.
+([17.10](./17-accumulation/10-upgrading-a-service.md))
+
 **Request.** A service asking for a preimage by hash and length. Its history is a short
 list of slots: provided, forgotten, available again. ([14.1](./14-services/01-providing-preimages.md))
 
@@ -739,6 +743,44 @@ round. *Example:* two runs left different assigners for core 0; the merge picks 
 **R (replace if changed).** R(o, a, b): the manager's change a wins; if the manager left
 it as o, the holder's own change b. *Example:* R(1, 5, 7) = 5, R(1, 1, 7) = 7.
 ([17.6](./17-accumulation/06-who-wins.md))
+
+**Gas budget.** g. The gas a block's accumulation may use, all rounds together: the bigger
+of G_T and G_A for every core plus the always-accumulate services' gas. *Example:*
+20,000,000 on tiny. ([17.9](./17-accumulation/09-the-blocks-gas-budget.md))
+
+**G_T.** The protocol's gas limit for a whole block's accumulation. *Example:* 20,000,000
+on tiny, 3,500,000,000 on full. ([17.9](./17-accumulation/09-the-blocks-gas-budget.md))
+
+**Leftover budget.** g\*. The next round's budget: the last round's, plus the gas its new
+transfers carry, minus the gas it used. *Example:* 20M + 0 − 0.35M = 19.65M.
+([17.9](./17-accumulation/09-the-blocks-gas-budget.md))
+
+**Yield.** The hash a run hands the chain as its accumulation output, by the `yield` host
+call or by halting with a 32-byte output. *Example:* service 1 yields `0xb8fe9f7f…`.
+([17.11](./17-accumulation/11-what-a-service-yields.md))
+
+**Accumulation outputs.** θ. A block's yields, each with the service that yielded it,
+sorted by service, then hash; their Keccak root joins the belt. *Example:* (service 1,
+`0xb8fe…`). ([17.11](./17-accumulation/11-what-a-service-yields.md))
+
+**Well-balanced Merkle root.** M_B. One hash for a list: halve it (the first half rounded
+up), take each half's root, and hash "node" and the two together; one item alone is
+hashed. *Example:* M_B([a, b]) = Keccak("node" ⌢ a ⌢ b). ([17.11](./17-accumulation/11-what-a-service-yields.md))
+
+**Provide, provision.** 𝐩. Handing a service a preimage it asked for, during
+accumulation; a provision waits for the end of the round, then is stored if the service
+still waits for it. *Example:* service 0 gives 1729 the 8 bytes "preimage".
+([17.12](./17-accumulation/12-providing-a-preimage.md))
+
+**Bless.** Setting every privilege in one call: the manager, the assigners, the
+delegator, the registrar and the always-accumulate services. *Example:* service 1 blesses
+service 2 as the delegator. ([17.13](./17-accumulation/13-blessing-and-designating.md))
+
+**Designate.** The delegator choosing the next validators, ι: 336 bytes of keys for each.
+*Example:* 6 validators on tiny, 2,016 bytes. ([17.13](./17-accumulation/13-blessing-and-designating.md))
+
+**Validator counts.** V. The sizes a validator set may have: a multiple of 3 from 6 to 3
+per core. *Example:* on tiny, with 2 cores, only 6. ([17.13](./17-accumulation/13-blessing-and-designating.md))
 
 **Accumulation statistics.** S(s) = (N, T, G). For each service, per block: the digests
 it accumulated, the transfers it received, the gas it used. *Example:* (1, 0, 29,643).

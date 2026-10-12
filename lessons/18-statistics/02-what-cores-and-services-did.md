@@ -182,9 +182,9 @@ SyntaxError: The requested module '../src/statistics.ts' does not provide an exp
 ...
 ✖ test/statistics.test.ts (196.1ms)
 ...
-ℹ tests 562
+ℹ tests 581
 ℹ suites 0
-ℹ pass 561
+ℹ pass 580
 ℹ fail 1
 ...
 ```
@@ -331,12 +331,12 @@ npm run typecheck
 ✔ one big report: its core and its service take on all its work (0.9ms)
 ✔ assured data: each core's load, and how many assurances name it (0.3ms)
 ...
-ℹ tests 609
+ℹ tests 628
 ℹ suites 0
-ℹ pass 609
+ℹ pass 628
 ℹ fail 0
 ...
-reported 609 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740899975
+reported 628 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740899975
 ...
 ```
 

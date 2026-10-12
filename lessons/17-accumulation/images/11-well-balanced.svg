@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">
+<style>
+  text { fill: #3c3c43; text-anchor: middle; }
+  .note { fill: #67676c; font-size: 12px; }
+  .edge { stroke: #9a9aa0; stroke-width: 1.5; }
+  .node { fill: #e8f0fe; stroke: #5b8def; stroke-width: 1.5; }
+  .leaf { fill: #e6f6ef; stroke: #3fa97a; stroke-width: 1.5; }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #dfdfd6; }
+    .note { fill: #a8a8a0; }
+    .edge { stroke: #6b6b72; }
+    .node { fill: #1e2a44; stroke: #7aa2f7; }
+    .leaf { fill: #1b3329; stroke: #4fc08d; }
+  }
+</style>
+<line class="edge" x1="330" y1="80" x2="190" y2="116"/>
+<line class="edge" x1="330" y1="80" x2="590" y2="116"/>
+<line class="edge" x1="190" y1="180" x2="120" y2="216"/>
+<line class="edge" x1="190" y1="180" x2="340" y2="216"/>
+<rect class="node" x="230" y="16" width="200" height="40" rx="6"/>
+<text x="330" y="41">K("node" ⌢ n ⌢ c)</text>
+<text class="note" x="330" y="73">the root, M_B([a, b, c])</text>
+<rect class="node" x="90" y="116" width="200" height="40" rx="6"/>
+<text x="190" y="141">n = K("node" ⌢ a ⌢ b)</text>
+<text class="note" x="190" y="173">the first half: 2 of 3</text>
+<rect class="leaf" x="490" y="116" width="200" height="40" rx="6"/>
+<text x="590" y="141">c</text>
+<text class="note" x="590" y="173">a half of one: c itself</text>
+<rect class="leaf" x="20" y="216" width="200" height="40" rx="6"/>
+<text x="120" y="241">a</text>
+<rect class="leaf" x="240" y="216" width="200" height="40" rx="6"/>
+<text x="340" y="241">b</text>
+<text class="note" x="350" y="286">a, b, c: the items, 36 bytes each (ℰ₄(s) ⌢ h); K: Keccak-256</text>
+<text class="note" x="350" y="306">one item alone is hashed: M_B([a]) = K(a)</text>
+</svg>

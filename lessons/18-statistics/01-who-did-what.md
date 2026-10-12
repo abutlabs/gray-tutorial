@@ -125,9 +125,9 @@ Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/statistics.ts' 
 ...
 ✖ test/statistics.test.ts (218.1ms)
 ...
-ℹ tests 562
+ℹ tests 581
 ℹ suites 0
-ℹ pass 561
+ℹ pass 580
 ℹ fail 1
 ...
 ```
@@ -261,12 +261,12 @@ npm run typecheck
 ✔ stf/statistics/full/stats_with_epoch_change-1.json: every validator's tallies end as the vector says (14.0ms)
 ✔ stf/statistics/full/stats_with_some_extrinsic-1.json: every validator's tallies end as the vector says (51.3ms)
 ...
-ℹ tests 571
+ℹ tests 590
 ℹ suites 0
-ℹ pass 571
+ℹ pass 590
 ℹ fail 0
 ...
-reported 571 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740875939
+reported 590 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740875939
 ...
 ```
 

@@ -227,14 +227,14 @@
    "id": 43,
    "type": "logs",
    "title": "Accumulate",
-   "description": "What bin/accumulate.ts did: a test vector's block accumulated, which packages went and how many reports still wait, the cores' assigners before and after, then each service's digests, transfers received and gas next to the vector's.",
+   "description": "What bin/accumulate.ts did: a test vector's block accumulated, which packages went and how many reports still wait, the cores' assigners before and after, the reports each round took, the outputs and their root, then each service's digests, transfers received and gas next to the vector's.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"accumulate\", run_id=~\"$run_id\"} | json | line_format \"{{if .slot}}slot {{.slot}}: accumulated {{.went}}; {{.waiting}} still waiting{{if .assigners}}; assigners {{.assigners}}{{end}}{{else}}service {{.s}}:{{if .count}} {{.count}} digest(s),{{end}}{{if .inputs}} {{.inputs}} input(s),{{end}}{{if .transfers}} {{.transfers}} transfer(s),{{end}} used {{.used}} (vector: {{.expected}}){{end}}\"",
+     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"accumulate\", run_id=~\"$run_id\"} | json | line_format \"{{if .slot}}slot {{.slot}}: accumulated {{.went}}; {{.waiting}} still waiting{{if .assigners}}; assigners {{.assigners}}{{end}}{{if .rounds}}; reports per round {{.rounds}}{{end}}{{if .root}}; outputs {{.outputs}}, root {{.root}}{{end}}{{else}}service {{.s}}:{{if .count}} {{.count}} digest(s),{{end}}{{if .inputs}} {{.inputs}} input(s),{{end}}{{if .transfers}} {{.transfers}} transfer(s),{{end}} used {{.used}} (vector: {{.expected}}){{end}}\"",
      "refId": "A",
      "queryType": "range"
     }

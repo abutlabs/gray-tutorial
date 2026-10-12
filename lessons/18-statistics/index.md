@@ -15,7 +15,7 @@ Assurances](../11-assurances/index.md), [Part 12 · Guarantees](../12-guarantees
 and [Part 17 · Accumulation](../17-accumulation/index.md), and on the foundations every
 part uses, [Parts 0 to 2](../index.md#lessons).
 
-**Starting here?** At the repo root, `npm run catch-up -- 17.8` makes your client the one
+**Starting here?** At the repo root, `npm run catch-up -- 17.13` makes your client the one
 this part starts from; [How to read it](../index.md#how-to-read-it) says more.
 
 - [18.1 Who did what](./01-who-did-what.md)

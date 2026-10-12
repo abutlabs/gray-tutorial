@@ -32,7 +32,7 @@ The history vectors give the new block's parts ready-made: its header hash, its
 `parent_state_root`, the root of its accumulation outputs, its slot, and its reported
 packages. For now, all you need to know is that a block brings them. [Part 12](../12-guarantees/index.md) works out
 the reported packages; the accumulation root needs the outputs that services hand back
-with the `yield` host call, which is still to be written.
+with the `yield` host call, which [lesson 17.11](../17-accumulation/11-what-a-service-yields.md) builds.
 
 ## The records first
 

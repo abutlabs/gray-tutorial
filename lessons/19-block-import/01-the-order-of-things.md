@@ -168,9 +168,9 @@ npm test
 ✖ every step comes after everything it's made from (0.2ms)
 ✖ steps that wait for each other are caught (0.1ms)
 ...
-ℹ tests 613
+ℹ tests 632
 ℹ suites 0
-ℹ pass 610
+ℹ pass 629
 ℹ fail 3
 ...
 test at test/import.test.ts:18:1
@@ -235,12 +235,12 @@ npm run typecheck
 ✔ every step comes after everything it's made from (0.2ms)
 ✔ steps that wait for each other are caught (0.2ms)
 ...
-ℹ tests 613
+ℹ tests 632
 ℹ suites 0
-ℹ pass 613
+ℹ pass 632
 ℹ fail 0
 ...
-reported 613 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791741143636
+reported 632 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791741143636
 ...
 ```
 
