@@ -28,8 +28,8 @@ App. B sets the rules every host call follows:
   range mean trouble (App. B.1): NONE is 2^64 − 1, "no such item", and WHAT is
   2^64 − 2, "no such host call". OK is 0.
 - **There are 28 host calls**, numbered from `gas` (0) to `provide` (27). Accumulation's
-  host function F (App. B.4) knows them all, and answers anything else with WHAT, for
-  1,000 gas.
+  host function F (App. B.4) knows 20 of them (refine's own, 7 to 14, aren't among them),
+  and answers anything else with WHAT, for 1,000 gas.
 
 The first and simplest is **`gas`** (App. B.5, Ω_G): φ₇ becomes the gas left, after paying
 48 to ask.
@@ -274,7 +274,8 @@ A real service this time: 1729, from the accumulate test vectors. Its very first
 is `fetch`, asking for item 0, the chain's protocol constants ([lesson 15.8](../15-the-pvm/08-a-real-program.md)'s bootstrap
 service asked the same). Your host has never heard of `fetch`: WHAT. And the service,
 unable to learn the rules of the chain it's running on, gives up and panics. Fair enough.
-The *Host calls* panel has the conversation, short as it is. `fetch` is next.
+The *Host calls* panel, on the **7 · Accumulation and import** dashboard (where all of [Part 16](./index.md)'s
+panels are), has the conversation, short as it is. `fetch` is next.
 
 ![Host calls panel](./images/01-host-calls.png)
 

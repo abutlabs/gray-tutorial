@@ -244,7 +244,7 @@ reported 472 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=
 ...
 ```
 
-Ten official vectors now pass end to end.
+Ten services in nine official vectors now match them.
 
 ## Watch it
 
@@ -262,7 +262,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 ```
 
 The bin from [lesson 16.7](./07-a-services-inputs.md) needs no change: point it at the new vector, and service 0's gas
-lines up with the vector's. The *Accumulate* panel shows it beside the others.
+lines up with the vector's. The *Accumulate* panel, on **7 · Accumulation and import**, shows it beside the
+others.
 
 ![Accumulate panel](./images/08-accumulate.png)
 
@@ -291,8 +292,8 @@ every account into the context, which keeps it to one `Map` lookup.
 
 ## What you have
 
-Services that can read any preimage on the chain, and ten official accumulate vectors
-passing end to end. Reading a preimage needs someone to have asked for it first:
+Services that can read any preimage on the chain, and ten services in nine official
+accumulate vectors matching them. Reading a preimage needs someone to have asked for it first:
 [lesson 16.9](./09-asking-for-preimages.md) lets a service ask.
 
 Next: [16.9 Asking for preimages](./09-asking-for-preimages.md)

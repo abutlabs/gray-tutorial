@@ -16,7 +16,7 @@ up to three slots (§9):
 | [] | asked for, not provided yet |
 | [x] | provided at slot x |
 | [x, y] | provided at x, forgotten at y |
-| [x, y, w] | provided at x, forgotten at y, asked for again at w |
+| [x, y, w] | provided at x, forgotten at y, asked for again at w, and available again from w |
 
 The three calls (App. B.7) all take the hash from memory at φ₇ and the length from φ₈.
 A length of 2^32 or more is HUH (no preimage is that long); an unreadable hash, a panic.
@@ -130,7 +130,7 @@ test("forget: a request never provided just goes; one provided at x becomes [x, 
 ```
 
 The vector checks look at requests and footprints too now, and three more vectors join:
-in `preimage_len_bound`, service 0 solicits and queries around the length bound.
+in `preimage_len_bound`, service 0 solicits, queries and forgets around the length bound.
 
 **Replace in** `test/accumulate.test.ts`
 
@@ -329,7 +329,7 @@ function setTo(m: Machine, answer: bigint): HostExit {
 }
 ```
 
-All three check the length *before* reading the hash, in the Gray Paper's order: an absurd
+All three decide on the length *before* the hash, in the Gray Paper's order: an absurd
 length is HUH even when the hash is unreadable too. `solicit` works out the account with
 the request's deposit added, exactly as `write` did with storage, and keeps it only if the
 balance covers it.
@@ -437,8 +437,8 @@ reported 478 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=
 ...
 ```
 
-Thirteen official vectors now pass end to end, and the checks are stricter: storage,
-requests, items and bytes, all as the vectors leave them.
+Thirteen services in twelve official vectors now match them, and the checks are stricter:
+storage, requests, items and bytes, all as the vectors leave them.
 
 ## Watch it
 
@@ -455,8 +455,8 @@ service 0: 1 input(s), 2000000 gas, "halt"
 reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738530109
 ```
 
-Service 0 files its requests, checks on them and halts, on exactly the vector's gas, and
-its storage is the vector's too. The bin is [lesson 16.7](./07-a-services-inputs.md)'s, unchanged: each new host call
+Service 0 asks with a length of 2^32, gets HUH and files no request, on exactly the vector's
+gas, and its storage is the vector's too. The bin is [lesson 16.7](./07-a-services-inputs.md)'s, unchanged: each new host call
 only had to join the host.
 
 <details>
@@ -480,7 +480,8 @@ with `unsigned_compare`; your `bigint` values just compare.
 ## What you have
 
 Services that ask for data, check on it, and let it go, paying deposit for each request
-while it lasts. Thirteen official accumulate vectors passing, and [Part 16](./index.md) is done. So
+while it lasts. Thirteen services in twelve official vectors matching, and [Part 16](./index.md)'s first
+stretch is done (the other host calls are still to be written). So
 far every report in a block is accumulated at once, in one go. [Part 17](../17-accumulation/index.md) is about
 which reports go when, and what a service's actions do to the others.
 

@@ -25,7 +25,8 @@ the fallback.
   survives whatever comes next. φ₇ = the gas left, after paying 103.
 - **C, the collapse** (App. B.4): when the machine stops, a halt keeps X; a panic or
   running out of gas keeps Y. So without a checkpoint, a failed accumulation changes
-  nothing at all.
+  nothing the service did itself (money transferred to it still arrives, as [Part
+  17](../17-accumulation/index.md) shows).
 - **Ψ_A** puts it together: lay out the service's code with Y ([lesson 15.8](../15-the-pvm/08-a-real-program.md)), arguments
   E(t, s, |i|), start at 5, answer host calls with F, then collapse. The gas used is u = g
   minus what's left (never counting below zero).

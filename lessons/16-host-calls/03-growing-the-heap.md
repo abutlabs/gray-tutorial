@@ -13,7 +13,7 @@ at a time, up towards the stack. φ₇ is the page the heap should end at: one p
 
 Three page numbers do the work:
 
-- **a = (2Z_Z + Q(|o|)) / Z_P**: the zone's first page, one empty zone above o ([lesson
+- **a = (2Z_Z + Z(|o|)) / Z_P**: the zone's first page, one empty zone above o ([lesson
   15.8](../15-the-pvm/08-a-real-program.md)).
 - **b = (2^32 − 3Z_Z − Z_I − P(s)) / Z_P**: as far as it may ever reach, a whole zone short
   of the stack.
@@ -131,7 +131,7 @@ test("service 1729 accumulates on exactly the 16,417 gas the test vector says", 
 });
 ```
 
-tinyCode's layout is easy to work out by hand. o is 3 bytes, so Q(|o|) is one zone, and a
+tinyCode's layout is easy to work out by hand. o is 3 bytes, so Z(|o|) is one zone, and a
 is (2 · 65,536 + 65,536) / 4,096 = 48. w takes page 48 and the heap page 49, so h is 50.
 
 The last test is the big one. `vectorService` sets up service 1729 exactly as the vector
@@ -212,8 +212,8 @@ memory map, so that's a short walk, not a million steps. New pages come from [le
 > left, Gray Paper 0.8.0 leaves the gas as it was, and so does `growHeap`. The 0.8.0 test
 > vectors already follow a later change to the Gray Paper, its pull request 533: the gas
 > drains to zero, so all of it counts as used. Service 1729 never runs short while
-> growing, so the two agree here. And `h` counts writable pages, which assumes they have
-> no gaps between a and b. Both wait in the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md). The Gray Paper keeps
+> growing, so the two agree here. And the Gray Paper's own `h` counts writable pages,
+> which would come out short if they ever had gaps between a and b. Both wait in the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md). The Gray Paper keeps
 > changing, so a client says which version it follows.
 
 **Replace in** `src/host.ts`
@@ -319,8 +319,8 @@ Now the bin compares its answer with the vector's. There it is: 16,417, to the l
 of gas. Every instruction priced by the pipeline of [lesson 15.10](../15-the-pvm/10-the-pipeline.md), every block paid for by
 the meter of 15.11, every host call charged its Gray Paper price. And the two `grow_heap` calls? Both ask for page 51, and the heap
 already ends at 51 (a = 48, then w and its two heap pages), so each is the cheap kind: 275,
-not 1,000. The *Host calls* panel has the conversation, now word for word what the vector
-expects.
+not 1,000. The *Host calls* panel, on **7 · Accumulation and import**, has the conversation, and its gas used is
+now exactly the vector's.
 
 ![Host calls panel](./images/03-host-calls.png)
 

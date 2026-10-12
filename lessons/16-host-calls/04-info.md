@@ -345,8 +345,8 @@ reported 453 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=
 ```
 
 Service 1729 still matches, to the gas: its accumulation never asks `info`, so nothing
-it does has changed. The forty services that start with `info` get further now, and the
-next thing they ask for is `read`.
+it does has changed. The forty first-round accumulations that start with `info` get
+further now, and the next thing they ask for is `read`.
 
 <details>
 <summary>lasair: the minimum balance, in <code>lib/pvm_host.ml</code></summary>

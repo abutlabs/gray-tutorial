@@ -25,8 +25,8 @@ memory at o, and φ₇ becomes the item's *whole* length. So a service can ask f
 first, to learn how big the item is, and then ask again with room for it. If the memory
 there isn't writable, the machine panics.
 
-The price depends on the item (App. B.5's table of M_Y): a base, plus a rate per 1,024
-bytes *asked for*, rounded up (the Gray Paper's 𝔐). Item 0 is a flat 390, item 1 a flat
+The price depends on the item (its M_Y, listed in App. I): a base, plus a rate per 1,024
+bytes *asked for*, rounded up (the Gray Paper's 𝒢). Item 0 is a flat 390, item 1 a flat
 103.
 
 Item 0 lists the constants in a fixed order, each in a fixed number of bytes: the three
@@ -382,7 +382,7 @@ second time with room for them), tries `grow_heap` twice, logs something, asks f
 inputs (one byte: a sequence of none), and halts. It spent 17,867 gas. The test vector
 says it should have spent 16,417. The difference, 1,450, is hiding in those two WHATs:
 each cost 1,000, and [lesson 16.3](./03-growing-the-heap.md) shows what `grow_heap` really costs. The *Host calls*
-panel has the whole conversation.
+panel, on **7 · Accumulation and import**, has the whole conversation.
 
 ![Host calls panel](./images/02-host-calls.png)
 

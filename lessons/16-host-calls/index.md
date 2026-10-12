@@ -7,7 +7,7 @@ calls an accumulating service needs, a few at a time, until a real accumulation 
 the test vectors down to the last unit of gas.
 
 By the end of this part your client answers the host calls of a service accumulating,
-and thirteen official accumulate vectors pass.
+and thirteen services in twelve official accumulate vectors match them.
 
 **Builds on** [Part 3 · Work and reports](../03-work-and-reports/index.md), [Part 4 ·
 Blocks](../04-blocks/index.md), [Part 5 · Hashing and

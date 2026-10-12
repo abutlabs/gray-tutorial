@@ -39,7 +39,7 @@ be transfers, which start with a 1 ([lesson 17.4](../17-accumulation/04-rounds.m
 **Δ₁** (§12) gathers service s's share of a block: an operand for each digest that names
 s, report by report, in order (transfers would come first). Its gas is its free gas (the
 always-accumulate privilege, `always_acc` in the vectors) plus the gas of every one of
-those digests.
+those digests (and, once there are transfers, theirs).
 
 *Which* reports a block accumulates, and when, is [Part 17](../17-accumulation/index.md)'s story: some must wait for
 others. Here every report is accumulated at once, which is exactly what the seven vectors
@@ -352,8 +352,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 `same_round_storage_isolation-1` accumulates two services in the same round. Each starts
 from the same accounts and writes its own key: 1729 its "last", 1730 a key spelling
 "fread". Neither sees the other's write: each has its own context, its own X and Y. Try
-the other vectors in the list. The *Accumulate* panel lines up each service's gas with the
-vector's.
+the other vectors in the list. The *Accumulate* panel, on **7 · Accumulation and import**, lines up each
+service's gas with the vector's.
 
 ![Accumulate panel](./images/07-accumulate.png)
 
@@ -381,8 +381,8 @@ one field at a time.
 
 ## What you have
 
-A service's inputs, built from a block's reports, and the first eight official accumulate
-vectors passing end to end. Many of the other vectors' services ask for preimages next:
+A service's inputs, built from a block's reports, and eight services in seven official
+accumulate vectors matching them, gas and storage. Many of the other vectors' services ask for preimages next:
 [lesson 16.8](./08-lookup.md) lets them read one.
 
 Next: [16.8 Lookup](./08-lookup.md)
