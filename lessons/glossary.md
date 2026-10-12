@@ -204,8 +204,8 @@ installs and uses. *Example:* `@noble/hashes`, from `npm install`.
 your own code. *Example:* the published Blake2b-256 of nothing at all.
 ([5.1](./05-hashing-and-signatures/01-hashes.md))
 
-**`Map`.** A lookup table from keys to values. *Example:* a service's storage maps each
-key to its value. ([16.5](./16-host-calls/05-storage.md))
+**`Map`.** JavaScript's lookup table, from keys to values. *Example:* a service's storage
+maps each key to its value. ([14.1](./14-services/01-providing-preimages.md))
 
 **Grafana.** The dashboards where your client's runs show up, with Loki (for events) and a
 Pushgateway (for numbers) behind them. *Example:* the *Chain* panel, on *2 · Blocks and
@@ -627,7 +627,7 @@ for it. Only the manager may give it. *Example:* gratis from anyone else: `HUH`.
 ([17.8](./17-accumulation/08-creating-a-service.md))
 
 **Request.** A service asking for a preimage by hash and length. Its history is a short
-list of slots: asked for, provided, forgotten. ([16.9](./16-host-calls/09-asking-for-preimages.md))
+list of slots: provided, forgotten, available again. ([14.1](./14-services/01-providing-preimages.md))
 
 **Footprint, deposit and minimum balance.** What a service keeps (items and bytes) costs
 deposit: it must hold at least 100 + 10 per item + 1 per byte, its minimum balance.

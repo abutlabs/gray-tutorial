@@ -9,7 +9,7 @@ that handover, and it starts [Part 14](./index.md).
 ## New words
 
 - **Request.** A service asking for a preimage by its hash and length. Its *history* is a
-  short list of slots: asked for, provided, forgotten. *Example:* `[]`, still waiting.
+  short list of slots: provided, forgotten, available again. *Example:* `[]`, still waiting.
 - **`Map`.** JavaScript's lookup table, from keys to values. *Example:* the state's
   entries, each found by its key in hex.
 
@@ -26,7 +26,7 @@ the slots of its life so far:
 | `[]` | asked for, still waiting |
 | `[x]` | provided at slot x |
 | `[x, y]` | provided at x, forgotten at y |
-| `[x, y, z]` | asked for again at z |
+| `[x, y, z]` | available again from z, after being available from x until y |
 
 **Y, "providable"**: a preimage (s, data) is welcome if service s has a request for
 (H(data), length) whose history is `[]`. **I, "provide"**: for each welcome preimage,
@@ -343,8 +343,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 ```
 
 Four pieces of data that service 0 was waiting for, from 3 bytes to 223, each one's
-request history going from `[]` to `[8]`. Block 14 has ten. The *Preimages* panel lists
-every handover.
+request history going from `[]` to `[8]`. Block 14 has ten. The *Preimages* panel, on the
+**5 · Services** dashboard, lists every handover.
 
 ![Preimages panel](./images/01-preimages.png)
 
