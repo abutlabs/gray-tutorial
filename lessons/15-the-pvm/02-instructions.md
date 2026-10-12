@@ -18,7 +18,7 @@ one **layout**, the way its arguments sit in the bytes after the opcode:
 | register, 8-byte immediate | 20 | `load_imm_64` |
 | two immediates | 30 to 33 | `store_imm_…` |
 | one offset | 40 | `jump` |
-| register, immediate | 50 to 62 | `load_imm`, loads, stores |
+| register, immediate | 50 to 62 | `jump_ind`, `load_imm`, loads, stores |
 | register, two immediates | 70 to 73 | `store_imm_ind_…` |
 | register, immediate, offset | 80 to 90 | `load_imm_jump`, `branch_…_imm` |
 | two registers | 100 to 110 | `move_reg`, bit counts, extensions |
@@ -451,14 +451,14 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 ```
 
 The very first two instructions are jumps, and that's no accident: the PVM starts
-*refine* at byte 0 and *accumulate* at byte 5 (GP §9 and App. B). They're the code's two
+*refine* at byte 0 and *accumulate* at byte 5 (App. B; §9 just numbers them 0 and 1). They're the code's two
 front doors. Follow the first one, `node bin/disassemble.ts
 ../vectors/traces/fallback/00000001.json 80282`, and you're reading the start of a
 function: `add_imm_64 r1, r1, -752` makes room on the stack (r1 is the stack pointer),
 and `store_ind_u64 r0, r1, 744` saves the return address (r0) there. Then [lesson 15.1](./01-the-program-blob.md)'s
 most common opcodes have names: `load_ind_u64` and `store_ind_u64`, moving 8-byte values
-between registers and memory, and `load_imm`. The *Disassembly* panel shows each
-instruction.
+between registers and memory, and `load_imm`. The *Disassembly* panel, on **6 · The PVM**,
+shows each instruction.
 
 ![Disassembly panel](./images/02-disassembly.png)
 

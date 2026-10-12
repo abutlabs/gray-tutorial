@@ -35,7 +35,7 @@ a byte that isn't writable, the machine stops and changes *nothing*:
 The machine stays on the faulting instruction, so whoever runs it could add the page and
 carry on.
 
-Addresses wrap round at 2^32 (the GP's ↻), and every value is little-endian.
+Addresses wrap round at 2^32 (the GP's ↺), and every value is little-endian.
 
 **The instructions** come in families that differ only in width and form:
 
@@ -366,7 +366,7 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 Look at the page after the store: `0x8077665544332211`, the register's bytes *backwards*.
 That's little-endian, lowest byte first, so the byte at 0x20000 is 0x80, which is why
 loading it as a signed byte gives −128. And the fault names 0x30000, the start of the
-missing page, not 0x30005. The *Memory* panel has the run.
+missing page, not 0x30005. The *Memory* panel, on **6 · The PVM**, has the run.
 
 ![Memory panel](./images/04-memory.png)
 

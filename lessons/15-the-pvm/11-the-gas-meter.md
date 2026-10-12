@@ -165,7 +165,8 @@ that just ran was a terminator.
 > **The simple road.** The Gray Paper charges the block that ı is *in*, from its start
 > (𝔏(ı)). `stepWithGas` charges the block starting *at* ı. That's the same whenever ı
 > starts a block, and so far it always does. A machine started or resumed in the middle
-> of a block, as [Part 16](../16-host-calls/index.md)'s inner machines can be, needs 𝔏; the [hardening
+> of a block, as the inner machines of the `machine` and `invoke` host calls (still to be
+> written) can be, needs 𝔏; the [hardening
 > pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds it.
 
 **Run**
@@ -271,7 +272,7 @@ The same 38 steps as [lesson 15.8](./08-a-real-program.md), now in five payments
 27, 73, and 102 for the last block, the one with `ecalli` in it: that instruction's 100
 cycles are most of the bill. 243 in all. Then the same start on a budget of 100: three
 blocks paid, 32 gas left, and the fourth costs 73. Out of gas, at the door of the block
-it couldn't afford. The *Gas* panel has both runs.
+it couldn't afford. The *Gas* panel, on **6 · The PVM**, has both runs.
 
 ![Gas panel](./images/11-gas.png)
 

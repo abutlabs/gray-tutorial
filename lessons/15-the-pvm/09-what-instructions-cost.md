@@ -17,7 +17,7 @@ App. A.10, the gas cost tables. Every instruction has a row with three things:
 - **x̌, execution units**: which parts of the CPU it occupies while it runs. There are five
   kinds: ALU, load, store, multiply and divide. A load needs an ALU and a load unit.
 
-Three rows depend on more than the instruction's name:
+Some rows depend on more than the instruction's name, through three functions:
 
 - **𝔓(a, b)** is a if the instruction writes a register it also reads, b if not. So
   `add_64 r0 = r0 + r1` needs 1 decode slot and `add_64 r2 = r0 + r1` needs 2. Picture a
@@ -356,7 +356,8 @@ You met this block in [lesson 15.8](./08-a-real-program.md): a function getting 
 stack, saves three registers there, and calls another function. Add up its cycles and you
 get 91. But a real CPU doesn't wait for one store to finish before starting the next: the
 model has four store units, and they can all work at once. [Lesson 15.10](./10-the-pipeline.md) builds that
-CPU, and this block comes out far cheaper than 91. The *Costs* panel has the sheet.
+CPU, and this block comes out far cheaper than 91. The *Costs* panel, on **6 · The PVM**,
+has the sheet.
 
 ![Costs panel](./images/09-costs.png)
 

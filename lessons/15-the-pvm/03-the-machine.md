@@ -4,7 +4,7 @@ Time to switch it on. Lessons [15.1](./01-the-program-blob.md) and [15.2](./02-i
 is a small, very strict computer: thirteen 64-bit registers, an instruction counter,
 and a rulebook for each instruction. This lesson builds the machine and teaches it its
 first seventeen instructions, enough to run a loop. Memory comes [next lesson](./04-memory.md), and gas
-after that.
+at the end of the part ([lessons 15.9](./09-what-instructions-cost.md) to 15.11).
 
 ## New words
 
@@ -32,8 +32,8 @@ step can also end with *halt* (finished well) or *panic* (finished badly).
 **Ψ** steps until ε is anything but ▸.
 
 *Basic blocks* (A.3): a basic block starts at 0, and right after every *terminator*:
-`trap`, `fallthrough`, jumps and branches. These are the instructions that can send ı
-somewhere other than the next instruction. The rule that matters: **a jump or branch
+`trap`, `fallthrough`, jumps and branches. Apart from `trap` and `fallthrough`, these are
+the instructions that can send ı somewhere other than the next instruction. The rule that matters: **a jump or branch
 may only land at the start of a basic block**, or the machine panics. A branch checks
 *both* places it might go, its target and the next instruction, whether it's taken or
 not.
@@ -406,8 +406,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 34 steps: two loads, the fallthrough, ten trips round the loop at three instructions
 each, and the return. Each step shows only the registers it changed, which is why step 1
 shows none: it loads 0 into r2, which already held 0. Watch r2 climb, 10, 19, 27…, and
-r3 count down to 0. The *PVM run*
-panel has every step, with the registers each one changed.
+r3 count down to 0. The *PVM run* panel, on **6 · The PVM**, has every step, with the
+registers each one changed.
 
 ![PVM run panel](./images/03-pvm-run.png)
 

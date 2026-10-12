@@ -338,7 +338,7 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 Read it in pairs. Every unsigned comparison and its signed twin disagree about −1 and 1:
 `lt_u` falls through where `lt_s` jumps, `ge_u` jumps where `ge_s` falls through. Only
 `eq` and `ne` have no twin, and now you can see why: equal bits are equal however you
-read them. The *Branches* panel has all sixteen.
+read them. The *Branches* panel, on **6 · The PVM**, has all sixteen.
 
 ![Branches panel](./images/06-branches.png)
 

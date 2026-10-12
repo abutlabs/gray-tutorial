@@ -307,8 +307,8 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 Apache-2.0 licensed), almost 10 kB of read-only data, and a PVM blob of 149,274 bytes
 holding 39,849 instructions. 128,413 bytes of code over 39,849 instructions is about
 3.2 bytes each. And a few opcodes do most of the work: 130, 123 and 51 alone start more
-than a third of all instructions. [Next lesson](./02-instructions.md) finds out what they are. The *Program* panel
-shows the layers.
+than a third of all instructions. [Next lesson](./02-instructions.md) finds out what they are. The *Program* panel,
+on the **6 · The PVM** dashboard (where all of [Part 15](./index.md)'s panels are), shows the layers.
 
 ![Program panel](./images/01-program.png)
 

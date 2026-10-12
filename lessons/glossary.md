@@ -656,7 +656,9 @@ imported, each with those segments' root. *Example:* "package A, segments root R
 
 **Pipeline.** Every package the chain is already dealing with: recently accumulated,
 waiting, or pending on a core; none may be reported again. *Example:* the vectors'
-`known_packages`. ([12.5](./12-guarantees/05-bad-reports.md))
+`known_packages`. (The PVM's pipeline, in [lesson 15.10](./15-the-pvm/10-the-pipeline.md), is something else: the model CPU's
+stages, which instructions pass through one behind another.)
+([12.5](./12-guarantees/05-bad-reports.md))
 
 **Prerequisite.** A work-package that a report says must be accumulated before it.
 *Example:* if package B names package A, B's report waits until A's has been accumulated.

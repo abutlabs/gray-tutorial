@@ -14,7 +14,7 @@ ask its first question.
 memory as they were. The host answers, by changing registers or memory, and the machine
 carries on from the next instruction (Ψ_H, App. A.6). The host calls are numbered in App.
 B: `gas` is 0, `grow_heap` 1, `fetch` 2, and so on up to `provide`, 27. [Part 16](../16-host-calls/index.md) builds
-them.
+the ones a service needs first; the rest are still to be written.
 
 **Y** (App. A.7) turns a standard program ([lesson 15.1](./01-the-program-blob.md) unpacked its parts: o, w, z, s and
 the code) and some argument bytes a into a starting memory and registers. Memory is laid
@@ -24,11 +24,12 @@ runs off the end of one section hits nothing at all instead of the next one:
 | From | What | Access |
 | --- | --- | --- |
 | 2^16 | o, the read-only data, padded with zeros to a whole page | R |
-| 2 · 2^16 + Q(\|o\|) | w, the read-write data, padded to a page, then z pages of heap | W |
+| 2 · 2^16 + Z(\|o\|) | w, the read-write data, padded to a page, then z pages of heap | W |
 | below 2^32 − 2 · 2^16 − 2^24 | the stack: s bytes rounded up to pages | W |
 | 2^32 − 2^16 − 2^24 | the arguments a, at most Z_I = 2^24 bytes, padded to a page | R |
 
-P rounds up to whole pages, Q to whole zones. Everything else isn't there: touch it and the
+P rounds up to whole pages, Z to whole zones (not to be confused with Z_Z, a zone's size).
+Everything else isn't there: touch it and the
 machine faults, or panics below 2^16 ([lesson 15.4](./04-memory.md)).
 
 And the registers: r0 = 2^32 − 2^16, the halt address ([lesson 15.3](./03-the-machine.md)), so that when the
@@ -119,7 +120,7 @@ test("a real service starts: the bootstrap service runs until it calls fetch", (
 ```
 
 `TINY_PROGRAM` has every part, each as small as it can be, so the addresses are easy to
-work out by hand. o is one zone up, at 0x10000. It's 3 bytes, so Q(3) is one zone, and w
+work out by hand. o is one zone up, at 0x10000. It's 3 bytes, so Z(3) is one zone, and w
 starts at 2 · 0x10000 + 0x10000 = 0x30000: one page for w, then one of heap. The stack's
 top is 2^32 − 2 · 2^16 − 2^24 = 0xfefe0000, with one page below it. The last test runs the
 real thing: the bootstrap service, entered at 5 with slot 1, service 0 and no inputs.
@@ -397,7 +398,7 @@ pages from Y, in use already. Step 8 is a `load_imm_jump`, a call, leaving the w
 r0 exactly as in [lesson 15.6](./06-branches-and-calls.md), and step 16 is another. Step 38 is `ecalli 2`: `fetch`. And
 r10 = 0 says what it wants: in `fetch`'s table, item 0 is the chain's protocol constants.
 The service's first question is "what are the rules here?" Fair enough. The *A real
-program starts* panel has the whole run.
+program starts* panel, on **6 · The PVM**, has the whole run.
 
 ![A real program starts panel](./images/08-a-real-program-starts.png)
 

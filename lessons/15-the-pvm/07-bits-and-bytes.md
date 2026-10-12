@@ -266,7 +266,7 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 of bits at the top. Look at the lowest byte, 0xf0: unsigned it's 240, signed it's −16, and
 `sign_extend_8` picks signed. `reverse_bytes` moves that 0xf0 from the bottom of the
 register to the top. Try `node bin/bits.ts 0xdeadbeef` and `node bin/bits.ts -1`. The
-*Bits* panel keeps every run.
+*Bits* panel, on **6 · The PVM**, keeps every run.
 
 ![Bits panel](./images/07-bits.png)
 

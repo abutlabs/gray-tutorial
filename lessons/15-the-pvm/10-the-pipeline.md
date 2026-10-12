@@ -342,7 +342,7 @@ it top down. At cycle 2 the add runs while the
 stores wait: they need its r1. From cycle 3 all three stores run side by side, with the
 15-cycle call beside them. The call finishes at 18 but can't retire before the stores
 ahead of it. At 28 everything is finished, at 29 everything is retired: 29 − 3 = 26 gas.
-The *Pipeline* panel keeps the picture.
+The *Pipeline* panel, on **6 · The PVM**, keeps the picture.
 
 ![Pipeline panel](./images/10-pipeline.png)
 
