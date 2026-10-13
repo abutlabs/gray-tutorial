@@ -3,6 +3,14 @@
 Time to turn numbers into bytes. JAM, like most of computing, writes them a little
 backwards: the small end first.
 
+This is a different job from [lesson 1.1](../01-bytes-and-numbers/01-bytes-and-hex.md)'s.
+Hex only writes bytes you already have as text. Here you start with a number and work
+out its bytes. Hex still appears, but only to show the bytes you made:
+
+```text
+4,807  ──encode (this lesson)──▶  bytes 199, 18  ──toHex (lesson 1.1)──▶  "0xc712"
+```
+
 ## New words
 
 - **Encode, decode.** Encoding turns a value into bytes; decoding turns the bytes back
@@ -16,8 +24,11 @@ All three are in the [glossary](../glossary.md).
 
 ## Small end first
 
-4,807 is `0x12C7` in hex: the bytes `12` and `C7`. JAM writes them the other way round,
-`C7 12`: the low byte first. Like writing a date as day-month-year.
+One byte only reaches 255, so a bigger number spreads over several, like digits: each
+byte counts 256 times the one after it. Take any number too big for one byte, say 4,807:
+4,807 = 18 × 256 + 199. 18 is `0x12` and 199 is
+`0xc7`, so 4,807 is `0x12c7`: the bytes `12` and `c7`. JAM writes them the other way
+round, `c7 12`: the low byte first. Like writing a date as day-month-year.
 
 And the width never changes. A timeslot is a u32, so it takes four bytes in every block
 header, even when it's 1: `01 00 00 00`.
