@@ -115,28 +115,6 @@ instructions. The others unpack the code of the trace's service 0, the 159,322-b
 preimage from [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md), and check that every layer fits *exactly*: no bytes left over
 at the end of the preimage, every jump landing on an instruction.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/program.ts' imported from …/client/test/program.test.ts
-...
-✖ test/program.test.ts (173.8ms)
-...
-ℹ tests 396
-ℹ suites 0
-ℹ pass 395
-ℹ fail 1
-...
-```
-
-Red: `src/pvm/program.ts` doesn't exist yet. Unpacking is a few small readers, one per
-layer, so they come as one file, and the next Run turns all the new tests green.
-
 ## The code
 
 **New file** `src/pvm/program.ts`

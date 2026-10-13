@@ -100,29 +100,6 @@ test("an item accumulation doesn't have: NONE; nowhere to put it: panic", () => 
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'accumulateHost'
-...
-✖ test/host.test.ts (241.1ms)
-...
-ℹ tests 447
-ℹ suites 0
-ℹ pass 446
-ℹ fail 1
-...
-```
-
-Red: `src/host.ts` doesn't export `fetch` or `accumulateHost` yet. Fetch needs the
-constants, the items and the host that hands them out, so they come in one snippet,
-after `Config` grows.
-
 ## The code
 
 **Replace in** `src/config.ts`

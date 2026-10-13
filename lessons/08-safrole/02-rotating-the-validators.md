@@ -137,27 +137,6 @@ The vectors name the sets in Greek: `iota`, `gamma_k`, `kappa`, `lambda`. (`gamm
 γ_P: older Gray Papers called it γ_k, and the vectors kept the name.) `validatorSets` gives them your client's names.
 `post_offenders` is ψ′_O, the offenders *after* this block's disputes.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/safrole.ts' does not provide an export named 'rotateValidators'
-...
-✖ test/safrole.test.ts (214.5ms)
-...
-ℹ tests 72
-ℹ suites 0
-ℹ pass 71
-ℹ fail 1
-...
-```
-
-Red: `src/safrole.ts` doesn't export `rotateValidators` yet.
-
 ## The code
 
 **Add to** `src/safrole.ts`

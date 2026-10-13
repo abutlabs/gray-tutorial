@@ -32,7 +32,8 @@ test("a moved page's old address is free, and its new one is a page", () => {
 });
 
 // The ids VitePress gives headings: @mdit-vue/shared's slugify (bundled in VitePress), with
-// -1, -2, ... for a repeat. An <a id="..."> keeps a renamed heading's old id working.
+// -1, -2, ... for a repeat, or the id a heading names itself ("### ℰₗ {#encode-fixed}").
+// An <a id="..."> keeps a renamed heading's old id working.
 function slugify(text: string): string {
   return text.normalize("NFKD").replace(/[\u0300-\u036F]/g, "").replace(/[\u0000-\u001f]/g, "")
     .replace(/[\s~`!@#$%^&*()\-_+=[\]{}|\\;:"'“”‘’<>,.?/]+/g, "-").replace(/-{2,}/g, "-")
@@ -43,6 +44,11 @@ function anchors(file: string): Set<string> {
   const text = readFileSync(join(LESSONS, file), "utf8").replace(/```[\s\S]*?```/g, "");
   const ids = new Set<string>();
   for (const [, heading] of text.matchAll(/^#{1,6} (.+)$/gm)) {
+    const own = / \{#([^}]+)\}$/.exec(heading);
+    if (own) {
+      ids.add(own[1]);
+      continue;
+    }
     const plain = heading.replace(/`([^`]*)`/g, "$1").replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").replace(/\*/g, "");
     let id = slugify(plain);
     for (let n = 1; ids.has(id); n++) id = `${slugify(plain)}-${n}`;

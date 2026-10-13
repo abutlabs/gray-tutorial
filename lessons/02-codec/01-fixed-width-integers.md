@@ -19,8 +19,11 @@ out its bytes. Hex still appears, but only to show the bytes you made:
   *Example:* 4,807 is `0x12c7`, and it's written `c7 12`.
 - **Fixed-width integer.** A number always written in the same number of bytes, however
   small it is. *Example:* a u32 is always four bytes, so 1 is `01 00 00 00`.
+- **Recursive.** Defined in terms of a smaller case of itself, down to a case simple
+  enough to answer straight away. *Example:* ℰ₂ is defined using ℰ₁, ℰ₁ using ℰ₀, and ℰ₀
+  is just no bytes.
 
-All three are in the [glossary](../glossary.md).
+All four are in the [glossary](../glossary.md).
 
 ## Small end first
 
@@ -37,13 +40,49 @@ header, even when it's 1: `01 00 00 00`.
 
 Appendix C, *Fixed-length Integer Encoding*, defines it one byte at a time:
 
-```text
-ℰ_l(x) = []                          if l = 0
-ℰ_l(x) = [x mod 256] ⌢ ℰ_{l−1}(⌊x / 256⌋)   otherwise
-```
+$$
+\mathcal{E}_l \colon \left\{
+\begin{aligned}
+\mathbb{N}_{2^{8l}} &\to \mathbb{B}_l \\
+x &\mapsto \begin{cases}
+[\,] & \text{if } l = 0 \\
+[x \bmod 256] \frown \mathcal{E}_{l-1}\left(\left\lfloor \frac{x}{256} \right\rfloor\right) & \text{otherwise}
+\end{cases}
+\end{aligned}
+\right.
+$$
 
-Read it like a recipe (⌢ means "followed by"): write down the lowest byte, chop it off,
-repeat with one byte fewer. The subscript l is the width: ℰ₄ is a u32, ℰ₈ a u64.
+| Symbol | Say it | Here |
+| --- | --- | --- |
+| [$\mathcal{E}_l$](../symbols.md#encode-fixed) | E sub l | x in exactly l bytes |
+| [$\mathbb{N}_{2^{8l}}$](../symbols.md#naturals) | N sub 2 to the 8l | a whole number that fits in l bytes |
+| [$\to$](../symbols.md#to) | to | what goes in, to what comes out |
+| [$\mathbb{B}_l$](../symbols.md#blobs) | B sub l | exactly l bytes |
+| [$\mapsto$](../symbols.md#maps-to) | maps to | x becomes... |
+| [$[\,]$](../symbols.md#sequence) | the empty sequence | no bytes at all |
+| [$\bmod$](../symbols.md#mod) | mod | the remainder: x mod 256 is x's lowest byte |
+| [$\frown$](../symbols.md#concat) | concatenate | followed by |
+| [$\lfloor\,\rfloor$](../symbols.md#floor) | floor | round down: ⌊x / 256⌋ is x without its lowest byte |
+
+The first line is a promise: give ℰₗ a number that fits in l bytes, and you get back
+exactly l bytes. The second says how, like a recipe: write down the lowest byte, chop it
+off, and repeat with one byte fewer, until no bytes are left. ℰ₄ is a u32, ℰ₈ a u64.
+
+ℰₗ is defined using $\mathcal{E}_{l-1}$, a smaller case of itself: it's *recursive*. Work
+it through for 4,807 in two bytes, and each step hands one byte fewer to the next, until
+l reaches 0 and the recipe stops:
+
+$$
+\begin{aligned}
+\mathcal{E}_2(4807) &= [4807 \bmod 256] \frown \mathcal{E}_1(\lfloor 4807 / 256 \rfloor) \\
+&= [199] \frown \mathcal{E}_1(18) \\
+&= [199] \frown [18 \bmod 256] \frown \mathcal{E}_0(\lfloor 18 / 256 \rfloor) \\
+&= [199] \frown [18] \frown [\,] \\
+&= [199, 18]
+\end{aligned}
+$$
+
+199 is `c7` and 18 is `12`: `c7 12`.
 
 ## The code
 

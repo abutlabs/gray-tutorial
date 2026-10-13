@@ -9,6 +9,7 @@ bandersnatch
 bitfield
 codec
 delegator
+deserialization
 extrinsics
 fallthrough
 immediates

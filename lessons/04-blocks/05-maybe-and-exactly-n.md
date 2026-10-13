@@ -57,27 +57,6 @@ test("a fixed-length sequence has no length in front", () => {
 Compare `seqN(u16, 3)` with [lesson 2.5](../02-codec/05-sequences-and-records.md)'s `seq(u16)`: the same three numbers, minus the
 `0x03` in front.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/codec/codec.ts' does not provide an export named 'option'
-...
-✖ test/codec.test.ts (151.3ms)
-...
-ℹ tests 38
-ℹ suites 0
-ℹ pass 37
-ℹ fail 1
-...
-```
-
-Red: the codec doesn't have `option` yet, nor its partner for exactly n.
-
 ## The code
 
 **Add to** `src/codec/codec.ts`

@@ -59,27 +59,6 @@ test("a reader reads back what a writer wrote, in the same order", () => {
 Three values in, eight bytes out, three values back. `c712` is 4,807 ([lesson 2.1](./01-fixed-width-integers.md)),
 `8080` is 128 ([lesson 2.2](./02-compact-naturals.md)), and `deadbeef` is, well, a classic.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/codec/reader.ts' imported from …/client/test/writer-reader.test.ts
-...
-✖ test/writer-reader.test.ts (81.3ms)
-ℹ tests 12
-ℹ suites 0
-ℹ pass 11
-ℹ fail 1
-...
-```
-
-Red: the files the test imports don't exist yet. (No stub this time: a stub Writer and
-Reader would be nearly as long as the real ones.)
-
 ## The Writer
 
 **New file** `src/codec/writer.ts`

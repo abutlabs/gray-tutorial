@@ -103,28 +103,6 @@ The second test checks 𝐑, the list of newly available reports, against every 
 vector, in core order. The third looks inside one tiny vector: core 0 gets 5 assurances
 and core 1 gets 4, just either side of the line.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/assurances.ts' imported from …/client/test/assurances.test.ts
-...
-✖ test/assurances.test.ts (191.1ms)
-...
-ℹ tests 166
-ℹ suites 0
-ℹ pass 165
-ℹ fail 1
-...
-```
-
-Red: `src/assurances.ts` doesn't exist yet. It's three small functions that build on one
-another, so they come together, and the next Run turns the new tests green at once.
-
 ## The code
 
 **New file** `src/assurances.ts`

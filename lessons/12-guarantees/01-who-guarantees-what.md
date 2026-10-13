@@ -163,29 +163,6 @@ The first test checks P's two promises without any vectors: three guarantors for
 core, and one rotation later, everyone one core along. The second checks every signer of
 every accepted guarantee, 130 of them, against M or M\*.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/guarantors.ts' imported from …/client/test/guarantors.test.ts
-...
-✖ test/guarantors.test.ts (335.0ms)
-...
-ℹ tests 194
-ℹ suites 0
-ℹ pass 193
-ℹ fail 1
-...
-```
-
-Red: `src/guarantors.ts` doesn't exist yet. P, M and M\*, and the choice between them
-lean on one another, so they come as one file, and the next Run turns all three tests
-green.
-
 ## The code
 
 **New file** `src/guarantors.ts`

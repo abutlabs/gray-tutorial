@@ -105,28 +105,6 @@ test("every instruction has a row in the cost table: 139 of them", () => {
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/gas.ts' imported from …/client/test/gas.test.ts
-...
-✖ test/gas.test.ts (94.0ms)
-...
-ℹ tests 432
-ℹ suites 0
-ℹ pass 431
-ℹ fail 1
-...
-```
-
-Red: `src/pvm/gas.ts` doesn't exist yet. It's the Gray Paper's cost table, row by row,
-and the few helpers that read an instruction's registers, so it comes whole.
-
 ## The code
 
 **New file** `src/pvm/gas.ts`

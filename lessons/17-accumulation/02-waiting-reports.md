@@ -125,29 +125,6 @@ test("a report waiting for package A goes in the same block as A", () => {
 `enqueue_and_unlock_simple-2` is the whole lesson in one vector: D has been waiting since
 slot 43 for package A; the block at slot 44 brings A; both go.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/accumulate.ts' does not provide an export named 'accumulationStateFromJson'
-...
-✖ test/accumulate.test.ts (174.3ms)
-...
-ℹ tests 473
-ℹ suites 0
-ℹ pass 472
-ℹ fail 1
-...
-```
-
-Red: `src/accumulate.ts` doesn't export `accumulationStateFromJson` yet, the reader for
-the state the queue lives in. The queue's pieces only make sense together, so they come
-in one snippet, and then the block is rebuilt on them.
-
 ## The code
 
 First the pieces: [lesson 17.1](./01-a-blocks-accumulation.md)'s round on its own, the queue's two operations, the state a

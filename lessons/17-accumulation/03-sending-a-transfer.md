@@ -149,29 +149,6 @@ test("a gift: service 0 sends service 1 a hundred, with a memo", () => {
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'CASH'
-...
-✖ test/host.test.ts (171.9ms)
-...
-ℹ tests 507
-ℹ suites 0
-ℹ pass 497
-ℹ fail 10
-...
-```
-
-Red: `src/host.ts` doesn't export `CASH` yet, nor the rest of the transfer pieces. The
-transfer, the outbox that holds them and the host call come first, then the host learns
-to keep the outbox through a checkpoint.
-
 ## The code
 
 First the transfer itself, the outbox, and the call:

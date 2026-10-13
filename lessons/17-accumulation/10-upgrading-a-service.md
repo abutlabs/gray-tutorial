@@ -105,8 +105,6 @@ npm test
 ...
 ✖ upgrade_service-1: the block ends as the vector says (49.372625ms)
 ...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'upgrade'
-...
 ℹ tests 538
 ℹ suites 0
 ℹ pass 536
@@ -123,8 +121,9 @@ SyntaxError: The requested module '../src/host.ts' does not provide an export na
 ...
 ```
 
-Red: `src/host.ts` has no `upgrade` to import. And until it does, service 0's call 20
-gets `WHAT`, so in the vector it would carry on with its old code hash.
+Red where it counts: in the vector, service 0's call 20 gets `WHAT`, so it carries on
+with its old code hash. (The other failure is `test/host.test.ts`, which can't load until
+`upgrade` exists.)
 
 ## The code
 

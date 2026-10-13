@@ -170,28 +170,6 @@ Three kinds of vector, each checking one piece:
 
 Accumulation's part was checked against the accumulate vectors in [lesson 17.1](../17-accumulation/01-a-blocks-accumulation.md).
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/statistics.ts' does not provide an export named 'CoreStats'
-...
-✖ test/statistics.test.ts (196.1ms)
-...
-ℹ tests 589
-ℹ suites 0
-ℹ pass 588
-ℹ fail 1
-...
-```
-
-Red: `src/statistics.ts` doesn't export `CoreStats` yet. The two cards and the two
-functions that fill them come in one snippet.
-
 ## The code
 
 **Add to** `src/statistics.ts`

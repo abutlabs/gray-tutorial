@@ -104,29 +104,6 @@ sign-extended. `0xfa` is −6, the jump back. Look at the `fallthrough` at 5: it
 nothing but end a basic block, so that 6, where the loop starts, *begins* one. Without
 it the branch back to 6 would panic.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/machine.ts' imported from …/client/test/machine.test.ts
-...
-✖ test/machine.test.ts (101.6ms)
-...
-ℹ tests 402
-ℹ suites 0
-ℹ pass 401
-ℹ fail 1
-...
-```
-
-Red: there's no machine yet. The registers, a step and its first family of
-instructions only work together, so they come as one file, with a tiny assembler before
-it for the hand-written programs.
-
 ## The code
 
 A tiny assembler first, for programs written by hand:

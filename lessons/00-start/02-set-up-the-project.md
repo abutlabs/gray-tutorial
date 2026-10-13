@@ -192,7 +192,7 @@ When something here doesn't work, it's almost always one of these:
 
 ## Working offline
 
-Everything runs on your own machine, so a flight is fine, if you fetch three things
+Everything runs on your own machine, so a flight is fine, if you fetch four things
 while you're still online:
 
 1. **The test vectors**: `npm run vectors`, done above.
@@ -204,6 +204,11 @@ while you're still online:
 ```sh
 npm install --no-save @noble/hashes@2.4.0 @noble/curves@2.4.0 @typeberry/native@0.5.1-4e90642
 ```
+
+4. **The tutorial's own packages, up to date**: after every `git pull`, run `npm install`
+   at the repo root again, while you're online. A new version of the tutorial can bring a
+   new package (the website's maths came that way), and the website won't start without
+   it.
 
 On the plane, where a lesson says `npm install`, type `npm install --offline`: npm takes
 everything from its cache. The lessons, in VS Code or on the website (`npm run site`),

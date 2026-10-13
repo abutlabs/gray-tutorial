@@ -116,23 +116,6 @@ test("frames: a length in four bytes, then the message, however the bytes arrive
 The third test feeds two frames to `readFrames` three bytes at a time, the way a slow
 socket might deliver them: a message must come out whole however its bytes arrive.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/fuzz.ts' imported from …/client/test/fuzz.test.ts
-...
-ℹ tests 649
-ℹ suites 0
-ℹ pass 648
-ℹ fail 1
-...
-```
-
 ## The code
 
 **New file** `src/fuzz.ts`

@@ -164,28 +164,6 @@ test("the registrar creates service 5, which gets its endowment a round later", 
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-✖ test/accumulate.test.ts (23650.7ms)
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'newIds'
-...
-ℹ tests 448
-ℹ suites 0
-ℹ pass 446
-ℹ fail 2
-...
-```
-
-Red: `src/host.ts` doesn't export `newIds` yet. Where ids come from, the call and its
-place in the host come together.
-
 ## The code
 
 **Add to** `src/host.ts`

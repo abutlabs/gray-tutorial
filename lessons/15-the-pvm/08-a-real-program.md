@@ -125,28 +125,6 @@ starts at 2 · 0x10000 + 0x10000 = 0x30000: one page for w, then one of heap. Th
 top is 2^32 − 2 · 2^16 − 2^24 = 0xfefe0000, with one page below it. The last test runs the
 real thing: the bootstrap service, entered at 5 with slot 1, service 0 and no inputs.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/standard.ts' imported from …/client/test/standard.test.ts
-...
-✖ test/standard.test.ts (186.7ms)
-...
-ℹ tests 428
-ℹ suites 0
-ℹ pass 427
-ℹ fail 1
-...
-```
-
-Red: `src/pvm/standard.ts` doesn't exist yet. Y is one function, a line per row of the
-table, with two constants and two small helpers, so it comes whole.
-
 ## The code
 
 **New file** `src/pvm/standard.ts`

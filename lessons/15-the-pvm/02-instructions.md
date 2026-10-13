@@ -101,28 +101,6 @@ walks the whole real program by `next`, decoding every instruction, and checks e
 jump and branch: 4,767 of them, each landing exactly on the start of an instruction.
 Get the sign of an offset wrong, or its length, and they'd land in the middle of one.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/instructions.ts' imported from …/client/test/instructions.test.ts
-...
-✖ test/instructions.test.ts (114.4ms)
-...
-ℹ tests 399
-ℹ suites 0
-ℹ pass 398
-ℹ fail 1
-...
-```
-
-Red: `src/pvm/instructions.ts` doesn't exist yet. It's the opcode table and one decoder
-for all thirteen layouts, too long to grow a piece at a time, so it comes whole.
-
 ## The code
 
 The opcode table is long, and its names are the Gray Paper's own.

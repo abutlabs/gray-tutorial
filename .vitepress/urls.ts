@@ -133,6 +133,7 @@ export const PUBLISHED: string[] = [
   "20-facing-the-fuzzer/04-ready-to-be-fuzzed",
   "19-block-import/",
   "glossary",
+  "symbols",
   "",
 ];
 

@@ -156,28 +156,6 @@ test("an ejected service is gone, and its ejector has its balance", () => {
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-✖ test/accumulate.test.ts (24175.3ms)
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'eject'
-...
-ℹ tests 448
-ℹ suites 0
-ℹ pass 446
-ℹ fail 2
-...
-```
-
-Red: `src/host.ts` doesn't export `eject` yet. The call comes first, then the host learns
-to answer it, and the round learns to remove what a run removed.
-
 ## The code
 
 The call:

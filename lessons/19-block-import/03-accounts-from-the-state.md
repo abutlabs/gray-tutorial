@@ -56,25 +56,6 @@ Service 0's code, found by the hash in its record, is the same bytes [lesson 14.
 `serviceCode` finds by trying every entry. And a value stored through the helper lands
 under its state key.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/services.ts' does not provide an export named 'preimageOf'
-...
-ℹ tests 641
-ℹ suites 0
-ℹ pass 640
-ℹ fail 1
-...
-```
-
-Red: the helpers don't exist yet.
-
 ## The code
 
 The two keys [lesson 6.2](../06-state-and-merklization/02-state-keys.md) didn't need:

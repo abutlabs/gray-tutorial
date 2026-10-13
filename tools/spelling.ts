@@ -17,9 +17,9 @@ export type Word = { word: string; line: number };
 const blank = (m: string) => "\n".repeat(m.split("\n").length - 1) || " ";
 
 /**
- * The words of a Markdown page's prose. Not prose: code (blocks, inline, <code>), URLs, HTML
- * tags, numbers (0xff, u32), file names and paths (HARDENING.md, …/client/src), and the
- * Gray Paper's superscripts (X^mov).
+ * The words of a Markdown page's prose. Not prose: code (blocks, inline, <code>), maths
+ * ($$ ... $$, $...$), URLs, HTML tags, numbers (0xff, u32), file names and paths
+ * (HARDENING.md, …/client/src), and the Gray Paper's superscripts (X^mov).
  */
 export function proseWords(markdown: string): Word[] {
   const text = markdown
@@ -28,7 +28,10 @@ export function proseWords(markdown: string): Word[] {
     .replace(/<!--[\s\S]*?-->/g, blank)
     .replace(/<code>[\s\S]*?<\/code>/g, blank)
     .replace(/`[^`]+`/g, blank) // inline code, even when it wraps onto the next line
+    .replace(/\$\$[\s\S]*?\$\$/g, blank) // a formula: LaTeX, not English
+    .replace(/\$[^$\s][^$\n]*\$/g, blank) // maths inside a sentence
     .replace(/\]\([^)\s]*\)/g, "]") // a link's address; its text stays
+    .replace(/ \{#[\w-]+\}$/gm, " ") // a heading's own id: an address too
     .replace(/https?:\/\/\S+/g, " ")
     .replace(/<[^>\n]+>/g, " ")
     .replace(/\S*[\/^]\S*/g, " ") // paths, X^mov

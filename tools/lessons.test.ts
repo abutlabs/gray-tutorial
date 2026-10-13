@@ -259,6 +259,18 @@ test("test-driven development is called that, never test-first", () => {
   assert.deepEqual(named, []);
 });
 
+// A test that fails because what it imports isn't written yet proves only that a file is
+// missing, so no lesson shows one (WRITING.md, "A missing import is never the red").
+test("no lesson shows a missing import's red", () => {
+  const shown: string[] = [];
+  for (const md of pages) {
+    const text = readFileSync(join(LESSONS, md), "utf8");
+    const red = /^(?:Error \[ERR_MODULE_NOT_FOUND\]|SyntaxError: The requested module)/gm;
+    for (const _ of text.matchAll(red)) shown.push(md);
+  }
+  assert.deepEqual(shown, []);
+});
+
 // The Book closes a chapter with what you learned, then why the next one comes next.
 test("every lesson closes with What you have", () => {
   for (const file of lessonAt.keys()) {
@@ -266,6 +278,62 @@ test("every lesson closes with What you have", () => {
       .matchAll(/^## (.+)$/gm)].map((m) => m[1]);
     assert.equal(sections.at(-1), "What you have", `${file} closes with "## What you have"`);
   }
+});
+
+// Readers work on flights (0.2, Working offline): every package a later lesson adds to the
+// client is in 0.2's command that fills npm's cache, at the version the lesson pins.
+test("every package a lesson adds is in 0.2's offline command, at its version", () => {
+  const SETUP = "00-start/02-set-up-the-project.md";
+  const offline = /^npm install --no-save (.+)$/m.exec(readFileSync(join(LESSONS, SETUP), "utf8"));
+  const cached = new Set(offline?.[1].split(" "));
+  const atSetup = new Set<string>();
+  const missing: string[] = [];
+  for (const lesson of parts.flatMap((p) => p.lessons)) {
+    for (const step of lesson.steps) {
+      if (step.kind !== "file" || step.path !== "package.json") continue;
+      const pkg = JSON.parse(step.code);
+      for (const [name, version] of Object.entries({ ...pkg.dependencies, ...pkg.devDependencies })) {
+        const at = `${name}@${version}`;
+        if (lesson.file === SETUP) atSetup.add(at);
+        else if (!atSetup.has(at) && !cached.has(at)) missing.push(`${lesson.id}: ${at}`);
+      }
+    }
+  }
+  assert.ok(atSetup.size > 0, `${SETUP} writes client/package.json`);
+  assert.deepEqual(missing, []);
+});
+
+// A formula is only as clear as its symbols (WRITING.md, Formulas): a What the Gray Paper
+// says with a formula in it has a key, a table whose every symbol links to its entry on
+// the symbols page. (tools/urls.test.ts checks each link lands on an entry.)
+test("every Gray Paper formula has a key, its symbols linked to symbols.md", () => {
+  const KEY = "| Symbol | Say it | Here |";
+  const problems: string[] = [];
+  for (const file of lessonAt.keys()) {
+    const text = readFileSync(join(LESSONS, file), "utf8").replace(/```[\s\S]*?```/g, "");
+    const section = /^## What the Gray Paper says\n([\s\S]*?)(?=^## )/m.exec(text)?.[1] ?? "";
+    if (!section.includes("$$")) continue;
+    const lines = section.split("\n");
+    const at = lines.indexOf(KEY);
+    if (at < 0) {
+      problems.push(`${file}: a formula with no key ("${KEY}")`);
+      continue;
+    }
+    for (const row of lines.slice(at + 2)) {
+      if (!row.startsWith("|")) break;
+      const symbol = row.split(/(?<!\\)\|/)[1].trim();
+      if (!/^\[.+\]\(\.\.\/symbols\.md#[\w-]+\)$/.test(symbol)) problems.push(`${file}: ${symbol} doesn't link to symbols.md`);
+    }
+  }
+  assert.deepEqual(problems, []);
+});
+
+// The symbols page's tables are its index: every full entry is in them, linked.
+test("every entry on the symbols page is linked from its tables", () => {
+  const text = readFileSync(join(LESSONS, "symbols.md"), "utf8");
+  const linked = new Set([...text.matchAll(/^\| \[.+?\]\(#([\w-]+)\) \|/gm)].map((m) => m[1]));
+  const entries = [...text.matchAll(/^### .+ \{#([\w-]+)\}$/gm)].map((m) => m[1]);
+  assert.deepEqual(entries.filter((id) => !linked.has(id)), []);
 });
 
 // Markdown forgives a heading glued to the line above it, and blank lines doubled, but the

@@ -153,28 +153,6 @@ inputs and gas from the reports, the entropy, the slot. `checkVector` compares t
 with the vector's post-state: the gas used, and the storage left behind, read with the
 same `accountFromJson` as the accounts going in.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/accumulate.ts' imported from …/client/test/accumulate.test.ts
-...
-✖ test/accumulate.test.ts (298.3ms)
-...
-ℹ tests 468
-ℹ suites 0
-ℹ pass 467
-ℹ fail 1
-...
-```
-
-Red: `src/accumulate.ts` doesn't exist yet. The operand and the function that gathers a
-service's share come together, as one small file.
-
 ## The code
 
 **New file** `src/accumulate.ts`

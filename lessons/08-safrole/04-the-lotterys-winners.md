@@ -173,27 +173,6 @@ bugs live: the block from slot 9 to 10 closes tiny's lottery, and the one from 1
 doesn't, since by then it's closed. The vectors only cross Y from further away (slot 3 to
 11, say), so without this test a `<=` where a `<` belongs would slip through.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/safrole.ts' does not provide an export named 'outsideIn'
-...
-✖ test/safrole.test.ts (204.6ms)
-...
-ℹ tests 72
-ℹ suites 0
-ℹ pass 71
-ℹ fail 1
-...
-```
-
-Red: `src/safrole.ts` doesn't export `outsideIn` yet.
-
 ## The code
 
 **Add to** `src/safrole.ts`

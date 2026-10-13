@@ -97,25 +97,6 @@ The first test is a round trip for the whole state: every 11th state of each tra
 and written back, must be the same entries. The second checks that reading leaves nothing
 out: sixteen components, one record per account, and every entry belongs to some account.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/whole-state.ts' imported from …/client/test/whole-state.test.ts
-...
-ℹ tests 641
-ℹ suites 0
-ℹ pass 640
-ℹ fail 1
-...
-```
-
-Red: there's no `src/whole-state.ts` yet.
-
 ## The code
 
 An account read from the state carries its entries:

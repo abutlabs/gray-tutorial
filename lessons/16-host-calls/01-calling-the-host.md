@@ -86,28 +86,6 @@ A tiny program: one `ecalli`, then a return through r0. Both are in one basic bl
 which costs 100 (the `ecalli`'s 100 cycles, from [lesson 15.9](../15-the-pvm/09-what-instructions-cost.md)). So with 1,000 gas, the
 block leaves 900, and asking leaves 852.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/host.ts' imported from …/client/test/host.test.ts
-...
-✖ test/host.test.ts (166.8ms)
-...
-ℹ tests 447
-ℹ suites 0
-ℹ pass 446
-ℹ fail 1
-...
-```
-
-Red: `src/host.ts` doesn't exist yet. Ψ_H, the charge, `gas` and the answer to an
-unknown call only work together, so they come as one file.
-
 ## The code
 
 **New file** `src/host.ts`

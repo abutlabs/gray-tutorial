@@ -60,27 +60,6 @@ import { DisputesExtrinsic } from "../src/block.ts";
 testCodecVector("disputes_extrinsic", DisputesExtrinsic);
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/block.ts' does not provide an export named 'DisputesExtrinsic'
-...
-✖ test/block.test.ts (192.3ms)
-...
-ℹ tests 33
-ℹ suites 0
-ℹ pass 32
-ℹ fail 1
-...
-```
-
-Red: `src/block.ts` doesn't export `DisputesExtrinsic` yet.
-
 ## The code
 
 **Add to** `src/block.ts`

@@ -7,6 +7,7 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { LESSONS } from "./lessons.ts";
+import { compact } from "../.vitepress/theme/compact.ts";
 
 /** One field of an encoding: its name and value, its bytes, and how they were written. */
 interface Field {
@@ -84,6 +85,97 @@ export function workItemBytes(): string {
     .bytes { fill: #ffffff; }
     .f0 { fill: #1e2a44; stroke: #7aa2f7; }
     .f1 { fill: #1b3329; stroke: #4fc08d; }
+  }
+</style>
+${parts.join("\n")}
+</svg>
+`;
+}
+
+// Lesson 2.2's compact naturals: one byte, two bytes with the top bits zero, two bytes without.
+const COMPACT = [127n, 128n, 300n];
+
+/** Lesson 2.2's compact naturals, bit by bit: x as one strip of bits, and ℰ(x) as bytes holding those bits after the marker. */
+export function compactNaturals(): string {
+  const BIT = 24, BYTE = 8 * BIT, BYTE_GAP = 24, LEFT = 112, X0 = 16 + LEFT, KEY = 56, BLOCK = 190;
+  const at = (b: number, i: number) => X0 + b * (BYTE + BYTE_GAP) + i * BIT;
+  const cell = (cls: string, x: number, y: number, bit: string) => [
+    `<rect class="${cls}" x="${x}" y="${y}" width="${BIT}" height="26"/>`,
+    `<text x="${x + BIT / 2}" y="${y + 18}">${bit}</text>`,
+  ];
+  // The key: a bit is one small square; a byte is a thick box of eight.
+  const keyByte = 200;
+  const parts: string[] = [
+    ...cell("plain", 16, 8, "1"),
+    `<text class="sub" x="${16 + BIT + 10}" y="26">one bit: 0 or 1</text>`,
+    ...[..."10000000"].flatMap((bit, i) => cell("plain", keyByte + i * BIT, 8, bit)),
+    `<rect class="byte" x="${keyByte}" y="8" width="${BYTE}" height="26" rx="3"/>`,
+    `<text class="sub" x="${keyByte + BYTE + 10}" y="26">one byte: 8 bits</text>`,
+  ];
+  for (const [k, x] of COMPACT.entries()) {
+    const top = KEY + k * BLOCK, { l, bytes, roles } = compact(x);
+    if (l > 1) throw new Error(`${x} takes more than two bytes`);
+    const bits = bytes.map((byte) => byte.toString(2).padStart(8, "0"));
+    const role = (b: number, i: number) => roles[b][i];
+    // Row 1 is x's own bits; after the marker, ℰ(x) must hold exactly the same bits in order.
+    const xBits = x.toString(2).padStart(7 * (l + 1), "0");
+    const carried = bits.map((s, b) => [...s].filter((_, i) => role(b, i) !== "mark").join("")).join("");
+    if (carried !== xBits) throw new Error(`ℰ(${x}) doesn't carry x's bits`);
+    const topCount = 7 - l, start = at(0, l + 1), lowAt = at(0, 8);
+    const yX = top + 30, yE = top + 92;
+    const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+    parts.push(
+      `<text class="label" x="16" y="${yX + 18}">x = ${x}</text>`,
+      `<text class="sub" x="16" y="${yX + 36}">${xBits.length} bits</text>`,
+      `<text class="label" x="16" y="${yE + 18}">ℰ(${x})</text>`,
+      `<text class="sub" x="16" y="${yE + 36}">${plural(bytes.length, "byte")}</text>`,
+      `<text class="group" x="${start + (topCount * BIT) / 2}" y="${top + 22}">${l === 0 ? "7 bits" : `top ${topCount} bits`}</text>`,
+      // Each group of x's bits, carried down into its place in ℰ(x).
+      `<polygon class="carry top" points="${start},${yX + 26} ${lowAt},${yX + 26} ${lowAt},${yE} ${start},${yE}"/>`,
+    );
+    // x is one number, so its bits are one unbroken strip.
+    xBits.split("").forEach((bit, i) => parts.push(...cell(i < topCount ? "top" : "low", start + i * BIT, yX, bit)));
+    parts.push(`<rect class="number" x="${start}" y="${yX}" width="${xBits.length * BIT}" height="26" rx="3"/>`);
+    if (l > 0) {
+      parts.push(
+        `<text class="group" x="${lowAt + BYTE / 2}" y="${top + 22}">low 8 bits</text>`,
+        `<polygon class="carry low" points="${lowAt},${yX + 26} ${lowAt + BYTE},${yX + 26} ${at(1, 8)},${yE} ${at(1, 0)},${yE}"/>`,
+      );
+    }
+    for (const [b, s] of bits.entries()) {
+      for (let i = 0; i < 8; i++) parts.push(...cell(role(b, i), at(b, i), yE, s[i]));
+      parts.push(
+        `<rect class="byte" x="${at(b, 0)}" y="${yE}" width="${BYTE}" height="26" rx="3"/>`,
+        `<text class="hex" x="${at(b, 0) + BYTE / 2}" y="${yE + 46}">0x${bytes[b].toString(16).padStart(2, "0")}</text>`,
+      );
+    }
+    const marker = l === 0 ? "0: no more bytes follow" : "10: one more byte follows";
+    parts.push(`<text class="note" x="${at(0, 0)}" y="${yE + 68}">↑ ${marker}</text>`);
+  }
+  const width = at(1, 8) + 16;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${KEY + COMPACT.length * BLOCK}" width="${width}" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">
+<style>
+  text { fill: #3c3c43; text-anchor: middle; }
+  .label, .sub { text-anchor: start; }
+  .group, .hex, .sub { fill: #67676c; font-size: 13px; }
+  .note { fill: #c2410c; font-size: 12px; text-anchor: start; }
+  .plain { fill: #f6f6f7; stroke: #9a9aa0; }
+  .mark { fill: #fdf3e1; stroke: #d39b2a; }
+  .top { fill: #e8f0fe; stroke: #5b8def; }
+  .low { fill: #e6f6ef; stroke: #3fa97a; }
+  .carry { stroke: none; opacity: 0.45; }
+  .number { fill: none; stroke: #9a9aa0; stroke-dasharray: 4 3; }
+  .byte { fill: none; stroke: #3c3c43; stroke-width: 2; }
+  @media (prefers-color-scheme: dark) {
+    text { fill: #dfdfd6; }
+    .group, .hex, .sub { fill: #a8a8a0; }
+    .note { fill: #ff9a5c; }
+    .plain { fill: #2a2a2e; stroke: #8a8a90; }
+    .mark { fill: #3a2e14; stroke: #e0b04a; }
+    .top { fill: #1e2a44; stroke: #7aa2f7; }
+    .low { fill: #1b3329; stroke: #4fc08d; }
+    .number { stroke: #8a8a90; }
+    .byte { stroke: #dfdfd6; }
   }
 </style>
 ${parts.join("\n")}
@@ -398,6 +490,7 @@ ${parts.join("\n")}
 }
 
 export const DIAGRAMS: Record<string, () => string> = {
+  "02-codec/images/02-compact-naturals.svg": compactNaturals,
   "02-codec/images/06-work-item-bytes.svg": workItemBytes,
   "06-state-and-merklization/images/01-state-trie.svg": stateTrie,
   "07-time-and-shuffling/images/02-shuffle-steps.svg": shuffleSteps,

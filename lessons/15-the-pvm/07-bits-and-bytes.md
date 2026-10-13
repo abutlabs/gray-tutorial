@@ -93,28 +93,6 @@ test("every two-register instruction after move_reg has an operation: 10 of them
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/bits.ts' imported from …/client/test/bits.test.ts
-...
-✖ test/bits.test.ts (275.0ms)
-...
-ℹ tests 423
-ℹ suites 0
-ℹ pass 422
-ℹ fail 1
-...
-```
-
-Red: `src/pvm/bits.ts` doesn't exist yet. It's one table, a line per instruction, so it
-comes whole, and the machine's new family is a few lines after it.
-
 ## The code
 
 **New file** `src/pvm/bits.ts`

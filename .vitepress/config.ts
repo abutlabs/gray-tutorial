@@ -22,6 +22,7 @@ const printPages: PrintPage[] = [
     })),
   ]),
   { address: "glossary", title: "Glossary", part: true },
+  { address: "symbols", title: "Gray Paper symbols", part: true },
 ];
 // each Add to / Replace in snippet's whole file, worked out once (restart `npm run site` to
 // see a lesson's edits in them)
@@ -38,7 +39,9 @@ export default defineConfig({
   // Grafana and the stack are on localhost on purpose; every other link must resolve
   ignoreDeadLinks: [/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/],
   lastUpdated: false,
-  markdown: { config: snippetLabels, codeTransformers: [shellComments()] },
+  // $$ ... $$ is a Gray Paper formula, drawn as maths when the site is built (MathJax, to
+  // SVG: no script in the reader's browser, and print.html gets it too)
+  markdown: { math: true, config: snippetLabels, codeTransformers: [shellComments()] },
   // pages that moved keep their old address, as a page that sends the reader on; and the
   // whole tutorial on one page, print.html, for printing and reading offline
   buildEnd: (site) => {
@@ -50,6 +53,7 @@ export default defineConfig({
     search: { provider: "local", options: { miniSearch: { searchOptions: { combineWith: "AND" } } } },
     nav: [
       { text: "Glossary", link: "/glossary" },
+      { text: "Symbols", link: "/symbols" },
       // a plain page outside the app (print.ts): `target` makes the link load it in full
       { text: "One page", link: "/print.html", target: "_self" },
       { text: "JAM learning", link: "https://abutlabs.github.io/jam-learning/" },
@@ -71,6 +75,7 @@ export default defineConfig({
         })),
       })),
       { text: "Glossary", link: "/glossary" },
+      { text: "Gray Paper symbols", link: "/symbols" },
     ],
   },
 });

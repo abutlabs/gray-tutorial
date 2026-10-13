@@ -18,37 +18,138 @@ All three are in the [glossary](../glossary.md).
 
 ## Shrink to fit
 
-The trick is in the first byte. It starts with some one-bits and then a zero. The number
-of ones, l, says how many more bytes follow. The bits after the zero hold the top of x,
-and the l bytes after the first hold the rest, little-endian:
+The first byte does two jobs. Its first bits say how many more bytes follow, and the rest
+of its bits carry the start of the number.
 
-| x is below | bytes | first byte |
-| --- | --- | --- |
-| 2^7 | 1 | `0xxxxxxx` |
-| 2^14 | 2 | `10xxxxxx` |
-| 2^21 | 3 | `110xxxxx` |
-| ... | ... | ... |
-| 2^56 | 8 | `11111110` |
-| 2^64 | 9 | `11111111`, then all of x in 8 bytes |
+**Below 128: one byte.** The first bit is 0: no more bytes follow. That leaves 7 bits for
+x, enough for 0 to 127.
 
-A decoder peeks at the first byte, counts the leading ones, and knows exactly how much to
-read. Anything below 128 fits in one byte, which is why a short list costs just one byte
-of length. (If you know UTF-8, it's a cousin of its trick, but count with care: there,
-the leading ones count the first byte too, so `110xxxxx` means two bytes, not three.)
+Why 127? A byte's eight bits are worth 128, 64, 32, 16, 8, 4, 2 and 1, left to right: each
+is worth twice the one on its right, as each decimal digit is worth ten times the next.
+The number is the sum of the places holding a 1. `01111111` has a 1 in every place but the
+first: 64 + 32 + 16 + 8 + 4 + 2 + 1 = 127. Add 1 and every 1 carries, as 999 + 1 does in
+decimal: `10000000`, 128. So seven bits reach 127 and no further, and 128 is the first
+number that needs the eighth. Click the bits to try it:
+
+<BitPlaces />
+
+**128 to 16,383: two bytes.** 128 needs 8 bits, one too many. So the first byte starts
+`10`: one more byte follows. That leaves 6 bits in the first byte and 8 in the second, 14
+in all. Write x in 14 bits, put its top 6 after the `10`, and its low 8 in the second
+byte.
+
+The 14 places go on doubling past 128: 256, 512, up to 8,192, so the most they hold is
+16,383, one less than 16,384 (2^14), as 127 is one less than 128. Click x's bits and watch
+its two bytes:
+
+<TwoBytes />
+
+> [!NOTE]
+> **A leading 0, or all 8 bits?** It depends on what the byte is, not on its value.
+>
+> - **A byte that is just a byte uses all 8 bits: 0 to 255.** Every byte of a hash (ℍ,
+>   [lesson 1.1](../01-bytes-and-numbers/01-bytes-and-hex.md)), every byte of a
+>   fixed-width number such as a block's timeslot (ℰ₄, [lesson
+>   2.1](./01-fixed-width-integers.md)), and every byte after a compact natural's first:
+>   300's second byte is `0x2c`, and 16,383's is `0xff`, all eight bits x's own.
+> - **The first byte of a compact natural gives its first bits to the marker.** One byte
+>   alone starts with the 0 that says "no more follow", so it holds only 0 to 127. In JAM
+>   every list carries its length as a compact natural: a list of 127 items costs one byte
+>   of length, `0x7f`, and a list of 128 costs two, `0x8080`.
+>
+> The byte `0xff` is 255 in a hash, but as a compact natural's first byte it means "eight
+> more bytes follow". Nothing in the byte says which: the Gray Paper's types say what comes
+> where, and the decoder reads in that order.
+
+In the picture, each small square is one bit, a 0 or a 1, and each thick box is one byte
+of eight bits. The top row of each pair is x itself: a number, written as one unbroken
+strip of bits, not yet bytes. The bottom row is ℰ(x), the bytes that go on the wire. The
+shading shows where each group of x's bits ends up.
+
+![A key first: a small square is one bit, a thick box of eight squares is one byte. Then 127, 128 and 300. 127 is a strip of seven one-bits; its one byte is a 0, then those seven bits: 0x7f. 128 is a strip of 14 bits, six zero top bits then the low bits 10000000; its first byte is the marker 10 then the six top bits, 0x80, and its second byte is the low bits, 0x80. 300 has the top bits 000001 and the low bits 00101100, so its bytes are 0x81 and 0x2c](./images/02-compact-naturals.svg)
+
+128's two bytes are both `0x80`, but only by coincidence. The first is the marker `10`
+with 128's top bits after it, which are all zero. The second is 128's low 8 bits. 300 has
+a top bit set, so its two bytes differ: `0x812c`.
+
+**Bigger numbers.** Each extra byte brings 8 more bits for x but costs one more 1 at the
+start of the first byte, so each length holds 7 bits more than the last:
+
+| x is below | bytes | first byte | bits for x |
+| --- | --- | --- | --- |
+| 2^7 | 1 | `0xxxxxxx` | 7 |
+| 2^14 | 2 | `10xxxxxx` | 6 + 8 = 14 |
+| 2^21 | 3 | `110xxxxx` | 5 + 16 = 21 |
+| ... | ... | ... | ... |
+| 2^56 | 8 | `11111110` | 0 + 56 = 56 |
+| 2^64 | 9 | `11111111` | 0 + 64 = 64 |
+
+When two or more bytes follow, they're little-endian, lowest first, as in [lesson
+2.1](./01-fixed-width-integers.md): 16,384 is `c0 00 40`. The last row breaks the
+pattern: eight ones and no zero, then all of x in eight bytes.
+
+Try any x. Step from 127 to 128 and a second byte appears; from 16,383 to 16,384, a
+third. The colours are the picture's: the marker, x's top bits, its low bits.
+
+<CompactNatural />
+
+A decoder reads the first byte, counts its *leading ones*, and knows exactly how many
+bytes to read. Anything below 128 fits in one byte, so a short list costs one byte of
+length.
+
+> [!NOTE]
+> If you know UTF-8, this is a cousin of its trick, but count with care. In UTF-8 the
+> leading ones count the first byte too, so `110xxxxx` means two bytes in all. Here it
+> means two *more*: three in all.
 
 ## What the Gray Paper says
 
 Appendix C defines ℰ without a subscript, for any natural below 2^64, in one to nine
 bytes. Here is the table above, in the Gray Paper's words:
 
-```text
-ℰ(x) = [0]                                         if x = 0
-ℰ(x) = [2^8 − 2^(8−l) + ⌊x / 2^(8l)⌋] ⌢ ℰ_l(x mod 2^(8l))   if 2^(7l) ≤ x < 2^(7(l+1)), for l in 0..7
-ℰ(x) = [2^8 − 1] ⌢ ℰ_8(x)                           otherwise (x < 2^64)
-```
+$$
+\mathcal{E} \colon \left\{
+\begin{aligned}
+\mathbb{N}_{2^{64}} &\to \mathbb{B}_{1:9} \\
+x &\mapsto \begin{cases}
+[0] & \text{if } x = 0 \\
+\left[2^8 - 2^{8-l} + \left\lfloor \frac{x}{2^{8l}} \right\rfloor\right] \frown \mathcal{E}_l\left(x \bmod 2^{8l}\right) & \text{if } \exists l \in \mathbb{N}_8 : 2^{7l} \le x < 2^{7(l+1)} \\
+[2^8 - 1] \frown \mathcal{E}_8(x) & \text{otherwise if } x < 2^{64}
+\end{cases}
+\end{aligned}
+\right.
+$$
 
-The middle line is the whole table: 2^8 − 2^(8−l) is a byte of l leading ones, and the
-condition picks the smallest l that x fits in.
+| Symbol | Say it | Here |
+| --- | --- | --- |
+| [$\mathcal{E}$](../symbols.md#encode) | script E | x in 1 to 9 bytes |
+| [$\mathbb{N}_{2^{64}}$](../symbols.md#naturals) | N sub 2 to the 64 | any whole number below $2^{64}$ |
+| [$\to$](../symbols.md#to) | to | what goes in, to what comes out |
+| [$\mathbb{B}_{1:9}$](../symbols.md#blobs) | B sub 1 to 9 | 1 to 9 bytes |
+| [$\mapsto$](../symbols.md#maps-to) | maps to | x becomes... |
+| [$[\,]$](../symbols.md#sequence) | the sequence | [0] is the one byte 0 |
+| [$\lfloor\,\rfloor$](../symbols.md#floor) | floor | round down |
+| [$\bmod$](../symbols.md#mod) | mod | the remainder |
+| [$\frown$](../symbols.md#concat) | concatenate | followed by |
+| [$\mathcal{E}_l$](../symbols.md#encode-fixed) | E sub l | [lesson 2.1](./01-fixed-width-integers.md)'s fixed width: exactly l bytes |
+| [$\exists$](../symbols.md#exists) | there exists | there is some l... |
+| [$\in$](../symbols.md#in) | in | $l \in \mathbb{N}_8$: l is one of 0 to 7 |
+
+Each case is a row of the table above:
+
+- **x = 0** is the byte 0. It needs a line of its own because the middle case asks for x
+  to be at least $2^{7l}$, and for l = 0 that's 1.
+- **The middle case** is every row up to eight bytes, in three pieces:
+  - $2^8 - 2^{8-l}$ is the marker: l ones, then zeros. For l = 1 it's 256 − 128 = 128,
+    `10000000`; for l = 2 it's 256 − 64 = 192, `11000000`.
+  - $\lfloor x / 2^{8l} \rfloor$ is x's top bits, added into the zeros after the marker.
+  - $\mathcal{E}_l(x \bmod 2^{8l})$ is x's low l bytes, little-endian, from [lesson
+    2.1](./01-fixed-width-integers.md).
+
+  Its condition says there is some l from 0 to 7 with x at least $2^{7l}$ and below
+  $2^{7(l+1)}$. Exactly one l fits each x: the number of bytes after the first.
+- **Otherwise** is the nine-byte row: $2^8 - 1$ is 255, `11111111`, and then all of x
+  in eight bytes.
 
 ## The tests
 
@@ -86,7 +187,9 @@ test("decodeNatural can start in the middle of the bytes", () => {
 
 Check 128 by hand. It's at least 2^7 and below 2^14, so l = 1. The first byte is
 2^8 − 2^7 + ⌊128 / 2^8⌋ = 128 + 0 = `0x80`, then ℰ₁(128 mod 256) = `0x80`. Together:
-`0x8080`. You just did the Gray Paper's arithmetic in your head.
+`0x8080`. 300 the same way: 128 + ⌊300 / 256⌋ = 129 = `0x81`, then ℰ₁(300 mod 256) =
+ℰ₁(44) = `0x2c`. Together: `0x812c`, the picture's bytes. You just did the Gray Paper's
+arithmetic in your head.
 
 The tests import two names `numbers.ts` doesn't have yet. Stubs again, so the tests run
 and fail on the rule:
@@ -212,8 +315,8 @@ edge of a range, where bugs like to live. Your tools:
 
 1. **The test output.** One test failed, *ℰ, the compact natural, at different lengths*,
    with `ℰ(128)` and `'0x80' !== '0x8080'`. The label tells you which of the five
-   numbers broke. 0 and 127 passed (they
-   come first, and the loop stops at the first failure).
+   numbers broke. 0 and 127 passed (they come first, and the loop stops at the first
+   failure).
 2. **The dashboard.** *Tests failed* says 1, and *Test results* has the `FAIL` line, label
    and all.
 

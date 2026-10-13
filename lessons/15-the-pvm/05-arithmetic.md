@@ -137,28 +137,6 @@ Each test runs one instruction and looks at r2. The last test is the safety net:
 walks all 72 arithmetic opcodes of [lesson 15.2](./02-instructions.md)'s table and checks each has an
 operation, so none can be forgotten.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/arithmetic.ts' imported from …/client/test/arithmetic.test.ts
-...
-✖ test/arithmetic.test.ts (224.2ms)
-...
-ℹ tests 408
-ℹ suites 0
-ℹ pass 407
-ℹ fail 1
-...
-```
-
-Red: `src/pvm/arithmetic.ts` doesn't exist yet. It's one table of operations, a line
-each, so it comes whole, and the machine's new family is a few lines after it.
-
 ## The code
 
 **New file** `src/pvm/arithmetic.ts`

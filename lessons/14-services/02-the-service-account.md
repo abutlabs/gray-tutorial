@@ -106,28 +106,6 @@ footprint is two preimages, each with its request, and nothing in storage: 4 ite
 accounts with storage too, 510 snapshots of them, and every footprint and every balance
 checks out.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/services.ts' does not provide an export named 'ServiceInfo'
-...
-✖ test/services.test.ts (191.3ms)
-...
-ℹ tests 391
-ℹ suites 0
-ℹ pass 390
-ℹ fail 1
-...
-```
-
-Red: `src/services.ts` doesn't export the account record or its helpers yet. They're a
-record and four short functions that read and check it, so they come as one snippet.
-
 ## The code
 
 **Add to** `src/services.ts`

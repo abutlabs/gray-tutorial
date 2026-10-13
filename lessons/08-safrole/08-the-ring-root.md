@@ -138,25 +138,6 @@ test("a forged ring proof: bad_ticket_proof", () => {
 
 [Lesson 8.5](./05-one-step-of-safrole.md)'s whole-step test now checks γ′_Z too, since γ_Z is about to join your `Safrole`.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/safrole.ts' does not provide an export named 'ringRootOf'
-...
-ℹ tests 74
-ℹ suites 0
-ℹ pass 73
-ℹ fail 1
-...
-```
-
-Red: no `ringRootOf` yet.
-
 ## The code
 
 The library first, in the file that already holds [lesson 8.6](./06-the-vrf-output.md)'s `vrfOutput`:

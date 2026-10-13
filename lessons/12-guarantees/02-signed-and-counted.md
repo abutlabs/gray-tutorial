@@ -162,28 +162,6 @@ test("a forged guarantee signature is caught", () => {
 `assigned` is a plain `function` declaration, so it can sit below the tests that use it:
 JavaScript lifts ("hoists") function declarations to the top of their file.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/guarantors.ts' does not provide an export named 'guaranteeSigned'
-...
-✖ test/guarantors.test.ts (259.6ms)
-...
-ℹ tests 194
-ℹ suites 0
-ℹ pass 193
-ℹ fail 1
-...
-```
-
-The new tests ask `src/guarantors.ts` for three functions it doesn't have yet. They work
-together (the keys, the check, the set), so they come in one snippet.
-
 ## The code
 
 **Add to** `src/guarantors.ts`

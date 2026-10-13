@@ -95,29 +95,6 @@ test("a real block: the bootstrap service's first costs 26, not the 91 its cycle
 Loads make the clearest examples: 25 cycles each, and 4 load units. Four independent
 loads cost what one does. A load whose address comes from another load must wait for it.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/pvm/gas.ts' does not provide an export named 'blockCost'
-...
-✖ test/gas.test.ts (216.8ms)
-...
-ℹ tests 432
-ℹ suites 0
-ℹ pass 431
-ℹ fail 1
-...
-```
-
-Red: `src/pvm/gas.ts` doesn't export `blockCost` yet. The model CPU is four small
-functions, one per Gray Paper transition, that only work together, so they come in one
-snippet.
-
 ## The code
 
 The model decodes until the block's terminator, so it needs [lesson 15.3](./03-the-machine.md)'s T:

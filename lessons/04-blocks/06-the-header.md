@@ -93,27 +93,6 @@ The two vectors show both markers: `header_0` has an epoch mark and no tickets, 
 a tickets mark and no epoch mark. (Both say slot 42, the middle of an epoch on tiny: a
 codec vector only has to have the right shape.)
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/block.ts' does not provide an export named 'Header'
-...
-✖ test/block.test.ts (149.9ms)
-...
-ℹ tests 35
-ℹ suites 0
-ℹ pass 34
-ℹ fail 1
-...
-```
-
-Red: `src/block.ts` doesn't export `Header` yet.
-
 ## The code
 
 **Add to** `src/block.ts`

@@ -211,30 +211,6 @@ test("service 1 yields a hash: the block's one output, and its root", () => {
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/accumulate.ts' does not provide an export named 'AccumulationOutput'
-...
-SyntaxError: The requested module '../src/belt.ts' does not provide an export named 'wellBalancedRoot'
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'collapseYield'
-...
-ℹ tests 446
-ℹ suites 0
-ℹ pass 443
-ℹ fail 3
-...
-```
-
-Red, and early: three test files can't even load, because nothing exports
-`AccumulationOutput`, `wellBalancedRoot` or `collapseYield` yet.
-
 ## The code
 
 M_B first, next to the belt it feeds:

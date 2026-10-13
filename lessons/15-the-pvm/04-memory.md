@@ -108,28 +108,6 @@ The first test is the `ind` forms you saw most in the real code ([lesson 15.2](.
 holds an address, like a stack pointer. `0x80` as an unsigned byte is 128; as a signed
 byte it's −128, which in 64 bits is `0xffffffffffffff80`.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/pvm/memory.ts' imported from …/client/test/memory.test.ts
-...
-✖ test/memory.test.ts (178.7ms)
-...
-ℹ tests 405
-ℹ suites 0
-ℹ pass 404
-ℹ fail 1
-...
-```
-
-Red: `src/pvm/memory.ts` doesn't exist yet. Pages, the ε^μ check and reading and
-writing come as one small file, then the machine learns to use them.
-
 ## The code
 
 **New file** `src/pvm/memory.ts`

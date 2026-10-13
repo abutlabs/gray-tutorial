@@ -78,27 +78,6 @@ testCodecVector("preimages_extrinsic", PreimagesExtrinsic);
 
 Four tests in two lines.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/block.ts' imported from …/client/test/block.test.ts
-...
-✖ test/block.test.ts (167.1ms)
-...
-ℹ tests 33
-ℹ suites 0
-ℹ pass 32
-ℹ fail 1
-...
-```
-
-Red: there's no `src/block.ts` yet.
-
 ## The code
 
 **New file** `src/block.ts`

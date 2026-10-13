@@ -113,28 +113,6 @@ for (const config of [TINY, FULL]) {
 The epoch-change test pins down the one surprise in the order: the block's assurances end up
 in the *old* tally, while its author's block opens the new one.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/statistics.ts' imported from …/client/test/statistics.test.ts
-...
-✖ test/statistics.test.ts (218.1ms)
-...
-ℹ tests 589
-ℹ suites 0
-ℹ pass 588
-ℹ fail 1
-...
-```
-
-Red: `src/statistics.ts` doesn't exist yet. The tally's record and the one function that
-moves it on come together, as a new file.
-
 ## The code
 
 **New file** `src/statistics.ts`

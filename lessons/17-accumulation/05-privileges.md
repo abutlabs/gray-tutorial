@@ -209,29 +209,6 @@ test("the assigner hands core 0 to service 1", () => {
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'CORE'
-...
-✖ test/host.test.ts (184.2ms)
-...
-ℹ tests 514
-ℹ suites 0
-ℹ pass 509
-ℹ fail 5
-...
-```
-
-Red: `src/host.ts` doesn't export `CORE` yet, nor the privileges and `assign`. The record,
-a run's powers and the call come together, then the host learns to keep the powers
-through a checkpoint.
-
 ## The code
 
 The privileges, a run's powers (now, and as kept), and the call:

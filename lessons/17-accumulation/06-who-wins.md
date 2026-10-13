@@ -134,28 +134,6 @@ test("a core changes hands for the whole block, with a new queue", () => {
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/accumulate.ts' does not provide an export named 'mergePrivileges'
-...
-✖ test/accumulate.test.ts (173.3ms)
-...
-ℹ tests 477
-ℹ suites 0
-ℹ pass 476
-ℹ fail 1
-...
-```
-
-Red: `src/accumulate.ts` doesn't export `mergePrivileges` yet. First the block's state
-learns to carry the privileges, then comes R, the merge, and the rounds that use it.
-
 ## The code
 
 The block's state keeps the privileges, read from the vectors:

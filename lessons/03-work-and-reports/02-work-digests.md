@@ -79,27 +79,6 @@ for (const spec of ["tiny", "full"]) {
 `0x02`. The two vectors are one of each: `work_result_0` succeeded, `work_result_1`
 panicked.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/work.ts' does not provide an export named 'WorkDigest'
-...
-✖ test/work.test.ts (171.3ms)
-...
-ℹ tests 20
-ℹ suites 0
-ℹ pass 19
-ℹ fail 1
-...
-```
-
-Red: `src/work.ts` doesn't export `WorkDigest` yet, nor the codecs that go with it.
-
 ## The code
 
 **Add to** `src/work.ts`

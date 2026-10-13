@@ -139,23 +139,6 @@ test("a block whose parent the target never saw: an Error; a second Initialize: 
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/target.ts' imported from …/client/test/target.test.ts
-...
-ℹ tests 652
-ℹ suites 0
-ℹ pass 651
-ℹ fail 1
-...
-```
-
 ## The code
 
 The lookup anchors first:

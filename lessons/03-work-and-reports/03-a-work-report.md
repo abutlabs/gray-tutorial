@@ -59,28 +59,6 @@ for (const spec of ["tiny", "full"]) {
 }
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/work.ts' does not provide an export named 'WorkReport'
-...
-✖ test/work.test.ts (219.1ms)
-...
-ℹ tests 20
-ℹ suites 0
-ℹ pass 19
-ℹ fail 1
-...
-```
-
-Red: `src/work.ts` doesn't export `WorkReport` yet. (No stub, as in [lesson 2.6](../02-codec/06-the-first-test-vectors.md): an empty record would
-fool half the check. The vectors judge the real codec.)
-
 ## The code
 
 **Add to** `src/work.ts`

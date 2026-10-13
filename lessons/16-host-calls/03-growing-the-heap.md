@@ -138,28 +138,6 @@ The last test is the big one. `vectorService` sets up service 1729 exactly as th
 does, and the test runs its accumulation through your host and compares the gas used with
 the vector's own record.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'growHeap'
-...
-✖ test/host.test.ts (230.5ms)
-...
-ℹ tests 447
-ℹ suites 0
-ℹ pass 446
-ℹ fail 1
-...
-```
-
-Red: `src/host.ts` doesn't export `growHeap` yet. The tests reach it through
-`accumulateHost`, so both change together below.
-
 ## The code
 
 `grow_heap` rounds sizes just as [lesson 15.8](../15-the-pvm/08-a-real-program.md)'s Y does, so Y shares its `roundUp`:

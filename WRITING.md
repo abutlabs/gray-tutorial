@@ -10,6 +10,14 @@
    the stack up) and `npm run compare -- <last lesson> --dir reference` (the lessons give
    exactly the reference's code).
 
+**A new package is an offline question.** Readers work on flights, so whenever a package
+is added, check lesson 0.2's *Working offline* and update it. A package a lesson adds to
+the client goes in 0.2's `npm install --no-save` line, at the version the lesson pins
+(checked). A package of the tutorial's own (the root `package.json`: the website, the
+tools) comes with the root `npm install`, which 0.2 tells readers to rerun after every
+pull; if it needs more than that (a download, a cache), 0.2 says so. *Why:* a package
+found missing in the air can't be fetched.
+
 ## Observability in every lesson
 
 Every step a lesson builds also reports what it did: test runs through `test/grafana.ts`,
@@ -50,13 +58,42 @@ least for every new panel a lesson sends the reader to.
 
 Where an idea is a shape (bytes in a row, a trie, a queue), draw it, as the Rust Book draws
 its hardest ideas. A diagram is an SVG drawn by `tools/diagrams.ts` from data checked
-against the source (a vector's real bytes, the Gray Paper's rule): add a function and its
+against the source, never an image file made by hand: code can be redrawn when the
+lesson changes, a picture can't (a vector's real bytes, the Gray Paper's rule): add a function and its
 path to `DIAGRAMS`, then `npm run diagrams`. `tools/diagrams.test.ts` checks every
 committed SVG is what the code draws, so the two never drift. Monospace text, light and
 dark colours in the SVG's own style, no wider than about 880 units so it shows at full
 size; in the lesson, the picture alone with real alt text, like a screenshot. A narrow one
 (well under 880 units) gets a `width` on its `<svg>`, so a wide screen shows it at a
 readable size instead of blowing it up; a phone still shrinks it to fit.
+
+**Interactive.** Where trying values teaches more than a picture (flip a bit, step x across
+127 and 128), a lesson can hold a widget: a Vue component in `.vitepress/theme/`,
+registered in its `index.ts` and placed in the lesson as `<BitPlaces />`. Its answers
+(the number, its hex, ℰ(x)) sit in a readout at the top that never moves or resizes, and
+a line says what its bits can hold (one byte: 0 to 255). What it shows
+is computed in a plain `.ts` module beside it, which `tools/widgets.test.ts` checks
+against values the lesson's own code is checked against, as diagrams are. The prose must
+stand without it: VS Code's preview shows nothing there, and print.html only its first
+state. *Why:* a reader stuck on a step can poke at it until it clicks (Aodh, on 127 being
+`01111111`).
+
+## Formulas
+
+A Gray Paper rule is quoted whole, type line and all, in LaTeX between `$$` lines: the site
+draws it as maths when it's built (MathJax), and VS Code's preview draws it too. Spell the
+Gray Paper's macros out in plain LaTeX (`\mathcal{E}`, `\frown`, `\left\lfloor`), checked
+against the 0.8.0 tex. In a sentence, `$...$` only where Unicode can't say it
+($\mathbb{N}_{2^{8l}}$); ℰ₄ and ⌢ stay plain text.
+
+Right under the formula comes its key: a table `| Symbol | Say it | Here |`, a row for each
+symbol in it, linked to its entry in `lessons/symbols.md`, with how to read it aloud and
+what it means in this formula (checked). Then work the formula through on a real value.
+A symbol with no entry yet gets one: **Say it**, **Means**, **Example**, **Gray Paper**
+(where it's defined, quoted), and where they apply **In code**, **Built from**, **Used
+for** and **Built in**. Its heading names its id (`### ⌢: concatenate {#concat}`), and the
+page's tables link to it (checked). *Why:* a reader who can't say a symbol can't search for
+it, and one who can't read it can't follow the rule.
 
 ## Where
 
@@ -92,7 +129,8 @@ recommends.
    lists agree: every new word has a glossary entry, and every glossary word is in some
    lesson's New words, at or before the lesson its entry links.
 1. **What the Gray Paper says**: the rule, quoted or paraphrased, with its section
-   (§11, *Refinement Context*; Appendix C). Check every quote against the 0.8.0 tex.
+   (§11, *Refinement Context*; Appendix C). Check every quote against the 0.8.0 tex. A
+   formula is drawn as maths, with its key (see *Formulas*).
 2. **The code**: test-driven development where it helps (the test, then the code), each
    in a labelled snippet.
 3. **Run**: the tests pass, the types check.
@@ -106,6 +144,15 @@ Inside a lesson: plain English and a concrete example first, the Gray Paper's no
 second, code third, and at most about three new ideas. Across the tutorial: the base rules
 of every part through block import come first; cryptography, hardening and rare cases come
 after, in parts marked as later.
+
+**ELI5-proof.** Write for a reader who can't ask. Show every mechanism working on a real
+value, at the level where it happens: bits for a bit rule, bytes for a byte rule, one
+step at a time. Pick examples that use every part of the rule. One whose interesting
+part is zero hides the rule: 128's top bits are all zero, so `0x8080` looks like 128
+written twice. Pair it with one that doesn't (300, `0x812c`). Where you'd sketch it on
+paper to explain it, draw it (see *Diagrams*). Then cut: a sentence that doesn't help the
+reader understand or do the next step goes. *Why:* fewer words, and more of them
+teaching. A reader left to guess the step between two sentences has been failed.
 
 **The first pass teaches the base rule.** A lesson shows the rule working in its simplest
 form; edge cases, hostile input and fuzzer-level defences wait for the hardening pass,
@@ -146,6 +193,13 @@ teaching. What we take from it, each with its reason. "Checked" means a test enf
   (the function exists and answers wrongly), so the first red is the rule failing, not a
   missing file. *Why:* "Cannot find module" proves only that a file is missing; a failed
   assertion proves the test tests the rule.
+- **A missing import is never the red.** A test failing because what it imports isn't
+  written yet (`Cannot find module`, or `does not provide an export named`) proves only
+  that a file is missing, so no lesson shows one: a test that needs new code goes straight
+  to the code, no Run between them. Where the Run is red for another reason too (a vector
+  the new code fixes), keep it, drop the import error from its output, and say in a clause
+  which failure it was (checked). *Why:* a red that teaches nothing, shown again and again,
+  is noise (Aodh).
 - **Tests show their steps.** In a test, every value the code under test produces gets a
   `const` with a name and a type (`const hex: string = toHex(encode(u16, 4807));`), and an
   assertion compares names with expected values (`assert.equal(hex, "0xc712");`). An

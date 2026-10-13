@@ -86,28 +86,6 @@ The vectors write the reported packages as `work_package_hash` and `segment_tree
 the history vectors called the same two things `hash` and `exports_root`. Your client
 picks one pair of names, and the test translates.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/cores.ts' does not provide an export named 'placeReports'
-...
-✖ test/guarantors.test.ts (315.7ms)
-...
-ℹ tests 194
-ℹ suites 0
-ℹ pass 193
-ℹ fail 1
-...
-```
-
-Red: `src/cores.ts` doesn't export `placeReports` or `reportedPackages` yet. Both are
-short, so they come together, and the sort gets its own moment after the green.
-
 ## The code
 
 **Add to** `src/cores.ts`

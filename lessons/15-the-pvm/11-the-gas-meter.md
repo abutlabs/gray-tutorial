@@ -64,29 +64,6 @@ test("the bootstrap service spends 243 gas to reach its first host call", () => 
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/pvm/gas.ts' does not provide an export named 'runWithGas'
-...
-✖ test/gas.test.ts (222.0ms)
-...
-ℹ tests 432
-ℹ suites 0
-ℹ pass 431
-ℹ fail 1
-...
-```
-
-Red: `src/pvm/gas.ts` doesn't export the meter yet. This one gets no stub on purpose: a
-meter that never charges would let the endless loop in the first test run forever, and
-a test that hangs teaches nothing. A missing export fails fast.
-
 ## The code
 
 The machine gets a purse: its gas, the flag, and a new way to stop.

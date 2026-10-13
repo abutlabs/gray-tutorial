@@ -103,28 +103,6 @@ The made-up record has 2 items in 50 bytes and a balance of 1,000. Storing "last
 adds one item and 34 + 4 + 3 bytes. Storing 1,000 bytes instead would push a_t to 100 +
 10 · 3 + (50 + 34 + 4 + 1,000) = 1,218, more than the balance: FULL.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'FULL'
-...
-✖ test/host.test.ts (274.9ms)
-...
-ℹ tests 447
-ℹ suites 0
-ℹ pass 446
-ℹ fail 1
-...
-```
-
-Red: `src/host.ts` doesn't export `FULL`, `read` or `write` yet. They come together, with
-the account growing its storage first.
-
 ## The code
 
 An account gains its storage, keyed by the key's hex (a `Map` compares strings by value,

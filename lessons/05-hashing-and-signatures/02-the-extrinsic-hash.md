@@ -84,27 +84,6 @@ test("every block's header promises its extrinsic by hash", () => {
 That last argument to `deepEqual` is the message for a failure: if block 42 of
 `preimages` disagrees, the test says `preimages 42` instead of leaving you to guess.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/block.ts' does not provide an export named 'extrinsicHash'
-...
-✖ test/hash.test.ts (307.8ms)
-...
-ℹ tests 53
-ℹ suites 0
-ℹ pass 52
-ℹ fail 1
-...
-```
-
-Red: `src/block.ts` doesn't export `extrinsicHash` yet.
-
 ## The code
 
 **Add to** `src/block.ts`

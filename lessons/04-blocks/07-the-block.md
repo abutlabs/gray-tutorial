@@ -29,27 +29,6 @@ testCodecVector("extrinsic", Extrinsic);
 testCodecVector("block", Block);
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/block.ts' does not provide an export named 'Block'
-...
-✖ test/block.test.ts (124.5ms)
-...
-ℹ tests 35
-ℹ suites 0
-ℹ pass 34
-ℹ fail 1
-...
-```
-
-Red: `src/block.ts` doesn't export `Block` yet.
-
 ## The code
 
 **Add to** `src/block.ts`

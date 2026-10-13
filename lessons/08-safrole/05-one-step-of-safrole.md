@@ -77,27 +77,6 @@ test("a whole step of Safrole: the state and both marks, for each block without 
 One `deepEqual` checks the *entire* state after the block: τ, η, all four validator sets,
 the accumulator and the sealers. Only γ_Z is left out. Two more check the marks.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/safrole.ts' does not provide an export named 'safroleFromJson'
-...
-✖ test/safrole.test.ts (185.8ms)
-...
-ℹ tests 72
-ℹ suites 0
-ℹ pass 71
-ℹ fail 1
-...
-```
-
-Red: `src/safrole.ts` doesn't export `safroleFromJson` yet.
-
 ## The code
 
 `safroleStep` takes Safrole's state and one block, and does six things, in order:

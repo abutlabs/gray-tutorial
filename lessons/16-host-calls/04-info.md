@@ -150,28 +150,6 @@ test("info about a service that isn't there: NONE", () => {
 The made-up record makes the minimum balance easy to check: 100 to exist, 10 for each of
 its 2 items and 1 for each of its 50 bytes, 170.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/services.ts' does not provide an export named 'accountFromJson'
-...
-✖ test/host.test.ts (331.4ms)
-...
-ℹ tests 447
-ℹ suites 0
-ℹ pass 446
-ℹ fail 1
-...
-```
-
-Red: `src/services.ts` doesn't export `accountFromJson` yet, and `src/host.ts` has no
-`info`. Both arrive below, with a small move of `fetch`'s copying on the way.
-
 ## The code
 
 An account, as accumulation sees it, is just its record so far. It will grow, and

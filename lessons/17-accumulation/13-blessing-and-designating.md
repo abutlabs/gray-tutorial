@@ -228,8 +228,6 @@ npm test
 ...
 ✖ the delegator blesses service 2 as the delegator, though it isn't the manager (48.067333ms)
 ...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'bless'
-...
 ℹ tests 549
 ℹ suites 0
 ℹ pass 543
@@ -237,8 +235,9 @@ SyntaxError: The requested module '../src/host.ts' does not provide an export na
 ...
 ```
 
-Red: no `bless` or `designate` to import, and four vectors whose services get `WHAT` for
-them, and go wrong from there.
+Red where it counts: in four vectors and the new test, the services get `WHAT` for
+`bless` and `designate`, and go wrong from there. (The sixth failure is
+`test/host.test.ts`, which can't load until they exist.)
 
 ## The code
 

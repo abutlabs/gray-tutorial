@@ -143,8 +143,6 @@ npm test
 ...
 ✖ service 0 provides 1729's preimage: it arrives at the end of the round, slot 44 (52.058291ms)
 ...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'provide'
-...
 ℹ tests 544
 ℹ suites 0
 ℹ pass 540
@@ -152,8 +150,9 @@ SyntaxError: The requested module '../src/host.ts' does not provide an export na
 ...
 ```
 
-Red: no `provide` to import, and in both vectors service 0's call 27 still gets `WHAT`, so
-it carries on down another path and uses the wrong gas.
+Red where it counts: in both vectors and the new test, service 0's call 27 gets `WHAT`, so
+it carries on down another path and uses the wrong gas. (The fourth failure is
+`test/host.test.ts`, which can't load until `provide` exists.)
 
 ## The code
 

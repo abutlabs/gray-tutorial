@@ -148,29 +148,6 @@ The signatures get their own test, on tiny only. A full verdict has 683 votes, a
 checking the 7,500-odd votes of the full vectors it would cover would take your test run
 from about three seconds to about ten.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/disputes.ts' imported from …/client/test/disputes.test.ts
-...
-✖ test/disputes.test.ts (220.3ms)
-...
-ℹ tests 93
-ℹ suites 0
-ℹ pass 92
-ℹ fail 1
-...
-```
-
-Red before a single test runs: `src/disputes.ts` doesn't exist yet. It's many things at
-once (ψ's record, the vote message, K, the signature check, V and the filing), so there's
-no one function to stub. The next Run turns all four tests green together.
-
 ## The code
 
 **New file** `src/disputes.ts`

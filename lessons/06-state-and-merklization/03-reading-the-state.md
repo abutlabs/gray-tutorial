@@ -117,27 +117,6 @@ the `safrole` trace (one every 12 slots, at the start of each tiny epoch) for η
 `assert.equal(checked, 524)` lines are there so a loop that silently checks nothing
 can't pass.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/state.ts' does not provide an export named 'readEntropy'
-...
-✖ test/state.test.ts (197.3ms)
-...
-ℹ tests 61
-ℹ suites 0
-ℹ pass 60
-ℹ fail 1
-...
-```
-
-Red: `src/state.ts` doesn't export `readEntropy` yet, nor the other readers.
-
 ## The code
 
 **Add to** `src/state.ts`

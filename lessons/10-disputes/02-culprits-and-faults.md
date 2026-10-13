@@ -95,28 +95,6 @@ test("the offenders mark names this block's offenders, and ψ′_O keeps them al
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/disputes.ts' does not provide an export named 'culpritSigned'
-...
-✖ test/disputes.test.ts (250.2ms)
-...
-ℹ tests 93
-ℹ suites 0
-ℹ pass 92
-ℹ fail 1
-...
-```
-
-The test file asks `src/disputes.ts` for four functions it doesn't have yet. They come as
-one snippet, so the red is the missing names, not a wrong answer.
-
 ## The code
 
 **Add to** `src/disputes.ts`

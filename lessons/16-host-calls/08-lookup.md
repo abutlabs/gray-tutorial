@@ -95,28 +95,6 @@ const CASES: [string, number][] = [
 ];
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'lookup'
-...
-✖ test/host.test.ts (268.9ms)
-...
-ℹ tests 458
-ℹ suites 0
-ℹ pass 455
-ℹ fail 3
-...
-```
-
-Red: `src/host.ts` doesn't export `lookup` yet, and an account has no preimages for it to
-find. Both arrive below.
-
 ## The code
 
 An account gains its preimages, and everything that makes or copies accounts learns them:

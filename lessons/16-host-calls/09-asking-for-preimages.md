@@ -164,28 +164,6 @@ const CASES: [string, number][] = [
 ];
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'HUH'
-...
-✖ test/host.test.ts (229.8ms)
-...
-ℹ tests 461
-ℹ suites 0
-ℹ pass 457
-ℹ fail 4
-...
-```
-
-Red: `src/host.ts` doesn't export `HUH` or the three new calls yet. They share the
-request history and its rules, so they come together, after the account grows its requests.
-
 ## The code
 
 An account gains its requests. The key is the hash and length as one string,

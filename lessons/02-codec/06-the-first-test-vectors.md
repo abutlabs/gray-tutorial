@@ -162,28 +162,6 @@ for (const spec of ["tiny", "full"]) {
 }
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module '…/client/src/work.ts' imported from …/client/test/work.test.ts
-...
-✖ test/work.test.ts (155.9ms)
-...
-ℹ tests 18
-ℹ suites 0
-ℹ pass 17
-ℹ fail 1
-...
-```
-
-It fails because `src/work.ts` doesn't exist yet. (No stub this time: the vectors are
-about to judge the real thing.) You write it next.
-
 **New file** `src/work.ts`
 
 ```ts

@@ -131,28 +131,6 @@ test("accumulate, Ψ_A: service 1729 halts on 16,417 gas, its accounts kept", ()
 });
 ```
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/host.ts' does not provide an export named 'accumulate'
-...
-✖ test/host.test.ts (211.2ms)
-...
-ℹ tests 447
-ℹ suites 0
-ℹ pass 446
-ℹ fail 1
-...
-```
-
-Red: `src/host.ts` doesn't export `accumulate` yet. Ψ_A needs the second set of
-accounts, the `checkpoint` call and the collapse, so they come in a few steps below.
-
 ## The code
 
 Falling back needs a true copy of the accounts: copying the `Map` alone would leave both

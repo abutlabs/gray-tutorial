@@ -127,28 +127,6 @@ account, not only the ones that ran (the others must come out untouched), and ev
 service's statistics. Several vectors in the list have reports with prerequisites: they
 pass only if those reports are left alone.
 
-**Run, expect it to fail**
-
-```sh
-npm test
-```
-
-```text
-...
-SyntaxError: The requested module '../src/accumulate.ts' does not provide an export named 'accumulateBlock'
-...
-✖ test/accumulate.test.ts (203.5ms)
-...
-ℹ tests 473
-ℹ suites 0
-ℹ pass 472
-ℹ fail 1
-...
-```
-
-Red: `src/accumulate.ts` doesn't export `accumulateBlock` yet. The four steps and the
-small helper that finds a service's code come in one snippet.
-
 ## The code
 
 **Add to** `src/accumulate.ts`
