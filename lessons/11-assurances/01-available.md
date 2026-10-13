@@ -34,6 +34,11 @@ that's 5 or more; with 1,023, it's 683 or more.
 To stay in whole numbers, multiply both sides by 3: assured × 3 > validators × 2. No
 fractions, no rounding, no floating point.
 
+Try it on tiny: six validators, each with its one-byte bitfield, two cores. It starts with
+the counts the third test below reads from a vector, 5 for core 0 and 4 for core 1:
+
+<AssuranceGrid />
+
 ## The tests
 
 **New file** `test/assurances.test.ts`

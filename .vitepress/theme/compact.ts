@@ -2,6 +2,8 @@
 // are the marker and which carry x. Lesson 2.2's widgets and diagram draw from it;
 // tools/widgets.test.ts checks it against the lesson's own values.
 
+import { bitsOf, toHex } from "./bytes.ts";
+
 /** A bit of ℰ(x): part of the marker, one of x's top bits (first byte), or a low bit. */
 export type Role = "mark" | "top" | "low";
 
@@ -12,9 +14,6 @@ export interface Compact {
 }
 
 export const MAX = (1n << 64n) - 1n;
-
-/** x in binary, most significant bit first, padded with zeros to width bits. */
-export const bitsOf = (x: bigint | number, width: number): string => x.toString(2).padStart(width, "0");
 
 /** The first byte's marker as a number: l ones then a zero (2^8 − 2^(8−l)); nine bytes is
  *  eight ones and no zero, 255. */
@@ -43,8 +42,6 @@ export function strip(c: Compact): { bits: string; roles: Role[]; note: string }
   for (let b = c.l; b >= 1; b--) groups.push(group(b, bitsOf(c.bytes[b], 8), "low"));
   return groups;
 }
-
-export const toHex = (bytes: number[]): string => `0x${bytes.map((b) => b.toString(16).padStart(2, "0")).join("")}`;
 
 /** ℰ(x)'s bytes as ByteCells groups, each bit with its role. */
 export const byteGroups = (c: Compact) =>

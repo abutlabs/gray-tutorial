@@ -154,6 +154,13 @@
 }
 .widget button.small:hover { border-color: var(--vp-c-brand-1); }
 .widget button.small.chosen { border-color: var(--vp-c-brand-1); color: var(--vp-c-brand-1); }
+/* A widget's answers as rows, label then value, for answers whose length varies (a whole
+   bitfield, a u64): each value starts in the same place however long the others grow. */
+.widget .answers { display: grid; grid-template-columns: max-content 1fr; gap: 2px 16px; margin: 0 0 8px; align-items: baseline; }
+.widget .answers dt { font-size: 13px; color: var(--vp-c-text-2); }
+.widget .answers dd { margin: 0; font-family: var(--vp-font-family-mono); font-size: 22px; font-weight: 600; word-break: break-all; }
+.widget .answers dd.long { font-size: 14px; font-weight: 500; }
+
 /* A widget's readout: its answers in one place that never moves, however long the sums. */
 .widget .readout { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
 .widget .tile {

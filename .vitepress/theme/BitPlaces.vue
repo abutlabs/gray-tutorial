@@ -4,7 +4,8 @@
      its own readout and ℰ(x) in its slots. -->
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { bitsOf, toHex, type Role } from "./compact.ts";
+import { bitsOf, toHex } from "./bytes.ts";
+import type { Role } from "./compact.ts";
 
 const props = withDefaults(defineProps<{
   width?: number;

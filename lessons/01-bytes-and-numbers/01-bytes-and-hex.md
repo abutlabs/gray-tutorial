@@ -31,6 +31,16 @@ and 255 become `"0x0102ff"`. Node 26 speaks hex already: `bytes.toHex()` gives
 `"0102ff"`, and `Uint8Array.fromHex("0102ff")` gives the bytes back. Your client's job is
 the `0x`.
 
+Why two digits per byte? A byte's eight bits are worth 128, 64, 32, 16, 8, 4, 2 and 1, left
+to right: each is worth twice the one on its right, as each decimal digit is worth ten
+times the next. The byte is the sum of the places holding a 1. Hex cuts the eight bits
+into two halves of four. Four bits make 0 to 15 (8 + 4 + 2 + 1 = 15), more than decimal
+has digits for, so hex counts 0 to 9 and then a to f for 10 to 15. Each half is one hex
+digit, and the first counts 16 times the second: `2c` is 16 × 2 + 12 = 44, and `ff` is
+16 × 15 + 15 = 255, the biggest byte. Click the bits to try it:
+
+<HexByte />
+
 ## What the Gray Paper says
 
 Section 3 (*Notational Conventions*) names the building blocks. Two you'll meet on nearly

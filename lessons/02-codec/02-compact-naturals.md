@@ -24,9 +24,8 @@ of its bits carry the start of the number.
 **Below 128: one byte.** The first bit is 0: no more bytes follow. That leaves 7 bits for
 x, enough for 0 to 127.
 
-Why 127? A byte's eight bits are worth 128, 64, 32, 16, 8, 4, 2 and 1, left to right: each
-is worth twice the one on its right, as each decimal digit is worth ten times the next.
-The number is the sum of the places holding a 1. `01111111` has a 1 in every place but the
+Why 127? A byte's eight bits are worth 128, 64, 32, 16, 8, 4, 2 and 1, left to right, as
+in [lesson 1.1](../01-bytes-and-numbers/01-bytes-and-hex.md#hex), and the number is the sum of the places holding a 1. `01111111` has a 1 in every place but the
 first: 64 + 32 + 16 + 8 + 4 + 2 + 1 = 127. Add 1 and every 1 carries, as 999 + 1 does in
 decimal: `10000000`, 128. So seven bits reach 127 and no further, and 128 is the first
 number that needs the eighth. Click the bits to try it:

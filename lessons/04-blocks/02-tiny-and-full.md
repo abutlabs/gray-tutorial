@@ -201,6 +201,13 @@ On full it's 42 bytes of `0x55` and a last `0x15`. `0x55` is `01010101` in binar
 every *other* core says "got it": 171 of the 341. (The last byte is smaller because 341
 cores need only 5 of its 8 bits.)
 
+Which cores are those? Lowest bit first: core 0 is the lowest bit of byte 0, the one at
+the *right* end when the byte is written in binary, and core 7 the highest, at the left.
+So `01010101`, read from the right, is cores 0, 2, 4 and 6. Click cores and watch the
+bytes; "every other core" on full rebuilds the vector's bitfield:
+
+<CoreBitfield />
+
 <details>
 <summary>lasair: the codec that froze at tiny</summary>
 

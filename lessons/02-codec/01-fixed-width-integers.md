@@ -84,6 +84,12 @@ $$
 
 199 is `c7` and 18 is `12`: `c7 12`.
 
+Run the recipe on any number. Type x and pick l: each step writes x mod 256 and passes
+⌊x / 256⌋ on. The two rows are the same bytes, as the number reads (biggest first) and as
+JAM writes them (smallest first):
+
+<FixedWidth />
+
 ## The code
 
 One function for every width, working on `bigint` so that ℰ₈ is exact ([lesson 1.2](../01-bytes-and-numbers/02-numbers.md)'s

@@ -4,7 +4,8 @@
 import { computed, ref } from "vue";
 import BitPlaces from "./BitPlaces.vue";
 import ByteCells from "./ByteCells.vue";
-import { bitsOf, byteGroups, compact, markerOf, toHex, type Role } from "./compact.ts";
+import { bitsOf, toHex } from "./bytes.ts";
+import { byteGroups, compact, markerOf, type Role } from "./compact.ts";
 
 const ROLES: Role[] = [...Array<Role>(6).fill("top"), ...Array<Role>(8).fill("low")];
 const GOALS = [

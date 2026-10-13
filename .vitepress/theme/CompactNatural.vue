@@ -3,7 +3,8 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import ByteCells from "./ByteCells.vue";
-import { byteGroups, compact, MAX, strip, toHex } from "./compact.ts";
+import { toHex } from "./bytes.ts";
+import { byteGroups, compact, MAX, strip } from "./compact.ts";
 
 const PRESETS = ["0", "127", "128", "300", "16383", "16384", MAX.toString()];
 
