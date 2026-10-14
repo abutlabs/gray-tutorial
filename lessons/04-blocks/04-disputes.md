@@ -200,6 +200,56 @@ network's size no longer tells a decoder how many to read. Specs evolve, and som
 
 </details>
 
+## Check your understanding
+
+::: check
+**How many votes does a verdict carry on full, where there are 1,023 validators?**
+
+- [ ] 682, exactly two thirds
+  > No: ⌊2 × 1023 / 3⌋ is 682, but a verdict needs two thirds *plus one*.
+- [x] 683
+  > Yes: ⌊2V/3⌋ + 1 = 682 + 1. On tiny, with 6 validators, it's 4 + 1 = 5.
+- [ ] 1,023, every validator
+  > No: a verdict holds exactly two thirds of the validators, plus one, and the full
+  > vector has exactly 683.
+
+**The full vector's votes start with `0x82ab`. What is it?**
+
+- [ ] The number 43,906, written as ℰ₂
+  > No: a list's length is a compact natural, not a fixed-width number. (As ℰ₂ it
+  > would be `0xab82`, 43,906, a jury bigger than the network.)
+- [ ] Two lengths: `0x82` verdicts and `0xab` votes
+  > No: there are only two verdicts, and their length, `0x02`, came first. These two
+  > bytes are one number.
+- [x] 683, as a two-byte compact natural
+  > Yes: the first byte's leading `1` says one more byte follows, and together they
+  > make 683, the number of votes.
+
+**A culprit and a fault: what's the difference?**
+
+- [x] A culprit vouched for a bad report; a fault voted against the verdict
+  > Yes: culprits are guarantors, caught by their own signed guarantee. Faults are
+  > voters who called it the wrong way.
+- [ ] A culprit voted against the verdict; a fault vouched for a bad report
+  > No: that's the right pair, swapped. The culprit is the guarantor who signed the bad
+  > report.
+- [ ] They're two names for any validator who did something wrong
+  > No: they're different lists with different evidence. A culprit's is its
+  > guarantee; a fault's is its vote.
+
+**Anyone who knows V can work out how many votes a verdict has. So why does Gray Paper 0.8.0 write their length in front?**
+
+- [ ] Because 683 doesn't fit in one byte
+  > No: tiny's 5 fits in one byte, and it still gets a length. The length is there
+  > because the count can't be known in advance.
+- [x] Because 0.8.0 lets the validator count change, so the size of the network no longer tells a decoder the count
+  > Yes: with V free to change, the votes must say how many they are. It also closes
+  > the trap lasair fell into, a count worked out once, at tiny.
+- [ ] Every list in JAM has its length in front
+  > No: in Gray Paper 0.7.2 these very votes had no length. Decoders had to work the
+  > count out from V.
+:::
+
 ## What you have
 
 All five parts of a block's extrinsic: tickets, preimages, assurances, guarantees and

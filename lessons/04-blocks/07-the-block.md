@@ -239,6 +239,44 @@ Yours sits on `record`, `seq` and friends: the same block, a lot less code to ge
 
 </details>
 
+## Check your understanding
+
+::: check
+**How are a block's bytes laid out?**
+
+- [ ] The header and each extrinsic part, each with its length in front
+  > No: there's nothing in between. The parts carry only the lengths their own rules
+  > give them, such as each list's length.
+- [ ] The extrinsic first, then the header that describes it
+  > No: the header comes first, the extrinsic after.
+- [x] The header, then the five parts in Appendix C's order, back to back
+  > Yes: tickets, preimages, guarantees, assurances, disputes, straight after the
+  > header's seal.
+
+**Why are `Block` and `Extrinsic` functions of the config?**
+
+- [ ] Because a full block is much bigger than a tiny one
+  > No: bigger alone doesn't matter. A verdict on full has 683 votes, and
+  > `DisputesExtrinsic` is still a plain codec, because the votes carry their length.
+- [x] Because two of their bricks are: the assurances' bitfield and the header's tickets mark
+  > Yes: the bitfield has ⌈C/8⌉ bytes and the tickets mark holds E tickets. Anything
+  > built from them needs the config too.
+- [ ] Because every block says in its first byte whether it's tiny or full
+  > No: nothing in the bytes says which size. The vectors' folders do, which is why
+  > the code reads the size from the path.
+
+**All 30 codec vectors pass. What can't your client do yet?**
+
+- [ ] Read a full-size block
+  > No: it does, 161,177 bytes of the full `block.bin`, byte for byte.
+- [ ] Turn a block back into bytes
+  > No: every vector checks the round trip, decoding and encoding back to exactly the
+  > same bytes.
+- [x] Check that a block is genuine: its parent hash, its extrinsic hash and its signatures
+  > Yes: it reads all of those as plain bytes but checks none of them. That's
+  > [Part 5](../05-hashing-and-signatures/index.md)'s job.
+:::
+
 ## What you have
 
 [Part 4](./index.md), done: your client reads any JAM block, at either size, and can show you every

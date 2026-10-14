@@ -540,8 +540,8 @@ packages that must be accumulated first. *Example:* every package and report car
 bundle's length, the erasure root and shard count, and its exported segments' root and
 count. *Example:* a report's `package_spec`. ([3.3](./03-work-and-reports/03-a-work-report.md))
 
-**Erasure coding.** Chopping data into one piece (shard) per validator so that just over a
-third of the pieces can rebuild it all. *Example:* 1,023 shards on full, any 342 of which
+**Erasure coding.** Chopping data into one piece (shard) per validator so that a third of
+the pieces, plus one, can rebuild it all. *Example:* 1,023 shards on full, any 342 of which
 will do; on tiny, 6, any 3.
 ([3.3](./03-work-and-reports/03-a-work-report.md))
 

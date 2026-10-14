@@ -107,6 +107,16 @@ A Writer is a list of pieces, and `finish` glues them with [lesson 2.2](./02-com
 starting with `#` are private: only the class's own methods can touch them, and
 JavaScript itself enforces it.
 
+So where does `w.fixed(4807n, 2)` go? Nothing comes back from it: the two bytes go onto
+the end of the Writer's own list. The test's three calls, then `finish`:
+
+```text
+w.fixed(4807n, 2)                 #parts: [c7 12]
+w.natural(128n)                   #parts: [c7 12] [80 80]
+w.bytes(fromHex("0xdeadbeef"))    #parts: [c7 12] [80 80] [de ad be ef]
+w.finish()                        returns c7 12 80 80 de ad be ef
+```
+
 ## The Reader
 
 **New file** `src/codec/reader.ts`
@@ -192,6 +202,56 @@ let (context, sz) = decode_refinement_context bs !pos in pos := !pos + sz;
 inside itself, so no caller can forget to add a size.
 
 </details>
+
+## Check your understanding
+
+::: check
+**You call `w.fixed(4807n, 2)`. Where does it go?**
+
+- [ ] The Writer keeps the number 4,807 and encodes it when you call `finish`
+  > No: the Writer never holds numbers. `fixed` encodes 4,807 straight away, with ℰ₂,
+  > and keeps only the bytes it made.
+- [x] It becomes the two bytes `c7 12`, added as the next piece on the Writer's list
+  > Yes: the Writer is a list of pieces, each a few bytes. `c7 12` waits there, after
+  > anything written before it, until `finish` glues every piece into one byte string.
+- [ ] Its bytes are handed straight back to you, to glue on yourself
+  > No: `fixed` gives nothing back. Keeping the pieces, in order, is the Writer's whole
+  > job, so you never glue by hand.
+
+**The Reader has just read 4,807 from `c7 12 80 80 de ad be ef`. Where does its next read start?**
+
+- [ ] At offset 0: you tell the Reader where each value starts
+  > No: you never pass a position. The Reader keeps its own, `#at`, and moves it after
+  > every read.
+- [ ] At offset 1: the Reader moves one place for each value it reads
+  > No: it moves by the bytes it used. 4,807 as ℰ₂ took two bytes, so `#at` moved by 2.
+- [x] At offset 2, the first `80`
+  > Yes: `c7 12` sat at offsets 0 and 1, so the next value, 128 as `80 80`, starts at 2.
+
+**What if the Reader read a compact natural first, instead of the ℰ₂?**
+
+- [ ] It would notice `c7` isn't a compact natural and stop with an error
+  > No: nothing in a byte says what it is ([lesson 2.2](./02-compact-naturals.md)).
+  > Any byte can start a compact natural, so the Reader just reads one.
+- [x] It would read a wrong number, and every value after it would start in the wrong place
+  > Yes: `c7` is `11000111`, two leading ones, so it would take three bytes, `c7 12 80`,
+  > as 491,538. The next read would then start at offset 3, halfway through the 128.
+- [ ] It would still find 4,807, just a little more slowly
+  > No: the same bytes read by a different rule give a different number. Only reading in
+  > the order they were written gives back 4,807, 128 and the four bytes.
+
+**`finish` gives back `c7 12 80 80 de ad be ef`, the three pieces with nothing between them. How does the Reader know where each one ends?**
+
+- [x] Each value's rule says its size: ℰ₂ is always 2 bytes, a compact natural's first byte says how many follow, and the test asks for 4
+  > Yes: the sizes come from the rules, not from the bytes, so nothing needs to sit
+  > between the pieces. 2 + 2 + 4 = 8 bytes.
+- [ ] `finish` drops the gaps it kept between the pieces
+  > No: there were never any gaps. The pieces are `c7 12`, `80 80` and `de ad be ef`,
+  > and `finish` puts them end to end.
+- [ ] The Reader looks for the next value that makes sense
+  > No: the Reader never guesses. It reads exactly the bytes each rule asks for, in the
+  > order it is asked.
+:::
 
 ## What you have
 

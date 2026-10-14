@@ -18,6 +18,8 @@
     "check": "node tools/need-node.mjs && npm run typecheck && npm test && npm run site:build"
   },
   "devDependencies": {
+    "@noble/curves": "2.4.0",
+    "@noble/hashes": "2.4.0",
     "@types/node": "26.6.4",
     "dictionary-en": "4.0.0",
     "dictionary-en-gb": "3.0.0",

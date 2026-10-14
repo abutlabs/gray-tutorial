@@ -28,7 +28,7 @@ and every test run from then on reports itself.
 | Signal | What it answers | Where it goes |
 | --- | --- | --- |
 | *Events*: one line of JSON per thing that happened | What happened, in what order? | Loki |
-| *Numbers*: one value per run | How many tests passed? What slot is it? | Pushgateway, then Prometheus |
+| *Numbers*: one value per name, per run | How many tests passed? What slot is it? | Pushgateway, then Prometheus |
 
 A *run* (one `npm test`, or one program) collects its events and numbers and sends
 them in one go, at the end, all labelled with the run's id. In Grafana you can pick a
@@ -266,6 +266,55 @@ def push(cli, job, run_id, net, snapshot):
 `obs push` is the stack's command-line tool sending the same `PUT` your `report` sends.
 
 </details>
+
+## Check your understanding
+
+::: check
+**You want to know what your client did, and in what order. Which signal answers that?**
+
+- [x] Events: one line of JSON per thing that happened, kept in Loki
+  > Yes: each event says what happened, with its details, such as
+  > `{"step":"hello","message":"my JAM client is alive"}`, and they're kept in order.
+- [ ] Numbers: one value per name, per run, kept by the Pushgateway
+  > No: a number answers "how many?" or "what slot?", like `tests_passed`. It says
+  > nothing about what happened first.
+- [ ] The test output: it lists every step
+  > No: a test says whether your code is right, not what it did on the way. That's why
+  > the client reports.
+
+**When does a run send what it has collected?**
+
+- [ ] Each time something happens, as soon as `event` writes it down
+  > No: `event` and `number` only write in the notebook. Nothing is sent until `report`.
+- [ ] Never: Grafana reads it straight from the running program
+  > No: Grafana only shows what Loki and the Pushgateway were sent. A program that never
+  > calls `report` never appears.
+- [x] Once, at the end, when `report` sends it, all labelled with the run's id
+  > Yes: the events go to Loki and the numbers to the Pushgateway in one go. The id lets
+  > Grafana show one run on its own.
+
+**The stack is down, and you run `node bin/hello.ts`. What happens?**
+
+- [ ] The program crashes with a connection error
+  > No: `report` catches the error, prints one line, and returns `null`.
+- [x] It prints `not reported: is the observability stack up?` and carries on
+  > Yes: reporting is extra, so a missing stack never stops your client. Your code is
+  > fine; it just had no one to tell.
+- [ ] The hello is kept, and sent the next time the stack is up
+  > No: nothing keeps it. The run lives only in the program's memory, and is gone when
+  > the program exits.
+
+**You run `npm test` twice, and 2 tests pass each time. What does the Pushgateway hold afterwards?**
+
+- [ ] 4: the two runs added together
+  > No: nothing adds them up. Each report sends its own totals.
+- [ ] Both runs' numbers, side by side
+  > No: that's Loki's side of things. Every run's events stay there with their run id,
+  > but the Pushgateway keeps one group per `client` and `kind`.
+- [x] 2: the second run's numbers replaced the first's
+  > Yes: each report sends its group with a `PUT`, and a `PUT` replaces what was there.
+  > That's why the "last run" panels always show the latest run.
+:::
 
 ## What you have
 

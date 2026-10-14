@@ -29,6 +29,13 @@ import PvmStepper from "./PvmStepper.vue";
 import PipelineCycles from "./PipelineCycles.vue";
 import GasMeter from "./GasMeter.vue";
 import ImportWaves from "./ImportWaves.vue";
+import ResultTag from "./ResultTag.vue";
+import ShardRebuild from "./ShardRebuild.vue";
+import HashAvalanche from "./HashAvalanche.vue";
+import ExtrinsicCommit from "./ExtrinsicCommit.vue";
+import SignCheck from "./SignCheck.vue";
+import HeaderMap from "./HeaderMap.vue";
+import CheckYourself from "./CheckYourself.vue";
 import "./custom.css";
 
 export default {
@@ -43,7 +50,13 @@ export default {
     app.component("TwoBytes", TwoBytes); // 2.2
     app.component("CompactNatural", CompactNatural); // 2.2
     app.component("VectorMap", VectorMap); // 2.6
+    app.component("ResultTag", ResultTag); // 3.2
+    app.component("ShardRebuild", ShardRebuild); // 3.3
     app.component("CoreBitfield", CoreBitfield); // 4.2
+    app.component("HeaderMap", HeaderMap); // 4.6
+    app.component("HashAvalanche", HashAvalanche); // 5.1
+    app.component("ExtrinsicCommit", ExtrinsicCommit); // 5.2
+    app.component("SignCheck", SignCheck); // 5.3
     app.component("TrieBuilder", TrieBuilder); // 6.1
     app.component("StateKeyWeave", StateKeyWeave); // 6.2
     app.component("SafroleEpoch", SafroleEpoch); // 8.5
@@ -59,6 +72,8 @@ export default {
     app.component("CheckpointRun", CheckpointRun); // 16.6
     app.component("ReadyQueue", ReadyQueue); // 17.2
     app.component("ImportWaves", ImportWaves); // 19.1
+    // a lesson's understanding check, from its ::: check block (../checks.ts)
+    app.component("CheckYourself", CheckYourself);
     if (typeof window === "undefined") return;
     reloadOnStaleBuild();
     listenForSnippetTaps();

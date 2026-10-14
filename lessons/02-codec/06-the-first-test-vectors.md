@@ -499,6 +499,55 @@ Gray Paper 0.8.0, and lasair's type marks them so.
 
 </details>
 
+## Check your understanding
+
+::: check
+**`work_item.json` and `work_item.bin`: how are they related?**
+
+- [ ] The `.bin` is a compressed copy of the `.json` text
+  > No: there is no text in the `.bin` at all, not even the field names. Its 236 bytes are
+  > only the values.
+- [x] They are the same work item: the `.json` for people, the `.bin` encoded
+  > Yes: the `.bin` is the JSON's values, in the JSON's order, each written by its rule
+  > from [Part 2](./index.md). A client decodes the `.bin` and must get exactly the `.json`'s values.
+- [ ] They are two different work items that happen to share a service
+  > No: every value matches. `04 03 02 01` is the service, 16909060, and the next 32
+  > bytes are the same `code_hash`.
+
+**In `node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 52`, what is the 52?**
+
+- [ ] The size of every work item
+  > No: this one is 236 bytes, and an item with a longer payload is longer still.
+- [ ] The number of fields in a work item
+  > No: a work item has eight fields at the top level. 52 counts bytes, not fields.
+- [x] How many bytes to show, from the start of the file
+  > Yes: `bin/hexdump.ts` stops after 52 bytes. They happen to be exactly the first four fields,
+  > 4 + 32 + 8 + 8.
+
+**Why is `service`, 16909060, written `04 03 02 01`?**
+
+- [x] ℰ₄ writes a number's least significant byte first
+  > Yes: 16909060 is `0x01020304`, and ℰ₄ starts from its lowest byte, `04`.
+- [ ] The vector files store numbers backwards to save space
+  > No: the order saves nothing; both orders take 4 bytes. It is simply the Gray Paper's
+  > rule for fixed-width numbers, from [lesson 2.1](./01-fixed-width-integers.md).
+- [ ] The service id is a hash, and hashes are written in reverse
+  > No: the service id is a plain number, and a hash such as `code_hash` is copied exactly
+  > as it is, never reversed.
+
+**The payload has its length, `05`, in front of it. Why doesn't `code_hash`?**
+
+- [ ] `code_hash` comes first, and only later fields need a length
+  > No: order has nothing to do with it. `refine_gas_limit` comes later and has no
+  > length either.
+- [ ] Lengths are only written for numbers
+  > No: it's the other way round. Numbers like the gas limits have a fixed size and no
+  > length; the payload is bytes, and it has one.
+- [x] A hash is always 32 bytes, but a payload can be any size
+  > Yes: when both sides know a field's size, nothing needs saying. A payload's size
+  > changes from item to item, so the bytes have to say it.
+:::
+
 ## What you have
 
 A codec built from a dozen small pieces, the first two JAM structures agreeing with the

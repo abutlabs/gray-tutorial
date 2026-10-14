@@ -158,6 +158,55 @@ record.
 
 </details>
 
+## Check your understanding
+
+::: check
+**What turns a work-report into a guarantee?**
+
+- [ ] Every validator checking it and agreeing it's correct
+  > No: only two or three validators sign, from the core that did the work. A
+  > guaranteed report can still turn out wrong, which is what disputes are for.
+- [x] Two or three validators signing it, with the slot they signed it in
+  > Yes: a guarantee is the report, ℰ₄ of the slot, and the credential, their
+  > signatures. They put their names on "this report is correct".
+- [ ] A hash of the report written in front of it
+  > No: a guarantee carries the whole report, then the slot and the signatures. There's
+  > no hash in front.
+
+**The tiny vector's slot bytes are `2a 00 00 00`. What is the slot?**
+
+- [x] 42
+  > Yes: ℰ₄ writes the least significant byte first, and `0x2a` is 42.
+- [ ] 704,643,072
+  > No: that's `0x2a000000`, the bytes read the wrong way round. ℰ₄ puts the
+  > lowest byte first, so `2a` is the small end.
+- [ ] A length: 42 signatures follow
+  > No: the slot is a fixed 4-byte number, and the signatures carry their own length.
+  > There are two.
+
+**The guarantee's two signatures come from validators 0 and 1. How does a decoder know to read two, not three?**
+
+- [ ] Guarantees always have exactly two signatures
+  > No: a credential has two or three. Two is only the minimum.
+- [ ] It keeps reading signatures until the bytes run out
+  > No: more can follow, another guarantee or the rest of the block. A decoder can't
+  > tell a signature from whatever comes next.
+- [x] The signatures list has its length in front
+  > Yes: Appendix C writes the signatures with their length first, so the bytes say
+  > "two" before the first one starts.
+
+**A work-report holds the number of erasure shards: 6 on tiny, 1,023 on full. Why isn't `GuaranteesExtrinsic` a function of the config?**
+
+- [x] The size changes a value, not the shape: it's a u16 either way
+  > Yes: a codec only needs the config when the number of bytes depends on it. 6 and
+  > 1,023 both fit in the same two bytes.
+- [ ] Guarantees only ever appear in tiny blocks
+  > No: the vectors have a `guarantees_extrinsic` for both sizes, and both pass.
+- [ ] A work-report is the same number of bytes in every guarantee
+  > No: a report with more results is longer. Its variable parts carry their own
+  > lengths, so the codec still needs no config.
+:::
+
 ## What you have
 
 Four of the five extrinsic parts. One left, and it's the dramatic one: disputes.

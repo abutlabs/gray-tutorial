@@ -180,6 +180,56 @@ They make snippets easy to place:
 3. **Field names copy the test vectors** (`anchor_slot`, not `anchorSlot`), so a vector's
    JSON and your values look exactly alike.
 
+## Check your understanding
+
+::: check
+**In σ′ ≡ Υ(σ, B), what does your client work out?**
+
+- [ ] B, the next block, from the state σ
+  > No: the block comes in from outside. A block importer is handed σ and B, and works out
+  > what follows from them.
+- [x] σ′, the state after the block, from the state before it and the block
+  > Yes: that is Υ. Hand it the state at slot 43 and the block for slot 44, and out comes
+  > the state at slot 44.
+- [ ] Whether B is valid, and nothing more
+  > No: checking the rules is half the job. When the block is valid, the importer also
+  > answers with the new state, σ′.
+
+**Two clients import the same block onto the same state, and both follow the rules correctly. What do they get?**
+
+- [ ] Two states that mean the same thing, though the details may differ
+  > No: the rules are exact, so there is no room for "close enough". Every correct client
+  > gets the same answer, byte for byte.
+- [x] Exactly the same new state
+  > Yes: that's what makes them clients of the same chain. Applying Υ correctly leaves no
+  > choices to make.
+- [ ] It depends on the language each client is written in
+  > No: lasair is OCaml and yours is TypeScript, and they must still agree. The rules say
+  > what the answer is, not how a program gets there.
+
+**Your client and an official test vector disagree. Which is right?**
+
+- [ ] Your client, if all its tests pass
+  > No: your tests are only as right as what you wrote in them. A vector holds the exact
+  > output a correct client must produce.
+- [ ] Whichever answer most JAM clients give
+  > No: clients don't vote. The vectors are the referee every team tests against.
+- [x] The vector
+  > Yes: when your code and a vector disagree, the vector wins. (Unless the vectors' own
+  > changelog corrects it: even referees publish corrections.)
+
+**Why do the lessons often watch a test fail before writing the code?**
+
+- [x] A test that has never failed has never proved anything
+  > Yes: watching it go red shows it really checks the rule. Then the code turns it green.
+- [ ] Because the lesson's code isn't finished yet
+  > No: the red is planned. Each run that should fail says how it should fail, and every
+  > lesson is followed from an empty folder before you see it.
+- [ ] To show what an error looks like, and move on
+  > No: the failure is part of the proof, not a demo. A test that passes from the start
+  > might be passing because it checks nothing.
+:::
+
 ## What you have
 
 The map: what JAM is, what your client will do, how a lesson works, and where to turn

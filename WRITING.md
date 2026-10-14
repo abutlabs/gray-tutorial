@@ -170,7 +170,17 @@ recommends.
 3. **Run**: the tests pass, the types check.
 4. **lasair**, folded in `<details>`: the same rule in lasair's OCaml, quoted from the
    source (say when comments are trimmed), with a sentence on reading it.
-5. **What you have**, the last section: what works now and which vectors pass (on the
+5. **Check your understanding**, the section before last: three to five questions in a
+   `::: check` block (`.vitepress/checks.ts` has the format), each with 2 to 5 options,
+   exactly one right, and a reason under every option, wrong ones too: a wrong answer
+   teaches most when it says why it's wrong. Ask about the lesson's idea, not its
+   TypeScript, on its own values (why `04 03 02 01`, not what `w.fixed` is called). Make
+   the wrong options the mistakes a reader really makes (52 as the size of every item),
+   never silly ones, and move the right answer around. A question may only use what this
+   lesson or an earlier one taught. `tools/checks.test.ts` checks the shape. *Why:* a
+   reader who can explain the idea back has it; one who can't finds out here, not three
+   lessons later (Aodh, on what `hexdump … 48` meant).
+6. **What you have**, the last section: what works now and which vectors pass (on the
    scoreboard, where a milestone ran it), then one sentence on why the next lesson comes
    next, then the link to it.
 

@@ -214,6 +214,57 @@ On the plane, where a lesson says `npm install`, type `npm install --offline`: n
 everything from its cache. The lessons, in VS Code or on the website (`npm run site`),
 need no network at all.
 
+## Check your understanding
+
+::: check
+**Node runs your `.ts` files itself. So what is `tsc` for?**
+
+- [ ] Turning the `.ts` files into the `.js` files Node runs
+  > No: `noEmit` means `tsc` writes nothing. Node strips the types off and runs what's
+  > left, with no build step.
+- [x] Checking the types, and nothing else
+  > Yes: `npm run typecheck` asks `tsc` to look for mix-ups, such as a `number` where text
+  > was expected. It changes no file.
+- [ ] Starting Node 26 with the right settings
+  > No: `nvm use` picks the Node version. `tsc` only ever reads your code.
+
+**You've run `./obs up` and opened Grafana. The dashboards are empty. What's wrong?**
+
+- [x] Nothing: your client hasn't reported anything yet
+  > Yes: the stack is running and waiting. Your client is still empty, and [lesson
+  > 0.3](./03-watch-your-client.md) gives it its first words.
+- [ ] Docker isn't running
+  > No: with Docker stopped, `./obs up` fails with `failed to connect to the docker API`,
+  > and there's no Grafana to open.
+- [ ] The test vectors haven't finished downloading
+  > No: the vectors are files in `vectors/` for your tests to read. The dashboards show
+  > what your client reports, and so far it has reported nothing.
+
+**Why does the tutorial's git ignore `client/`?**
+
+- [ ] So that your code can never be kept in git
+  > No: `git init` inside `client/` makes it a repository of your own, with your own
+  > history.
+- [ ] Because the tutorial ships a finished client there
+  > No: `client/` starts empty, and you write every line in it.
+- [x] So `git pull` brings new lessons without touching your code
+  > Yes: your code stays out of the tutorial's history, and the tutorial's updates stay
+  > out of your code.
+
+**You'll work on a plane. What must you fetch while you're still online?**
+
+- [ ] Nothing: the lessons need no network
+  > No: the lessons don't, but the code does. The vectors, the Docker images and the
+  > packages have to be on your machine first.
+- [x] The vectors, the stack's Docker images, and every package, yours and the tutorial's
+  > Yes: `npm run vectors`, `./obs up` once, the `npm install --no-save` line, and a fresh
+  > `npm install` at the repo root. On the plane, `npm install --offline` takes packages
+  > from npm's cache.
+- [ ] Only the test vectors, since they're the big download
+  > No: size isn't the problem. A small package missing from npm's cache stops a lesson
+  > just as surely as missing vectors.
+:::
+
 ## What you have
 
 Node 26, the official test vectors, an observability stack waiting for its first word,

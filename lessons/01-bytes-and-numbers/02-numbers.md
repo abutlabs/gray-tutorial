@@ -40,8 +40,9 @@ calculation takes one kind or the other, never both, so every value in it needs 
 `TypeError: Cannot mix BigInt and other types`.
 
 One more trap while we're here: in JavaScript, `**` raises to a power, and `^` doesn't.
-`^` is *xor*, one of the bitwise operators below, so `2 ** 53` is 9007199254740992 and
-`2 ^ 53` is 55.
+`^` is *xor*, one of the bitwise operators below: it compares two numbers bit by bit and
+keeps the bits set in exactly one of them. 2 is `000010` and 53 is `110101`, so `2 ^ 53`
+is `110111`, which is 55. `2 ** 53` is 9007199254740992.
 
 ## What the Gray Paper says
 
@@ -99,7 +100,9 @@ as what it's about: the same two values, once as `number` and once as `bigint`. 
 pay off again in the debugger, below.)
 
 The third test is a trap for later. `|`, `&`, `^`, `<<` and `>>` treat numbers as
-*signed* 32-bit integers, so `allOnes`, all 32 bits set, comes out of `| 0` as −1.
+*signed* 32-bit integers, so `allOnes`, all 32 bits set, comes out of `| 0` as −1. In a
+signed number the top bit counts not 2^31 but −2^31. Every bit below it adds up to
+2^31 − 1, so all 32 together make −2^31 + 2^31 − 1 = −1.
 `>>> 0` turns it back into the unsigned value. JAM's virtual machine will lean on that.
 
 **Run**
@@ -173,6 +176,54 @@ let ult (a : int64) (b : int64) = Int64.unsigned_compare a b < 0
 `ult` is "unsigned less than", and every comparison in that encoder now goes through it.
 
 </details>
+
+## Check your understanding
+
+::: check
+**`2 ** 64 - 70 === 2 ** 64` is `true` in JavaScript. Why?**
+
+- [ ] 70 is too small to make a difference to a number that big
+  > No: it makes a difference, and a `bigint` shows it: `2n ** 64n - 70n` is exactly
+  > 18446744073709551546n, 70 below 2^64. In JAM, 70 units of gas matter.
+- [x] A `number` is exact only up to 2^53 − 1, and above that it rounds
+  > Yes: both values round to the same float, 18446744073709552000. No error, no warning.
+- [ ] `**` is xor in JavaScript, not a power
+  > No: it's the other way round. `**` raises to a power, and `^` is xor.
+
+**Which types does your client use for a timeslot and for a gas amount?**
+
+- [ ] `number` for both
+  > No: gas is a u64, and 2^64 − 70 is a real gas amount. As a `number` it would round
+  > to 2^64.
+- [ ] `bigint` for both
+  > No: a `bigint` would hold a timeslot, but the rule keeps u32 values as `number`. A
+  > timeslot is below 2^32, far under 2^53, so a `number` is exact, and faster.
+- [x] `number` for the timeslot, `bigint` for gas
+  > Yes: a timeslot is a u32, so a `number` holds it exactly. Gas is a u64 and can climb
+  > past 2^53, so it's a `bigint`.
+
+**What is `2 ^ 53` in JavaScript?**
+
+- [x] 55
+  > Yes: `^` is xor, a bitwise operator. 2 is `000010` and 53 is `110101`; xor keeps the
+  > bits set in exactly one of them, `110111`, which is 32 + 16 + 4 + 2 + 1 = 55.
+- [ ] 9007199254740992
+  > No: that's `2 ** 53`. `^` doesn't raise to a power.
+- [ ] A `TypeError`
+  > No: both are plain numbers, so nothing is mixed. JavaScript happily answers, just not
+  > with a power.
+
+**`0xffffffff | 0` is −1. Why?**
+
+- [ ] `0xffffffff` is too big for a `number`
+  > No: it's 4294967295, far below 2^53. A `number` holds it exactly, as `allOnes` shows.
+- [x] Bitwise operators read a number as a signed 32-bit integer, and all 32 bits set is −1
+  > Yes: `|` works on the signed reading. `>>> 0` turns the result back into the unsigned
+  > one, 4294967295.
+- [ ] A number past 2^32 overflows when you add to it
+  > No: `|` isn't adding, and `0xffffffff + 0` is still 4294967295. Only the bitwise
+  > operators squeeze a number into 32 signed bits.
+:::
 
 ## What you have
 

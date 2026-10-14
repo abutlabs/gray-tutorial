@@ -417,6 +417,65 @@ returns a pair, `(value, bytes_consumed)`, where yours returns an object.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Why is 127 one byte as a compact natural, but 128 two?**
+
+- [ ] A byte holds 0 to 255, so 128 fits in one, and the second byte is padding
+  > No: a compact natural's first byte gives its first bit to the marker. A lone byte
+  > starts with 0, "no more follow", which leaves 7 bits: 0 to 127.
+- [x] One byte has 7 bits for x, and 128 needs an eighth
+  > Yes: 64 + 32 + 16 + 8 + 4 + 2 + 1 = 127 is the most 7 bits hold. 128 is `10000000`,
+  > and that first place belongs to the marker.
+- [ ] 128 is negative as a signed byte, so it needs a second
+  > No: nothing here is signed. The limit is the marker bit, not a sign bit.
+
+**128 is `0x8080`. What is each of its two bytes?**
+
+- [ ] 128 written twice, so a decoder can check it
+  > No: they match by coincidence. 300 is `0x812c`, and its two bytes differ.
+- [ ] A length, 128, then the value
+  > No: the first byte isn't a length. Its leading ones say how many bytes follow:
+  > `0x80` is `10000000`, one leading one, so one more byte.
+- [x] The marker `10` with 128's top six bits, all zero; then 128's low eight bits
+  > Yes: 128 in 14 bits is `000000` then `10000000`. The marker and the zeros make
+  > `10000000`, `0x80`, and the low bits are `0x80` too.
+
+**What is ℰ(300), the compact natural?**
+
+- [x] `81 2c`
+  > Yes: 300 is at least 128 and below 16,384, so l = 1. The first byte is 128 +
+  > ⌊300 / 256⌋ = 129, `0x81`; then 300 mod 256 = 44, `0x2c`.
+- [ ] `2c 01`
+  > No: that's ℰ₂(300), the fixed width from [lesson 2.1](./01-fixed-width-integers.md),
+  > with no marker. A decoder would see `2c` start with 0, stop there, and read 44.
+- [ ] `80 2c`
+  > No: that leaves out 300's top bit, the 256. A decoder would read the marker, top bits
+  > 0, then `2c`: 44, not 300.
+
+**A decoder meets the first byte `c0`. How many bytes long is the number, in all?**
+
+- [ ] Two: the leading ones count the bytes
+  > No: that's how UTF-8 counts. Here the leading ones count the bytes after the first.
+- [x] Three: `c0` is `11000000`, two leading ones, so two more bytes follow
+  > Yes: like the test's 16,384, `c0 00 40`.
+- [ ] 192: `c0` is the length
+  > No: `c0` is 192 as a plain byte, but a compact natural's first byte isn't a length.
+  > Only its leading ones count bytes.
+
+**The bug wrote 128 as the single byte `0x80`. What would a decoder make of it?**
+
+- [ ] 128, since `0x80` is 128
+  > No: as a compact natural's first byte, `0x80` isn't 128. Its first bit says another
+  > byte follows.
+- [ ] Eight more bytes follow
+  > No: that's `0xff`, eight leading ones. `0x80` has one.
+- [x] One more byte follows, and it belongs to the number
+  > Yes: `10000000` has one leading one, so the decoder takes the next byte as x's low
+  > bits, whatever it really is. Followed by `05`, it would read 5.
+:::
+
 ## What you have
 
 ℰ both ways: any natural below 2^64 in one to nine bytes, its first byte saying how many

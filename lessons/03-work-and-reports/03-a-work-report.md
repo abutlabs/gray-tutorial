@@ -12,8 +12,8 @@ into the chain. Everything from [Part 3](./index.md) meets here.
 - **Availability specification.** How to find a package's data again: its hash, its
   bundle's length, the erasure root and shard count, and its exported segments' root and
   count. *Example:* a report's `package_spec`.
-- **Erasure coding.** Chopping data into one piece per validator so cleverly that just over
-  a third of the pieces can rebuild it all. *Example:* 1,023 shards on full, any 342 of
+- **Erasure coding.** Chopping data into one piece per validator so cleverly that a third
+  of the pieces, plus one, can rebuild it all. *Example:* 1,023 shards on full, any 342 of
   which will do; on tiny, 6, any 3.
 - **Bundle.** A work-package with everything needed to refine it again: its extrinsics,
   and the segments it imports, with their proofs. *Example:* its length is in a report's
@@ -39,10 +39,18 @@ hash, the length of its *bundle* (the package plus everything needed to re-run i
 segments it exported.
 
 What are erasure shards? Before a report counts, its bundle is chopped into pieces, one
-for every validator, cut so cleverly that just over a third of them (any 342 of the 1,023
-on full) can rebuild the whole thing.
+for every validator, cut so cleverly that a third of them, plus one, can rebuild the whole
+thing: any 342 of the 1,023 on full, any 3 of the 6 on tiny.
 Hence `erasure_shards`: one per validator. Which means, for the first time, tiny and full
 vectors differ: 6 shards on tiny, 1,023 on full.
+
+How can a few pieces hold the whole? Here is the same idea in miniature, not JAM's exact
+code. Three letters become the one curve through their numbers, and each of 6 validators
+holds one point on it. Any 3 points fix that curve, so any 3 shards rebuild the letters.
+Take validators offline and press *rebuild*: with 3 left it works. With 2 it can't, and
+you see another message that fits the same 2 shards.
+
+<ShardRebuild />
 
 Where does a report go once it's made? Onto a core, where it waits for validators to say
 they hold their pieces, and then either on to the chain or off the core when time runs out.
@@ -197,6 +205,52 @@ carries one. Some rules no test catches for you: this one
 you get right by reading it.
 
 </details>
+
+## Check your understanding
+
+::: check
+**`erasure_shards` is `ff 03` on full and `06 00` on tiny. Why do they differ?**
+
+- [ ] The full report's bundle is bigger, so it is cut into more pieces
+  > No: both reports say the bundle is 42 bytes, `2a 00 00 00`. The number of shards
+  > doesn't depend on the data's size.
+- [x] There is one shard per validator: 1,023 on full, 6 on tiny
+  > Yes: `0x03ff` is 1,023 and `0x0006` is 6. Every validator holds one piece.
+- [ ] Full writes its numbers in a different order
+  > No: both are a u16, little end first. `ff 03` is `0x03ff`, 1,023.
+
+**On tiny, 4 of the 6 validators go offline. Can the bundle be rebuilt from the other 2 shards?**
+
+- [ ] Yes: each shard is a full copy, so any one will do
+  > No: a shard is a piece, not a copy. If one were enough, the rule would be any 1 of
+  > the 6, not any 3.
+- [ ] Yes: 2 is a third of 6, and a third is enough
+  > No: it takes a third *plus one*: 6 ÷ 3 + 1 = 3 shards.
+- [x] No: it takes 3, and more than one bundle fits the same 2 shards
+  > Yes: as with the curve, any 3 points fix it, but 2 points fit many curves. With 3
+  > validators left, it rebuilds.
+
+**What does erasure coding buy?**
+
+- [ ] Compression: the shards together are smaller than the bundle
+  > No: they're bigger. Any 342 of the 1,023 shards hold the whole bundle, so all 1,023
+  > hold about three times as much.
+- [ ] Secrecy: no single validator can read the bundle
+  > No: it isn't encryption. It is about getting the data back, not hiding it.
+- [x] The bundle survives even if most validators vanish, and no one has to keep all of it
+  > Yes: each validator keeps one piece, and any 342 of the 1,023 rebuild the bundle. So
+  > 681 can be gone and the data is still there.
+
+**Write `core_index` as one plain byte instead of a compact natural, and every vector here still passes. Why?**
+
+- [x] Below 128 a compact natural is one byte, the number itself, and the vectors use core 3
+  > Yes: core 3 is `03` either way. Only a core of 128 or more, on full, tells them
+  > apart: core 340 is `81 54` as a compact natural.
+- [ ] A compact natural and a plain byte are the same thing
+  > No: they match only below 128. 128 as a compact natural is two bytes, `80 80`.
+- [ ] The vectors don't check `core_index`
+  > No: they check every byte. `03` simply comes out the same both ways.
+:::
 
 ## What you have
 

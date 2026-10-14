@@ -8,6 +8,7 @@ import type { ShikiTransformer } from "shiki";
 import { readParts } from "../tools/lessons.ts";
 import { LEGEND, writeRedirects } from "./urls.ts";
 import { type PrintPage, writePrintPage } from "./print.ts";
+import { checkBlocks } from "./checks.ts";
 import { KEY as CONCEPTS_KEY } from "./theme/concepts.ts";
 import { type Snapshot, snippetNumbers, wholeFiles } from "../tools/snapshots.ts";
 
@@ -53,7 +54,7 @@ export default defineConfig({
   // SVG: no script in the reader's browser, and print.html gets it too)
   markdown: {
     math: true,
-    config: (md) => { snippetLabels(md); textSymbols(md); },
+    config: (md) => { snippetLabels(md); textSymbols(md); checkBlocks(md); },
     codeTransformers: [shellComments()],
   },
   // pages that moved keep their old address, as a page that sends the reader on; and the

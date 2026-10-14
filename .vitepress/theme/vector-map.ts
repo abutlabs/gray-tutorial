@@ -3,14 +3,12 @@
 // 2.5's rules, and the same walk records which bytes each field became, so the map can't be
 // faked. tools/widget-vector-map.test.ts checks it against the lesson's own dump and bullets.
 
-import { encodeFixed } from "./bytes.ts";
-import { compact } from "./compact.ts";
+import { encodeMapped, isNumber, numberRule, numberSay, pieces, short, spaced } from "./codec-map.ts";
+import type { Node, Type } from "./codec-map.ts";
 
-/** A field's type, as lesson 2.6's WorkItem codec spells it. */
-export type Type = "u16" | "u32" | "u64" | "hash" | "blob" | { seq: Type } | { record: [string, Type][] };
-
-/** The vectors' JSON for a value: numbers, "0x..." strings, lists, objects. */
-type Json = number | string | Json[] | { [field: string]: Json };
+// The shared encoder and its map, as this widget and its test have always imported them.
+export { encodeMapped, flatten, fromHex, isNumber, ownerOf, pieces, short, spaced, WIDTH } from "./codec-map.ts";
+export type { Node, Piece, Type } from "./codec-map.ts";
 
 /** ImportSpec, ExtrinsicSpec and WorkItem, field by field, in the order Appendix C encodes them. */
 export const IMPORT_SPEC: Type = { record: [["tree_root", "hash"], ["index", "u16"]] };
@@ -47,131 +45,35 @@ export const WORK_ITEM_JSON = {
   ],
 };
 
-/** A value in the map: where its bytes start and end (end not included), and its parts. */
-export interface Node {
-  path: string; // "import_segments[2].index"; "" for the whole item
-  type: Type;
-  json: Json;
-  start: number;
-  end: number;
-  prefix: number; // bytes of length or count in front: a blob's or a sequence's, else 0
-  children: Node[];
-}
-
-/** The fixed-width numbers' byte counts: ℰ₂, ℰ₄, ℰ₈. */
-export const WIDTH = { u16: 2, u32: 4, u64: 8 } as const;
-/** Whether a type is a fixed-width number, written least significant byte first. */
-export const isNumber = (t: Type): t is keyof typeof WIDTH => typeof t === "string" && t in WIDTH;
-
-/** "0x0102" → [1, 2]. */
-export const fromHex = (hex: string): number[] => (hex.slice(2).match(/../g) ?? []).map((h) => parseInt(h, 16));
-
-/** Bytes as a hex dump writes them: "04 03 02 01". */
-export const spaced = (bytes: number[]): string => bytes.map((b) => b.toString(16).padStart(2, "0")).join(" ");
-
-/** Encodes a value onto `out` and returns where each of its parts went. */
-function encodeInto(type: Type, json: Json, path: string, out: number[]): Node {
-  const start = out.length;
-  const node = (prefix: number, children: Node[] = []): Node => ({ path, type, json, start, end: out.length, prefix, children });
-  if (isNumber(type)) {
-    out.push(...encodeFixed(BigInt(json as number), WIDTH[type])); // ℰ_l: least significant first
-    return node(0);
-  }
-  if (type === "hash") {
-    out.push(...fromHex(json as string)); // 32 bytes, as they are
-    return node(0);
-  }
-  if (type === "blob") {
-    const bytes = fromHex(json as string);
-    const length = compact(BigInt(bytes.length)).bytes; // ↕: its length first, a compact natural
-    out.push(...length, ...bytes);
-    return node(length.length);
-  }
-  if ("seq" in type) {
-    const items = json as Json[];
-    const count = compact(BigInt(items.length)).bytes; // how many, a compact natural
-    out.push(...count);
-    const children = items.map((item, i) => encodeInto(type.seq, item, `${path}[${i}]`, out));
-    return node(count.length, children);
-  }
-  const fields = json as { [field: string]: Json };
-  const children = type.record.map(([name, t]) => encodeInto(t, fields[name], path ? `${path}.${name}` : name, out));
-  return node(0, children); // a record: its fields in order, nothing between
-}
-
-/** A value's encoding and the map of it. */
-export function encodeMapped(type: Type, json: Json): { bytes: number[]; root: Node } {
-  const out: number[] = [];
-  const root = encodeInto(type, json, "", out);
-  return { bytes: out, root };
-}
-
-/** Every node under (and including) root, in byte order. */
-export const flatten = (root: Node): Node[] => [root, ...root.children.flatMap(flatten)];
-
-/** A run of bytes one node owns outright: a length or count in front, or a field's value. */
-export interface Piece { start: number; end: number; path: string; length: boolean }
-
-/** The bytes cut into pieces that tile them: lengths and counts, and each field's value. */
-export function pieces(root: Node): Piece[] {
-  const own: Piece[] = [];
-  if (root.prefix) own.push({ start: root.start, end: root.start + root.prefix, path: root.path, length: true });
-  if (root.children.length) return [...own, ...root.children.flatMap(pieces)];
-  if (root.end > root.start + root.prefix) own.push({ start: root.start + root.prefix, end: root.end, path: root.path, length: false });
-  return own;
-}
-
 /** The colour of each byte: lengths and counts in the marker's amber, and the fields'
  *  values in turn blue and green, as the lesson's diagram draws them. */
 export function shades(root: Node): ("mark" | "top" | "low")[] {
   const out: ("mark" | "top" | "low")[] = [];
   let k = 0;
   for (const p of pieces(root)) {
-    const shade = p.length ? "mark" : k++ % 2 === 0 ? "top" : "low";
+    const shade = p.role !== "value" ? "mark" : k++ % 2 === 0 ? "top" : "low";
     for (let i = p.start; i < p.end; i++) out.push(shade);
   }
   return out;
 }
 
-/** The path of the node a byte belongs to: a count byte belongs to its sequence. */
-export function ownerOf(root: Node, byte: number): string | null {
-  return pieces(root).find((p) => p.start <= byte && byte < p.end)?.path ?? null;
-}
-
 /** The last part of a path: "import_segments[2].index" → "index". */
 const nameOf = (path: string) => path.split(".").at(-1)!;
-const SUB = "₀₁₂₃₄₅₆₇₈₉";
-const fmt = (n: number | bigint) => n.toLocaleString("en-US");
 
 /** A field's rule, short, for the readout. */
 export function ruleOf(type: Type): string {
-  if (isNumber(type)) return `ℰ${SUB[WIDTH[type]]}`;
+  if (isNumber(type)) return numberRule(type);
   if (type === "hash") return "as is";
   if (type === "blob") return "length + bytes";
   if ("seq" in type) return "count + items";
   return "fields in order";
 }
 
-/** Long runs of bytes, shortened as the lesson's diagram does: "70 a5 08 29 … 9e 53 2e". */
-export const short = (bytes: number[]): string =>
-  bytes.length <= 8 ? spaced(bytes) : `${spaced(bytes.slice(0, 4))} … ${spaced(bytes.slice(-3))}`;
-
 /** How a record's field is written, for the line about a sequence of them. */
 function partSay(name: string, t: Type): string {
   if (t === "hash") return `its 32-byte ${name}`;
   if (isNumber(t)) return `its ${name} as a ${t} (${ruleOf(t)})`;
   return `its ${name}`;
-}
-
-/** What a number's ℰ_l writes, in words, on its real value. */
-function numberSay(node: Node, bytes: number[]): string {
-  const t = node.type as keyof typeof WIDTH;
-  const v = BigInt(node.json as number);
-  const digits = v.toString(16);
-  const hex = v >= 10n ? ` = 0x${digits.padStart(digits.length + (digits.length % 2), "0")}` : "";
-  const used = Math.ceil(digits.length / 2);
-  const fill = v === 0n ? ", all zeros" : used < WIDTH[t] ? ", zeros to fill" : "";
-  return `${node.path} = ${fmt(v)}${hex}, a ${t} (${ruleOf(t)}): ${WIDTH[t]} bytes, least significant first${fill} → ${spaced(bytes)}`;
 }
 
 /** The line that says how a node's value became its bytes, on the real values. */

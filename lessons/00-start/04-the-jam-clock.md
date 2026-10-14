@@ -394,6 +394,53 @@ clock, without sending a single message.
 
 </details>
 
+## Check your understanding
+
+::: check
+**At 12:00:05.999 UTC on 1 January 2025, which slot is it?**
+
+- [ ] Slot 1: 5.999 seconds is 0.9998 of a slot, nearer 1 than 0
+  > No: that's the bug you hunted. `Math.round` said 1, but slot 1 doesn't begin until
+  > 12:00:06.
+- [x] Slot 0: not even one whole slot has gone by
+  > Yes: a slot number counts the whole slots that have gone by, so it rounds down.
+  > 0.9998 rounds down to 0.
+- [ ] Slot 5: five whole seconds have gone by
+  > No: that counts seconds. A slot is six seconds, so 5.999 seconds isn't one slot yet.
+
+**Which slot begins at 12:00 UTC on 2 January 2025, one day into the era?**
+
+- [ ] 86,400
+  > No: that's the seconds in a day, 24 × 60 × 60. A slot is six of them.
+- [ ] 1,440
+  > No: that's the minutes in a day. It would be right if a slot lasted a minute.
+- [x] 14,400
+  > Yes: 86,400 seconds / 6 = 14,400 slots. Or 24 hours × 600, since an hour is 600
+  > slots.
+
+**Before writing the real `slotAt`, the lesson gave it one that always says 0. Why?**
+
+- [x] So the tests fail on their assertions, which proves they check the clock
+  > Yes: `0 !== 600` shows the test asked for the right answer and caught a wrong one.
+  > That's red for the right reason.
+- [ ] Because 0 is the right answer at the start of the era
+  > No: it's right for the first six seconds only, and the stub says 0 forever. It's wrong
+  > on purpose.
+- [ ] Without the file, the tests would pass
+  > No: they'd fail, with `Cannot find module`. That proves only that a file is missing,
+  > not that the tests check anything.
+
+**`npm test` is green. Why run `npm run typecheck` too?**
+
+- [ ] Without it, Node can't run the `.ts` files
+  > No: Node strips the types and runs the files itself; `npm test` just did.
+- [x] Node strips the types without looking at them, so a type error passes `npm test`
+  > Yes: Node only runs the code. `tsc`, behind `npm run typecheck`, is the one that
+  > catches a type mix-up.
+- [ ] It runs the tests again, more strictly
+  > No: it runs no tests at all. It only reads the code and checks the types.
+:::
+
 ## What you have
 
 Your first JAM rule, its tests, and a clock that reports every slot as it begins. From

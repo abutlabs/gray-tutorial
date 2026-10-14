@@ -262,6 +262,55 @@ you, inside Node.
 
 </details>
 
+## Check your understanding
+
+::: check
+**What number is the byte `0x80`?**
+
+- [ ] 80
+  > No: that reads the hex digits as decimal ones. Decimal 80 is `0x50`.
+- [ ] 8
+  > No: that reads the digits the wrong way round. The first digit counts 16 times the
+  > second, so here the 8 is worth 8 × 16. The byte 8 is `0x08`.
+- [x] 128
+  > Yes: 16 × 8 + 0 = 128. In bits it's `10000000`: only the first place, the one worth
+  > 128, holds a 1.
+
+**How does a test vector write the bytes 1, 2 and 255?**
+
+- [x] `0x0102ff`
+  > Yes: two hex digits per byte, always. 1 is `01`, 2 is `02`, and 255 is `ff`.
+- [ ] `0x12ff`
+  > No: drop the zeros and the bytes run together. `0x12ff` is two bytes, `12` and `ff`:
+  > 18 and 255.
+- [ ] `0x12255`
+  > No: that writes 255 in decimal. In hex it's `ff`, 16 × 15 + 15, and every byte takes
+  > exactly two digits.
+
+**What does `0x` on its own mean?**
+
+- [ ] One byte, zero
+  > No: the byte zero is `0x00`. The `0x` only says "hex follows".
+- [x] No bytes at all
+  > Yes: the second test checks it. An empty `Uint8Array` is `"0x"`, and `"0x"` reads back
+  > as no bytes. The `0x` is a marker, not a byte.
+- [ ] Nothing: it isn't valid hex
+  > No: it's exactly what `toHex` writes for an empty row of bytes, and `fromHex` reads it
+  > back.
+
+**`fromHex("0x0102ff")` crashed with `hex characters in even length`. The text has eight characters. What was wrong?**
+
+- [ ] `toHex` wrote the wrong hex
+  > No: the test checks `toHex` first, and those assertions passed. The crash came later,
+  > in `fromHex`.
+- [ ] The text really had an odd number of hex digits
+  > No: `0102ff` is six digits, three bytes. Node gives this message for any text it can't
+  > read as hex.
+- [x] Node was handed the `0x` too, and `x` isn't a hex digit
+  > Yes: `toHex` puts `0x` on the front, so `fromHex` has to take it off, with
+  > `hex.slice(2)`, before Node reads the rest.
+:::
+
 ## What you have
 
 A word for bytes, `Bytes`, and the two functions that turn them into the test vectors'

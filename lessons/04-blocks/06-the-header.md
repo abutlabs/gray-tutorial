@@ -21,7 +21,7 @@ All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
-§5 (*The Header*) defines ten fields:
+§5 (*The Header*) defines ten fields, here in the order Appendix C encodes them:
 
 | Field | What it says |
 | --- | --- |
@@ -45,6 +45,14 @@ list says how long it is.
 And the order? You know the drill. §5 lists the offenders mark before the author index;
 Appendix C writes the author index, the entropy source, *then* the offenders. The encoding
 wins.
+
+Here are the two header test vectors, byte by byte, in Appendix C's order. Switch between
+them. In `header_1`, the epoch mark is one byte: `00`, nothing. In `header_0`, it's `01`
+and then 449 bytes of value. Tap a field to light up its bytes and see its rule worked on
+its real value; tap a byte to find its field. Long values fold to their first and last
+bytes: tap the fold to see the rest.
+
+<HeaderMap />
 
 ## The size grows
 
@@ -235,6 +243,56 @@ others by hand and by tests. Your client has one `Header`, and it is the type, t
 encoder, the decoder and the JSON reader at once.
 
 </details>
+
+## Check your understanding
+
+::: check
+**§5 lists the offenders mark before the author index. In a header's bytes, what comes straight after the tickets mark?**
+
+- [ ] The offenders mark, as §5 lists it
+  > No: §5 says what a header holds, not the order of its bytes. Appendix C moves the
+  > offenders mark later.
+- [x] The author index, ℰ₂
+  > Yes: Appendix C writes the author index, then the entropy source, then the
+  > offenders mark, then the seal. The encoding wins.
+- [ ] The seal
+  > No: the seal is the very last field, a signature over everything before it.
+
+**In `header_1`, the epoch mark is the single byte `00`. What does it say?**
+
+- [ ] An epoch mark with no validators in it
+  > No: an epoch mark would start `01`, then its two 32-byte hashes, then the
+  > validators' length. `00` is all there is.
+- [x] This header has no epoch mark
+  > Yes: `00` is the discriminator for "nothing". In `header_0` it's `01`, and the epoch
+  > mark follows.
+- [ ] Epoch 0
+  > No: the byte is a tag, not a number. Which epoch a header is in comes from its
+  > slot.
+
+**The tickets mark has no length in front, but the epoch mark's validator list does. Why?**
+
+- [ ] Tickets are small and validator keys are big
+  > No: size doesn't decide it. What decides is whether the decoder already knows the
+  > count.
+- [ ] The tickets mark is optional, so its `01` says how many follow
+  > No: the epoch mark is optional too, and its list still has a length. `01` only
+  > says "present".
+- [x] There's always one ticket per slot of an epoch, but 0.8.0 lets the validator count change
+  > Yes: E is fixed, 12 on tiny and 600 on full, so the decoder knows the count. V can
+  > change, so the list has to say how long it is.
+
+**On tiny, the epoch mark's value is 449 bytes. Where does 449 come from?**
+
+- [x] Two 32-byte hashes, a 1-byte length, and 6 validators' two 32-byte keys
+  > Yes: 32 + 32 + 1 + 6 × 64 = 449. The length byte is `06`.
+- [ ] 449 is the epoch mark's fixed size, on every network
+  > No: it grows with the validators. On full, 1,023 of them, it's 32 + 32 + 2 +
+  > 1,023 × 64 = 65,538 bytes, with a 2-byte length.
+- [ ] Twelve tickets, one per slot of tiny's next epoch
+  > No: those are the tickets mark, a different field. The epoch mark holds
+  > randomness and validators' keys.
+:::
 
 ## What you have
 

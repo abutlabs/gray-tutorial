@@ -28,6 +28,8 @@ value.
 And a sequence whose length is fixed by the protocol (the Gray Paper writes ⟦T⟧ₙ for "n
 things of type T") is just its items, one after another, no length in front.
 
+To watch both at work in a real block header, try the widget in [lesson 4.6](./06-the-header.md).
+
 ## The tests
 
 **Add to** `test/codec.test.ts`
@@ -144,6 +146,44 @@ copies bytes around by hand (`Bytes.blit`); your Writer just writes the tag, the
 value.
 
 </details>
+
+## Check your understanding
+
+::: check
+**`option(u32)` writes 7 as `01 07 00 00 00`. What does the `01` say?**
+
+- [ ] The length of what follows: one value
+  > No: it isn't a count. A u32 is always 4 bytes, so it needs no length; `01` only
+  > says whether there's a value at all.
+- [x] "There is a value, and here it comes"
+  > Yes: it's the discriminator. `01` for a value, then the value by its own rule, 7 as
+  > ℰ₄.
+- [ ] It's part of the number 7
+  > No: 7 as ℰ₄ is `07 00 00 00`, the four bytes after it. The `01` sits in front.
+
+**How does `option(u32)` write "nothing"?**
+
+- [ ] As no bytes at all
+  > No: then the decoder couldn't tell. It would read the next field's first byte as
+  > if it were this one.
+- [ ] As `00 00 00 00`, a u32 of zero
+  > No: zero is a real value, not a missing one. `option(u32)` writes 0 as
+  > `01 00 00 00 00`.
+- [x] As the single byte `00`
+  > Yes: the tag 0, and that's all. The decoder sees `00` and knows no value follows.
+
+**`seq(u16)` writes [1, 2, 3] as `03 01 00 02 00 03 00`. Why can `seqN(u16, 3)` leave off the `03`?**
+
+- [x] Both sides already know there are three
+  > Yes: a fixed-length sequence's length is set by the protocol, so writing it would
+  > tell the decoder nothing new.
+- [ ] Because three is small enough to guess
+  > No: size has nothing to do with it. The tickets mark holds 600 tickets on full,
+  > and still has no length.
+- [ ] Because the decoder reads until the bytes run out
+  > No: more fields usually follow. Without knowing n, a decoder couldn't tell where
+  > the list ends and the next field begins.
+:::
 
 ## What you have
 

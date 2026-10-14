@@ -35,6 +35,14 @@ preimages "individually have their inclusion proven". To prove one report was in
 block, you show the report, the guarantees part (every other report shrunk to its 32-byte
 hash), and the other four parts' hashes. Nobody needs the other reports themselves.
 
+Below is a small made-up block, with every hash real. Change a byte of its preimage, and
+two hashes change: the preimages part's, and the root. The other four stay as they were.
+Then prove report 1: hand over the report, the guarantees part with report 2 as its hash,
+and four hashes, and the sums come back to the root. Change any piece, and they don't.
+Empty the block too: you'll meet its root again further down.
+
+<ExtrinsicCommit />
+
 ## The tests
 
 The test vectors have block traces besides `fallback`, and they carry different things.
@@ -264,6 +272,57 @@ A count, then each requester as four bytes and its data's hash: exactly your
 Your version reuses the codecs you already trust, so it has one less place to be wrong.
 
 </details>
+
+## Check your understanding
+
+::: check
+**Why is the extrinsic hash a hash of five hashes, not one hash of the whole encoded extrinsic?**
+
+- [ ] Five small hashes are faster than one big one
+  > No: it's more work, not less. Every byte still gets hashed, and then the five
+  > hashes are hashed once more.
+- [x] So one piece can be proven to be in the block without showing the rest
+  > Yes: to prove a report, you show it, its part with the other reports as hashes,
+  > and the other four parts' hashes. They hash back to the root: a Merkle commitment.
+- [ ] Because the five parts arrive in five separate messages
+  > No: the five parts travel together, as the extrinsic. The split is for proofs.
+
+**To prove report 1 was in a block that also has report 2, what do you hand over?**
+
+- [ ] The whole extrinsic, report 2 included
+  > No: that works, but the point is not having to. Report 2 goes in only as its
+  > 32-byte hash.
+- [ ] Just report 1's hash
+  > No: a hash alone doesn't show where it sits. The checker needs everything that
+  > leads from report 1 up to the root.
+- [x] Report 1, the guarantees part with report 2 as its hash, and the other four parts' hashes
+  > Yes: from those, the checker rebuilds the guarantees part's hash, then the root,
+  > and compares it with the header's `extrinsic_hash`.
+
+**All 100 `fallback` blocks carry the same extrinsic hash, `0x189d15af...6ca252`. Why?**
+
+- [x] Every one of their extrinsics is empty, and the same bytes always hash the same
+  > Yes: five empty parts encode the same way every time, so the root is the same:
+  > the fingerprint of an empty block.
+- [ ] They're 100 copies of one block
+  > No: each has its own slot and parent. Their header hashes all differ, which is how
+  > 99 links can hold.
+- [ ] Empty blocks leave the extrinsic hash as a placeholder
+  > No: it's computed like any other. Your `extrinsicHash` gets `0x189d15af...` from
+  > the five empty parts.
+
+**Put back the 0.7.2 rule, preimages hashed whole, and 73 of the 100 `preimages` blocks still match. Why not none?**
+
+- [ ] The old rule and the new one give the same hash most of the time
+  > No: for a block with a preimage they never do. The data and its 32-byte hash are
+  > different bytes.
+- [x] Those 73 blocks carry no preimage, and an empty list encodes the same under both rules
+  > Yes: both rules write an empty list as `00`. Only the 27 blocks with a preimage
+  > change, and break their promise.
+- [ ] The links between the blocks still hold
+  > No: they do hold, but that's a different promise. The headers didn't change, only
+  > what your code thinks they promise.
+:::
 
 ## What you have
 

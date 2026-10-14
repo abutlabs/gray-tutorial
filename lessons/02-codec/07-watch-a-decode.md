@@ -374,6 +374,58 @@ step traces of later parts, say *which step* made it wrong, while it happens.
 
 </details>
 
+## Check your understanding
+
+::: check
+**The trace's first line is `0..4 service 0x04030201`. What is `0..4`?**
+
+- [ ] Bytes 0 to 4, so five bytes
+  > No: the bytes shown are four, `04 03 02 01`. The second number is where the field
+  > stops, not its last byte.
+- [x] Where its bytes start and stop: offsets 0, 1, 2 and 3, and the next field starts at 4
+  > Yes: `code_hash` is `4..36`, starting exactly where `service` stopped. 4 − 0 = 4
+  > bytes for ℰ₄.
+- [ ] The service's number, from 0 to 4
+  > No: the service is 16909060, the bytes `04 03 02 01`. `0..4` is where those bytes
+  > sit in the file.
+
+**The trace lists `import_segments.0.index`, but never `import_segments` itself. Why?**
+
+- [ ] `import_segments` is a list, and lists aren't decoded, only their items
+  > No: the list is decoded, length and all. The trace just reports it through its parts:
+  > `import_segments.length`, then each item's fields.
+- [ ] It's a mistake the second test would catch
+  > No: the second test passes. Every byte is covered, once, by the fields that are
+  > listed.
+- [x] Only innermost fields are reported, and their bytes already cover the whole list
+  > Yes: `import_segments` is bytes 60 to 163, every one of them already shown in its
+  > length and items. Reporting it too would show those bytes twice.
+
+**With `export_count` moved up, `refine_gas_limit` reads `0x0000000000002a00`. Where did those 8 bytes come from?**
+
+- [x] The last six bytes of the real refine gas limit, then the first two of the accumulate gas limit
+  > Yes: `export_count` took bytes 36 to 38, `2a 00`, so refine read 38 to 46: six
+  > zeros from the real refine limit, then `2a 00` from the accumulate limit.
+- [ ] They're the real refine gas limit, written backwards
+  > No: nothing was reversed. The decoder read the right bytes the right way, from the
+  > wrong place: two bytes late.
+- [ ] The decoder filled in zeros where it couldn't read
+  > No: every byte is really in the file. The trace shows exactly which, 38 to 46, and
+  > the decoder never makes one up.
+
+**After the move, why does `payload` still decode correctly?**
+
+- [ ] The decoder finds the start of the next blob and catches up
+  > No: nothing in the bytes marks where a field starts. The decoder only ever reads on
+  > from where the last field stopped.
+- [x] The three moved fields take 2 + 8 + 8 = 18 bytes in either order, so `payload` starts at 54 both times
+  > Yes: the wrong reads stay inside bytes 36 to 54. From 54 on, every field is read from
+  > the same place as before.
+- [ ] The payload is checked against its hash, which fixes it
+  > No: nothing is checked or fixed. The payload is right only because it starts at the
+  > right byte.
+:::
+
 ## What you have
 
 A codec that can tell you, byte by byte, what it read, and a program that shows any

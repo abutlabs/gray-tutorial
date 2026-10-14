@@ -114,6 +114,9 @@ export const natural32: Codec<number> = {
 `fixedNumber` isn't exported: it's a recipe the file uses three times. There are two
 compact codecs because the same encoding carries two kinds of value: amounts that can
 reach 2^64 (`bigint`, [lesson 1.2](../01-bytes-and-numbers/02-numbers.md)) and counts that never come close (`number`).
+The 32 in `natural32` says what it's for, counts and lengths that fit in 32 bits, not how
+many bytes it writes: its bytes are the same compact ones as `natural`'s, so the count 3 is
+the one byte `03`, never four.
 
 `json as number` tells TypeScript "trust me, the vectors write a number here". The test
 vectors are well-formed, so the first pass trusts them; checking them is a job for the
@@ -247,6 +250,56 @@ instead: one field list per structure, so encoder and decoder can't disagree abo
 order.
 
 </details>
+
+## Check your understanding
+
+::: check
+**Why put encoding, decoding and reading the JSON in one codec, instead of three separate functions?**
+
+- [ ] A codec writes fewer bytes than separate functions would
+  > No: the bytes are the Gray Paper's either way. 4,807 as a u16 is `c7 12` however
+  > the code is arranged.
+- [x] So the three can't drift apart
+  > Yes: written separately, a field gets added to the encoder but not the decoder, or two
+  > fields get read in the wrong order. In one codec, the order is written once.
+- [ ] Because the test vectors are stored with all three in one file
+  > No: the vectors hold values (in JSON) and bytes. Grouping the three directions is
+  > about keeping your own code in step.
+
+**16,384 as a `u32`, and 16,384 as a `natural`: what bytes?**
+
+- [ ] The same bytes: a number has only one encoding
+  > No: the codec decides. ℰ₄ always writes four bytes, and the compact natural as few
+  > as it needs.
+- [ ] `c0 00 40` for both: a compact natural is just a smaller u32
+  > No: `c0 00 40` is the compact natural only. A u32 has no marker byte; it is four
+  > bytes of the number, little end first.
+- [x] `00 40 00 00` as a u32, `c0 00 40` as a natural
+  > Yes: 16,384 is `0x4000`. ℰ₄ writes it in four bytes, little end first. The compact
+  > natural needs three: the marker `c0`, then `00 40`.
+
+**How does decoding `05 01 02 03 04 05` as a blob know to stop after five bytes?**
+
+- [x] It reads the length first, `05`, then exactly that many bytes
+  > Yes: that's what ↕ is for. A blob of any size announces its length, a compact
+  > natural, in front.
+- [ ] It reads to the end of the input
+  > No: a blob can sit in the middle of a bigger value, with more fields after it. The
+  > length says where it ends.
+- [ ] Blobs are always five bytes, like a hash is always 32
+  > No: a blob can be any length; that's why it carries one. A hash needs no length
+  > because it is always 32 bytes.
+
+**`natural32` handles counts as a JS number. Does it write a 4-byte number?**
+
+- [ ] Yes: the 32 means 32 bits, so 4 bytes
+  > No: the name is about the value in your code, a `number` instead of a `bigint`, not
+  > the bytes. On the wire it is the same compact natural as `natural`.
+- [x] No: it writes exactly the bytes `natural` does
+  > Yes: both use ℰ, the compact natural, so 16,384 is `c0 00 40` from either. Only the
+  > type you get back differs: counts never come near 2^64, so a plain `number` holds
+  > them.
+:::
 
 ## What you have
 

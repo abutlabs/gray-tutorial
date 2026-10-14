@@ -186,6 +186,56 @@ changed nothing for it, and your `u8` is right from the start.
 
 </details>
 
+## Check your understanding
+
+::: check
+**§4 lists the parts tickets, disputes, preimages, assurances, guarantees. Appendix C lists tickets, preimages, guarantees, assurances, disputes. Which order do a block's bytes follow?**
+
+- [ ] §4's, because §4 is where the extrinsic is defined
+  > No: §4 says what's in an extrinsic, not how it's laid out in bytes. A decoder
+  > that followed it would read the preimages' bytes as if they were disputes.
+- [x] Appendix C's, because it's the encoding
+  > Yes: the order of the bytes is the encoding's job, and the encoding's order wins,
+  > just as it did in [Part 3](../03-work-and-reports/index.md).
+- [ ] Either, since each part carries its own length
+  > No: the bytes carry no names. A length says how many items, not which part they
+  > belong to, so both sides must agree on one order.
+
+**A ticket is one byte of `attempt` and 784 more. What are the 784?**
+
+- [x] A ring VRF proof: some validator made this ticket, without saying which
+  > Yes: that's the price of anonymity. The proof convinces everyone the entry is
+  > genuine while keeping its owner secret.
+- [ ] The validator's name and key, so everyone knows whose entry it is
+  > No: it's the opposite. A ticket is anonymous; nothing in it says which validator
+  > entered it.
+- [ ] The `attempt` number, written large
+  > No: `attempt` is ℰ₁, one byte, and it's the byte in front. The 784 bytes after it
+  > are all proof.
+
+**A service asks for some data by its hash, h. What is the preimage?**
+
+- [ ] The hash h itself, which the block carries to the service
+  > No: the service already knows h; that's how it asked. The block brings what it
+  > doesn't have yet.
+- [ ] The service's id, so the data reaches the right place
+  > No: the id, `requester`, is one of a preimage's two fields. The preimage is the
+  > other one.
+- [x] The data d with H(d) = h: the bytes behind the hash
+  > Yes: a preimage in a block is the requester's id (ℰ₄) and that data, as a blob.
+
+**In the decoded preimages, the first blob starts with the byte `0x10`. What is it?**
+
+- [x] The blob's length: 16 bytes of data follow
+  > Yes: a blob can be any size, so its length goes in front, as a compact natural.
+  > `0x10` is 16.
+- [ ] The first byte of the data
+  > No: like the payload in [lesson 2.6](../02-codec/06-the-first-test-vectors.md), a
+  > blob's own bytes come after its length.
+- [ ] The hash of the data, shortened
+  > No: a hash is 32 bytes, and a preimage carries the data itself, not its hash.
+:::
+
 ## What you have
 
 Two of the five parts of a block's extrinsic. The next part's size depends on the network:

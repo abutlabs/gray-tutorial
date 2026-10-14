@@ -42,6 +42,13 @@ are compact naturals. (The Gray Paper's own comment on why: "space is at a premi
 One naming wrinkle: the test vectors call digests `work_result`, the name the Gray Paper
 used before it renamed them.
 
+Try it below. Pick a case and watch the tag in front: an error is one byte and nothing
+more, and a success is the tag 0, the output's length, then the output. Grow the output
+past 127 bytes and its length takes two. Decode a few byte strings to see which case
+each one starts with. Then push the five load numbers up until their bytes grow.
+
+<ResultTag />
+
 ## Either this or that
 
 TypeScript has the perfect tool for "either output or an error": a union of two object
@@ -340,6 +347,57 @@ Seven cases, seven tags: the same O function as yours, with the tags written out
 one where yours count along the `ERRORS` list.
 
 </details>
+
+## Check your understanding
+
+::: check
+**`work_result_0`'s result is `00 03 aa bb cc`. What is the `00`?**
+
+- [ ] The output's length
+  > No: the length is the next byte, `03`, for the three bytes `aa bb cc`.
+- [x] The tag: 0 means success, and the output follows as a blob
+  > Yes: the decoder reads the tag first, sees 0, then reads a blob: its length `03`,
+  > then `aa bb cc`.
+- [ ] A zero byte of padding before the output
+  > No: there's no padding in a result. Every byte says something, and this one says
+  > which case follows.
+
+**A panic is just `02`. Why does nothing follow it?**
+
+- [ ] A panic's output is empty, so its length is left out
+  > No: an empty output that succeeded is `00 00`, tag 0 then length 0. A panic has no
+  > output at all, not even an empty one.
+- [ ] The output is written somewhere else in the digest
+  > No: in `work_result_1` the byte after `02` is already `gas_used`, the first load
+  > number.
+- [x] A failure has no output, so its tag says everything
+  > Yes: tags 1 to 6 are the six errors and nothing more. After `02` the decoder moves on
+  > to the load.
+
+**Before the fix, the decoder turned tag 2 into "bad exports". Why?**
+
+- [x] Tags count errors from 1, but list positions count from 0
+  > Yes: `ERRORS[2]` is the third name, `bad_exports`. Tag 2 is the second error,
+  > `ERRORS[2 - 1]`, the panic.
+- [ ] The vector's byte was `03`, the tag for bad exports
+  > No: the byte was `02`, and the encode test showed a panic writes `02`. The bytes were
+  > right; the reading was wrong.
+- [ ] The Gray Paper lists bad exports second
+  > No: O gives out of gas 1, panic 2, bad exports 3. The list in the code is in that
+  > order too.
+
+**Why are the five load numbers compact naturals, not fixed widths?**
+
+- [ ] They can never be bigger than 127
+  > No: gas used can be huge. A compact natural takes up to 9 bytes for that; small
+  > numbers just cost less.
+- [ ] They can be negative, and a compact natural can hold a sign
+  > No: a compact natural is a natural, a whole number from 0 up. Gas used and counts are
+  > never negative.
+- [x] Every validator reads these cards, and small numbers then take one byte
+  > Yes: "space is at a premium here". `work_result_1`'s five zeros take one byte each,
+  > 5 in all; gas used alone, as a u64, would be 8 bytes of zeros.
+:::
 
 ## What you have
 

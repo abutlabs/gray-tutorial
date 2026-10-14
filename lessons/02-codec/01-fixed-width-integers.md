@@ -200,6 +200,10 @@ The Gray Paper's recursion, unrolled into a loop: `rest & 0xffn` is `x mod 256` 
 byte), and `rest >>= 8n` is `⌊x / 256⌋` (chop it off). Decoding runs the other way: start
 at the last, most significant byte and shift each one in.
 
+The promise is yours to keep. Give `encodeFixed` a number too big for its bytes and
+nothing complains: `encodeFixed(70000n, 2)` keeps the two lowest bytes, `70 11`, which
+read back as 4,464. The rest of 70,000 is simply gone.
+
 **Run**
 
 ```sh
@@ -246,6 +250,53 @@ is `>>>` on a `number`, the shift that treats the value as unsigned. (A `bigint`
 `>>>`; your values are never negative, so `>>` does the same job.)
 
 </details>
+
+## Check your understanding
+
+::: check
+**Why does 4,807 take two bytes?**
+
+- [ ] It has four digits, and a byte holds two
+  > No: bytes count in 256s, not in decimal digits. 255 has three digits and fits in one
+  > byte; 256 has three too, and needs two.
+- [x] One byte only reaches 255, and 4,807 = 18 × 256 + 199
+  > Yes: like digits, each byte counts 256 times the one after it. 4,807 is 18 times 256,
+  > plus 199 left over: two bytes, 18 and 199.
+- [ ] Every number in JAM takes two bytes
+  > No: the width depends on the type. A timeslot is a u32, and takes four bytes even
+  > when it's 1.
+
+**How does ℰ₂ write 4,807?**
+
+- [ ] `12 c7`
+  > No: that's the number as you'd read it, biggest byte first, `0x12c7`. JAM writes the
+  > low byte first.
+- [ ] `c7 12 00 00`
+  > No: that's ℰ₄, four bytes. ℰ₂ is exactly two.
+- [x] `c7 12`
+  > Yes: 199 is `c7` and 18 is `12`, and the low byte, 199, comes first.
+
+**ℰ₂(4807) first writes 4807 mod 256, which is 199. What does it hand on to ℰ₁?**
+
+- [x] 18: ⌊4807 / 256⌋, 4,807 with its lowest byte chopped off
+  > Yes: ℰ₁(18) writes `12`, then ℰ₀ ends it with no bytes. Each step hands on one byte
+  > fewer.
+- [ ] 4,608: 4,807 minus the 199 just written
+  > No: taking away 199 leaves 4,608, which is 18 × 256, still counted in 256s. Dividing
+  > by 256 is what turns it into 18, the next byte.
+- [ ] 199 again, for the second byte
+  > No: 199 is already written. Each step hands on what's left of the number, one byte
+  > smaller.
+
+**A timeslot is a u32. How is slot 1 written in a block header?**
+
+- [ ] `01`
+  > No: a fixed width never shrinks. A u32 takes four bytes, even for 1.
+- [x] `01 00 00 00`
+  > Yes: ℰ₄(1). The low byte, 1, comes first, then three zero bytes.
+- [ ] `00 00 00 01`
+  > No: that's biggest byte first. JAM writes the small end first.
+:::
 
 ## What you have
 

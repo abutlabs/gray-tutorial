@@ -125,6 +125,11 @@ node bin/decode.ts work_package ../vectors/codec/tiny/work_package.bin
   104..136   context.beefy_root             0x9329de635d4bbb8c47cdccbbc1285e48bf9dbad365af44b205343e99dea298f3
   136..168   context.lookup_anchor          0x60751ab5b251361fbfd3ad5b0e84f051ccece6b00830aed31a5354e00b20b9ed
   168..172   context.lookup_anchor_slot     0x21000000
+  172..204   context.lookup_anchor_state_root 0x8f665c40573f1288749767417430f62360e37865ef773c24186527aa24b5a493
+  204..205   context.prerequisites.length   0x00
+  205..211   authorization                  0x050102030405
+  211..222   authorizer_config              0x0a00010203040506070809
+  222..223   items.length                   0x02
 ...
   550..552   items.1.import_segments.0.index 0x0000
 ...
@@ -174,6 +179,58 @@ Your client needs only one: a `record` is the type, the encoder, the decoder and
 reader at once, in the encoding's order.
 
 </details>
+
+## Check your understanding
+
+::: check
+**In the package's bytes, `auth_code_hash` is 4 to 36 and `context.anchor` is 36 to 68. What's between them?**
+
+- [ ] A length, saying how many bytes the context takes
+  > No: a record never gets a length in front. Its fields are always the same, so the
+  > decoder knows what comes.
+- [ ] A marker byte saying "a context starts here"
+  > No: nothing in the bytes says what they are. The decoder knows a context comes third
+  > because the field list says so.
+- [x] Nothing: the context's own bytes start right where the hash stops
+  > Yes: a record inside a record is just its fields' bytes, in place. 36 is both where
+  > `auth_code_hash` stops and where `context.anchor` starts.
+
+**Who runs a package's authorizer?**
+
+- [x] A guarantor, before the package reaches any block
+  > Yes: and block import never runs one. To your client, a package is a shape to
+  > encode.
+- [ ] Every validator, when it imports the block holding the package
+  > No: block import never runs an authorizer. That's why the client you build here never
+  > will either.
+- [ ] Your client, as the first step of reading a package
+  > No: decoding a package only reads its fields. The authorizer's code isn't even in the
+  > package, only its hash, `auth_code_hash`.
+
+**§14 defines the package with the token first. The bytes start `78 56 34 12`. Which order do the bytes follow?**
+
+- [ ] The definition's: the token first
+  > No: then the bytes would start with the token's length. `78 56 34 12` is a u32,
+  > 305,419,896, the code host.
+- [x] Appendix C's: `auth_code_host` first, the token fourth
+  > Yes: the encoding has its own order, and the record follows it. The token,
+  > `authorization`, comes after the code host, the code hash and the context.
+- [ ] Either: a decoder accepts both orders
+  > No: nothing in the bytes says which field is which, so there is only one order that
+  > works, Appendix C's. [Lesson 2.6](../02-codec/06-the-first-test-vectors.md)'s
+  > moved field showed what the wrong one does.
+
+**A package carries 1 to 16 items. How does the decoder know how many this one has?**
+
+- [ ] It reads items until the bytes run out
+  > No: it never has to guess where the list ends. The count is written down.
+- [x] `items` has its length in front: `02`, two items
+  > Yes: `items` is a `seq`, so the count comes first, at byte 222. Then two whole
+  > work items follow.
+- [ ] Every package has 16 slots, and the empty ones are zeros
+  > No: 16 is only the most a package may carry. A package writes the items it has, no
+  > more.
+:::
 
 ## What you have
 

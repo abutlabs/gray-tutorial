@@ -4,7 +4,7 @@ There are two JAMs. The **full** one is the size of the real network: 1,023 vali
 and 341 cores. (Gray Paper 0.8.0 lets the validator count change, to any multiple of 3
 from 6 up to 1,023; the full vectors use the most.) Testing anything on that is slow, so there's also a **tiny** one: 6 validators
 and 2 cores, same rules, a lot less waiting. The official vectors come in both sizes,
-in folders named after them, and until now every structure looked the same in both.
+in folders named after them, and until now every structure had the same shape in both.
 
 Today that changes. Meet the first structure whose *shape* depends on the size of the
 network: the assurance.
@@ -232,6 +232,54 @@ let bitfield_bytes () = ((Stf_config.num_cores ()) + 7) / 8
 Your `Assurance(config)` takes the size as an argument every time, so it can't freeze.
 
 </details>
+
+## Check your understanding
+
+::: check
+**Why is an assurance's bitfield 1 byte on tiny but 43 on full?**
+
+- [x] One bit per core, eight to a byte: 2 cores fit in 1 byte, 341 need 43
+  > Yes: ⌈2/8⌉ = 1 and ⌈341/8⌉ = 43. The last byte on full uses only 5 of its 8 bits.
+- [ ] One bit per validator: 6 on tiny, 1,023 on full
+  > No: the bits are for cores, which cores' data this validator holds. One bit per
+  > validator would take ⌈1023/8⌉ = 128 bytes on full.
+- [ ] On full the bitfield has its length in front
+  > No: the bitfield never has a length. Both sides know C, so both know how many
+  > bytes to read.
+
+**On full, the bitfield starts with `0x55`, which is `01010101` in binary. Which cores in that first byte say "got it"?**
+
+- [ ] Cores 1, 3, 5 and 7
+  > No: that reads the bits from the left. Lowest bit first means core 0 is the bit
+  > at the *right* end, and it's a 1.
+- [x] Cores 0, 2, 4 and 6
+  > Yes: read from the right, the bits for cores 0 to 7 are 1, 0, 1, 0, 1, 0, 1, 0.
+- [ ] Cores 0 to 3, the first half
+  > No: that would be `00001111`, `0x0f`. `0x55` has its ones spread out, every other
+  > bit.
+
+**What goes wrong if a decoder reads a full assurance with tiny's 1-byte bitfield?**
+
+- [ ] It reads cores 0 to 7 and quietly skips the rest
+  > No: nothing in the bytes says "skip". A decoder reads exactly what its codec says,
+  > and the next field starts straight after.
+- [ ] It stops with an error at the bitfield
+  > No: the bytes have no labels to disagree with. It reads on happily, and every
+  > value after is wrong.
+- [x] It takes the bitfield's next bytes, `55 55`, as the validator index, and is lost from there
+  > Yes: one byte too few, and every field after it starts in the wrong place. The
+  > signature, the next assurance, all misread.
+
+**Why does the assurance codec become a function of the config, when a work-report's doesn't?**
+
+- [ ] On full the numbers are bigger, so they need wider integers
+  > No: the validator index is ℰ₂ on both sizes. Widths don't change with the network.
+- [x] Its shape depends on the size: how many bytes the bitfield has depends on C
+  > Yes: a codec must know how many bytes to read, and here that number comes from the
+  > config, so the config goes in as an argument.
+- [ ] Only full assurances are signed
+  > No: every assurance carries a 64-byte signature, on both sizes.
+:::
 
 ## What you have
 

@@ -46,6 +46,15 @@ Three details, and each one matters:
   parent's place. ([Lesson 11.3](../11-assurances/03-bad-assurances.md)
   checks that the two really are the same.)
 
+Try it below. A validator signs an assurance's 45 bytes, and its public key checks them.
+Change one bit of the bitfield, or of the parent, and check again. Swap the prefix for
+`jam_guarantee`, put the `$` in, or check with another validator's key. Each one fails.
+Sign again and it passes, with a signature that shares almost no bytes with the old one.
+The demo validator's secret key is made up and shown, so you can sign. The real
+assurance, validator 5's from the vectors, you can only check.
+
+<SignCheck />
+
 ## Another library
 
 Ed25519 is another job for a specialist. `@noble/curves` comes from the same author as
@@ -339,6 +348,58 @@ For the signature itself, lasair calls a Rust library, `ed25519-consensus`, thro
 small bridge. Both clients lean on a specialist here, just as with Blake2b.
 
 </details>
+
+## Check your understanding
+
+::: check
+**What can a signature tell you that a hash can't?**
+
+- [x] Who approved the bytes: only the holder of the secret key could have made it
+  > Yes: anyone can hash anything, but only one validator can sign with its key, and
+  > anyone with its public key can check.
+- [ ] That the bytes are hidden from everyone else
+  > No: a signature hides nothing. The message is in the open; the signature only
+  > vouches for it.
+- [ ] Nothing new: it's a longer hash, 64 bytes instead of 32
+  > No: anyone can compute a hash of anything. Only the holder of the secret key can
+  > make a signature that its public key accepts.
+
+**X_A is written `$jam_available`. What is the `$`?**
+
+- [ ] A real byte, `0x24`, in front of the letters
+  > No: put it in, and not one signature in the vectors checks. The signed message
+  > starts with the letters themselves.
+- [ ] Shorthand for the string's length in front, as with a blob
+  > No: there's no length. X_A is just the 13 bytes of `jam_available`; the 32-byte
+  > hash follows, 45 bytes in all.
+- [x] Notation: it marks an ASCII string, and is not a byte itself
+  > Yes: §3 uses `$` for ASCII strings. What's signed starts with the 13 letters, no
+  > `$`.
+
+**What does a prefix like `jam_available` prevent?**
+
+- [ ] Anyone reading the signature without a key
+  > No: signatures aren't secret. Anyone can read one, and anyone with the public key
+  > can check it.
+- [x] A signature made for one job being passed off as another
+  > Yes: a guarantee's message starts `jam_guarantee`, a vote's `jam_valid` or
+  > `jam_invalid`. "I hold my piece" can never be replayed as "this report is good".
+- [ ] Mixing up which validator signed
+  > No: every validator uses the same prefix. The assurance's `validator_index` says
+  > whose key to check with.
+
+**The stub that said yes to everything passed all 1,029 genuine assurances. What does that show?**
+
+- [ ] The stub was nearly right: it only missed one forgery
+  > No: it checked nothing at all. It would have passed a thousand forgeries just as
+  > happily.
+- [ ] The genuine assurances were enough to prove the check works
+  > No: honest cases pass a check that trusts everyone. They can't tell a real check
+  > from a fake one.
+- [x] Every signature test needs a forgery to catch
+  > Yes: only the two checks that tried a forgery failed against the stub. A test
+  > that never says "no" can't prove the code can.
+:::
 
 ## What you have
 

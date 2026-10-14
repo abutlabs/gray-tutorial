@@ -16,7 +16,8 @@ and then checks a real chain of a hundred blocks, link by link.
 - **Trace.** A recorded run of real blocks, each with the state before and after it, from
   the test vectors. *Example:* the tiny `fallback` trace has 100 blocks.
 - **Blake2b.** The hash function JAM uses. It can make fingerprints of any size up to 64
-  bytes; JAM asks for 32. *Example:* the hash of no bytes at all starts `0e5751c0`.
+  bytes; JAM asks for 32. *Example:* asked for 64 bytes, the hash of no bytes at all
+  starts `786a02f7`, a different value altogether, not a longer `0e5751c0`.
 - **Library (dependency).** Code someone else wrote and published, which your project
   installs and uses. *Example:* `@noble/hashes`, from `npm install`.
 - **Known-answer test.** A test whose expected value comes from somewhere you trust, not
@@ -33,6 +34,14 @@ hash the bytes.
 §5 (*The Header*): a header's `parent` is the hash of its parent block's header,
 H(ℰ(parent header)). The test vectors' block-import traces are chains of real blocks, so
 that's something you can check.
+
+Try it below. The input starts as `c7 12`: 4,807 written as ℰ₂, from [lesson 2.1](../02-codec/01-fixed-width-integers.md).
+Flip any one of its bits, and about half of the hash's 256 bits flip with it, scattered,
+with no pattern to follow. Empty the input to meet the hash of nothing, `0e5751c0...`.
+Then write 42 as ℰ₄ and as ℰ₈: one number, two encodings, two hashes with nothing in
+common.
+
+<HashAvalanche />
 
 ## A library, for once
 
@@ -341,6 +350,57 @@ the same knob as your `dkLen: 32`, in OCaml's module syntax. Every serious clien
 on a well-tested library here.
 
 </details>
+
+## Check your understanding
+
+::: check
+**Flip one bit of the input `c7 12`. What happens to its 32-byte hash?**
+
+- [ ] One bit of the hash flips, in the same place
+  > No: a hash isn't a copy of its input. Every bit of the output depends on every
+  > bit of the input.
+- [ ] Only the first few bytes change
+  > No: the change is scattered across all 32 bytes, with no pattern to follow.
+- [x] About half of its 256 bits flip, all over the place
+  > Yes: one bit in, a stranger out. That's why one changed byte anywhere in a block
+  > can't hide.
+
+**42 written as ℰ₄ and as ℰ₈ give two hashes with nothing in common. Why?**
+
+- [x] H hashes bytes, not numbers, and `2a 00 00 00` and `2a 00 00 00 00 00 00 00` are different bytes
+  > Yes: to hash a value, JAM encodes it and hashes the bytes. Change the encoding,
+  > even by four zero bytes, and the hash is a stranger.
+- [ ] One of the two must be a bug: the same number should give the same hash
+  > No: H never sees the number, only bytes. That's why the encoding has to be byte
+  > perfect before any hash can match.
+- [ ] Trailing zero bytes count for more in a hash than other bytes
+  > No: no byte counts for more. Any change at all, a zero added or a bit flipped,
+  > gives a hash with nothing in common.
+
+**Each header names its parent by the hash of the parent's header. What does that buy?**
+
+- [ ] A compressed copy of the parent, to save space
+  > No: a hash can't be turned back into the header. It's a fingerprint, 32 bytes,
+  > whatever the size of what it fingerprints.
+- [x] Change any bit of block 1's header, and block 2's `parent` no longer matches
+  > Yes: block 2 holds on to block 1 by its exact fingerprint. Breaking one link breaks
+  > the grip of every block after it.
+- [ ] It tells you the parent's slot, so blocks stay in order
+  > No: the slot is its own field. The hash says nothing readable about the parent;
+  > it can only be matched.
+
+**Your first `blake2b(data)` gave 64 bytes. Could you have kept just the first 32?**
+
+- [ ] Yes: the first half of the 64-byte hash is the 32-byte one
+  > No: Blake2b's output size is part of its setup and changes every byte. The 64-byte
+  > hash of nothing starts `786a02f7`, the 32-byte one `0e5751c0`.
+- [ ] Yes, as long as every client cuts it the same way
+  > No: JAM's H is Blake2b with a 32-byte output, and every header in the vectors was
+  > hashed that way. Cut-down hashes would break every link.
+- [x] No: you have to ask Blake2b for 32 bytes, `dkLen: 32`
+  > Yes: that's the fix. The known answer, the hash of nothing starting `0e5751c0`,
+  > is how you know it's right.
+:::
 
 ## What you have
 

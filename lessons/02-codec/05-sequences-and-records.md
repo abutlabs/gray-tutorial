@@ -213,6 +213,57 @@ writes the field order a second time in `encode_refinement_context`, and a third
 
 </details>
 
+## Check your understanding
+
+::: check
+**Why is a record of slot 42 (a u32) and gas 7 (a u64) 12 bytes?**
+
+- [ ] 2 bytes would do: 42 and 7 each fit in one byte, and the rest is wasted
+  > No: in a record each field keeps its type's width. 42 as a u32 is `2a 00 00 00`,
+  > and 7 as a u64 is `07` and seven zeros.
+- [x] 4 bytes for the u32 and 8 for the u64, end to end, and nothing else
+  > Yes: a record is its fields' bytes in the fields' order. No names, no length: both
+  > sides already know the fields. 4 + 8 = 12.
+- [ ] The bytes also carry the field names, so a decoder knows which is which
+  > No: there's no room for them. All 12 bytes are the two values: `2a 00 00 00` and
+  > `07 00 00 00 00 00 00 00`.
+
+**`seq(u16)` writes the list 1, 2, 3 as `03 01 00 02 00 03 00`. What does the `03` count?**
+
+- [ ] The bytes that follow
+  > No: six bytes follow, not three. The length counts items.
+- [ ] The last item, 3
+  > No: it's the first byte, a compact natural for the length. The item 3 is the last two
+  > bytes, `03 00`.
+- [x] The items: three of them, so the decoder reads three u16s
+  > Yes: the decoder reads `03`, then a u16 three times, 2 bytes each. 1 + 3 × 2 = 7
+  > bytes in all.
+
+**Decode slot 42 and gas 7's 12 bytes with the fields swapped, `record({ gas: u64, slot: u32 })`. What happens?**
+
+- [x] No error, just wrong values: gas takes the first 8 bytes, slot the last 4
+  > Yes: gas reads `2a 00 00 00 07 00 00 00`, 30,064,771,114, and slot reads four zeros,
+  > 0. Nothing in the bytes says which field is which; only the order does.
+- [ ] The decoder spots the swap and puts the values back in the right fields
+  > No: there are no names in the bytes to spot. The decoder reads the fields in the order
+  > its codec lists them.
+- [ ] It decodes fine: the same two fields are there, whatever the order
+  > No: the order is the only thing that says which bytes belong to which field. Swap it
+  > and both fields read the wrong bytes.
+
+**A list carries its length in front. Why doesn't a record?**
+
+- [ ] A record is always short, so its length is easy to guess
+  > No: the decoder never guesses. And size isn't the point: a record can hold a blob of
+  > any size.
+- [x] A record always has the same fields, in the same order, so both sides know what comes next
+  > Yes: the codec lists the fields once, and every record of that kind has exactly those.
+  > A list's number of items changes, so the bytes have to say it.
+- [ ] A record does have one, inside the first field
+  > No: the first byte of slot 42 and gas 7 is `2a`, slot's own lowest byte. All 12 bytes
+  > are the values.
+:::
+
 ## What you have
 
 Sequences and records: lists of any codec, and structures of named fields whose type
