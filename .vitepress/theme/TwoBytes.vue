@@ -25,7 +25,7 @@ const top = computed(() => c.value.bytes[0] - markerOf(1)); // x's top 6 bits, a
   <BitPlaces v-model="x" :width="14" :roles="ROLES" :presets="[128, 300, 16383]" :goals="GOALS" :range="RANGE">
     <template #readout>
       <div class="tile"><span class="tile-label">x</span><span class="tile-value">{{ x }}</span></div>
-      <div class="tile"><span class="tile-label">ℰ(x)</span><span class="tile-value">{{ toHex(c.bytes) }}</span></div>
+      <div class="tile"><span class="tile-label">ℰ(x)</span><span class="tile-value bytes">{{ toHex(c.bytes) }}</span></div>
     </template>
     <p v-if="c.l === 0" class="line">
       Below 128: one byte. Two bytes start at 128.
@@ -34,8 +34,8 @@ const top = computed(() => c.value.bytes[0] - markerOf(1)); // x's top 6 bits, a
       <ByteCells :groups="byteGroups(c)" boxed />
       <p class="line">
         byte 1 = marker <span class="mark">0b10</span> ({{ markerOf(1) }})
-        + top bits <span class="top">0b{{ bitsOf(top, 6) }}</span> ({{ top }}) = {{ c.bytes[0] }} = {{ toHex([c.bytes[0]]) }}<br />
-        byte 2 = low bits <span class="low">0b{{ bitsOf(c.bytes[1], 8) }}</span> = {{ c.bytes[1] }} = {{ toHex([c.bytes[1]]) }}
+        + top bits <span class="top">0b{{ bitsOf(top, 6) }}</span> ({{ top }}) = {{ c.bytes[0] }} = <span class="bytes">{{ toHex([c.bytes[0]]) }}</span><br />
+        byte 2 = low bits <span class="low">0b{{ bitsOf(c.bytes[1], 8) }}</span> = {{ c.bytes[1] }} = <span class="bytes">{{ toHex([c.bytes[1]]) }}</span>
       </p>
     </template>
   </BitPlaces>

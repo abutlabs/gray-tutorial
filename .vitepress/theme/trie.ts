@@ -60,7 +60,7 @@ export const hashesRedone = (leafPath: string): number => leafPath.length + 1;
 // leaves and empty sides side by side along the bottom, each branch above the middle of its two.
 
 /** How wide a leaf's and an empty side's place is, in the drawing's units. */
-export const SLOT = { leaf: 60, empty: 26 } as const;
+export const SLOT = { leaf: 76, empty: 26 } as const; // a leaf fits its key's bits, 0b00000001, with room
 
 export type Placed = { node: Node; x: number; depth: number };
 export type Edge = { from: Placed; to: Placed; bit: string };

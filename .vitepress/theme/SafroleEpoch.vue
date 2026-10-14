@@ -4,7 +4,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import {
-  NULL_KEY, START, TINY, comingSealers, epochOf, etaLabel, hexId, nextBlock, phaseOf, sealerOf, step, story, ticketIds,
+  NULL_KEY, START, TINY, comingSealers, epochOf, hexId, nextBlock, phaseOf, sealerOf, step, story, ticketIds,
 } from "./safrole-epoch.ts";
 import type { State, Ticket } from "./safrole-epoch.ts";
 
@@ -119,7 +119,7 @@ function restart() {
       Slot {{ nextSlot }}'s sealer is a blank key: nobody can make its block. Skip it.
     </p>
     <ul class="log">
-      <li v-for="(line, i) in log" :key="i">{{ line }}</li>
+      <li v-for="(line, i) in log" :key="i"><UnitText :text="line" /></li>
     </ul>
 
     <div class="label">tickets for the next block ({{ chosen.length }} of {{ K }}): {{ why() }}</div>
@@ -131,7 +131,7 @@ function restart() {
           :class="{ chosen: isChosen(id), held: held.has(id) }" :aria-pressed="isChosen(id)"
           :aria-label="`${v}'s attempt ${attempt}: ticket id ${hexId(id)}${held.has(id) ? ', in the lottery' : ''}`"
           :disabled="disabled(v, id)" @click="toggle(v, attempt, id)"
-        >{{ hexId(id) }}</button>
+        ><span class="bytes">{{ hexId(id) }}</span></button>
       </div>
     </div>
     <p class="note">
@@ -143,7 +143,7 @@ function restart() {
     <div class="label">γ_A, the lottery: the {{ E }} lowest ids so far, lowest first</div>
     <div class="cells">
       <span v-for="i in E" :key="i" class="cell" :class="{ empty: !state.accumulator[i - 1] }">
-        {{ state.accumulator[i - 1] ? hexId(state.accumulator[i - 1].id) : "··" }}
+        <span :class="{ bytes: state.accumulator[i - 1] }">{{ state.accumulator[i - 1] ? hexId(state.accumulator[i - 1].id) : "··" }}</span>
       </span>
     </div>
 
@@ -155,29 +155,29 @@ function restart() {
     </div>
     <div class="cells">
       <span
-        v-for="p in E" :key="p" class="cell seat"
+        v-for="p in E" :key="p" class="cell seat unit-byte"
         :class="{ now: p - 1 === phase, blank: !('tickets' in sealers) && sealers.keys[p - 1] === NULL_KEY }"
       >
         <small>{{ p - 1 }}</small>
         <template v-if="'tickets' in sealers">
-          {{ hexId(sealers.tickets[p - 1].id) }}<small>t{{ rank[p - 1] }}</small>
+          <span class="bytes">{{ hexId(sealers.tickets[p - 1].id) }}</span><small>t{{ rank[p - 1] }}</small>
         </template>
         <template v-else>{{ sealers.keys[p - 1] }}</template>
       </span>
     </div>
 
-    <div class="label">validator sets: at a new epoch ι → γ_P → κ → λ, offenders blanked</div>
+    <div class="label">validator sets, each key by its first 2 bytes: at a new epoch ι → γ_P → κ → λ, offenders blanked</div>
     <div v-for="s in SETS" :key="s.key" class="set">
       <span class="who name">{{ s.name }}</span>
       <span
-        v-for="(v, i) in state.sets[s.key]" :key="i" class="cell"
+        v-for="(v, i) in state.sets[s.key]" :key="i" class="cell unit-byte"
         :class="{ blank: v === NULL_KEY, offender: offenders.includes(v) }"
       >{{ v }}</span>
     </div>
 
     <div class="label">η: η₀ stirred by every block; at a new epoch η₀ → η₁ → η₂ → η₃</div>
     <div class="cells">
-      <span v-for="(eta, i) in state.entropy" :key="i" class="cell eta"><small>η{{ "₀₁₂₃"[i] }}</small>{{ etaLabel(eta) }}</span>
+      <span v-for="(eta, i) in state.entropy" :key="i" class="cell eta"><small>η{{ "₀₁₂₃"[i] }}</small><span class="bytes">{{ eta.base }}…</span>{{ eta.stirs ? ` +${eta.stirs}` : "" }}</span>
     </div>
     <p class="note">
       A real η is 32 bytes. Each starts as the vectors' value, first 8 hex digits shown; "+3" means 3 blocks have stirred it
@@ -185,7 +185,7 @@ function restart() {
     </p>
 
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

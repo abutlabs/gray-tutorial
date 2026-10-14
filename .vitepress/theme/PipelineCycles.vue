@@ -166,7 +166,7 @@ watch([run, at], () => {
     </ol>
     <p v-if="done" class="sum">All retired at cycle {{ run.cycles }}: ϱ^Δ = max({{ run.cycles }} − {{ OVERHEAD }}, 1) = <b>{{ run.cost }}</b> gas.</p>
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

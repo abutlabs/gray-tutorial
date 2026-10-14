@@ -95,7 +95,7 @@ const hashDiff = (i: number) => message.value.hash[i] !== signedMessage.value.ha
   <div class="widget sign-check">
     <div class="readout" aria-live="polite">
       <div class="tile"><span class="tile-label">message</span><span class="tile-value len">{{ message.bytes.length }} bytes</span></div>
-      <div class="tile"><span class="tile-label">signature</span><span class="tile-value sig">{{ shortHex(signature.slice(0, 4)) }}…</span></div>
+      <div class="tile"><span class="tile-label">signature</span><span class="tile-value sig bytes">{{ shortHex(signature.slice(0, 4)) }}…</span></div>
       <div class="tile" :class="{ ok: result?.valid, bad: result && !result.valid }">
         <span class="tile-label">check</span>
         <span class="tile-value res">{{ result ? (result.valid ? "✓ valid" : "✗ fails") : "? press check" }}</span>
@@ -117,10 +117,10 @@ const hashDiff = (i: number) => message.value.hash[i] !== signedMessage.value.ha
       <dd class="long">{{ signer.name }}<template v-if="mode === 'real'"> of tiny some_assurances-1, core 0 only</template></dd>
       <template v-if="signer.secret">
         <dt>secret key</dt>
-        <dd class="long">{{ shortHex(signer.secret) }} <span class="note">(32 bytes of 0x01, made up and shown so you can sign: a real one never leaves its validator)</span></dd>
+        <dd class="long"><span class="bytes">{{ shortHex(signer.secret) }}</span> <span class="note">(32 bytes of 0x01, made up and shown so you can sign: a real one never leaves its validator)</span></dd>
       </template>
       <dt>public key</dt>
-      <dd class="long">{{ shortHex(signer.key) }}</dd>
+      <dd class="long bytes">{{ shortHex(signer.key) }}</dd>
     </dl>
 
     <div class="strip">
@@ -139,7 +139,7 @@ const hashDiff = (i: number) => message.value.hash[i] !== signedMessage.value.ha
     <div class="strip">
       <div class="label">2 · what's hashed: parent ⌢ bitfield, 32 + 1 bytes</div>
       <div class="input">
-        <span class="part"><span class="tag">parent</span> <code>{{ shortHex(parent) }}</code></span>
+        <span class="part"><span class="tag">parent</span> <code class="bytes">{{ shortHex(parent) }}</code></span>
         <button class="small" :class="{ chosen: parentFlipped }" :aria-pressed="parentFlipped"
           @click="parent = flipParent(parent)">flip its last bit</button>
       </div>
@@ -177,7 +177,7 @@ const hashDiff = (i: number) => message.value.hash[i] !== signedMessage.value.ha
     </p>
 
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

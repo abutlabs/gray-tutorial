@@ -41,10 +41,10 @@ function set(v: number) {
     <div class="readout" aria-live="polite">
       <slot name="readout">
         <div class="tile"><span class="tile-label">decimal</span><span class="tile-value">{{ value }}</span></div>
-        <div class="tile"><span class="tile-label">hex</span><span class="tile-value">{{ toHex([value]) }}</span></div>
+        <div class="tile"><span class="tile-label">hex</span><span class="tile-value bytes">{{ toHex([value]) }}</span></div>
       </slot>
     </div>
-    <p class="range">{{ range }}</p>
+    <p class="range"><UnitText :text="range" /></p>
     <div class="row">
       <button v-for="(p, i) in places" :key="p" class="bit unit-bit"
         :class="[roles?.[i] ?? 'plain', { on: bits[i] === '1', split: i > 0 && roles && roles[i] !== roles[i - 1] }]"
@@ -66,7 +66,7 @@ function set(v: number) {
     </div>
     <ul class="goals">
       <li v-for="g in goals" :key="g.value" :class="{ done: reached.has(g.value) }">
-        {{ reached.has(g.value) ? "✓" : "○" }} {{ g.say }}<template v-if="reached.has(g.value)">: <code class="bits">0b{{ bitsOf(g.value, width) }}</code></template>
+        {{ reached.has(g.value) ? "✓" : "○" }} <UnitText :text="g.say" /><template v-if="reached.has(g.value)">: <code class="bits">0b{{ bitsOf(g.value, width) }}</code></template>
       </li>
     </ul>
   </div>

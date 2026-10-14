@@ -72,7 +72,7 @@ const load = (how: Encoding) => numOk.value && change(encodeNumber(num.value, ho
   <div class="widget hash-avalanche">
     <div class="readout" aria-live="polite">
       <div class="tile"><span class="tile-label">input</span><span class="tile-value">{{ input.length }} B</span></div>
-      <div class="tile hash"><span class="tile-label">H(input) starts</span><span class="tile-value">{{ short(hash) }}</span></div>
+      <div class="tile hash"><span class="tile-label">H(input) starts</span><span class="tile-value bytes">{{ short(hash) }}</span></div>
       <div class="tile flips"><span class="tile-label">hash bits changed</span><span class="tile-value">{{ changed === null ? "—" : `${changed}/256` }}</span></div>
     </div>
     <p class="range">
@@ -112,11 +112,11 @@ const load = (how: Encoding) => numOk.value && change(encodeNumber(num.value, ho
     <div class="hashes">
       <div v-if="before" class="hash-block">
         <div class="label">H before the last change</div>
-        <div class="hex"><div v-for="r in ROWS" :key="r" class="hex-row">{{ spaced(before.slice(r, r + 8)) }}</div></div>
+        <div class="hex bytes"><div v-for="r in ROWS" :key="r" class="hex-row">{{ spaced(before.slice(r, r + 8)) }}</div></div>
       </div>
       <div class="hash-block">
         <div class="label">H(input) now<template v-if="before">: changed bytes marked</template></div>
-        <div class="hex">
+        <div class="hex bytes">
           <div v-for="r in ROWS" :key="r" class="hex-row">
             <span v-for="i in 8" :key="i" :class="{ diff: byteChanged(r + i - 1) }">{{ spaced([hash[r + i - 1]]) }}</span>
           </div>
@@ -145,7 +145,7 @@ const load = (how: Encoding) => numOk.value && change(encodeNumber(num.value, ho
       <thead><tr><th>encoding</th><th>its bytes</th><th>H starts</th></tr></thead>
       <tbody>
         <tr v-for="e in encoded" :key="e.id" :class="{ now: loaded === e.id }">
-          <td>{{ e.say }}({{ num }})</td><td>{{ spaced(e.bytes) }}</td><td>{{ short(H(e.bytes)) }}</td>
+          <td>{{ e.say }}({{ num }})</td><td class="bytes">{{ spaced(e.bytes) }}</td><td class="bytes">{{ short(H(e.bytes)) }}</td>
         </tr>
       </tbody>
     </table>
@@ -153,7 +153,7 @@ const load = (how: Encoding) => numOk.value && change(encodeNumber(num.value, ho
     <p class="line">Same number, different bytes, a different hash: two sides comparing hashes must encode the same way.</p>
 
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

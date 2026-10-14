@@ -36,7 +36,7 @@ watch(hex, (now) => GOALS.forEach((g) => {
   <div class="widget core-bitfield">
     <dl class="answers" aria-live="polite">
       <dt>cores set</dt><dd>{{ count }} of {{ cores }}</dd>
-      <dt>bitfield</dt><dd :class="{ long: hex.length > 14 }">{{ hex }}</dd>
+      <dt>bitfield</dt><dd class="bytes" :class="{ long: hex.length > 14 }">{{ hex }}</dd>
     </dl>
     <p class="range">
       {{ cores }} cores need ⌈{{ cores }}/8⌉ = {{ bytesFor(cores) }} byte{{ bytesFor(cores) === 1 ? "" : "s" }}. The last
@@ -54,7 +54,7 @@ watch(hex, (now) => GOALS.forEach((g) => {
     <BitfieldBytes v-model="bitfield" :cores="cores" :compact="cores > 16" />
     <ul class="goals">
       <li v-for="g in GOALS" :key="g.say" :class="{ done: reached.has(g.say) }">
-        {{ reached.has(g.say) ? "✓" : "○" }} {{ g.cores }} cores, {{ g.say }}
+        {{ reached.has(g.say) ? "✓" : "○" }} {{ g.cores }} cores, <UnitText :text="g.say" />
       </li>
     </ul>
   </div>

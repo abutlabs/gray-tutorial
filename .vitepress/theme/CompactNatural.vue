@@ -46,9 +46,9 @@ function step(by: bigint) {
     <template v-else>
       <div class="readout" aria-live="polite">
         <div class="tile"><span class="tile-label">bytes</span><span class="tile-value">{{ c.bytes.length }}</span></div>
-        <div class="tile"><span class="tile-label">ℰ(x)</span><span class="tile-value">{{ toHex(c.bytes) }}</span></div>
+        <div class="tile"><span class="tile-label">ℰ(x)</span><span class="tile-value bytes">{{ toHex(c.bytes) }}</span></div>
       </div>
-      <p class="why">{{ why }}</p>
+      <p class="why"><UnitText :text="why" /></p>
       <div class="label"><span class="unit-tag bits">bits</span> x</div>
       <ByteCells :groups="strip(c)" />
       <div class="label"><span class="unit-tag bytes">{{ c.bytes.length }} byte{{ c.bytes.length === 1 ? "" : "s" }}</span> ℰ(x), each byte boxed</div>

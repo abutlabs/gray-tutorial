@@ -114,7 +114,7 @@ watch([width, x], ([w, v]) => {
     <p v-else-if="typed" class="line">{{ typed.base === "hex" ? "0x: hex" : "0b: bits" }}, so {{ fmt(typed.x) }}.</p>
     <ul class="goals">
       <li v-for="g in PLAYGROUND_GOALS" :key="g.say" :class="{ done: reached.has(`${g.bits}/${g.x}`) }">
-        {{ reached.has(`${g.bits}/${g.x}`) ? "✓" : "○" }} {{ g.say }}
+        {{ reached.has(`${g.bits}/${g.x}`) ? "✓" : "○" }} <UnitText :text="g.say" />
       </li>
     </ul>
   </div>

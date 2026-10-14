@@ -90,7 +90,7 @@ function pick(id: string) {
       <button class="small" :disabled="!steps.length" @click="reset">reset</button>
     </div>
     <p class="line">
-      <template v-if="last">Step {{ last.n }}, at {{ last.ins.at }}: <b>{{ say(last.ins) }}</b>. {{ explain(last) }}</template>
+      <template v-if="last">Step {{ last.n }}, at {{ last.ins.at }}: <b>{{ say(last.ins) }}</b>. <UnitText :text="explain(last)" /></template>
       <template v-else>ı = 0, every register 0{{ startsAtHalt ? " but r0" : "" }}. Press step to run the instruction at 0.</template>
     </p>
 
@@ -100,7 +100,7 @@ function pick(id: string) {
         <tr v-for="ins in lines" :key="ins.at" :class="ins.at !== here ? '' : stopped ? last.exit : 'now'">
           <td class="mark">{{ ins.at !== here ? "" : stopped ? (last.exit === "halt" ? "■" : "✕") : "▶" }}</td>
           <td class="at">{{ ins.at }}</td>
-          <td class="bytes">
+          <td class="ops">
             <b :title="`opcode ${code.code[ins.at]}, in decimal as the Gray Paper numbers it`">{{ code.code[ins.at] }}</b><span v-for="(b, k) in bytesOf(ins.at + 1, ins.next)" :key="k" class="arg">, <code class="bytes">{{ hex(b) }}</code></span>
           </td>
           <td class="words">{{ say(ins) }}<span v-if="ins.skip" class="skip"> · skip {{ ins.skip }}</span></td>
@@ -118,7 +118,7 @@ function pick(id: string) {
     <p v-if="startsAtHalt" class="note">r0 starts at 2^32 − 2^16 = 4294901760, the halt address: jumping there halts the machine.</p>
 
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>
@@ -141,7 +141,7 @@ function pick(id: string) {
 .code th { text-align: left; font-weight: 500; color: var(--vp-c-text-2); }
 .code th, .code td { padding: 3px 6px; border: 1px solid var(--vp-c-divider); }
 .code td.mark { width: 1.5em; text-align: center; color: var(--vp-c-brand-1); }
-.code td.at, .code td.bytes { font-family: var(--vp-font-family-mono); white-space: nowrap; }
+.code td.at, .code td.ops { font-family: var(--vp-font-family-mono); white-space: nowrap; }
 .code td.at { text-align: right; }
 .code .arg { color: var(--vp-c-text-2); }
 .code .skip { color: var(--vp-c-text-3); font-size: 12px; }

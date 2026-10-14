@@ -178,8 +178,12 @@
   --unit-bits: #f0a35e; --unit-bits-soft: #3a2918;
   --unit-bytes: #4fd1c5; --unit-bytes-soft: #132e2b;
 }
+/* a value a widget writes out, in a tile, an answer or a sentence: its unit's colour */
+.vp-doc .widget .bits { color: var(--unit-bits); }
+.vp-doc .widget .bytes { color: var(--unit-bytes); }
 .vp-doc code.bits { color: var(--unit-bits); background-color: var(--unit-bits-soft); }
 .vp-doc code.bytes { color: var(--unit-bytes); background-color: var(--unit-bytes-soft); }
+.vp-doc code.whole { white-space: nowrap; } /* one value, one line (units.ts, WHOLE) */
 .unit-tag {
   display: inline-block; padding: 0 6px; border: 1px solid; border-radius: 4px; line-height: 18px;
   font-family: var(--vp-font-family-mono); font-size: 12px; font-weight: 600; vertical-align: 1px;

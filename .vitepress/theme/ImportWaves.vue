@@ -149,7 +149,7 @@ const label = (key: string) => {
     <p v-if="trail.length > 1" class="trail">Your chain: <template v-for="(k, j) in trail" :key="j">{{ j ? " → " : "" }}<Sym :x="k" /></template></p>
 
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

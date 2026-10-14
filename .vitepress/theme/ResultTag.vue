@@ -70,7 +70,7 @@ watch(() => sizes.value[0]?.length, (n) => { if (n === 3) mark("gas"); });
   <div class="widget result-tag">
     <div class="readout" aria-live="polite">
       <div class="tile"><span class="tile-label">case</span><span class="tile-value case">{{ CASE_NAMES[tag] }}</span></div>
-      <div class="tile"><span class="tile-label">tag byte</span><span class="tile-value">{{ toHex(encoded.tag) }}</span></div>
+      <div class="tile"><span class="tile-label">tag byte</span><span class="tile-value bytes">{{ toHex(encoded.tag) }}</span></div>
       <div class="tile"><span class="tile-label">result bytes</span><span class="tile-value">{{ encoded.bytes.length }}</span></div>
       <div class="tile"><span class="tile-label">load bytes</span><span class="tile-value">{{ loadTotal ?? "?" }}</span></div>
     </div>
@@ -122,7 +122,7 @@ watch(() => sizes.value[0]?.length, (n) => { if (n === 3) mark("gas"); });
       <template v-if="decoded.ok">
         <dt>tag</dt><dd>{{ decoded.tag }}: {{ CASE_NAMES[decoded.tag] }}</dd>
         <dt v-if="'ok' in decoded.result">output</dt>
-        <dd v-if="'ok' in decoded.result" class="long">{{ decoded.result.ok.length }} bytes: {{ toHex(decoded.result.ok.slice(0, 16)) }}{{ decoded.result.ok.length > 16 ? "…" : "" }}</dd>
+        <dd v-if="'ok' in decoded.result" class="long">{{ decoded.result.ok.length }} bytes: <span class="bytes">{{ toHex(decoded.result.ok.slice(0, 16)) }}{{ decoded.result.ok.length > 16 ? "…" : "" }}</span></dd>
         <dt>used</dt><dd class="long">{{ decoded.used }} byte{{ decoded.used === 1 ? "" : "s" }}{{ decoded.tag ? ", the tag alone" : ": tag, length, output" }}</dd>
         <dt v-if="decoded.rest">left</dt>
         <dd v-if="decoded.rest" class="long">{{ decoded.rest }} byte{{ decoded.rest === 1 ? "" : "s" }}: not the result's, but whatever comes next (in a digest, the load)</dd>
@@ -154,7 +154,7 @@ watch(() => sizes.value[0]?.length, (n) => { if (n === 3) mark("gas"); });
     </div>
 
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

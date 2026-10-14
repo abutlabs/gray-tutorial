@@ -4,7 +4,6 @@
      encoded in header-map.ts from the vectors' values, never pasted in. -->
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { bytesAfterArrows } from "./units.ts";
 import { ownerOf, spaced } from "./codec-map.ts";
 import type { Node } from "./codec-map.ts";
 import { APPENDIX_C, cellsOf, chainOf, E, explain, goalsOf, HEADERS, nearest, nodesOf, ruleOf, shades, valueOf } from "./header-map.ts";
@@ -76,7 +75,7 @@ const subLabel = (n: Node) => (/\]$/.test(n.path) ? `[${name(n)}]` : name(n));
     <div class="readout" aria-live="polite">
       <div class="tile field"><span class="tile-label">field</span><span class="tile-value">{{ sel.path }}</span></div>
       <div class="tile"><span class="tile-label">its {{ size }} byte{{ size === 1 ? "" : "s" }}</span><span class="tile-value">{{ rangeOf(sel) }}</span></div>
-      <div class="tile rule"><span class="tile-label">rule</span><span class="tile-value">{{ ruleOf(sel) }}</span></div>
+      <div class="tile rule"><span class="tile-label">rule</span><span class="tile-value"><UnitText :text="ruleOf(sel)" /></span></div>
       <div class="tile"><span class="tile-label">whole header</span><span class="tile-value">{{ total }}</span></div>
     </div>
     <div class="controls" role="group" aria-label="which header">
@@ -86,18 +85,18 @@ const subLabel = (n: Node) => (/\]$/.test(n.path) ? `[${name(n)}]` : name(n));
     </div>
     <p class="range">
       A header is its {{ APPENDIX_C.length }} fields in Appendix C's order, nothing between. The two marks are maybes (¿x):
-      a <b class="k tag">tag</b> byte 00 when there's nothing, or 01 then the value. The tickets mark is exactly E = {{ E }}
+      a <b class="k tag">tag</b> byte <code class="bytes">00</code> when there's nothing, or <code class="bytes">01</code> then the value. The tickets mark is exactly E = {{ E }}
       tickets with no count; the other lists start with their <b class="k count">count</b>. Tap a field, or a byte.
     </p>
     <p class="line">
-      <span v-if="tappedSay" class="tapped">{{ tappedSay }}</span>
-      <template v-for="(part, n) in bytesAfterArrows(line)" :key="n"><code v-if="part.bytes" class="bytes">{{ part.text }}</code><template v-else>{{ part.text }}</template></template>
+      <span v-if="tappedSay" class="tapped"><UnitText :text="tappedSay" /></span>
+      <UnitText :text="line" />
     </p>
 
     <ol class="fields" :aria-label="`${map.v.name}'s fields`">
       <li v-for="r in rows" :key="r.f.path" class="row" :class="{ here: inChain(r.f) }">
         <button class="small field-name" :class="{ chosen: sel === r.f }" :aria-pressed="sel === r.f" @click="choose(r.f.path, null)">
-          <span class="n">{{ r.k + 1 }}</span> {{ r.f.path }} <span class="v">{{ valueOf(r.f) }}</span>
+          <span class="n">{{ r.k + 1 }}</span> {{ r.f.path }} <span class="v"><UnitText :text="valueOf(r.f)" /></span>
           <span class="at">{{ rangeOf(r.f) }}</span>
         </button>
         <div class="strip">
@@ -124,7 +123,7 @@ const subLabel = (n: Node) => (/\]$/.test(n.path) ? `[${name(n)}]` : name(n));
     </p>
 
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>
@@ -137,7 +136,7 @@ const subLabel = (n: Node) => (/\]$/.test(n.path) ? `[${name(n)}]` : name(n));
 .controls button.small { min-height: 32px; }
 .range { font-size: 14px; color: var(--vp-c-text-2); margin: 0 0 8px; line-height: 1.5; }
 .k { font-weight: 600; padding: 0 4px; border-radius: 3px; border: 1px solid; color: var(--vp-c-text-1); }
-.k.tag { background: var(--vp-c-purple-soft); border-color: var(--vp-c-purple-1); }
+.k.tag { background: var(--bit-mark); border-color: var(--bit-mark-line); border-style: dashed; }
 .k.count { background: var(--bit-mark); border-color: var(--bit-mark-line); }
 .line { font-family: var(--vp-font-family-mono); font-size: 14px; margin: 8px 0 12px; line-height: 1.6; min-height: 6.4em; }
 .tapped { display: block; color: var(--vp-c-text-2); }
@@ -158,7 +157,8 @@ button.small.chosen { background: var(--vp-c-bg-soft); font-weight: 600; }
 .top { background: var(--bit-top); border-color: var(--bit-top-line); }
 .low { background: var(--bit-low); border-color: var(--bit-low-line); }
 .count { background: var(--bit-mark); border-color: var(--bit-mark-line); }
-.tag { background: var(--vp-c-purple-soft); border-color: var(--vp-c-purple-1); }
+/* both are structure, so amber (custom.css); a tag's border is dashed to tell it from a count */
+.tag { background: var(--bit-mark); border-color: var(--bit-mark-line); border-style: dashed; }
 .byte.on, .fold.on { opacity: 1; font-weight: 700; border-width: 2px; }
 .byte.tap { outline: 2px solid var(--vp-c-brand-1); outline-offset: 1px; }
 .parts { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; padding-left: 12px; }

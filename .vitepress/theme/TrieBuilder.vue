@@ -115,8 +115,8 @@ watch(shape, () => {
           </template>
           <template v-else-if="p.node.kind === 'leaf'">
             <rect class="leaf" :x="px(p.x) - SLOT.leaf / 2 + 3" :y="py(p.depth) - 14" :width="SLOT.leaf - 6" height="34" rx="5" />
-            <text class="label" :x="px(p.x)" :y="py(p.depth) + 1">{{ hex(p.node.entry.key[0]) }}…</text>
-            <text class="key" :x="px(p.x)" :y="py(p.depth) + 14"><tspan class="path">{{ p.node.path }}</tspan>{{ bitsOf(p.node.entry.key[0], 8).slice(p.node.path.length, 8) }}</text>
+            <text class="label hexkey" :x="px(p.x)" :y="py(p.depth) + 1">{{ hex(p.node.entry.key[0]) }}…</text>
+            <text class="key" :x="px(p.x)" :y="py(p.depth) + 14">0b<tspan class="path">{{ p.node.path }}</tspan>{{ bitsOf(p.node.entry.key[0], 8).slice(p.node.path.length, 8) }}</text>
           </template>
           <template v-else>
             <rect class="empty" :x="px(p.x) - 9" :y="py(p.depth) - 9" width="18" height="18" rx="3" />
@@ -132,7 +132,7 @@ watch(shape, () => {
     <p class="change" aria-live="polite">
       <template v-if="refused">{{ refused }}</template>
       <template v-else-if="touched !== null && touchedPath !== null">
-        You changed {{ hex(touched) }}…'s value. Its leaf's hash changes, so the branch above it changes, and its hash,
+        You changed <code class="bytes">{{ hex(touched) }}…</code>'s value. Its leaf's hash changes, so the branch above it changes, and its hash,
         and so on up: {{ hashesRedone(touchedPath) }} new hash{{ hashesRedone(touchedPath) === 1 ? "" : "es" }}, the last
         one the root. Every other entry's hash stays as it was.
       </template>
@@ -146,7 +146,7 @@ watch(shape, () => {
             :aria-pressed="bitsOf(r.first, 8)[b - 1] === '1'" :aria-label="`bit ${b - 1}`" @click="flipBit(r, b - 1)">
             {{ bitsOf(r.first, 8)[b - 1] }}
           </button>
-          <span class="hex">{{ hex(r.first) }}…</span>
+          <span class="hex bytes">{{ hex(r.first) }}…</span>
         </div>
         <div class="value">
           <label>value <input :value="r.size" inputmode="numeric" spellcheck="false" :aria-label="`${hex(r.first)}'s value, in bytes`"
@@ -158,7 +158,7 @@ watch(shape, () => {
       </li>
     </ul>
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>
@@ -178,7 +178,8 @@ watch(shape, () => {
 .empty { fill: var(--vp-c-bg-soft); stroke: var(--vp-c-text-3); stroke-dasharray: 3 2; }
 .label { fill: var(--vp-c-text-1); font-size: 12px; font-weight: 600; text-anchor: middle; }
 .label.small { font-size: 11px; font-weight: 400; }
-.key { fill: var(--vp-c-text-2); font-size: 10px; text-anchor: middle; }
+.key { fill: var(--unit-bits); font-size: 10px; text-anchor: middle; }
+.label.hexkey { fill: var(--unit-bytes); }
 .path { fill: var(--bit-top-line); font-weight: 700; }
 .redone .branch, .redone .leaf, .edge.redone { stroke: var(--bit-mark-line); stroke-width: 3; }
 .legend { font-size: 13px; color: var(--vp-c-text-2); margin: 6px 0; line-height: 1.8; }

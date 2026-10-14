@@ -102,7 +102,7 @@ const said = (r: Report) => (r.deps.length ? `${r.pkg} ← ${r.deps.join(",")}` 
     </div>
     <div class="controls go">
       <button v-for="g in GAPS" :key="g.gap" class="small" :class="{ chosen: g.gap === 1 }" @click="run(g.gap)">
-        {{ g.say }}: slot {{ state.slot + g.gap }}
+        <UnitText :text="g.say" />: slot {{ state.slot + g.gap }}
       </button>
     </div>
 
@@ -128,7 +128,7 @@ const said = (r: Report) => (r.deps.length ? `${r.pkg} ← ${r.deps.join(",")}` 
       <p v-if="!log.length" class="none">Run a block: what it does is told here.</p>
     </div>
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

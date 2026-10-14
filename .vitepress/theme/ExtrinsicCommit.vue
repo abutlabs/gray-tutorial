@@ -92,7 +92,7 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
 <template>
   <div class="widget extrinsic-commit">
     <div class="readout" aria-live="polite">
-      <div class="tile"><span class="tile-label">root, the extrinsic hash</span><span class="tile-value">{{ short(root) }}…</span></div>
+      <div class="tile"><span class="tile-label">root, the extrinsic hash</span><span class="tile-value bytes">{{ short(root) }}…</span></div>
       <div class="tile changed"><span class="tile-label">changed by the last change</span><span class="tile-value">{{ changedSay }}</span></div>
       <div class="tile"><span class="tile-label">bytes hashed</span><span class="tile-value">{{ fmt(bytesHashed(block)) }}</span></div>
     </div>
@@ -120,7 +120,7 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
             <span class="dim">and a {{ t.signature.length }}-byte proof</span>
           </div>
           <div v-if="!block.tickets.length" class="item dim">none: just the count, 00</div>
-          <div class="out" :class="{ hit: touched(0) }">→ H = {{ short(hashes[0], 8) }}…</div>
+          <div class="out" :class="{ hit: touched(0) }">→ H = <span class="bytes">{{ short(hashes[0], 8) }}…</span></div>
         </li>
         <li class="part" :class="{ hit: touched(1) }">
           <div class="head"><b>2 · preimages</b><span>{{ fmt(parts[1].length) }} bytes encoded</span></div>
@@ -130,10 +130,10 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
               <button v-for="(b, k) in p.blob" :key="k" class="cell-btn unit-byte" :aria-label="`data byte ${k}, ${spaced([b])}: tap to add 1`"
                 @click="edit({ kind: 'blob', preimage: i, byte: k })">{{ spaced([b]) }}</button>
             </span>
-            <span class="twist">goes in as its requester and H(data) = {{ short(H(p.blob)) }}…</span>
+            <span class="twist">goes in as its requester and H(data) = <span class="bytes">{{ short(H(p.blob)) }}…</span></span>
           </div>
           <div v-if="!block.preimages.length" class="item dim">none: just the count, 00</div>
-          <div class="out" :class="{ hit: touched(1) }">→ H = {{ short(hashes[1], 8) }}…</div>
+          <div class="out" :class="{ hit: touched(1) }">→ H = <span class="bytes">{{ short(hashes[1], 8) }}…</span></div>
         </li>
         <li class="part" :class="{ hit: touched(2) }">
           <div class="head"><b>3 · guarantees</b><span>{{ fmt(parts[2].length) }} bytes encoded</span></div>
@@ -145,10 +145,10 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
             </span>
             slot <button class="small val" :aria-label="`guarantee ${i + 1}'s slot, ${g.slot}: tap to add 1`" @click="edit({ kind: 'slot', guarantee: i })">{{ g.slot }}</button>
             <span class="dim">{{ plural(g.signatures.length, "signature") }}</span>
-            <span class="twist">goes in as H(report) = {{ short(H(g.report)) }}…, then slot and signatures</span>
+            <span class="twist">goes in as H(report) = <span class="bytes">{{ short(H(g.report)) }}…</span>, then slot and signatures</span>
           </div>
           <div v-if="!block.guarantees.length" class="item dim">none: just the count, 00</div>
-          <div class="out" :class="{ hit: touched(2) }">→ H = {{ short(hashes[2], 8) }}…</div>
+          <div class="out" :class="{ hit: touched(2) }">→ H = <span class="bytes">{{ short(hashes[2], 8) }}…</span></div>
         </li>
         <li class="part" :class="{ hit: touched(3) }">
           <div class="head"><b>4 · assurances</b><span>{{ fmt(parts[3].length) }} bytes encoded</span></div>
@@ -159,20 +159,20 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
               @click="edit({ kind: 'bit', assurance: i, core: c - 1 })">{{ c - 1 }} {{ (a.bitfield >> (c - 1)) & 1 ? "✓" : "·" }}</button>
           </div>
           <div v-if="!block.assurances.length" class="item dim">none: just the count, 00</div>
-          <div class="out" :class="{ hit: touched(3) }">→ H = {{ short(hashes[3], 8) }}…</div>
+          <div class="out" :class="{ hit: touched(3) }">→ H = <span class="bytes">{{ short(hashes[3], 8) }}…</span></div>
         </li>
         <li class="part" :class="{ hit: touched(4) }">
           <div class="head"><b>5 · disputes</b><span>{{ parts[4].length }} bytes encoded</span></div>
           <div class="item dim">empty, as in every trace: three empty lists (verdicts, culprits, faults), 00 00 00</div>
-          <div class="out" :class="{ hit: touched(4) }">→ H = {{ short(hashes[4], 8) }}…</div>
+          <div class="out" :class="{ hit: touched(4) }">→ H = <span class="bytes">{{ short(hashes[4], 8) }}…</span></div>
         </li>
       </ol>
       <div class="label">the five hashes glued together: 5 × 32 = 160 bytes</div>
       <div class="glue">
-        <span v-for="(h, i) in hashes" :key="i" class="seg" :class="{ hit: touched(i) }"><small>{{ PARTS[i] }}</small>{{ short(h, 3) }}…</span>
+        <span v-for="(h, i) in hashes" :key="i" class="seg" :class="{ hit: touched(i) }"><small>{{ PARTS[i] }}</small><span class="bytes">{{ short(h, 3) }}…</span></span>
       </div>
-      <div class="root" :class="{ hit: diff?.root }">→ H, the root:<br /><b>{{ short(root, 16) }}</b><br /><b>{{ short(root.slice(16), 16) }}</b></div>
-      <p v-if="isEmpty" class="line">Five empty parts: this is the extrinsic hash every <code>fallback</code> block's header carries, 0x{{ short(root) }}…{{ spaced(root.slice(-3)).replace(/ /g, "") }}.</p>
+      <div class="root" :class="{ hit: diff?.root }">→ H, the root:<br /><b class="bytes">{{ short(root, 16) }}</b><br /><b class="bytes">{{ short(root.slice(16), 16) }}</b></div>
+      <p v-if="isEmpty" class="line">Five empty parts: this is the extrinsic hash every <code>fallback</code> block's header carries, <code class="bytes">0x{{ short(root) }}…{{ spaced(root.slice(-3)).replace(/ /g, "") }}</code>.</p>
     </template>
 
     <template v-else-if="proof && check">
@@ -192,10 +192,10 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
             <li v-for="(g, i) in proof.guarantees" :key="i">
               guarantee {{ i + 1 }}:
               <template v-if="g.report === null">a place for report {{ proving + 1 }}'s hash</template>
-              <template v-else>report {{ i + 1 }} shrunk to its hash, {{ short(g.report) }}…</template>,
+              <template v-else>report {{ i + 1 }} shrunk to its hash, <span class="bytes">{{ short(g.report) }}…</span></template>,
               slot {{ g.slot }}, {{ plural(g.signatures.length, "signature") }}
             </li>
-            <li v-for="(h, k) in proof.others" :key="k">the {{ ["tickets", "preimages", "assurances", "disputes"][k] }}' hash, {{ short(h) }}…</li>
+            <li v-for="(h, k) in proof.others" :key="k">the {{ ["tickets", "preimages", "assurances", "disputes"][k] }}' hash, <span class="bytes">{{ short(h) }}…</span></li>
           </ul>
         </div>
         <div class="col hidden">
@@ -210,12 +210,12 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
       </div>
       <div class="label">the checker's sums</div>
       <ol class="steps">
-        <li>H(report {{ proving + 1 }}) = {{ short(check.reportHash) }}…, into its place</li>
-        <li>encode the guarantees part, hash it: {{ short(check.guaranteesHash) }}…
+        <li>H(report {{ proving + 1 }}) = <span class="bytes">{{ short(check.reportHash) }}…</span>, into its place</li>
+        <li>encode the guarantees part, hash it: <span class="bytes">{{ short(check.guaranteesHash) }}…</span>
           <span :class="same(check.guaranteesHash, hashes[2]) ? 'ok' : 'bad'">{{ same(check.guaranteesHash, hashes[2]) ? "(the block's)" : "(not the block's)" }}</span></li>
-        <li>the five hashes in order, hashed: {{ short(check.recomputed) }}…</li>
+        <li>the five hashes in order, hashed: <span class="bytes">{{ short(check.recomputed) }}…</span></li>
         <li>
-          the header's root: {{ short(root) }}…
+          the header's root: <span class="bytes">{{ short(root) }}…</span>
           <b :class="check.ok ? 'ok' : 'bad'">{{ check.ok ? "✓ the same: the report was in the block" : "✗ different: the proof fails" }}</b>
         </li>
       </ol>
@@ -227,7 +227,7 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
     </template>
 
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

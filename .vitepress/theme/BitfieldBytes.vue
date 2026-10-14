@@ -24,7 +24,7 @@ const toggle = (c: number) => { if (c < props.cores) bitfield.value = flip(bitfi
           <span class="core">{{ c < cores ? c : "·" }}</span>
         </button>
       </div>
-      <div class="note">byte {{ b }}: {{ toHex([byte]) }}</div>
+      <div class="note">byte {{ b }}: <span class="bytes">{{ toHex([byte]) }}</span></div>
     </div>
   </div>
 </template>

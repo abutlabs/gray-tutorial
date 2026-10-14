@@ -38,6 +38,7 @@ import ExtrinsicCommit from "./ExtrinsicCommit.vue";
 import SignCheck from "./SignCheck.vue";
 import HeaderMap from "./HeaderMap.vue";
 import CheckYourself from "./CheckYourself.vue";
+import UnitText from "./UnitText.vue";
 import "./custom.css";
 
 export default {
@@ -77,6 +78,7 @@ export default {
     app.component("ImportWaves", ImportWaves); // 19.1
     // a lesson's understanding check, from its ::: check block (../checks.ts)
     app.component("CheckYourself", CheckYourself);
+    app.component("UnitText", UnitText); // the widgets' sentences, their bits and bytes in colour (units.ts)
     if (typeof window === "undefined") return;
     reloadOnStaleBuild();
     listenForSnippetTaps();

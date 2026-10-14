@@ -97,8 +97,11 @@ where it matters.
 
 A widget does the same with classes from `custom.css`: `unit-bit` on every bit cell and
 `unit-byte` on every byte cell (a bar under the cell, whatever the cell's own colour means
-there), a `unit-tag` naming a row's unit, and `code.bits` or `code.bytes` around a value it
-writes out. Bit strings it writes start `0b`. A cell's own colour says what it is for:
+there), a `unit-tag` naming a row's unit, and the class `bits` or `bytes` on a value it
+writes out (a tile, an answer, a hash in a sentence). Its goals and explanations go through
+`<UnitText :text="…" />`, which finds their bits and bytes itself (`unitParts`). Bit strings
+it writes start `0b`, and so do ids or keys in a sentence that could read as decimal
+(`0x12`). The names `bits` and `bytes` are the units': a widget never styles them itself. A cell's own colour says what it is for:
 amber is structure, whatever tells a decoder how to read what follows (a compact
 natural's marker, a length, a count, a tag); red (`--changed`) is what a tap changed; a
 plain 1 bit is copper. Diagrams in `tools/diagrams.ts` use the same colours. *Why:* Aodh read a dump's `10 00 00 00` as

@@ -39,8 +39,8 @@ const hue = (i: number) => ({ "--hue": String((i * 67 + 140) % 360) });
     <!-- one answer per row, label then value, so no answer moves when another grows -->
     <dl class="answers" aria-live="polite">
       <dt>x</dt><dd>{{ x === null ? "?" : fmt(x) }}</dd>
-      <dt>as the number reads</dt><dd>{{ readsAs }}</dd>
-      <dt>ℰ{{ "₀₁₂₃₄₅₆₇₈"[l] }}(x), as JAM writes</dt><dd>{{ toHex(bytes) }}</dd>
+      <dt>as the number reads</dt><dd class="bytes">{{ readsAs }}</dd>
+      <dt>ℰ{{ "₀₁₂₃₄₅₆₇₈"[l] }}(x), as JAM writes</dt><dd class="bytes">{{ toHex(bytes) }}</dd>
     </dl>
     <p class="range">
       {{ l }} byte{{ l === 1 ? "" : "s" }}: {{ 8 * l }} bits, 0 to {{ fmt(256n ** BigInt(l) - 1n) }}. Each byte counts 256
@@ -68,7 +68,7 @@ const hue = (i: number) => ({ "--hue": String((i * 67 + 140) % 360) });
       </p>
       <ol class="steps">
         <li v-for="(s, i) in steps" :key="i">
-          {{ fmt(s.rest) }} mod 256 = {{ s.byte }} → <b>{{ toHex([s.byte]).slice(2) }}</b>; pass on ⌊{{ fmt(s.rest) }} / 256⌋ = {{ fmt(s.rest >> 8n) }}
+          {{ fmt(s.rest) }} mod 256 = {{ s.byte }} → <b class="bytes">{{ toHex([s.byte]).slice(2) }}</b>; pass on ⌊{{ fmt(s.rest) }} / 256⌋ = {{ fmt(s.rest >> 8n) }}
         </li>
         <li v-if="dropped === 0n">no bytes left: ℰ₀ is no bytes at all. Done.</li>
       </ol>
@@ -79,7 +79,7 @@ const hue = (i: number) => ({ "--hue": String((i * 67 + 140) % 360) });
     </template>
     <ul class="goals">
       <li v-for="g in GOALS" :key="g.say" :class="{ done: reached.has(`${g.x}/${g.l}`) }">
-        {{ reached.has(`${g.x}/${g.l}`) ? "✓" : "○" }} {{ g.say }}
+        {{ reached.has(`${g.x}/${g.l}`) ? "✓" : "○" }} <UnitText :text="g.say" />
       </li>
     </ul>
   </div>

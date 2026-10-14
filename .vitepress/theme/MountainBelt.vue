@@ -123,12 +123,12 @@ const said = (s: Step<Mountain>) =>
         </template>
       </p>
       <ol>
-        <li v-for="s in log" :key="s.place" :class="s.action">{{ said(s) }}</li>
+        <li v-for="s in log" :key="s.place" :class="s.action"><UnitText :text="said(s)" /></li>
       </ol>
     </div>
     <p v-if="n >= MOST" class="line">63 items fill six places: <code class="bits">0b111111</code>. Empty the belt to start again.</p>
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

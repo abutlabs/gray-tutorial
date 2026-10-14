@@ -9,14 +9,14 @@ import { createMarkdownRenderer } from "vitepress";
 import type MarkdownIt from "markdown-it";
 import { LESSONS, ROOT, readParts, lessonText } from "./lessons.ts";
 import { unitCodes } from "../.vitepress/units.ts";
-import { bytesAfterArrows, sayUnit, unitOf } from "../.vitepress/theme/units.ts";
+import { sayUnit, unitOf, unitParts } from "../.vitepress/theme/units.ts";
 import { explain, flatten, ITEM } from "../.vitepress/theme/vector-map.ts";
 
 test("bits are 0b…, bytes are 0x… or hex pairs, and a lone pair only when it can't be decimal", () => {
   const cases: [string, string | undefined][] = [
     ["0b10000000", "8 bits"], ["0b1000_0000", "8 bits"], ["0b10", "2 bits"], ["0b00…", "the first 2 bits of more"], ["0b110xxxxx", "8 bits"],
     ["0x80", "1 byte"], ["0x0102ff", "3 bytes"], ["0x00e5…", "the first 2 bytes of more"],
-    ["10 00 00 00", "4 bytes"], ["04 03 02 01 70 a5 ...", "the first 6 bytes of more"],
+    ["10 00 00 00", "4 bytes"], ["04 03 02 01 70 a5 ...", "the first 6 bytes of more"], ["70 a5 08 29 … 9e 53 2e", "7 of its bytes shown"], ["0x70a5…532e", "4 of its bytes shown"],
     ["02", "1 byte"], ["c7", "1 byte"], ["2c", "1 byte"],
     // not whole bytes, or could be decimal, or not a value at all
     ["0x10000", undefined], ["0x", undefined], ["0b", undefined], ["12", undefined], ["26", undefined], ["10000000", undefined], ["0x…", undefined],
@@ -49,8 +49,8 @@ test("on the site, bits and bytes written as code take their colour and their co
   unitCodes(md);
   assert.equal(
     md.renderInline("`0b10000000` is `0x80`, and 16 as a u32 is `10 00 00 00`; `npm test`"),
-    '<code class="bits" title="8 bits">0b10000000</code> is <code class="bytes" title="1 byte">0x80</code>, '
-      + 'and 16 as a u32 is <code class="bytes" title="4 bytes">10 00 00 00</code>; <code>npm test</code>',
+    '<code class="bits whole" title="8 bits">0b10000000</code> is <code class="bytes whole" title="1 byte">0x80</code>, '
+      + 'and 16 as a u32 is <code class="bytes whole" title="4 bytes">10 00 00 00</code>; <code>npm test</code>',
   );
 });
 
@@ -67,25 +67,33 @@ test("2.7 reads the trace's 0x10000000 as the file's four bytes, a u32 smallest 
   assert.ok(words.includes(`Not ${Number(BigInt(hex)).toLocaleString("en-US")}, and not the bits \`0b${hex.slice(2)}\``));
 });
 
-test("a widget's explanation shows the bytes after each arrow as bytes, and loses no text", () => {
-  assert.deepEqual(bytesAfterArrows("x = 16, a u32 (ℰ₄): zeros to fill → 10 00 00 00. Every item is 36 bytes."), [
-    { text: "x = 16, a u32 (ℰ₄): zeros to fill → ", bytes: false },
-    { text: "10 00 00 00", bytes: true },
-    { text: ". Every item is 36 bytes.", bytes: false },
+test("a widget's sentence shows its bits and bytes in their colours, loses no text, and marks nothing else", () => {
+  assert.deepEqual(unitParts("16 in 4 bytes: 00 00 00 10, which JAM writes 10 00 00 00; 0b10 is 2, 0x10 is 16, 10 is ten"), [
+    { text: "16 in 4 bytes: " }, { text: "00 00 00 10", unit: "bytes" }, { text: ", which JAM writes " },
+    { text: "10 00 00 00", unit: "bytes" }, { text: "; " }, { text: "0b10", unit: "bits" }, { text: " is 2, " },
+    { text: "0x10", unit: "bytes" }, { text: " is 16, 10 is ten" },
   ]);
-  for (const n of flatten(ITEM.root)) {
-    const line = explain(n, ITEM.bytes);
-    const parts = bytesAfterArrows(line);
+  // a lone pair only when it can't be a word or a decimal; a … goes with its value
+  assert.deepEqual(unitParts("ff, c7, 07 and 0x00e5… but not 12, be, 0b or r2").filter((p) => p.unit).map((p) => p.text), ["ff", "c7", "07", "0x00e5…"]);
+  // every sentence the widgets write: each marked value is a real one, and the text survives whole
+  const theme = join(ROOT, ".vitepress/theme");
+  const sentences = readdirSync(theme).filter((f) => /\.(vue|ts)$/.test(f))
+    .flatMap((f) => [...readFileSync(join(theme, f), "utf8").matchAll(/say: "([^"]+)"/g)].map((m) => m[1]))
+    .concat(flatten(ITEM.root).map((n) => explain(n, ITEM.bytes)));
+  assert.ok(sentences.length > 100, `${sentences.length} sentences`);
+  for (const line of sentences) {
+    const parts = unitParts(line);
     assert.equal(parts.map((p) => p.text).join(""), line);
-    assert.equal(parts.filter((p) => p.bytes).length, (line.match(/→ [0-9a-f]{2}/g) ?? []).length, line);
+    for (const p of parts.filter((q) => q.unit)) assert.equal(unitOf(p.text.replace(/ ?…$/, ""))?.unit ?? (p.text.length === 2 ? "bytes" : undefined), p.unit, `${p.text} in "${line}"`);
   }
+  assert.equal(unitParts(explain(flatten(ITEM.root).find((n) => n.path === "extrinsic[0].len")!, ITEM.bytes)).at(-1)?.text, "10 00 00 00");
 });
 
 test("no widget styles its own .bits or .bytes: those names are the units' (custom.css)", () => {
   const theme = join(ROOT, ".vitepress/theme");
   const clashes = readdirSync(theme).filter((f) => f.endsWith(".vue")).flatMap((f) => {
     const style = readFileSync(join(theme, f), "utf8").split("<style")[1] ?? "";
-    return [...style.matchAll(/(^|[\s,}])\.(bits|bytes)(?=[\s,{:.[])/gm)].map((m) => `${f}: .${m[2]}`);
+    return [...style.matchAll(/\.(bits|bytes)(?![\w-])/g)].map((m) => `${f}: .${m[1]}`);
   });
   assert.deepEqual(clashes, []);
 });

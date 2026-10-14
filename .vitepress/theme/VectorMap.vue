@@ -3,7 +3,6 @@
      are encoded in vector-map.ts from the JSON's values, never pasted in. -->
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
-import { bytesAfterArrows } from "./units.ts";
 import { crossesRow, DUMP_FIELD, explain, flatten, isNumber, ITEM, ownerOf, ROW, rowsOf, ruleOf, shades, spaced } from "./vector-map.ts";
 import type { Node } from "./vector-map.ts";
 
@@ -86,7 +85,7 @@ onUnmounted(() => mq?.removeEventListener("change", fit));
     <div class="readout" aria-live="polite">
       <div class="tile field"><span class="tile-label">field</span><span class="tile-value">{{ sel.path }}</span></div>
       <div class="tile"><span class="tile-label">its bytes</span><span class="tile-value">{{ sel.start }}–{{ sel.end - 1 }}</span></div>
-      <div class="tile rule"><span class="tile-label">rule</span><span class="tile-value">{{ ruleOf(sel.type) }}</span></div>
+      <div class="tile rule"><span class="tile-label">rule</span><span class="tile-value"><UnitText :text="ruleOf(sel.type)" /></span></div>
       <div class="tile"><span class="tile-label">so far</span><span class="tile-value">{{ sel.end }} / {{ TOTAL }}</span></div>
     </div>
     <p class="range">
@@ -94,8 +93,8 @@ onUnmounted(() => mq?.removeEventListener("change", fit));
       and a length in front only of what can vary: the payload and the two lists (amber). Tap a field, or a byte.
     </p>
     <p class="line">
-      <span v-if="tappedSay" class="tapped">{{ tappedSay }}</span>
-      <template v-for="(part, n) in bytesAfterArrows(line)" :key="n"><code v-if="part.bytes" class="bytes">{{ part.text }}</code><template v-else>{{ part.text }}</template></template>
+      <span v-if="tappedSay" class="tapped"><UnitText :text="tappedSay" /></span>
+      <UnitText :text="line" />
       <span v-if="across" class="across">{{ across }}</span>
     </p>
 
@@ -106,11 +105,11 @@ onUnmounted(() => mq?.removeEventListener("change", fit));
           <button class="small" :class="[shadeOf(r.head), { chosen: selected === r.head.path, plain: r.items.length }]"
             :aria-pressed="selected === r.head.path" @click="choose(r.head.path, null)">
             <template v-if="r.items.length">{{ r.head.path.replace(/^.*(\[\d+\])$/, "$1") }}</template>
-            <template v-else>{{ label(r.head) }} <span class="v">{{ valueOf(r.head) }}</span></template>
+            <template v-else>{{ label(r.head) }} <span class="v"><UnitText :text="valueOf(r.head)" /></span></template>
           </button>
           <button v-for="c in r.items" :key="c.path" class="small" :class="[shadeOf(c), { chosen: selected === c.path }]"
             :aria-pressed="selected === c.path" @click="choose(c.path, null)">
-            {{ label(c) }} <span class="v">{{ valueOf(c) }}</span>
+            {{ label(c) }} <span class="v"><UnitText :text="valueOf(c)" /></span>
           </button>
         </div>
       </div>
@@ -133,7 +132,7 @@ onUnmounted(() => mq?.removeEventListener("change", fit));
     </div>
 
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

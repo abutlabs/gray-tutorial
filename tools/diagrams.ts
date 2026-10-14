@@ -250,7 +250,7 @@ export function stateTrie(): string {
 <style>
   text { fill: #3c3c43; text-anchor: middle; }
   .note { fill: #67676c; font-size: 12px; }
-  .key { fill: #67676c; font-size: 13px; }
+  .key { fill: #b45309; font-size: 13px; }
   .path { fill: #5b8def; font-weight: bold; }
   .bit { fill: #5b8def; font-weight: bold; }
   .edge { stroke: #9a9aa0; stroke-width: 1.5; }
@@ -258,7 +258,8 @@ export function stateTrie(): string {
   .leaf { fill: #e6f6ef; stroke: #3fa97a; stroke-width: 1.5; }
   @media (prefers-color-scheme: dark) {
     text { fill: #dfdfd6; }
-    .note, .key { fill: #a8a8a0; }
+    .note { fill: #a8a8a0; }
+    .key { fill: #f0a35e; }
     .path { fill: #7aa2f7; }
     .bit { fill: #7aa2f7; }
     .edge { stroke: #6b6b72; }

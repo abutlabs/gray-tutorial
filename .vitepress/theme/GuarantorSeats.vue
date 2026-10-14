@@ -113,7 +113,7 @@ const cards = computed(() => [
             :aria-pressed="c.a.keys[v] === BLANK" :aria-label="`validator ${v}, key 0x${c.a.keys[v]}: an offender?`"
             @click="toggle(original(c.a, v))"
           >
-            <b>{{ v }}</b><small>0x{{ c.a.keys[v] }}…</small>
+            <b>{{ v }}</b><small class="bytes">0x{{ c.a.keys[v] }}…</small>
           </button>
         </div>
       </div>
@@ -126,7 +126,7 @@ const cards = computed(() => [
       </template>
     </p>
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

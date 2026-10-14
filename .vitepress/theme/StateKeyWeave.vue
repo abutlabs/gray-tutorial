@@ -81,7 +81,7 @@ watch([recipe, hex, s, typed], ([r, h, sv, a], [, hBefore, sBefore, aBefore]) =>
       <label v-if="recipe === 'C(i)'">i = <input v-model="iText" inputmode="numeric" spellcheck="false" class="short" aria-label="i, 0 to 255" /></label>
       <template v-else>
         <label>s = <input v-model="sText" spellcheck="false" autocapitalize="off" class="mid" aria-label="the service id s" /></label>
-        <span v-if="s !== null" class="note">ℰ₄(s) = {{ spaced(n) }}</span>
+        <span v-if="s !== null" class="note">ℰ₄(s) = <code class="bytes">{{ spaced(n) }}</code></span>
       </template>
       <template v-if="recipe === 'C(s, h)'">
         <label class="hash">H(h) =
@@ -113,7 +113,7 @@ watch([recipe, hex, s, typed], ([r, h, sv, a], [, hBefore, sBefore, aBefore]) =>
       </div>
     </div>
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>

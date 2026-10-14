@@ -65,7 +65,7 @@ watch(counts, (now, before) => {
       <b>{{ available[c] ? "available" : "not yet" }}</b>
     </p>
     <ul class="goals">
-      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
+      <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
     </ul>
   </div>
 </template>
@@ -74,7 +74,7 @@ watch(counts, (now, before) => {
 .range { font-size: 14px; color: var(--vp-c-text-2); margin: 0 0 12px; line-height: 1.5; }
 .controls { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
 .tile.ok { border-color: var(--bit-low-line); background: var(--bit-low); }
-.row { display: flex; align-items: center; gap: 12px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; } /* on a phone, the bits go under their validator */
 .who { font-size: 13px; color: var(--vp-c-text-2); white-space: nowrap; font-family: var(--vp-font-family-mono); }
 .line { font-family: var(--vp-font-family-mono); font-size: 14px; margin: 4px 0; }
 .goals { list-style: none; padding: 0; margin: 12px 0 0; font-size: 14px; color: var(--vp-c-text-2); }

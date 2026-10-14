@@ -196,6 +196,7 @@ export function comingSealers(config: Config, state: State): "undecided" | "tick
 }
 
 /** A ticket id as the widget writes it: two hex digits (a real one is 64). */
+/** A ticket id's two hex digits: bare in its cell, which shows it as a byte; after 0x in a sentence. */
 export const hexId = (id: number): string => toHex([id]).slice(2);
 
 /** What one block did, in plain words, a line each. */
@@ -208,7 +209,7 @@ export function story(config: Config, before: State, slot: number, result: Retur
   if (newEpoch) {
     lines.push(`slot ${slot} starts epoch ${epochOf(config, slot)}: the validator sets and η move along one, and a new lottery opens`);
     for (const v of before.sets.staging.filter((v) => offenders.includes(v))) {
-      lines.push(`${v} is an offender: its keys arrive in γ_P as ${NULL_KEY}`);
+      lines.push(`${v} is an offender: its keys arrive in γ_P as 0x${NULL_KEY}…`);
     }
     if (byTickets) lines.push(`the last lottery closed full: its ${config.E} winners take this epoch's slots, outside in`);
     else {
@@ -221,12 +222,12 @@ export function story(config: Config, before: State, slot: number, result: Retur
   }
   const sealer = sealerOf(config, after.sealers, slot);
   lines.push(sealer.ticket
-    ? `slot ${slot}'s block is made by whoever holds ticket ${hexId(sealer.ticket.id)}: ${sealer.who}, unknown until now`
+    ? `slot ${slot}'s block is made by whoever holds ticket 0x${hexId(sealer.ticket.id)}: ${sealer.who}, unknown until now`
     : `slot ${slot}'s block is made by ${sealer.who}`);
   if (entered.length) {
     const kept = entered.length - dropped.length;
-    let line = `${entered.length} ticket${entered.length === 1 ? "" : "s"} entered (${entered.map((t) => hexId(t.id)).join(", ")})`;
-    if (dropped.length) line += `: ${kept ? `${kept} in, ` : ""}${dropped.map((t) => hexId(t.id)).join(", ")} not among the ${config.E} lowest`;
+    let line = `${entered.length} ticket${entered.length === 1 ? "" : "s"} entered (${entered.map((t) => `0x${hexId(t.id)}`).join(", ")})`;
+    if (dropped.length) line += `: ${kept ? `${kept} in, ` : ""}${dropped.map((t) => `0x${hexId(t.id)}`).join(", ")} not among the ${config.E} lowest`;
     lines.push(line);
   }
   if (lotteryCloses(config, before.time, slot)) {
