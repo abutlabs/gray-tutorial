@@ -310,6 +310,117 @@ minute). The *Dispute checks* panel, on **4 · Checks**, keeps the list.
 
 ![Dispute checks panel](./images/05-dispute-checks.png)
 
+## The scoreboard
+
+The court is whole, so its family can run whole. A disputes vector's block is judged:
+refused for the vector's reason, or accepted, and then three things must match: ψ′, every
+verdict, culprit and fault filed; ρ†, the cores with condemned reports cleared; and the
+output, the header's offenders mark. Nothing else in the vector's state may change.
+
+**Add to** `test/families.ts`
+
+```ts
+import { DisputesExtrinsic } from "../src/block.ts";
+import { PendingReports } from "../src/cores.ts";
+import { clearJudged, disputesError, judges, offendersMark, outcome, PastJudgements, recordOffenders, recordVerdicts } from "../src/disputes.ts";
+import { ValidatorKey } from "../src/state.ts";
+
+/** Validator keys from a vector's JSON. */
+const keys = (json: unknown[]) => json.map((key) => ValidatorKey.fromJson(key));
+
+type DisputesState = {
+  psi: unknown;
+  rho: unknown;
+  tau: number;
+  kappa: unknown[];
+  lambda: unknown[];
+};
+
+/** A disputes vector: ψ′, ρ† and the offenders mark, or the rule a refused block breaks. */
+function checkDisputes(name: string) {
+  const vector = vectorJson(name) as StfVector<{ disputes: unknown }, DisputesState>;
+  const config = configOf(name);
+  const { input, pre_state } = vector;
+  const disputes = DisputesExtrinsic.fromJson(input.disputes);
+  const psi = PastJudgements.fromJson(pre_state.psi);
+  const [active, previous] = [keys(pre_state.kappa), keys(pre_state.lambda)];
+  const error = disputesError(config, disputes, psi, pre_state.tau, active, previous);
+  sameError(error, vector);
+  if (error) return unchanged(vector, []);
+  const judged = disputes.verdicts.map((v) => ({
+    target: v.target,
+    outcome: outcome(v, judges(config, pre_state.tau, v.age, active, previous).length),
+  }));
+  const after = recordOffenders(recordVerdicts(psi, judged), disputes);
+  assert.deepEqual(after, PastJudgements.fromJson(vector.post_state.psi), "psi differs");
+  const cores = PendingReports(config);
+  const cleared = clearJudged(cores.fromJson(pre_state.rho), judged);
+  assert.deepEqual(cleared, cores.fromJson(vector.post_state.rho), "rho differs");
+  const ok = vector.output?.ok as { offenders_mark: string[] };
+  assert.deepEqual(offendersMark(disputes).map(toHex), ok.offenders_mark, "offenders_mark differs");
+  unchanged(vector, ["psi", "rho"]);
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+  { folders: ["stf/history/tiny", "stf/history/full"], check: checkHistory },
+  { folders: ["stf/disputes/tiny", "stf/disputes/full"], check: checkDisputes },
+];
+```
+
+The full vectors carry verdicts of 683 signed votes, so the board takes a little longer
+from here: about 20 seconds, nearly all of it checking signatures.
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate           not run yet (126)
+stf/assurances           not run yet (22)
+stf/authorizations       not run yet (6)
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages            not run yet (16)
+stf/reports              not run yet (92)
+stf/safrole              46 of 46  ✔
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+146 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939173161
+```
+
+> [!TIP] Milestone
+> **Every disputes vector.** All 60, tiny and full, whole: verdicts filed,
+> offenders named and marked, condemned reports cleared, and every bad dispute refused for
+> the vector's reason.
+
 <details>
 <summary>lasair: rule 6 word for word, in <code>conformance/disputes_stf.ml</code></summary>
 
@@ -330,7 +441,8 @@ report is refused.
 ## What you have
 
 The whole court, checked: every verdict, culprit and fault in a block follows the rules,
-and every disputes vector is accepted or refused just as it should be. Disputes are for
+and every disputes vector is accepted or refused just as it should be, all 60 passing
+whole. Disputes are for
 the rare report that's wrong. [Part 11](../11-assurances/index.md) is what happens to every report on a core:
 validators vouching that its data really is available.
 

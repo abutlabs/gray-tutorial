@@ -189,6 +189,64 @@ Its *lanes* (from replays of recorded sessions, through generated blocks with mu
 to changing validator sets) go further than any trace, and the rows of
 [HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) are where to look when a session ends with a wrong root.
 
+## The scoreboard
+
+One last look at the board, with everything your client does:
+
+**Run**
+
+```sh
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate         126 of 126  ✔
+stf/assurances           22 of 22  ✔
+stf/authorizations         6 of 6  ✔
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages             6 of 16
+    ✘ stf/preimages/full/preimage_not_needed-1.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimage_not_needed-2.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimages_order_check-1.json: accepted, not preimages_not_sorted_unique
+    … and 7 more
+stf/reports              92 of 92  ✔
+stf/safrole              46 of 46  ✔
+stf/statistics             8 of 8  ✔
+traces/fallback        100 of 100  ✔
+traces/fuzzy           200 of 200  ✔
+traces/fuzzy_light     200 of 200  ✔
+traces/preimages       100 of 100  ✔
+traces/preimages_light 100 of 100  ✔
+traces/safrole         100 of 100  ✔
+traces/storage         100 of 100  ✔
+traces/storage_light   100 of 100  ✔
+trie                       1 of 1  ✔
+
+1,406 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791940234821
+```
+
+1,406 of 1,428. Each of the 22 left has a name: ten blocks with preimages your client
+should refuse, the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md)'s to add, and twelve erasure-coding vectors,
+the code validators use to share a work-package's data, which a block importer never
+needs. Every other question the official vectors ask, your client answers as they do,
+whole. The *8 · Official vectors* dashboard in Grafana has the climb, run by run, from the
+4 of [lesson 2.6](../02-codec/06-the-first-test-vectors.md) to here, and its *Each family (last run)* panel has the finished board:
+
+![The Each family panel: every family passing all its vectors but stf/preimages, 6 of 16, and erasure, not run yet](./images/04-each-family-last-run.png)
+
+> [!TIP] Milestone
+> **The finished board.** 1,406 of the 1,428 official test vectors, whole:
+> every codec, trie and shuffle vector, every state-transition family but ten preimages
+> refusals, and every block of all eight traces.
+
 <details>
 <summary>lasair: the same variables, in <code>Dockerfile</code></summary>
 
@@ -211,11 +269,12 @@ program into a small one; yours needs no compiler, since Node runs TypeScript as
 
 ## What you have
 
-A JAM block importer, built from an empty folder. It passes every official
-state-transition test vector, and imports all eight block-import traces, each block into
-the state it made itself, every root right and every bad block refused. It speaks the
+A JAM block importer, built from an empty folder. It passes 1,406 of the 1,428 official
+test vectors whole, every state-transition family among them but for ten preimages
+refusals, and imports all eight block-import traces, each block into the state it made
+itself, every root right and every bad block refused. It speaks the
 conformance fuzzer's protocol, keeps the chain's ancestry for the one check the state
 can't make, and starts the way the fuzzer starts its targets. That's what JAM's first
-milestone, M1, asks of a client. Lesson [0.1](../00-start/01-what-you-will-build.md)
+milestone, M1, asks of a client, with the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md)'s ten refusals still to add. Lesson [0.1](../00-start/01-what-you-will-build.md)
 promised a program that answers "valid, and here is the new state" or "invalid, go away".
 It's yours.

@@ -139,3 +139,11 @@ export function parseLesson(id: string, file: string): Lesson {
   if (fence) fail(fence.start + 1, "the code block never closes");
   return { id, file, title: titleOf(text, file), steps };
 }
+
+/** A lesson's Markdown, by its file under lessons/ ("02-codec/02-compact-naturals.md"). */
+export const lessonText = (file: string): string => readFileSync(join(LESSONS, file), "utf8");
+
+/** The code of lesson id's file snippets, all together: what the widget tests check
+ * a widget's logic against, so a widget can't teach what the lesson's code doesn't do. */
+export const lessonCode = (id: string): string =>
+  readLessons().find((l) => l.id === id)!.steps.map((s) => (s.kind === "file" ? s.code : "")).join("\n");

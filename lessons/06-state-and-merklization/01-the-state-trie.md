@@ -54,6 +54,14 @@ Three keys starting `0x01` (`0000 0001`), `0x40` (`0100 0000`) and `0xff`
 `0xff` is alone on the 1 side, so it becomes a leaf right away. The other two need a
 second bit to part ways.
 
+Try it below, starting from the same three keys. Flip a key's bits and watch its leaf
+move. Make two keys that differ only in their last bit, and the trie needs all eight bits
+to part them: a chain of branches with empty sides. Then change a value. Only the
+hashes on that leaf's path change, but the path always ends at the root. (The widget
+shows *which* hashes change, not their bytes.)
+
+<TrieBuilder />
+
 ## The tests
 
 Two sets of vectors. The `trie` vectors are made for exactly this: entries in, root out,
@@ -366,6 +374,109 @@ That's [the next lesson](./02-state-keys.md). The dashboard's *State trie* panel
 
 ![State trie panel](./images/01-state-trie.png)
 
+## The scoreboard
+
+The trie vectors' test already runs their one file whole: every case, entries in and root
+out. That's the scoreboard's `trie` family. Move the check into `test/families.ts`, where
+the scoreboard can reach it, and let the test call it from there, so it's written once:
+
+**Add to** `test/families.ts`
+
+```ts
+import { fromHex, toHex } from "../src/bytes.ts";
+import type { KeyValue } from "../src/trie.ts";
+import { stateRoot } from "../src/trie.ts";
+import { vectorJson } from "./vectors.ts";
+
+/** The trie vector: each set of entries has the vector's root. Its keys are 32 bytes, from
+ * when the Gray Paper's keys were; the trie reads the first 31. */
+export function checkTrie(name: string) {
+  const cases = vectorJson(name) as { input: Record<string, string>; output: string }[];
+  for (const { input, output } of cases) {
+    const entries: KeyValue[] = Object.entries(input).map(([key, value]) => ({
+      key: fromHex(`0x${key}`).subarray(0, 31),
+      value: fromHex(`0x${value}`),
+    }));
+    assert.equal(toHex(stateRoot(entries)), `0x${output}`);
+  }
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+];
+```
+
+**Rewrite** `test/trie.test.ts`
+
+```ts
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { toHex } from "../src/bytes.ts";
+import { stateRoot } from "../src/trie.ts";
+import { checkTrie } from "./families.ts";
+import { traceState } from "./vectors.ts";
+
+test("the trie vectors: from no entries at all to ten", () => checkTrie("trie/trie.json"));
+
+test("each header promises the state before its block, by its root: 400 real states", () => {
+  for (const family of ["fallback", "safrole", "preimages", "storage"]) {
+    for (let n = 1; n <= 100; n++) {
+      const { entries, promised } = traceState(family, n);
+      const root: string = toHex(stateRoot(entries));
+      assert.equal(root, promised, `${family} ${n}`);
+    }
+  }
+});
+```
+
+**Run**
+
+```sh
+npm test
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                  not run yet (1)
+stf/accumulate           not run yet (126)
+stf/assurances           not run yet (22)
+stf/authorizations       not run yet (6)
+stf/disputes             not run yet (60)
+stf/history              not run yet (8)
+stf/preimages            not run yet (16)
+stf/reports              not run yet (92)
+stf/safrole              not run yet (46)
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+31 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939036335
+```
+
+> [!TIP] Milestone
+> **The trie vector.** Every case in it, from no entries to ten, has the
+> vector's root: your client commits to a state exactly as every other client does.
+
 <details>
 <summary>lasair: <code>merkle_trie_depth</code>, in <code>lib/merklization.ml</code></summary>
 
@@ -399,7 +510,8 @@ three cases off like the Gray Paper's own definition.
 
 ## What you have
 
-The function every JAM node runs after every block: the state root. Your client can now
+The function every JAM node runs after every block: the state root, matching the official
+trie vector whole. Your client can now
 check that a header's `parent_state_root` really is the state it came from. A root is all
 it gives, though: which key holds what? [Lesson 6.2](./02-state-keys.md) maps the keys.
 

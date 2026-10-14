@@ -50,6 +50,15 @@ a correct client must produce, as files. Matching them is how you know your clie
 right. *Example:* `codec/tiny/work_item.bin` and its `.json`.
 ([2.6](./02-codec/06-the-first-test-vectors.md))
 
+**Vector family.** One kind of test vector, in a folder of its own, all checked the same
+way. *Example:* `codec`, `stf/safrole`, `traces/fallback`.
+([2.6](./02-codec/06-the-first-test-vectors.md))
+
+**Scoreboard.** Your client's tally of every official test vector, each one run whole:
+your client's answer must be all of the vector's. `node bin/scoreboard.ts` prints it, and
+Grafana's *8 · Official vectors* dashboard keeps it. *Example:* 4 of 1,428, the first time it runs.
+([2.6](./02-codec/06-the-first-test-vectors.md))
+
 **nvm.** A tool that installs Node versions and switches between them. *Example:*
 `nvm use`. ([0.2](./00-start/02-set-up-the-project.md))
 
@@ -817,6 +826,10 @@ bytes: sorted. *Example:* each slot's packages in ξ. ([19.5](./19-block-import/
 
 **Fuzzy trace.** A block-import trace made with a service doing random work, with some
 blocks meant to be refused. *Example:* `fuzzy` blocks 37 to 39. ([19.6](./19-block-import/06-blocks-to-refuse.md))
+
+**Worker thread.** A second program running beside the first in the same process, with
+memory of its own, that talks to it by messages. *Example:* the scoreboard runs one per
+processor, each checking vectors. ([19.6](./19-block-import/06-blocks-to-refuse.md))
 
 ## Statistics
 

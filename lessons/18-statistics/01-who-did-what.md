@@ -41,51 +41,60 @@ reporters **𝐆** ([lesson 12.2](../12-guarantees/02-signed-and-counted.md)'s s
 
 ## The tests
 
+Every statistics vector is one block's tallies, before and after. Running one is a job
+for the scoreboard too, so the runner goes in `test/families.ts`, and the tests use it:
+the tallies before the block, yours after it, and the vector's after it. Its size comes
+from the vector's folder.
+
+**Add to** `test/families.ts`
+
+```ts
+import { Extrinsic } from "../src/block.ts";
+import { updateValidatorStats, ValidatorStats } from "../src/statistics.ts";
+
+type StatsInput = { slot: number; author_index: number; extrinsic: unknown };
+type StatsState = {
+  slot: number;
+  curr_validators: unknown[];
+  vals_curr_stats: unknown[];
+  vals_last_stats: unknown[];
+};
+
+/** One block of statistics vector `name`: the tallies before it, your code's after it,
+ * and the vector's after it. */
+export function runStats(name: string) {
+  const vector = vectorJson(name) as StfVector<StatsInput, StatsState>;
+  const config = configOf(name);
+  const { input, pre_state: pre, post_state: post } = vector;
+  const tallies = (json: unknown[]) => json.map((s) => ValidatorStats.fromJson(s));
+  const current = tallies(pre.vals_curr_stats);
+  const before = { slot: pre.slot, current, last: tallies(pre.vals_last_stats) };
+  const extrinsic = Extrinsic(config).fromJson(input.extrinsic);
+  const [author, validators] = [input.author_index, keys(pre.curr_validators)];
+  const after = updateValidatorStats(config, before, input.slot, author, extrinsic, validators);
+  const expected = { current: tallies(post.vals_curr_stats), last: tallies(post.vals_last_stats) };
+  return { vector, before, after, expected };
+}
+
+/** A statistics vector: π_V and π_L after the block. It says nothing back. */
+export function checkStatistics(name: string) {
+  const { vector, after, expected } = runStats(name);
+  assert.deepEqual(after, expected, "vals_curr_stats or vals_last_stats differs");
+  assert.equal(vector.output, null, "output differs");
+  unchanged(vector, ["vals_curr_stats", "vals_last_stats"]);
+}
+```
+
 **New file** `test/statistics.test.ts`
 
 ```ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { Extrinsic } from "../src/block.ts";
-import type { Config } from "../src/config.ts";
-import { FULL, TINY } from "../src/config.ts";
-import { ValidatorKey } from "../src/state.ts";
-import { updateValidatorStats, ValidatorStats } from "../src/statistics.ts";
-import { vectorFiles, vectorJson } from "./vectors.ts";
-
-/** A statistics test vector: one block's slot, author and extrinsic; the tallies around it. */
-type StatsVector = {
-  input: { slot: number; author_index: number; extrinsic: unknown };
-  pre_state: {
-    slot: number;
-    curr_validators: unknown[];
-    vals_curr_stats: unknown[];
-    vals_last_stats: unknown[];
-  };
-  post_state: { vals_curr_stats: unknown[]; vals_last_stats: unknown[] };
-};
-
-/** One block of statistics vector `name`: the tallies your code gives, and the vector's. */
-function runStats(config: Config, name: string) {
-  const v = vectorJson(name) as StatsVector;
-  const tallies = (json: unknown[]) => json.map((s) => ValidatorStats.fromJson(s));
-  const pre = v.pre_state;
-  const before = {
-    slot: pre.slot,
-    current: tallies(pre.vals_curr_stats),
-    last: tallies(pre.vals_last_stats),
-  };
-  const validators = pre.curr_validators.map((k) => ValidatorKey.fromJson(k));
-  const extrinsic = Extrinsic(config).fromJson(v.input.extrinsic);
-  const author = v.input.author_index;
-  const after = updateValidatorStats(config, before, v.input.slot, author, extrinsic, validators);
-  const post = v.post_state;
-  const expected = { current: tallies(post.vals_curr_stats), last: tallies(post.vals_last_stats) };
-  return { before, after, expected };
-}
+import { checkStatistics, runStats } from "./families.ts";
+import { vectorFiles } from "./vectors.ts";
 
 test("an empty block: its author makes one more block, and that's all", () => {
-  const { before, after } = runStats(TINY, "stf/statistics/tiny/stats_with_empty_extrinsic-1.json");
+  const { before, after } = runStats("stf/statistics/tiny/stats_with_empty_extrinsic-1.json");
   const authorBlocks: number = after.current[1].blocks; // validator 1 made it
   assert.equal(authorBlocks, before.current[1].blocks + 1);
   assert.deepEqual(after.current[0], before.current[0]); // validator 0 did nothing
@@ -93,19 +102,16 @@ test("an empty block: its author makes one more block, and that's all", () => {
 
 test("an epoch's first block: assurances close the old tally, the rest opens the new one", () => {
   const name = "stf/statistics/tiny/stats_with_epoch_change-1.json";
-  const { before, after } = runStats(TINY, name);
+  const { before, after } = runStats(name);
   const closed: number = after.last[0].assurances; // into the old one
   assert.equal(closed, before.current[0].assurances + 1);
   assert.deepEqual([after.current[0].blocks, after.current[0].assurances], [0, 0]); // fresh
   assert.equal(after.current[1].blocks, 1); // the author's block starts the fresh tally
 });
 
-for (const config of [TINY, FULL]) {
-  for (const name of vectorFiles(`stf/statistics/${config.name}`)) {
-    test(`${name}: every validator's tallies end as the vector says`, () => {
-      const { after, expected } = runStats(config, name);
-      assert.deepEqual(after, expected);
-    });
+for (const size of ["tiny", "full"]) {
+  for (const name of vectorFiles(`stf/statistics/${size}`)) {
+    test(`${name}: every validator's tallies end as the vector says`, () => checkStatistics(name));
   }
 }
 ```
@@ -321,6 +327,80 @@ just closed. The *Validator statistics* panel keeps the table.
 
 ![Validator statistics panel](./images/01-validator-statistics.png)
 
+## The scoreboard
+
+`checkStatistics` already runs a statistics vector whole: the tests above call it for every
+one. Put the family on the board:
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+  { folders: ["stf/history/tiny", "stf/history/full"], check: checkHistory },
+  { folders: ["stf/disputes/tiny", "stf/disputes/full"], check: checkDisputes },
+  { folders: ["stf/assurances/tiny", "stf/assurances/full"], check: checkAssurances },
+  { folders: ["stf/reports/tiny", "stf/reports/full"], check: checkReports },
+  { folders: ["stf/authorizations/tiny", "stf/authorizations/full"], check: checkAuthorizations },
+  { folders: ["stf/preimages/tiny", "stf/preimages/full"], check: checkPreimages },
+  { folders: ["stf/accumulate/tiny", "stf/accumulate/full"], check: checkAccumulate },
+  { folders: ["stf/statistics/tiny", "stf/statistics/full"], check: checkStatistics },
+];
+```
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate         126 of 126  ✔
+stf/assurances           22 of 22  ✔
+stf/authorizations         6 of 6  ✔
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages             2 of 16
+    ✘ stf/preimages/full/preimage_needed-2.json: statistics changed
+    ✘ stf/preimages/full/preimage_not_needed-1.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimage_not_needed-2.json: accepted, not preimage_unneeded
+    … and 11 more
+stf/reports              62 of 92
+    ✘ stf/reports/full/big_work_report_output-1.json: cores_statistics changed
+    ✘ stf/reports/full/different_core_same_guarantors-1.json: cores_statistics changed
+    ✘ stf/reports/full/high_work_report_gas-1.json: cores_statistics changed
+    … and 27 more
+stf/safrole              46 of 46  ✔
+stf/statistics             8 of 8  ✔
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+372 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939736998
+```
+
+> [!TIP] Milestone
+> **Every statistics vector.** All 8, tiny and full: every validator's tally,
+> through epoch changes and a resized validator set, as the vectors keep it.
+
 <details>
 <summary>lasair: turning the page, in <code>lib/statistics.ml</code></summary>
 
@@ -348,7 +428,8 @@ at a time, with a small function for each.
 
 ## What you have
 
-Every validator's tally, kept the Gray Paper's way, and matching every statistics vector.
+Every validator's tally, kept the Gray Paper's way, and matching every statistics vector,
+whole.
 Validators aren't the only ones who work: [lesson 18.2](./02-what-cores-and-services-did.md) scores the cores and the
 services, block by block.
 

@@ -1,6 +1,7 @@
-// The Grafana dashboards are one overview and one dashboard per theme, a few Parts each.
-// These tests keep them one set: the same link bar and menus everywhere, every Part on
-// exactly one theme, and every panel a lesson names on the dashboard for its Part.
+// The Grafana dashboards are one overview, one dashboard per theme, a few Parts each, and
+// the scoreboard's, which every Part from 2 on fills. These tests keep them one set: the
+// same link bar and menus everywhere, every Part on exactly one theme, and every panel a
+// lesson names on the dashboard for its Part, the overview or the scoreboard's.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
@@ -21,6 +22,8 @@ const dashboards = readdirSync(DIR)
   .map((f) => JSON.parse(readFileSync(join(DIR, f), "utf8")) as Dashboard)
   .sort((a, b) => a.title.localeCompare(b.title));
 const overview = dashboards.find((d) => d.uid === "gray-tutorial")!;
+const scoreboard = dashboards.find((d) => d.uid === "gray-tutorial-vectors")!;
+const themes = dashboards.filter((d) => d !== overview && d !== scoreboard);
 const parts = readParts();
 const partOf = (dir: string) => Number(dir.split("-")[0]); // "07-time-and-shuffling" → 7
 
@@ -44,14 +47,15 @@ test("every dashboard has the same link bar, to all of them in order, and the sa
 });
 
 test("each Part is on exactly one theme dashboard", () => {
-  const seen = dashboards.filter((d) => d !== overview).flatMap(covers).sort((a, b) => a - b);
+  assert.ok(scoreboard, "the scoreboard's dashboard keeps uid gray-tutorial-vectors");
+  const seen = themes.flatMap(covers).sort((a, b) => a - b);
   assert.deepEqual(seen, parts.map((p) => partOf(p.dir)));
 });
 
 test("a panel a lesson names is on the dashboard for the lesson's Part", () => {
   for (const p of parts) {
-    const theme = dashboards.find((d) => d !== overview && covers(d).includes(partOf(p.dir)))!;
-    const titles = new Set([...theme.panels, ...overview.panels].map((q) => q.title));
+    const theme = themes.find((d) => covers(d).includes(partOf(p.dir)))!;
+    const titles = new Set([...theme.panels, ...overview.panels, ...scoreboard.panels].map((q) => q.title));
     for (const l of p.lessons) {
       const text = readFileSync(join(LESSONS, l.file), "utf8");
       for (const [, name] of text.matchAll(/\*([^*\n]+)\* panel/g)) {

@@ -27,6 +27,17 @@ And three things this step can't do yet, all to do with the Bandersnatch VRF:
 So `safroleStep` takes blocks with no tickets, and its test skips the rest, honestly
 counted.
 
+Here is all of it at once, on tiny, for you to drive. It starts at slot 0, from the state
+every tiny safrole vector starts from. Press *next block* to make a block. While the
+lottery is open, pick up to 3 tickets to go in it: lower ids are better. Fill the lottery
+before phase 10, and the block that reaches phase 10 carries the tickets mark. Then the
+next epoch's slots go to the winners, outside in. Or let it close short, and see the
+fallback. Two things are stand-ins. A ticket id here is two hex digits, not a 32-byte VRF
+output. And the page can't run Blake2b, so only the first fallback's picks are the real
+ones; later picks are illustrative, and each says so.
+
+<SafroleEpoch />
+
 ## The tests
 
 The vector type learns about the block's tickets and the epoch mark:

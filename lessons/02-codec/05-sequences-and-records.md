@@ -23,9 +23,24 @@ The list 1, 2, 3, each a single byte, encodes as `03 01 02 03`: its length (a co
 natural from [lesson 2.2](./02-compact-naturals.md)) and then each item. The length tells a decoder where the list
 ends.
 
-A record with a slot of 42 (u32) and a gas amount of 7 (u64) encodes as
-`2a 00 00 00 07 00 00 00 00 00 00 00`: the fields in order, and nothing else. No names, no
-length: both sides already know the fields and their order, so the bytes don't repeat it.
+A record with a slot of 42 (a u32) and a gas amount of 7 (a u64) encodes as 12 bytes:
+
+```text
+2a 00 00 00               slot: 42 as a u32, exactly 4 bytes
+07 00 00 00 00 00 00 00   gas:  7 as a u64, exactly 8 bytes
+```
+
+Each field takes its type's width, whatever its value: a u32 is 32 bits, 4 bytes, and a
+u64 is 64 bits, 8 bytes. 42 is `2a`, written smallest byte first and filled out with
+zeros to its 4 bytes, as in [lesson 2.1](./01-fixed-width-integers.md); 7 is `07` and seven zeros, though it would fit in
+one. 4 + 8 = 12. The type decides the size, not the number, so a decoder knows a slot
+ends after 4 bytes without being told.
+
+And that's all a record is: each field's bytes, joined end to end into one byte array, in
+the fields' order. The Gray Paper writes the joining as [⌢](../symbols.md#concat) and a byte array as [𝔹](../symbols.md#blobs):
+ℰ₄(42) ⌢ ℰ₈(7) is 4 bytes then 8 bytes, one array of 12, in 𝔹₁₂. Nothing else goes in.
+No names, no length: both sides already know the fields and their order, so the bytes
+don't repeat it.
 
 ## What the Gray Paper says
 
@@ -134,8 +149,19 @@ test("a record encodes its fields in the order written", () => {
 });
 ```
 
-`0x03` then three u16s: `0100`, `0200`, `0300`. And the pair: slot 1 in four bytes, gas 2
-in eight. Nothing up the sleeve.
+Both, byte by byte:
+
+```text
+03                        the sequence's length, 3 (a compact natural)
+01 00  02 00  03 00       1, 2 and 3, each a u16: 2 bytes each
+                          1 + 3 × 2 = 7 bytes
+
+01 00 00 00               slot 1 as a u32: 4 bytes
+02 00 00 00 00 00 00 00   gas 2 as a u64: 8 bytes
+                          4 + 8 = 12 bytes, as with slot 42 above
+```
+
+Nothing up the sleeve.
 
 `const Pair` and `type Pair` share a name, and TypeScript is fine with it: one is a
 value, the other a type, and each use makes clear which is meant. This is the pattern for

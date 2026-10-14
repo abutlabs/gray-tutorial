@@ -370,6 +370,141 @@ all of them. `node bin/check-guarantees.ts full` says the same of the full ones.
 
 ![Guarantee checks panel](./images/05-guarantee-checks.png)
 
+## The scoreboard
+
+Every rule the reports vectors check, your client checks. Run them whole: the block
+refused for the vector's reason, or accepted, and then ρ′ with the new reports on their
+cores, and the output, the reporters 𝐆 and the reported packages. The rest of a reports
+vector's state is only read, or so it looks:
+
+**Add to** `test/families.ts`
+
+```ts
+import { GuaranteesExtrinsic } from "../src/block.ts";
+import { placeReports, reportedPackages } from "../src/cores.ts";
+import { assignmentFor, guaranteeError, guarantorAssignments, reportError, reporters, signerKeys } from "../src/guarantors.ts";
+import { RecentBlock } from "../src/history.ts";
+
+type ReportsInput = { guarantees: unknown[]; slot: number; known_packages: string[] };
+type ReportsState = {
+  curr_validators: unknown[];
+  prev_validators: unknown[];
+  entropy: string[];
+  offenders: string[];
+  avail_assignments: unknown;
+  auth_pools: string[][];
+  recent_blocks: { history: unknown[] };
+  accounts: { id: number; data: { service: { code_hash: string; min_item_gas: number } } }[];
+};
+
+/** A reports vector: ρ′, the reporters and the reported packages, or the rule broken. */
+function checkReports(name: string) {
+  const vector = vectorJson(name) as StfVector<ReportsInput, ReportsState>;
+  const config = configOf(name);
+  const { input, pre_state: pre } = vector;
+  const offenders = pre.offenders.map(fromHex);
+  const [active, previous] = [keys(pre.curr_validators), keys(pre.prev_validators)];
+  const entropy = pre.entropy.map(fromHex);
+  const assignments =
+    guarantorAssignments(config, input.slot, entropy, active, previous, offenders);
+  const guarantees = GuaranteesExtrinsic.fromJson(input.guarantees);
+  const cores = PendingReports(config).fromJson(pre.avail_assignments);
+  const pools = pre.auth_pools.map((pool) => pool.map(fromHex));
+  const reports = guarantees.map((g) => g.report);
+  const history = pre.recent_blocks.history.map((b) => RecentBlock.fromJson(b));
+  const services = new Map(pre.accounts.map(({ id, data: { service } }) => [id, {
+    code_hash: fromHex(service.code_hash),
+    min_item_gas: BigInt(service.min_item_gas),
+  }]));
+  const known = new Set(input.known_packages);
+  const count = active.length;
+  const error = guaranteeError(config, guarantees, input.slot, assignments, cores, pools, count) ??
+    reportError(reports, history, known, services);
+  sameError(error, vector);
+  if (error) return unchanged(vector, []);
+  const after = placeReports(cores, guarantees, input.slot);
+  const expected = PendingReports(config).fromJson(vector.post_state.avail_assignments);
+  assert.deepEqual(after, expected, "avail_assignments differs");
+  const signers = guarantees.flatMap((g) =>
+    signerKeys(g, assignmentFor(config, input.slot, g.slot, assignments).keys));
+  const ok = vector.output?.ok as { reporters: string[]; reported: unknown[] };
+  assert.deepEqual(reporters(signers).map(toHex), ok.reporters, "reporters differs");
+  const reported = reportedPackages(guarantees).map((p) => ({
+    work_package_hash: toHex(p.hash),
+    segment_tree_root: toHex(p.exports_root),
+  }));
+  assert.deepEqual(reported, ok.reported, "reported differs");
+  unchanged(vector, ["avail_assignments"]);
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+  { folders: ["stf/history/tiny", "stf/history/full"], check: checkHistory },
+  { folders: ["stf/disputes/tiny", "stf/disputes/full"], check: checkDisputes },
+  { folders: ["stf/assurances/tiny", "stf/assurances/full"], check: checkAssurances },
+  { folders: ["stf/reports/tiny", "stf/reports/full"], check: checkReports },
+];
+```
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate           not run yet (126)
+stf/assurances           22 of 22  ✔
+stf/authorizations       not run yet (6)
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages            not run yet (16)
+stf/reports              62 of 92
+    ✘ stf/reports/full/big_work_report_output-1.json: cores_statistics changed
+    ✘ stf/reports/full/different_core_same_guarantors-1.json: cores_statistics changed
+    ✘ stf/reports/full/high_work_report_gas-1.json: cores_statistics changed
+    … and 27 more
+stf/safrole              46 of 46  ✔
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+230 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939267270
+```
+
+62 of 92: every refused block, and not one accepted block. The board says why. A block
+that seats reports also counts work for the statistics, each core's and each service's,
+and the vector's state holds those counts too: `cores_statistics changed`. Your client
+doesn't keep statistics yet. Every part it does make matches; the accepted 30 cross the
+line in [lesson 18.2](../18-statistics/02-what-cores-and-services-did.md), when it does.
+
+> [!TIP] Milestone
+> **Every bad report refused.** All 62 refusals in the reports vectors, tiny
+> and full, for the vector's own reason. The accepted 30 wait for the statistics.
+
 <details>
 <summary>lasair: a lookup, in <code>conformance/reports_stf.ml</code></summary>
 
@@ -391,7 +526,8 @@ the same block, which is how a gap like this can sit unnoticed.
 ## What you have
 
 The whole reports step, checked: thirteen checks on the guarantees, fourteen on the reports,
-and every reports vector accepted or refused exactly as it should be. [Part 12](./index.md) is done.
+and every reports vector accepted or refused exactly as it should be. The refused 62 pass
+whole; the accepted 30 wait for the statistics. [Part 12](./index.md) is done.
 One rule leaned on something you haven't built: [lesson 12.4](./04-bad-guarantees.md)'s authorizer pools.
 [Part 13](../13-authorization/index.md) keeps them moving, block by block.
 

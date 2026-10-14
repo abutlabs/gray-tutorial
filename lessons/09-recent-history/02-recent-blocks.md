@@ -346,6 +346,122 @@ Consensus** dashboard, shows it all.
 
 ![Recent history panel](./images/02-recent-history.png)
 
+## The scoreboard
+
+The first test above runs every history vector whole: β′ is all a history vector's state
+holds, and it says nothing back. That's the `stf/history` family. Move the check into
+`test/families.ts` and have the test call it:
+
+**Add to** `test/families.ts`
+
+```ts
+import { NewBlock, Recent, recordBlock } from "../src/history.ts";
+
+/** β as the history vectors write it: the blocks, and the belt's peaks as `mmr`. */
+type Beta = { history: unknown[]; mmr: { peaks: unknown[] } };
+
+/** A history vector: β′, the last eight blocks and the belt. It says nothing back. */
+export function checkHistory(name: string) {
+  const vector = vectorJson(name) as StfVector<unknown, { beta: Beta }>;
+  const recent = (beta: Beta) => Recent.fromJson({ history: beta.history, belt: beta.mmr.peaks });
+  const after = recordBlock(recent(vector.pre_state.beta), NewBlock.fromJson(vector.input));
+  assert.deepEqual(after, recent(vector.post_state.beta), "beta differs");
+  assert.equal(vector.output, null, "output differs");
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+  { folders: ["stf/history/tiny", "stf/history/full"], check: checkHistory },
+];
+```
+
+**Rewrite** `test/history.test.ts`
+
+```ts
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { Block, headerHash } from "../src/block.ts";
+import { TINY } from "../src/config.ts";
+import { Recent, RECENT_BLOCKS } from "../src/history.ts";
+import { readRecent } from "../src/state.ts";
+import { checkHistory } from "./families.ts";
+import { traceState, vectorFiles } from "./vectors.ts";
+import type { Header } from "../src/block.ts";
+import type { Bytes } from "../src/bytes.ts";
+import type { RecentBlock } from "../src/history.ts";
+
+test("β′: the last block learns its state root, the new one joins, eight are kept", () => {
+  const names: string[] = [...vectorFiles("stf/history/tiny"), ...vectorFiles("stf/history/full")];
+  for (const name of names) checkHistory(name);
+  assert.equal(names.length, 8);
+});
+
+test("β in real states: the newest block remembered is the block before", () => {
+  for (let n = 2; n <= 100; n++) {
+    const { history }: Recent = readRecent(traceState("fallback", n).entries);
+    const before: Header = Block(TINY).fromJson(traceState("fallback", n - 1).block).header;
+    const newest: RecentBlock = history[history.length - 1];
+    const beforeHash: Bytes = headerHash(TINY, before);
+    assert.deepEqual(newest.header_hash, beforeHash, `block ${n}`);
+    assert.deepEqual(newest.state_root, new Uint8Array(32)); // not known yet
+    const previous: RecentBlock = history[history.length - 2];
+    assert.deepEqual(previous.state_root, before.parent_state_root);
+    const kept: number = Math.min(n, RECENT_BLOCKS); // genesis counts too
+    assert.equal(history.length, kept);
+  }
+});
+```
+
+**Run**
+
+```sh
+npm test
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate           not run yet (126)
+stf/assurances           not run yet (22)
+stf/authorizations       not run yet (6)
+stf/disputes             not run yet (60)
+stf/history                8 of 8  ✔
+stf/preimages            not run yet (16)
+stf/reports              not run yet (92)
+stf/safrole              46 of 46  ✔
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+86 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939138847
+```
+
+> [!TIP] Milestone
+> **Every history vector.** All 8, tiny and full: the chain's short-term
+> memory, and the belt's peaks, exactly as the vectors keep them.
+
 <details>
 <summary>lasair: <code>recent_history_core</code>, in <code>conformance/stf_transitions.ml</code></summary>
 
@@ -369,7 +485,7 @@ the road yours doesn't take yet (the note above).
 ## What you have
 
 The chain's short-term memory: eight blocks, kept up to date, with the blank from last
-block filled in every time. That's what the chain remembers; [Part 10](../10-disputes/index.md) is how it
+block filled in every time, and every history vector passing whole. That's what the chain remembers; [Part 10](../10-disputes/index.md) is how it
 judges, when a work-report that validators vouched for turns out to be wrong.
 
 Next: [Part 10 · Disputes](../10-disputes/index.md)

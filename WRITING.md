@@ -28,8 +28,38 @@ same change onto the theme dashboard for its Part
 (`observability/dashboards/gray-tutorial-*.json`; the title names its Parts), in that
 Part's row, in lesson order. Test results and everything reported stay on the overview,
 `gray-tutorial.json`, where the run links land. A new Part joins a theme by widening that
-theme's title. `tools/dashboards.test.ts` checks that every panel a lesson names is on its
-Part's dashboard, and that all of them share one link bar and one pair of menus.
+theme's title. The scoreboard has a dashboard of its own, `gray-tutorial-vectors.json`
+(*8 · Official vectors*), which every Part fills. `tools/dashboards.test.ts` checks that
+every panel a lesson names is on its Part's dashboard, the overview or the scoreboard's,
+and that all of them share one link bar and one pair of menus.
+
+## The scoreboard
+
+`node bin/scoreboard.ts` (lesson 2.6) runs every official vector **whole** and counts what
+passes: a vector passes only if the client's answer is all of the vector's (the state after
+and the output, or the same refusal), never because one piece of it matches. A family of
+vectors (a folder: `codec`, `stf/safrole`, `traces/fuzzy`) gets on the board through
+`FAMILIES` in `test/families.ts`, with a check that throws, naming the first part that
+differs (`psi differs`, `statistics changed`), when the client's answer isn't the vector's.
+
+- **A milestone ends the lesson where a family crosses the line**: a section *The
+  scoreboard*, before lasair, that wires the family in and runs the board, its Output block
+  the whole real board; then a `> [!TIP] Milestone` note (the site titles the box
+  *Milestone*; `[!TIP]` is kept for these) saying what passes now. Major
+  milestones only: a family's first appearance and the lesson it's whole, not every step
+  between.
+- **Partial is honest.** A family wired before the client makes all of its state shows its
+  count and why the rest fail (12.5: the accepted reports wait for Part 18's statistics).
+  Never narrow a check, or skip a vector, to make a row green.
+- **One copy of each check.** A test that already checks a vector whole calls the family's
+  check instead of repeating it (6.1, 9.2, 13.1, 18.1); a helper both need goes in
+  `test/families.ts` or `test/vectors.ts`.
+- **`lessons/scoreboard.md`** lists every milestone with the count its board shows, and
+  what stays red, and why. `tools/lessons.test.ts` checks the list against every lesson
+  that runs the board, the counts against their Output blocks, and that a lesson that
+  changes `FAMILIES` runs it.
+- **What you have** says what passes whole on the board, and nothing more: a claim about
+  the official vectors is the board's number.
 
 ## Visual tutorial verification
 
@@ -72,11 +102,15 @@ readable size instead of blowing it up; a phone still shrinks it to fit.
 registered in its `index.ts` and placed in the lesson as `<BitPlaces />`. Its answers
 (the number, its hex, ℰ(x)) sit in a readout at the top that never moves or resizes, and
 a line says what its bits can hold (one byte: 0 to 255). What it shows
-is computed in a plain `.ts` module beside it, which `tools/widgets.test.ts` checks
+is computed in a plain `.ts` module beside it, which a `tools/widget*.test.ts` checks
 against values the lesson's own code is checked against, as diagrams are. The prose must
 stand without it: VS Code's preview shows nothing there, and print.html only its first
 state. *Why:* a reader stuck on a step can poke at it until it clicks (Aodh, on 127 being
-`01111111`).
+`01111111`). A widget works on a phone: 375 px wide with no sideways scroll, nothing
+behind a hover, buttons at least 32 px. Concept widgets teach a Gray Paper idea, not the
+code: a reader can learn Parts 2 to 19 on a phone with *Concepts only* on (the switch at
+the top of every lesson folds the code away, `theme/concepts.ts`), so a lesson's idea must
+come across in its prose, its diagrams and its widgets alone.
 
 ## Formulas
 
@@ -136,8 +170,9 @@ recommends.
 3. **Run**: the tests pass, the types check.
 4. **lasair**, folded in `<details>`: the same rule in lasair's OCaml, quoted from the
    source (say when comments are trimmed), with a sentence on reading it.
-5. **What you have**, the last section: what works now and which vectors pass, then one
-   sentence on why the next lesson comes next, then the link to it.
+5. **What you have**, the last section: what works now and which vectors pass (on the
+   scoreboard, where a milestone ran it), then one sentence on why the next lesson comes
+   next, then the link to it.
 
 **Foundations before complexity.** A beginner should never meet the hard parts first.
 Inside a lesson: plain English and a concrete example first, the Gray Paper's notation
@@ -186,6 +221,11 @@ teaching. What we take from it, each with its reason. "Checked" means a test enf
   matters, and say what changes from run to run (ids, times, durations). The first time a
   tool's output appears, walk through it line by line. *Why:* readers compare their screen
   with the page, and a description of output can't be compared.
+- **Every byte example is broken down.** Bytes a lesson shows (in prose, or a value its
+  test checks) get a small `text` block, one line per part: the part's bytes, then what
+  it is, its type and its width ("`01 00 00 00`  slot 1 as a u32: 4 bytes"), and the total
+  when it adds up ("4 + 8 = 12 bytes"). *Why:* a reader on a phone skips the TypeScript,
+  and `2a 00 00 00 07 00 00 00 00 00 00 00` with no breakdown is a wall (Aodh, on 2.5).
 - **Read the red together.** When a test fails on purpose, show the failure and point at
   the line to read: which test, expected, actual. *Why:* reading errors is a skill to teach,
   not to assume.

@@ -48,6 +48,14 @@ count is the *vote split*:
 bad and wonky, plus the offenders' keys ([next lesson](./02-culprits-and-faults.md)). Each verdict's report joins the
 set of its outcome. Sets in the state are kept sorted.
 
+Try it on tiny: six judges, and a verdict of five votes. It starts as the first test below
+does, all five saying valid, with judge 5 left out. Make the report bad, then wonky. Then
+try a split the table doesn't have, 3 valid out of 5: the chain refuses the whole block,
+as [lesson 10.4](./04-bad-verdicts.md) will make your client do. Full has 1,023 judges and 683 votes, so
+there you set the counts:
+
+<VerdictVotes />
+
 ## The tests
 
 **New file** `test/disputes.test.ts`

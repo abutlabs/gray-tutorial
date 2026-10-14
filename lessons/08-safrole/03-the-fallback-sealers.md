@@ -28,6 +28,8 @@ In words: for each slot number i, hash η′₂ with i, read the first four byte
 and take that validator of the *new* active set, wrapping round with `mod`. Two inputs,
 both fixed before the epoch begins: η′₂, randomness from two epochs back ([lesson 8.1](./01-stirring-the-entropy.md)),
 and κ′, the validators who'll be active ([lesson 8.2](./02-rotating-the-validators.md)).
+[Lesson 8.5](./05-one-step-of-safrole.md) has a tiny epoch you can drive: let its lottery
+close short, and watch this fallback seat the next epoch.
 
 ## The tests
 

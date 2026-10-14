@@ -130,6 +130,100 @@ Grafana's *Decode trace* panel, where you can search it.
 
 ![Decode trace panel](./images/07-decode-trace.png)
 
+## The scoreboard
+
+Every structure the codec vectors hold now has a codec: the work items and reports of
+[Part 3](../03-work-and-reports/index.md), each extrinsic part, the header and the block.
+Give the scoreboard all of them. The sized ones come as functions of the config, as
+`testCodecVector` takes them, and the size comes from the vector's folder:
+
+**Replace in** `test/families.ts`
+
+```ts
+import type { Config } from "../src/config.ts";
+import { RefineContext, WorkItem, WorkPackage, WorkDigest, WorkReport } from "../src/work.ts";
+import { TicketsExtrinsic, PreimagesExtrinsic, AssurancesExtrinsic, GuaranteesExtrinsic, DisputesExtrinsic, Header, Extrinsic, Block } from "../src/block.ts";
+
+/** The codecs for the codec vectors, by the vectors' names for the structures. A codec
+ * whose shape depends on the size comes as a function of the config. */
+const CODECS: Record<string, Codec<unknown> | ((config: Config) => Codec<unknown>)> = {
+  refine_context: RefineContext,
+  work_item: WorkItem,
+  work_package: WorkPackage,
+  work_result_0: WorkDigest,
+  work_result_1: WorkDigest,
+  work_report: WorkReport,
+  tickets_extrinsic: TicketsExtrinsic,
+  preimages_extrinsic: PreimagesExtrinsic,
+  assurances_extrinsic: AssurancesExtrinsic,
+  guarantees_extrinsic: GuaranteesExtrinsic,
+  disputes_extrinsic: DisputesExtrinsic,
+  header_0: Header,
+  header_1: Header,
+  extrinsic: Extrinsic,
+  block: Block,
+};
+
+/** A codec vector, such as "codec/tiny/work_item.json", by its round trip. */
+function checkCodec(name: string) {
+  const structure = name.split("/").at(-1)!.replace(".json", "");
+  const codec = CODECS[structure];
+  assert.ok(codec, `no codec for ${structure} yet`);
+  const sized = typeof codec === "function" ? codec(configOf(name)) : codec;
+  checkCodecVector(sized, name.replace(".json", ""));
+}
+```
+
+**Add to** `test/families.ts`
+
+```ts
+import { FULL, TINY } from "../src/config.ts";
+
+/** The size a vector is written for, from its folder: full or tiny. */
+const configOf = (name: string): Config => (name.includes("/full/") ? FULL : TINY);
+```
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                  not run yet (1)
+stf/accumulate           not run yet (126)
+stf/assurances           not run yet (22)
+stf/authorizations       not run yet (6)
+stf/disputes             not run yet (60)
+stf/history              not run yet (8)
+stf/preimages            not run yet (16)
+stf/reports              not run yet (92)
+stf/safrole              not run yet (46)
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                     not run yet (1)
+
+30 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791938953569
+```
+
+> [!TIP] Milestone
+> **Every codec vector.** All 30, tiny and full: every JAM structure the
+> official vectors encode, decoded and encoded back byte for byte.
+
 <details>
 <summary>lasair: <code>decode_block</code>, in <code>conformance/block_codec.ml</code></summary>
 
@@ -148,7 +242,7 @@ Yours sits on `record`, `seq` and friends: the same block, a lot less code to ge
 ## What you have
 
 [Part 4](./index.md), done: your client reads any JAM block, at either size, and can show you every
-byte of it. What it can't do yet is check one. A block names its parent by *hash*, and
+byte of it, and every one of the 30 codec vectors passes whole. What it can't do yet is check one. A block names its parent by *hash*, and
 promises its extrinsic by hash, and is sealed with signatures. [Part 5](../05-hashing-and-signatures/index.md) brings the
 cryptography.
 

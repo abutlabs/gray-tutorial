@@ -21,8 +21,12 @@ and records.
   `codec/full/`.
 - **Segment.** A 4,104-byte piece of data that a work-item exports, for later
   work-packages to import. *Example:* the `work_item` vector's item exports 4.
+- **Vector family.** One kind of test vector, in a folder of its own, all checked the same
+  way. *Example:* `codec`, and later `stf/safrole` and `traces/fallback`.
+- **Scoreboard.** Your client's tally of every official test vector, each one run whole.
+  *Example:* after this lesson, 4 of 1,428 pass.
 
-All four are in the [glossary](../glossary.md), next to *test vector*.
+All six are in the [glossary](../glossary.md), next to *test vector*.
 
 ## Look at one
 
@@ -91,7 +95,8 @@ import type { Bytes } from "../src/bytes.ts";
 import type { Codec } from "../src/codec/codec.ts";
 import { decode, encode } from "../src/codec/codec.ts";
 
-const VECTORS = fileURLToPath(new URL("../../vectors/", import.meta.url));
+/** The official test vectors' folder: vectors/, at the repo root. */
+export const VECTORS = fileURLToPath(new URL("../../vectors/", import.meta.url));
 
 /** A vector file's JSON, by its name in vectors/, such as "codec/tiny/work_item.json". */
 export function vectorJson(name: string): unknown {
@@ -117,7 +122,8 @@ export function checkCodecVector<T>(codec: Codec<T>, name: string): void {
 `new URL("../../vectors/", import.meta.url)` finds the folder relative to *this file*,
 so the tests work from wherever you run them. `readFileSync` hands back a Node `Buffer`;
 `new Uint8Array(...)` turns it into a plain `Uint8Array`, because `deepEqual` insists the
-two things it compares are the same kind of thing.
+two things it compares are the same kind of thing. `VECTORS` is exported for the
+scoreboard at the end of this lesson, which walks the whole folder.
 
 `checkCodecVector` is the exam itself: the bytes must decode to the JSON's value, and
 that value must encode back to the very same bytes.
@@ -262,6 +268,193 @@ three fields together are still 18 bytes, so the payload and everything after it
 line up and decode correctly. Move `export_count` below `payload` instead, and everything
 from `payload` on goes wrong. Put `export_count` back before going on.
 
+## The scoreboard
+
+Four vectors pass. Out of how many? Every JAM team keeps the same tally, so keep one too:
+a program that runs every official vector and counts.
+
+The vectors come in families, a folder each. `codec/` holds structures like today's.
+`stf/` holds the rules that change the chain's state, a family per rule (`stf/safrole`,
+`stf/disputes`...). `traces/` holds whole runs of real blocks, and a few smaller families
+sit beside them. A family's vectors are all checked the same way; for `codec`, it's the
+round trip you just wrote.
+
+On the scoreboard a vector is run **whole**: your client's answer must be all of the
+vector's answer, not part of it. Many tests in this tutorial check one piece of a vector,
+which is the right way to build. The scoreboard is stricter: a vector counts only once
+nothing in it differs.
+
+**New file** `test/families.ts`
+
+```ts
+// The official test vectors, family by family, each run whole: your client's answer to a
+// vector must be all of the vector's answer. bin/scoreboard.ts runs them and counts.
+
+import assert from "node:assert/strict";
+import type { Codec } from "../src/codec/codec.ts";
+import { RefineContext, WorkItem } from "../src/work.ts";
+import { checkCodecVector } from "./vectors.ts";
+
+/** A family of official vectors: the folders of vectors/ it fills, and a check that runs
+ * one vector whole and throws if your client's answer differs from it anywhere. */
+export type Family = { folders: string[]; check: (name: string) => void };
+
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+];
+
+/** The codecs for the codec vectors so far, by the vectors' names for the structures. */
+const CODECS: Record<string, Codec<unknown>> = {
+  refine_context: RefineContext,
+  work_item: WorkItem,
+};
+
+/** A codec vector, such as "codec/tiny/work_item.json", by its round trip. */
+function checkCodec(name: string) {
+  const structure = name.split("/").at(-1)!.replace(".json", "");
+  const codec = CODECS[structure];
+  assert.ok(codec, `no codec for ${structure} yet`);
+  checkCodecVector(codec, name.replace(".json", ""));
+}
+```
+
+`FAMILIES` is the list of families your client can run, one so far. `CODECS` picks the
+codec for each codec vector by its file's name; a structure you haven't written yet fails
+with a reason, `no codec for block yet`, instead of a crash.
+
+**New file** `bin/scoreboard.ts`
+
+```ts
+// The scoreboard: every official test vector, run whole by the family your client has for
+// it, and counted. A vector passes only if your client's answer is all of the vector's.
+// Usage: node bin/scoreboard.ts
+
+import { readdirSync } from "node:fs";
+import { Run } from "../src/obs.ts";
+import { FAMILIES } from "../test/families.ts";
+import { VECTORS } from "../test/vectors.ts";
+
+/** Every folder of vectors/ that holds vectors, with their names ("codec/tiny/block.json").
+ * A trace's genesis.json is the state it starts from, not a step, so not a vector. */
+function folders(dir = ""): { folder: string; names: string[] }[] {
+  const entries = readdirSync(VECTORS + dir, { withFileTypes: true });
+  entries.sort((a, b) => a.name.localeCompare(b.name));
+  const names = entries
+    .filter((e) => e.isFile() && e.name.endsWith(".json") && e.name !== "genesis.json")
+    .map((e) => dir + e.name);
+  const below = entries.filter((e) => e.isDirectory()).flatMap((e) => folders(`${dir}${e.name}/`));
+  return names.length > 0 ? [{ folder: dir.slice(0, -1), names }, ...below] : below;
+}
+
+/** The row a folder counts on: tiny and full share one ("stf/safrole"). */
+const rowOf = (folder: string) => folder.replace(/\/(tiny|full)$/, "");
+
+/** A row of the scoreboard: how many passed, of how many, and why the others failed. */
+type Row = { passed: number; total: number; run: boolean; failures: string[] };
+
+const rows = new Map<string, Row>();
+const run = new Run("scoreboard");
+for (const { folder, names } of folders()) {
+  const row = rows.get(rowOf(folder)) ?? { passed: 0, total: 0, run: false, failures: [] };
+  rows.set(rowOf(folder), row);
+  row.total += names.length;
+  const family = FAMILIES.find((f) => f.folders.includes(folder));
+  if (!family) continue; // not run yet
+  row.run = true;
+  for (const name of names) {
+    try {
+      family.check(name);
+      row.passed++;
+    } catch (e) {
+      const why = (e as Error).message.split("\n")[0];
+      row.failures.push(`${name}: ${why}`);
+      run.event("failed", { vector: name, why });
+    }
+  }
+}
+
+const n = (x: number) => x.toLocaleString("en-US"); // 1,428
+console.log("The official test vectors, each run whole by your client:\n");
+for (const [name, row] of rows) {
+  const count = row.run ? `${n(row.passed)} of ${n(row.total)}`.padStart(10) : "";
+  const mark = !row.run ? `not run yet (${n(row.total)})` : row.passed === row.total ? "✔" : "";
+  console.log(`${name.padEnd(23)}${count}  ${mark}`.trimEnd());
+  for (const failure of row.failures.slice(0, 3)) console.log(`    ✘ ${failure}`);
+  if (row.failures.length > 3) console.log(`    … and ${row.failures.length - 3} more`);
+  run.event("family", { family: name, passed: row.passed, total: row.total, run: row.run });
+}
+const passed = [...rows.values()].reduce((sum, row) => sum + row.passed, 0);
+const total = [...rows.values()].reduce((sum, row) => sum + row.total, 0);
+console.log(`\n${n(passed)} of ${n(total)} vectors pass.`);
+run.number("vectors_passed", passed);
+run.number("vectors_total", total);
+const link = await run.report();
+if (link) console.log(`reported to Grafana: ${link}`);
+```
+
+The scoreboard walks every folder of `vectors/`, gives each vector to the family that
+fills its folder, and counts. A folder no family fills is *not run yet*. A check that
+throws is a vector that failed, and the first line of its message says why; the board
+shows three per family. `tiny` and `full` folders share a row.
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                     4 of 30
+    ✘ codec/full/assurances_extrinsic.json: no codec for assurances_extrinsic yet
+    ✘ codec/full/block.json: no codec for block yet
+    ✘ codec/full/disputes_extrinsic.json: no codec for disputes_extrinsic yet
+    … and 23 more
+erasure                  not run yet (12)
+shuffle                  not run yet (1)
+stf/accumulate           not run yet (126)
+stf/assurances           not run yet (22)
+stf/authorizations       not run yet (6)
+stf/disputes             not run yet (60)
+stf/history              not run yet (8)
+stf/preimages            not run yet (16)
+stf/reports              not run yet (92)
+stf/safrole              not run yet (46)
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                     not run yet (1)
+
+4 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791938884683
+```
+
+Four of 1,428. The other codec vectors are structures you haven't written yet, and the
+board says which. Every other row is a part of this tutorial still to come. Wherever a
+lesson brings a family across the line, it ends with the scoreboard, and the [scoreboard
+page](../scoreboard.md) lists every one of those milestones.
+
+> [!TIP] Milestone
+> **The first vectors on the board.** 4 of 1,428: `refine_context` and
+> `work_item`, at both sizes, decoded and encoded back byte for byte.
+
+Grafana keeps the board too, on a dashboard of its own, *8 · Official vectors*, in the bar
+at the top of every dashboard. Its *Each family (last run)* panel is the board you just
+printed; the rest of the dashboard keeps every run, so you can watch the count climb
+lesson by lesson, and lists every vector that failed, with why.
+
+![The Each family panel: codec with 4 of 30 passed, every other family not run yet, with how many vectors each holds](./images/06-each-family-last-run.png)
+
 <details>
 <summary>lasair: <code>encode_refinement_context</code></summary>
 
@@ -287,9 +480,9 @@ Gray Paper 0.8.0, and lasair's type marks them so.
 
 ## What you have
 
-A codec built from a dozen small pieces, and the first two JAM structures agreeing with
-the official vectors at both parameter sets. When a decode goes wrong, though, all a test
-can say is that two values differ. [Lesson 2.7](./07-watch-a-decode.md) makes the codec
-say which bytes it read for which field.
+A codec built from a dozen small pieces, the first two JAM structures agreeing with the
+official vectors at both parameter sets, and a scoreboard that counts them: 4 of 1,428.
+When a decode goes wrong, though, all a test can say is that two values differ. [Lesson
+2.7](./07-watch-a-decode.md) makes the codec say which bytes it read for which field.
 
 Next: [2.7 Watch a decode](./07-watch-a-decode.md)

@@ -286,6 +286,108 @@ vectors. The *Assurance checks* panel keeps the list.
 
 ![Assurance checks panel](./images/03-assurance-checks.png)
 
+## The scoreboard
+
+An assurances vector runs whole in three parts: the block refused for the vector's
+reason, or accepted; then the output, the reports that just became available, 𝐑; and
+ρ‡, the cores without them and without the ones that timed out. The validator sets are
+only read.
+
+**Add to** `test/families.ts`
+
+```ts
+import { Assurance } from "../src/block.ts";
+import { WorkReport } from "../src/work.ts";
+import { assuranceError, availableCores, clearCores, nowAvailable } from "../src/assurances.ts";
+
+type AssurancesInput = { assurances: unknown[]; slot: number; parent: string };
+type AssurancesState = {
+  avail_assignments: unknown;
+  curr_validators: unknown[];
+  post_validators: unknown[];
+};
+
+/** An assurances vector: 𝐑, the reports made available, and ρ‡, or the rule broken. */
+function checkAssurances(name: string) {
+  const vector = vectorJson(name) as StfVector<AssurancesInput, AssurancesState>;
+  const config = configOf(name);
+  const { input, pre_state } = vector;
+  const cores = PendingReports(config).fromJson(pre_state.avail_assignments);
+  const assurances = input.assurances.map((a) => Assurance(config).fromJson(a));
+  const active = keys(pre_state.curr_validators);
+  const ed25519 = active.map((k) => k.ed25519);
+  const error = assuranceError(assurances, fromHex(input.parent), ed25519, cores);
+  sameError(error, vector);
+  if (error) return unchanged(vector, []);
+  const ok = vector.output?.ok as { reported: unknown[] };
+  const reported = ok.reported.map((r) => WorkReport.fromJson(r));
+  assert.deepEqual(nowAvailable(cores, assurances, active.length), reported, "reported differs");
+  const available = availableCores(cores, assurances, active.length);
+  const resized = active.length !== pre_state.post_validators.length;
+  const after = clearCores(cores, available, input.slot, resized);
+  const expected = PendingReports(config).fromJson(vector.post_state.avail_assignments);
+  assert.deepEqual(after, expected, "avail_assignments differs");
+  unchanged(vector, ["avail_assignments"]);
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+  { folders: ["stf/history/tiny", "stf/history/full"], check: checkHistory },
+  { folders: ["stf/disputes/tiny", "stf/disputes/full"], check: checkDisputes },
+  { folders: ["stf/assurances/tiny", "stf/assurances/full"], check: checkAssurances },
+];
+```
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate           not run yet (126)
+stf/assurances           22 of 22  ✔
+stf/authorizations       not run yet (6)
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages            not run yet (16)
+stf/reports              not run yet (92)
+stf/safrole              46 of 46  ✔
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+168 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939213633
+```
+
+> [!TIP] Milestone
+> **Every assurances vector.** All 22, tiny and full, whole: the reports that
+> became available, the cores freed, and every bad assurance refused for the vector's
+> reason.
+
 <details>
 <summary>lasair: the same rules, in <code>conformance/assurances_stf.ml</code></summary>
 
@@ -316,7 +418,8 @@ waits for everything cheaper.
 ## What you have
 
 Assurances that are checked, not trusted: five rules, and every official assurances
-vector, tiny and full, accepted or refused just as it should be. [Part 11](./index.md) is done. A
+vector, tiny and full, accepted or refused just as it should be and passing whole. [Part
+11](./index.md) is done. A
 report reaches a core in the first place because guarantors vouch for it, and
 [Part 12](../12-guarantees/index.md) checks their guarantees.
 

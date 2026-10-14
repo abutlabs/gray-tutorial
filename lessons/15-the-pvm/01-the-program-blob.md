@@ -109,8 +109,18 @@ test("its PVM blob: 39,849 instructions, and all 1,601 jumps land on one", () =>
 });
 ```
 
-The first test builds a blob by hand, eight bytes you can read: one jump to byte 2,
-three bytes of code, and a bitmask of `0000 0101` that marks bytes 0 and 2 as
+The first test builds a blob by hand, eight bytes you can read:
+
+```text
+01         |j|: one entry in the jump table (a compact natural)
+01         z: each entry is 1 byte
+03         |c|: 3 bytes of code
+02         j: the one jump target, byte 2
+00 01 02   c: the code
+05         k: 0000 0101, bits 0 and 2 set: bytes 0 and 2 start an instruction
+```
+
+One jump to byte 2, three bytes of code, and a bitmask that marks bytes 0 and 2 as
 instructions. The others unpack the code of the trace's service 0, the 159,322-byte
 preimage from [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md), and check that every layer fits *exactly*: no bytes left over
 at the end of the preimage, every jump landing on an instruction.

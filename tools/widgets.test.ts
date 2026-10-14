@@ -9,12 +9,8 @@ import { join } from "node:path";
 import { bitAt, bitfieldOf, bytesFor, isAvailable, needed } from "../.vitepress/theme/bitfield.ts";
 import { bitsOf, encodeFixed, HEX_DIGITS, leftOver, nibbles, toHex } from "../.vitepress/theme/bytes.ts";
 import { compact, markerOf, MAX, strip } from "../.vitepress/theme/compact.ts";
-import { LESSONS, readLessons, ROOT } from "./lessons.ts";
+import { readLessons, ROOT, lessonText, lessonCode } from "./lessons.ts";
 
-const lessonText = (file: string) => readFileSync(join(LESSONS, file), "utf8");
-/** The code of lesson id's file snippets, all together. */
-const lessonCode = (id: string) =>
-  readLessons().find((l) => l.id === id)!.steps.map((s) => (s.kind === "file" ? s.code : "")).join("\n");
 
 test("the compact natural widget encodes lesson 2.2's test values as the lesson's code does", () => {
   const lesson = readLessons().find((l) => l.id === "2.2")!;

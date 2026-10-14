@@ -12,8 +12,11 @@ refusing exactly the three it should. That's a block importer: JAM's first miles
 - **Fuzzy trace.** A block-import trace made with a service that does random work, from the
   conformance fuzzer's tool kit, with some blocks meant to be refused. *Example:* `fuzzy`
   blocks 37 to 39, each refused with `bad_code_hash`.
+- **Worker thread.** A second program running beside the first in the same process, with
+  memory of its own, that talks to it by messages. *Example:* the scoreboard runs one per
+  processor, each checking vectors.
 
-It's in the [glossary](../glossary.md).
+Both are in the [glossary](../glossary.md).
 
 ## The tests
 
@@ -157,6 +160,223 @@ same root three times. The *Block import* panel lists every block, and ends with
 
 ![Block import panel](./images/06-block-import.png)
 
+## The scoreboard
+
+All eight trace families go on the board: `fuzzy` and `fuzzy_light` hold 200 steps each,
+so that's 1,000 blocks, every one imported into the state before it.
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+  { folders: ["stf/history/tiny", "stf/history/full"], check: checkHistory },
+  { folders: ["stf/disputes/tiny", "stf/disputes/full"], check: checkDisputes },
+  { folders: ["stf/assurances/tiny", "stf/assurances/full"], check: checkAssurances },
+  { folders: ["stf/reports/tiny", "stf/reports/full"], check: checkReports },
+  { folders: ["stf/authorizations/tiny", "stf/authorizations/full"], check: checkAuthorizations },
+  { folders: ["stf/preimages/tiny", "stf/preimages/full"], check: checkPreimages },
+  { folders: ["stf/accumulate/tiny", "stf/accumulate/full"], check: checkAccumulate },
+  { folders: ["stf/statistics/tiny", "stf/statistics/full"], check: checkStatistics },
+  {
+    folders: [
+      "traces/fallback", "traces/safrole", "traces/storage", "traces/storage_light",
+      "traces/preimages", "traces/preimages_light", "traces/fuzzy", "traces/fuzzy_light",
+    ],
+    check: checkTrace,
+  },
+];
+```
+
+A thousand blocks with work in them is a lot to run one after another: the board would
+take about four and a half minutes. Your computer has more than one processor, and
+`availableParallelism()` says how many. Give each one a worker thread: a second program
+running beside the first, with memory of its own, that talks to it by messages.
+Each worker takes a vector, runs its family's check, says how it went, and takes the next:
+
+**New file** `test/family-worker.ts`
+
+```ts
+// A worker thread of bin/scoreboard.ts: it runs each vector it's handed with its family's
+// check, and says whether it passed, and if not, why.
+
+import { parentPort } from "node:worker_threads";
+import { FAMILIES } from "./families.ts";
+
+parentPort!.on("message", ({ folder, name }: { folder: string; name: string }) => {
+  const family = FAMILIES.find((f) => f.folders.includes(folder))!;
+  try {
+    family.check(name);
+    parentPort!.postMessage({ name, why: null });
+  } catch (e) {
+    parentPort!.postMessage({ name, why: (e as Error).message.split("\n")[0] });
+  }
+});
+```
+
+The scoreboard hands the vectors out and counts what comes back. The board it prints is
+the same as before; threads finish in any order, so the results are sorted first:
+
+**Rewrite** `bin/scoreboard.ts`
+
+```ts
+// The scoreboard: every official test vector, run whole by the family your client has for
+// it, and counted. A vector passes only if your client's answer is all of the vector's.
+// The vectors run side by side, a worker thread per processor (test/family-worker.ts).
+// Usage: node bin/scoreboard.ts
+
+import { readdirSync } from "node:fs";
+import { availableParallelism } from "node:os";
+import { Worker } from "node:worker_threads";
+import { Run } from "../src/obs.ts";
+import { FAMILIES } from "../test/families.ts";
+import { VECTORS } from "../test/vectors.ts";
+
+/** Every folder of vectors/ that holds vectors, with their names ("codec/tiny/block.json").
+ * A trace's genesis.json is the state it starts from, not a step, so not a vector. */
+function folders(dir = ""): { folder: string; names: string[] }[] {
+  const entries = readdirSync(VECTORS + dir, { withFileTypes: true });
+  entries.sort((a, b) => a.name.localeCompare(b.name));
+  const names = entries
+    .filter((e) => e.isFile() && e.name.endsWith(".json") && e.name !== "genesis.json")
+    .map((e) => dir + e.name);
+  const below = entries.filter((e) => e.isDirectory()).flatMap((e) => folders(`${dir}${e.name}/`));
+  return names.length > 0 ? [{ folder: dir.slice(0, -1), names }, ...below] : below;
+}
+
+/** The row a folder counts on: tiny and full share one ("stf/safrole"). */
+const rowOf = (folder: string) => folder.replace(/\/(tiny|full)$/, "");
+
+/** A row of the scoreboard: how many passed, of how many, and why the others failed. */
+type Row = { passed: number; total: number; run: boolean; failures: string[] };
+
+/** A vector to run, and what a worker says of it: null if it passed, or why it failed. */
+type Job = { folder: string; name: string };
+type Result = { folder: string; name: string; why: string | null };
+
+/** Runs every job on `threads` worker threads, each taking the next job when it's done. */
+function runAll(jobs: Job[], threads: number): Promise<Result[]> {
+  const queue = [...jobs];
+  const results: Result[] = [];
+  const thread = () => new Promise<void>((resolve, reject) => {
+    const worker = new Worker(new URL("../test/family-worker.ts", import.meta.url));
+    let job: Job | undefined;
+    const next = () => {
+      job = queue.shift();
+      if (job) worker.postMessage(job);
+      else worker.terminate().then(() => resolve());
+    };
+    worker.on("message", ({ why }: { why: string | null }) => {
+      results.push({ ...job!, why });
+      next();
+    });
+    worker.on("error", reject);
+    next();
+  });
+  return Promise.all(Array.from({ length: threads }, thread)).then(() => results);
+}
+
+const rows = new Map<string, Row>();
+const jobs: Job[] = [];
+for (const { folder, names } of folders()) {
+  const row = rows.get(rowOf(folder)) ?? { passed: 0, total: 0, run: false, failures: [] };
+  rows.set(rowOf(folder), row);
+  row.total += names.length;
+  if (!FAMILIES.some((f) => f.folders.includes(folder))) continue; // not run yet
+  row.run = true;
+  for (const name of names) jobs.push({ folder, name });
+}
+
+const run = new Run("scoreboard");
+const results = await runAll(jobs, availableParallelism());
+results.sort((a, b) => a.name.localeCompare(b.name)); // threads finish in any order
+for (const { folder, name, why } of results) {
+  const row = rows.get(rowOf(folder))!;
+  if (why === null) {
+    row.passed++;
+  } else {
+    row.failures.push(`${name}: ${why}`);
+    run.event("failed", { vector: name, why });
+  }
+}
+
+const n = (x: number) => x.toLocaleString("en-US"); // 1,428
+console.log("The official test vectors, each run whole by your client:\n");
+for (const [name, row] of rows) {
+  const count = row.run ? `${n(row.passed)} of ${n(row.total)}`.padStart(10) : "";
+  const mark = !row.run ? `not run yet (${n(row.total)})` : row.passed === row.total ? "✔" : "";
+  console.log(`${name.padEnd(23)}${count}  ${mark}`.trimEnd());
+  for (const failure of row.failures.slice(0, 3)) console.log(`    ✘ ${failure}`);
+  if (row.failures.length > 3) console.log(`    … and ${row.failures.length - 3} more`);
+  run.event("family", { family: name, passed: row.passed, total: row.total, run: row.run });
+}
+const passed = [...rows.values()].reduce((sum, row) => sum + row.passed, 0);
+const total = [...rows.values()].reduce((sum, row) => sum + row.total, 0);
+console.log(`\n${n(passed)} of ${n(total)} vectors pass.`);
+run.number("vectors_passed", passed);
+run.number("vectors_total", total);
+const link = await run.report();
+if (link) console.log(`reported to Grafana: ${link}`);
+```
+
+`runAll` starts one worker per processor and hands each a vector. When a worker answers,
+`next` gives it the next vector, until there are none left and the worker is stopped.
+Everything else, the folders, the rows and the board, is as it was.
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate         126 of 126  ✔
+stf/assurances           22 of 22  ✔
+stf/authorizations         6 of 6  ✔
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages             6 of 16
+    ✘ stf/preimages/full/preimage_not_needed-1.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimage_not_needed-2.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimages_order_check-1.json: accepted, not preimages_not_sorted_unique
+    … and 7 more
+stf/reports              92 of 92  ✔
+stf/safrole              46 of 46  ✔
+stf/statistics             8 of 8  ✔
+traces/fallback        100 of 100  ✔
+traces/fuzzy           200 of 200  ✔
+traces/fuzzy_light     200 of 200  ✔
+traces/preimages       100 of 100  ✔
+traces/preimages_light 100 of 100  ✔
+traces/safrole         100 of 100  ✔
+traces/storage         100 of 100  ✔
+traces/storage_light   100 of 100  ✔
+trie                       1 of 1  ✔
+
+1,406 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791940142186
+```
+
+Under a minute on a laptop with ten processors, and every trace family whole, the seven
+bad blocks in `fuzzy` and `fuzzy_light` refused (`node bin/import.ts` stops at block 100,
+so it never meets `fuzzy_light`'s four, from block 152 on).
+
+> [!TIP] Milestone
+> **Every block-import trace.** All 1,000 steps of the eight traces, each
+> imported into the state before it and ending at the trace's state root, and the seven
+> bad blocks among them refused: a block importer, on the official vectors.
+
 <details>
 <summary>lasair: the out-of-gas rule, in <code>lib/pvm_host.ml</code></summary>
 
@@ -178,9 +398,13 @@ Paper 0.8.0 says otherwise, and the vectors follow the paper's next version.
 
 A JAM block importer. All eight official block-import traces, 800 blocks, each imported
 into the state your client made from the one before, every state root right; the bad
-blocks refused, the state left as it was. Every state-transition test vector passes too,
-safrole's proofs and ring roots included. That's what JAM's first milestone, M1, asks of a
-client: the conformance tests, and importing blocks. One thing is left: the official
+blocks refused, the state left as it was. On the scoreboard, 1,406 of the 1,428 official
+vectors pass whole, safrole's proofs and ring roots included. The ten preimages refusals
+are the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md)'s
+to add; the other twelve are erasure coding, which validators use to share a
+work-package's data and a block importer never needs. JAM's first milestone, M1, asks a
+client for the conformance tests and for importing blocks: the second is done, and the
+first but for those ten. One thing is left: the official
 fuzzer doesn't run your tests, it talks to your client over a socket. [Part
 20](../20-facing-the-fuzzer/index.md) teaches it to listen.
 

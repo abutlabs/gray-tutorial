@@ -114,6 +114,18 @@
    "asDropdown": false,
    "targetBlank": false,
    "tags": []
+  },
+  {
+   "type": "link",
+   "title": "8 · Official vectors",
+   "url": "/d/gray-tutorial-vectors",
+   "tooltip": "8 · Official vectors (the scoreboard)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
   }
  ],
  "templating": {
@@ -177,7 +189,7 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "Every test run and everything your client reported are here. The rest is one dashboard per theme, in the bar above: when a lesson's *Watch it* names a panel, it's on the dashboard for that lesson's Part. The bar keeps your client, run and time as you switch.\n\n| Dashboard | Parts |\n| --- | --- |\n| 1 · Basics | Part 0 · Start, Part 1 · Bytes and numbers, Part 2 · The codec |\n| 2 · Blocks and state | Part 3 · Work and reports, Part 4 · Blocks, Part 5 · Hashing and signatures, Part 6 · State and Merklization |\n| 3 · Consensus | Part 7 · Time and shuffling, Part 8 · Safrole, Part 9 · Recent history |\n| 4 · Checks | Part 10 · Disputes, Part 11 · Assurances, Part 12 · Guarantees |\n| 5 · Services | Part 13 · Authorization, Part 14 · Services and preimages |\n| 6 · The PVM | Part 15 · The PVM |\n| 7 · Accumulation and import | Part 16 · Host calls, Part 17 · Accumulation, Part 18 · Statistics, Part 19 · Block import |"
+    "content": "Every test run and everything your client reported are here. The rest is one dashboard per theme, in the bar above: when a lesson's *Watch it* names a panel, it's on the dashboard for that lesson's Part. The bar keeps your client, run and time as you switch.\n\n| Dashboard | Parts |\n| --- | --- |\n| 1 · Basics | Part 0 · Start, Part 1 · Bytes and numbers, Part 2 · The codec |\n| 2 · Blocks and state | Part 3 · Work and reports, Part 4 · Blocks, Part 5 · Hashing and signatures, Part 6 · State and Merklization |\n| 3 · Consensus | Part 7 · Time and shuffling, Part 8 · Safrole, Part 9 · Recent history |\n| 4 · Checks | Part 10 · Disputes, Part 11 · Assurances, Part 12 · Guarantees |\n| 5 · Services | Part 13 · Authorization, Part 14 · Services and preimages |\n| 6 · The PVM | Part 15 · The PVM |\n| 7 · Accumulation and import | Part 16 · Host calls, Part 17 · Accumulation, Part 18 · Statistics, Part 19 · Block import, Part 20 · Facing the fuzzer |\n| 8 · Official vectors | the scoreboard: every official test vector, run whole, from Part 2 on |"
    }
   },
   {
@@ -317,7 +329,54 @@
    "gridPos": {
     "x": 12,
     "y": 9,
-    "w": 12,
+    "w": 6,
+    "h": 4
+   }
+  },
+  {
+   "id": 6,
+   "type": "stat",
+   "title": "Vectors passing (last run)",
+   "description": "How many official test vectors passed whole in the latest node bin/scoreboard.ts; the 8 · Official vectors dashboard has the whole board.",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prometheus"
+   },
+   "targets": [
+    {
+     "expr": "gray_tutorial_vectors_passed{client=\"$client\"}",
+     "refId": "A",
+     "instant": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "decimals": 0,
+     "noValue": "nothing yet",
+     "color": {
+      "mode": "fixed",
+      "fixedColor": "green"
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "graphMode": "none",
+    "colorMode": "value",
+    "textMode": "value",
+    "justifyMode": "center",
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "fields": "",
+     "values": false
+    }
+   },
+   "gridPos": {
+    "x": 18,
+    "y": 9,
+    "w": 6,
     "h": 4
    }
   },

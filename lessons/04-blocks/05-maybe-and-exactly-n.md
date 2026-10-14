@@ -54,6 +54,14 @@ test("a fixed-length sequence has no length in front", () => {
 });
 ```
 
+The tests' bytes:
+
+```text
+00                   nothing (null): the tag 0, and that's all
+01 07 00 00 00       7: the tag 1, then 7 as a u32, 4 bytes
+01 00 02 00 03 00    [1, 2, 3] as exactly three u16s: 6 bytes, no length in front
+```
+
 Compare `seqN(u16, 3)` with [lesson 2.5](../02-codec/05-sequences-and-records.md)'s `seq(u16)`: the same three numbers, minus the
 `0x03` in front.
 

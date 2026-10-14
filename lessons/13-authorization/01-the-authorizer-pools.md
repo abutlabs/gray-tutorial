@@ -355,6 +355,160 @@ panel shows each change.
 
 ![Authorizer pools panel](./images/01-authorizer-pools.png)
 
+## The scoreboard
+
+The third test above runs every authorizations vector whole already: α′ is all they
+change, and they say nothing back. It becomes the `stf/authorizations` family, and the
+test calls it:
+
+**Add to** `test/families.ts`
+
+```ts
+import { AuthPools, AuthQueues, nextPools, UsedAuthorizer } from "../src/authorization.ts";
+
+type AuthorizationsInput = { slot: number; auths: unknown[] };
+type AuthorizationsState = { auth_pools: unknown; auth_queues: unknown };
+
+/** An authorizations vector: α′, every core's pool after the block. It says nothing back. */
+export function checkAuthorizations(name: string) {
+  const vector = vectorJson(name) as StfVector<AuthorizationsInput, AuthorizationsState>;
+  const config = configOf(name);
+  const { input, pre_state } = vector;
+  const pools = AuthPools(config).fromJson(pre_state.auth_pools);
+  const queues = AuthQueues(config).fromJson(pre_state.auth_queues);
+  const used = input.auths.map((a) => UsedAuthorizer.fromJson(a));
+  const after = nextPools(pools, queues, used, input.slot);
+  const expected = AuthPools(config).fromJson(vector.post_state.auth_pools);
+  assert.deepEqual(after, expected, "auth_pools differs");
+  assert.equal(vector.output, null, "output differs");
+  unchanged(vector, ["auth_pools"]);
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+  { folders: ["stf/history/tiny", "stf/history/full"], check: checkHistory },
+  { folders: ["stf/disputes/tiny", "stf/disputes/full"], check: checkDisputes },
+  { folders: ["stf/assurances/tiny", "stf/assurances/full"], check: checkAssurances },
+  { folders: ["stf/reports/tiny", "stf/reports/full"], check: checkReports },
+  { folders: ["stf/authorizations/tiny", "stf/authorizations/full"], check: checkAuthorizations },
+];
+```
+
+**Rewrite** `test/authorization.test.ts`
+
+```ts
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { nextPools } from "../src/authorization.ts";
+import { traceState, vectorFiles } from "./vectors.ts";
+import { Block } from "../src/block.ts";
+import { usedAuthorizers } from "../src/authorization.ts";
+import { readAuthPools, readAuthQueues } from "../src/state.ts";
+import { checkAuthorizations } from "./families.ts";
+import { TINY } from "../src/config.ts";
+import type { UsedAuthorizer } from "../src/authorization.ts";
+import type { Bytes } from "../src/bytes.ts";
+
+/** An authorizer hash made of one repeated byte, so the test reads like letters. */
+const auth = (byte: number) => new Uint8Array(32).fill(byte);
+const [A, B, C] = [auth(0xaa), auth(0xbb), auth(0xcc)];
+
+test("the used authorizer leaves, the queue's next one joins", () => {
+  const queue: Bytes[] = Array.from({ length: 80 }, (_, i) => (i === 3 ? C : A)); // C waits at 3
+  const afterUse: Bytes[][] = nextPools([[A, B]], [queue], [{ core: 0, auth_hash: B }], 3);
+  assert.deepEqual(afterUse, [[A, C]]);
+  const nextRound: Bytes[][] = nextPools([[A, B]], [queue], [], 83); // 83 mod 80 = 3
+  assert.deepEqual(nextRound, [[A, B, C]]);
+});
+
+test("a full pool keeps its newest eight", () => {
+  const full: Bytes[] = [A, A, A, A, A, A, A, B]; // eight already
+  const queue: Bytes[] = Array.from({ length: 80 }, () => C);
+  const after: Bytes[][] = nextPools([full], [queue], [], 0);
+  assert.deepEqual(after, [[A, A, A, A, A, A, B, C]]);
+});
+
+test("α′ on the authorizations vectors", () => {
+  const names: string[] = [
+    ...vectorFiles("stf/authorizations/tiny"),
+    ...vectorFiles("stf/authorizations/full"),
+  ];
+  for (const name of names) checkAuthorizations(name);
+  assert.equal(names.length, 6);
+});
+
+test("α′ through 99 real blocks, with the authorizers their own guarantees used", () => {
+  let used = 0;
+  for (let n = 1; n < 100; n++) {
+    const before = traceState("preimages", n);
+    const after = traceState("preimages", n + 1); // the state after block n
+    const block: Block = Block(TINY).fromJson(before.block);
+    const auths: UsedAuthorizer[] = usedAuthorizers(block.extrinsic.guarantees);
+    const pools: Bytes[][] = readAuthPools(TINY, before.entries);
+    const queues: Bytes[][] = readAuthQueues(TINY, after.entries); // ϕ′: after the block
+    const next: Bytes[][] = nextPools(pools, queues, auths, block.header.slot);
+    const expected: Bytes[][] = readAuthPools(TINY, after.entries);
+    assert.deepEqual(next, expected, `block ${n}`);
+    used += auths.length;
+  }
+  assert.equal(used, 85);
+});
+```
+
+**Run**
+
+```sh
+npm test
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate           not run yet (126)
+stf/assurances           22 of 22  ✔
+stf/authorizations         6 of 6  ✔
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages            not run yet (16)
+stf/reports              62 of 92
+    ✘ stf/reports/full/big_work_report_output-1.json: cores_statistics changed
+    ✘ stf/reports/full/different_core_same_guarantors-1.json: cores_statistics changed
+    ✘ stf/reports/full/high_work_report_gas-1.json: cores_statistics changed
+    … and 27 more
+stf/safrole              46 of 46  ✔
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+236 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939335722
+```
+
+> [!TIP] Milestone
+> **Every authorizations vector.** All 6, tiny and full: every core's pool of
+> authorizers, block by block, as the vectors keep it.
+
 <details>
 <summary>lasair: <code>next_pool</code>, in <code>conformance/authorizations_stf.ml</code></summary>
 
@@ -379,7 +533,7 @@ and that comment didn't. Comments go stale; tests don't.
 ## What you have
 
 [Part 13](./index.md), done: every core's pool of authorizers, kept moving block by block, checked on
-the vectors and on 99 real blocks. An authorizer lets work onto a core for a service.
+the vectors, whole, and on 99 real blocks. An authorizer lets work onto a core for a service.
 [Part 14](../14-services/index.md) opens up the services themselves.
 
 Next: [Part 14 · Services and preimages](../14-services/index.md)

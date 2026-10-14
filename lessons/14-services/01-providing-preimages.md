@@ -37,20 +37,60 @@ The data proves itself: its hash is in the key, so nobody can provide the wrong 
 
 ## The tests
 
+Two readers first, beside the other vector helpers: a preimages vector writes each
+account's preimages and requests as lists, and your client keeps them as state entries,
+under [lesson 6.2](../06-state-and-merklization/02-state-keys.md)'s keys. The tests read them, and so will the scoreboard at the end
+of this lesson.
+
+**Add to** `test/vectors.ts`
+
+```ts
+import { encode } from "../src/codec/codec.ts";
+import { RequestHistory } from "../src/services.ts";
+import { preimageKey, requestKey } from "../src/state.ts";
+import type { KeyValue } from "../src/trie.ts";
+import { toHex } from "../src/bytes.ts";
+
+/** A preimages vector's account, the way the vector writes it. */
+export type PreimagesAccount = {
+  id: number;
+  data: {
+    preimage_blobs: { blob: string }[];
+    preimage_requests: { key: { hash: string; length: number }; value: number[] }[];
+  };
+};
+
+/** Accounts as state entries: every preimage and every request, under its key, sorted. */
+export function accountEntries(accounts: PreimagesAccount[]): KeyValue[] {
+  const entries = accounts.flatMap(({ id, data }) => [
+    ...data.preimage_blobs.map(({ blob }) => ({
+      key: preimageKey(id, fromHex(blob)),
+      value: fromHex(blob),
+    })),
+    ...data.preimage_requests.map(({ key, value }) => ({
+      key: requestKey(id, fromHex(key.hash), key.length),
+      value: encode(RequestHistory, value),
+    })),
+  ]);
+  return entries.sort((a, b) => toHex(a.key).localeCompare(toHex(b.key)));
+}
+```
+
 **New file** `test/services.test.ts`
 
 ```ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { Block, Preimage } from "../src/block.ts";
-import { fromHex, toHex } from "../src/bytes.ts";
+import { toHex } from "../src/bytes.ts";
 import { encode } from "../src/codec/codec.ts";
 import { TINY } from "../src/config.ts";
 import { blake2b256 } from "../src/hash.ts";
 import { providePreimages, RequestHistory } from "../src/services.ts";
 import { preimageKey, requestKey } from "../src/state.ts";
 import type { KeyValue } from "../src/trie.ts";
-import { traceState, vectorFiles, vectorJson } from "./vectors.ts";
+import { accountEntries, traceState, vectorFiles, vectorJson } from "./vectors.ts";
+import type { PreimagesAccount } from "./vectors.ts";
 import type { Bytes } from "../src/bytes.ts";
 
 test("a request's history: [] waiting, [x] provided at slot x", () => {
@@ -89,38 +129,14 @@ test("67 real preimages: stored, and their requests marked with the block's slot
   assert.equal(provided, 67); // blocks 1 to 99: each needs the next block's state to compare
 });
 
-/** A preimages vector's account, the way the vector writes it. */
-type Account = {
-  id: number;
-  data: {
-    preimage_blobs: { blob: string }[];
-    preimage_requests: { key: { hash: string; length: number }; value: number[] }[];
-  };
-};
-
-/** Accounts as state entries: every preimage and every request, under its key (lesson 6.2). */
-function accountEntries(accounts: Account[]): KeyValue[] {
-  const entries = accounts.flatMap(({ id, data }) => [
-    ...data.preimage_blobs.map(({ blob }) => ({
-      key: preimageKey(id, fromHex(blob)),
-      value: fromHex(blob),
-    })),
-    ...data.preimage_requests.map(({ key, value }) => ({
-      key: requestKey(id, fromHex(key.hash), key.length),
-      value: encode(RequestHistory, value),
-    })),
-  ]);
-  return entries.sort((a, b) => toHex(a.key).localeCompare(toHex(b.key)));
-}
-
 test("the preimages vectors, as state entries", () => {
   let accepted = 0;
   for (const size of ["tiny", "full"]) {
     for (const name of vectorFiles(`stf/preimages/${size}`)) {
       const { input, pre_state, post_state, output } = vectorJson(name) as {
         input: { preimages: unknown[]; slot: number };
-        pre_state: { accounts: Account[] };
-        post_state: { accounts: Account[] };
+        pre_state: { accounts: PreimagesAccount[] };
+        post_state: { accounts: PreimagesAccount[] };
         output: { err?: string };
       };
       if (output.err) continue; // a rejected block changes nothing
@@ -141,7 +157,7 @@ The second test is the big one: every preimage in blocks 1 to 99 of the `preimag
 trace, 67 of them, provided to real state, and compared with the state the chain
 actually had after each block. (Block 100 has one more, but no next state in the trace
 to compare against.) The third test turns the `preimages` vectors' accounts into state
-entries with [lesson 6.2](../06-state-and-merklization/02-state-keys.md)'s keys, so the same `providePreimages` runs on both.
+entries with `accountEntries`, so the same `providePreimages` runs on both.
 
 A stub that provides nothing. `RequestHistory` is real already, since the first test
 checks its bytes, and the imports are the ones the real code will need:
@@ -191,7 +207,7 @@ npm test
 ℹ pass 391
 ℹ fail 2
 ...
-test at test/services.test.ts:27:1
+test at test/services.test.ts:28:1
 ✖ 67 real preimages: stored, and their requests marked with the block's slot (37.4ms)
   AssertionError [ERR_ASSERTION]: block 8
   + actual - expected
@@ -203,8 +219,15 @@ test at test/services.test.ts:27:1
 
 The history test is green: `RequestHistory` is real. The other two are red, and the
 first diff reads well once you know the codec. At block 8 the chain wrote `0x0108000000`,
-a list of one slot, `[8]`, where your stub left `0x00`, the empty list, `[]`: the request
-is still waiting.
+a list of one slot, `[8]`:
+
+```text
+01            the list's length, 1 (a compact natural)
+08 00 00 00   slot 8, as a u32: 4 bytes
+```
+
+Your stub left `0x00`, the empty list, `[]`: the request is still waiting. (The first
+test's `0x0105000000` is the same shape: `[5]`.)
 
 ## The code
 
@@ -348,6 +371,111 @@ request history going from `[]` to `[8]`. Block 14 has ten. The *Preimages* pane
 
 ![Preimages panel](./images/01-preimages.png)
 
+## The scoreboard
+
+The preimages family runs whole too, and it's the honest kind of milestone: the board
+shows what your client can't do yet, as well as what it can.
+
+**Add to** `test/families.ts`
+
+```ts
+import { Preimage } from "../src/block.ts";
+import { providePreimages } from "../src/services.ts";
+import { accountEntries } from "./vectors.ts";
+import type { PreimagesAccount } from "./vectors.ts";
+
+type PreimagesInput = { preimages: unknown[]; slot: number };
+type PreimagesState = { accounts: PreimagesAccount[]; statistics: unknown[] };
+
+/** A preimages vector: δ′, each preimage stored and its request marked. Your client
+ * refuses no preimages (the simple road above), so it accepts every block. */
+function checkPreimages(name: string) {
+  const vector = vectorJson(name) as StfVector<PreimagesInput, PreimagesState>;
+  const { input, pre_state } = vector;
+  sameError(null, vector);
+  const preimages = input.preimages.map((p) => Preimage.fromJson(p));
+  const after = providePreimages(accountEntries(pre_state.accounts), preimages, input.slot);
+  const sorted = after.sort((a, b) => toHex(a.key).localeCompare(toHex(b.key)));
+  assert.deepEqual(sorted, accountEntries(vector.post_state.accounts), "accounts differs");
+  unchanged(vector, ["accounts"]);
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+  { folders: ["stf/history/tiny", "stf/history/full"], check: checkHistory },
+  { folders: ["stf/disputes/tiny", "stf/disputes/full"], check: checkDisputes },
+  { folders: ["stf/assurances/tiny", "stf/assurances/full"], check: checkAssurances },
+  { folders: ["stf/reports/tiny", "stf/reports/full"], check: checkReports },
+  { folders: ["stf/authorizations/tiny", "stf/authorizations/full"], check: checkAuthorizations },
+  { folders: ["stf/preimages/tiny", "stf/preimages/full"], check: checkPreimages },
+];
+```
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate           not run yet (126)
+stf/assurances           22 of 22  ✔
+stf/authorizations         6 of 6  ✔
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages             2 of 16
+    ✘ stf/preimages/full/preimage_needed-2.json: statistics changed
+    ✘ stf/preimages/full/preimage_not_needed-1.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimage_not_needed-2.json: accepted, not preimage_unneeded
+    … and 11 more
+stf/reports              62 of 92
+    ✘ stf/reports/full/big_work_report_output-1.json: cores_statistics changed
+    ✘ stf/reports/full/different_core_same_guarantors-1.json: cores_statistics changed
+    ✘ stf/reports/full/high_work_report_gas-1.json: cores_statistics changed
+    … and 27 more
+stf/safrole              46 of 46  ✔
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+238 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939482202
+```
+
+2 of 16, and the board says why for the rest. Ten are blocks the vectors refuse,
+`preimage_unneeded` and `preimages_not_sorted_unique`, which your client accepts: the
+simple road the note above took, and the [hardening
+pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the refusals.
+Those ten stay red on your board until you take it. The other four store their preimages
+exactly as the vectors do, and then the vectors' service statistics count them,
+`statistics changed`: [lesson 18.2](../18-statistics/02-what-cores-and-services-did.md) keeps those, and they cross the line there.
+
+> [!TIP] Milestone
+> **Preimages on the board.** Every preimage a vector accepts is stored and its
+> request marked exactly as the vector says; the board names the two things still to do.
+
 <details>
 <summary>lasair: <code>integrate_preimage</code>, in <code>conformance/stf_guarantees.ml</code></summary>
 
@@ -373,7 +501,9 @@ against the state keeps it short.
 ## What you have
 
 Your client can hand services the data they asked for: checked by its hash, stored under
-its key, and the request marked done, the same way the real chain did, 67 times over.
+its key, and the request marked done, the same way the real chain did, 67 times over. On
+the scoreboard, two of the preimages vectors pass whole, and the board names what the
+other fourteen need.
 Who asked, though, and what do they own? [Lesson 14.2](./02-the-service-account.md) reads a service's account.
 
 Next: [14.2 The service account](./02-the-service-account.md)

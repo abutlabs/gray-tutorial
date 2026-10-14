@@ -5,7 +5,8 @@ How to use this project - Fork this repo and Build a JAM client in TypeScript.
 The lessons explain the [Gray Paper](https://graypaper.com) (version 0.8.0) and give the
 code in snippets. You assemble them into your own client in `client/`, run the tests at
 every step, and finish with a block importer that agrees byte for byte with the
-official test vectors.
+official test vectors. A scoreboard counts them as you go, every vector run whole, from 4
+in lesson 2.6 to 1,406 of 1,428 at the end, and Grafana keeps the climb.
 
 Read the lessons online at https://abutlabs.github.io/gray-tutorial/, part of
 [JAM learning](https://abutlabs.github.io/jam-learning/). To build the client you need

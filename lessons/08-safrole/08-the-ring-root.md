@@ -466,6 +466,136 @@ reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-ru
 A new epoch, a new ring root; and three tickets whose ids are in order and whose attempts
 are fine, refused anyway: their proofs don't check out.
 
+## The scoreboard
+
+With ticket proofs checked, Safrole can run its family whole. `stf/safrole` is the first
+of the state-transition families, and they all share a shape: `pre_state` is the part of
+the state the rule reads, `input` the part of the block, and what comes out is
+`post_state` and `output`. The output is `ok`, with what the rule says back (here, the
+header's two marks), or `err`, the name of the rule a refused block breaks.
+
+Run whole means all of it. A refused block must be refused for the vector's reason, and
+then it changes nothing. An accepted block must leave every part of the state as the
+vector says. A part the rule doesn't make (Safrole doesn't touch `post_offenders`) must
+stay as it was, and the check makes sure the vector agrees:
+
+**Add to** `test/families.ts`
+
+```ts
+import { EpochMark, TicketBody, TicketEnvelope } from "../src/block.ts";
+import type { SafroleJson } from "../src/safrole.ts";
+import { safroleError, safroleFromJson, safroleStep } from "../src/safrole.ts";
+
+/** A state-transition vector: the input, the state before and after, and the output. */
+type StfVector<Input, State> = {
+  input: Input;
+  pre_state: State;
+  post_state: State;
+  output: { ok?: unknown; err?: string } | null;
+};
+
+/** Your client's error for a vector's block, or null: the vector's, or null if it has none. */
+function sameError(error: string | null, vector: StfVector<unknown, object>) {
+  const expected = vector.output?.err ?? null;
+  assert.equal(error, expected, `${error ?? "accepted"}, not ${expected ?? "accepted"}`);
+}
+
+/** The parts of a vector's state your client didn't make: each must be as it was before.
+ * A refused block makes nothing, so all of its state stays. */
+function unchanged(vector: StfVector<unknown, object>, made: string[]) {
+  const before = vector.pre_state as Record<string, unknown>;
+  const after = vector.post_state as Record<string, unknown>;
+  for (const key of Object.keys(after)) {
+    if (!made.includes(key)) assert.deepEqual(after[key], before[key], `${key} changed`);
+  }
+}
+
+type SafroleInput = { slot: number; entropy: string; extrinsic: unknown[] };
+type SafroleVector = StfVector<SafroleInput, SafroleJson & { post_offenders: string[] }>;
+
+/** A Safrole vector: τ′, η′, the four validator sets, the lottery, the sealers and the ring
+ * root, and the header's two marks. */
+function checkSafrole(name: string) {
+  const vector = vectorJson(name) as SafroleVector;
+  const config = configOf(name);
+  const { input, pre_state } = vector;
+  const before = safroleFromJson(pre_state);
+  const tickets = input.extrinsic.map((t) => TicketEnvelope.fromJson(t));
+  const offenders = pre_state.post_offenders.map(fromHex);
+  const error = safroleError(config, before, input.slot, tickets, offenders);
+  sameError(error, vector);
+  if (error) return unchanged(vector, []);
+  const vrfOutput = fromHex(input.entropy);
+  const step = safroleStep(config, before, input.slot, vrfOutput, offenders, tickets);
+  assert.deepEqual(step.after, safroleFromJson(vector.post_state), "the state after differs");
+  const ok = vector.output?.ok as { epoch_mark: unknown; tickets_mark: unknown[] | null };
+  const epochMark = ok.epoch_mark ? EpochMark.fromJson(ok.epoch_mark) : null;
+  assert.deepEqual(step.epochMark, epochMark, "epoch_mark differs");
+  const ticketsMark = ok.tickets_mark?.map((t) => TicketBody.fromJson(t)) ?? null;
+  assert.deepEqual(step.ticketsMark, ticketsMark, "tickets_mark differs");
+  unchanged(vector, [
+    "tau", "eta", "iota", "gamma_k", "kappa", "lambda", "gamma_a", "gamma_s", "gamma_z",
+  ]);
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+];
+```
+
+`safroleFromJson` reads every part of Safrole's state, so one `deepEqual` compares nine
+of them at once. Every vector runs at its own size, `configOf` reading it from the folder.
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate           not run yet (126)
+stf/assurances           not run yet (22)
+stf/authorizations       not run yet (6)
+stf/disputes             not run yet (60)
+stf/history              not run yet (8)
+stf/preimages            not run yet (16)
+stf/reports              not run yet (92)
+stf/safrole              46 of 46  ✔
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+78 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939093198
+```
+
+> [!TIP] Milestone
+> **Every Safrole vector.** All 46, tiny and full, whole: the state after each
+> block, both header marks, and every refused block refused for the vector's reason,
+> forged ticket proofs included. Your first state-transition family.
+
 <details>
 <summary>lasair: ark-vrf too, in <code>rust/bandersnatch-ffi/src/lib.rs</code></summary>
 
@@ -498,7 +628,7 @@ fuzzer.
 ## What you have
 
 Safrole with real cryptography: ring roots for each new set of validators, and ticket
-proofs checked against them. All 46 safrole vectors pass. One check is left, on every
+proofs checked against them. All 46 safrole vectors pass, whole. One check is left, on every
 block rather than every ticket: is the block's seal real? [Lesson 8.9](./09-seals.md).
 
 Next: [8.9 Seals](./09-seals.md)

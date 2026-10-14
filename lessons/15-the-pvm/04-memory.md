@@ -106,7 +106,8 @@ test("writing a read-only page faults, and writes nothing", () => {
 
 The first test is the `ind` forms you saw most in the real code ([lesson 15.2](./02-instructions.md)): r1
 holds an address, like a stack pointer. `0x80` as an unsigned byte is 128; as a signed
-byte it's −128, which in 64 bits is `0xffffffffffffff80`.
+byte it's −128, which in 64 bits is `0xffffffffffffff80`: the byte `80` with its sign bit,
+1, copied into all seven bytes above it, `ff` each.
 
 ## The code
 

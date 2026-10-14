@@ -181,7 +181,7 @@ test at test/work.test.ts:30:3
       service_id: 84281096
     }
 
-      at checkCodecVector (…/client/test/vectors.ts:27:10)
+      at checkCodecVector (…/client/test/vectors.ts:28:10)
       at TestContext.<anonymous> (…/client/test/work.test.ts:30:41)
 ...
 ```

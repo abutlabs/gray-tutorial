@@ -40,6 +40,13 @@ validators and randomness.
 same rotation as the block (⌊τ′/R⌋ = ⌊t/R⌋), its signers must be assigned by M,
 otherwise by M\*. A guarantee made just before a rotation still counts in the next.
 
+Try it below, on tiny, with the validators and entropy of the reports vector
+`report_prev_rotation-1`, whose block is at slot 14. Slide the slot through the epoch:
+every 4 slots, everyone moves on one core. Watch the shuffle pick each seat, compare M
+with M\*, and tap a guarantor to make it an offender.
+
+<GuarantorSeats />
+
 ## The size grows, once more
 
 R is 10 slots on full and 4 on tiny:

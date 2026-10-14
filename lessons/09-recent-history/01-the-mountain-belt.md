@@ -39,6 +39,14 @@ P, that calls itself once per place): start at place 0, carrying l.
 That's binary addition, with mountains for 1s, empty places for 0s, and merging for
 "carry the one".
 
+Try it. Each tap appends one item. The items are numbered here, not hashed, so a peak
+reads as the items under it: 1–4 is the mountain over items 1 to 4. It starts at 5
+items, a mountain of 4 and a mountain of 1. Turn on step by step and watch the carry
+climb one place at a time, merging or resting, just as the 1s carried in
+[lesson 2.2](../02-codec/02-compact-naturals.md). Then append up to 8, for three merges in a row:
+
+<MountainBelt />
+
 The *super-peak*, M_R, squeezes a belt into one hash: take the peaks that exist, in
 order. None gives 32 zero bytes, and one gives itself. Otherwise it's
 H(`$peak` ⌢ M_R(all but the last) ⌢ the last). The `$` marks an ASCII string, as in

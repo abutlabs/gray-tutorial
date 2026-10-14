@@ -40,7 +40,8 @@ of 12 on tiny. Then two things can happen:
 
 Either way the winners go in *outside-in* order, Z: the first, the last, the second,
 the second to last, and so on inwards. Slot 0 gets the best ticket, slot 1 the worst of
-the winners, slot 2 the second best.
+the winners, slot 2 the second best. [Lesson 8.5](./05-one-step-of-safrole.md) has a
+tiny epoch you can drive: fill its lottery, and watch the winners take their slots.
 
 ![A tiny epoch's lottery. In this epoch, tickets enter during slots 0 to 9; at Y = 10 the lottery closes, and the block that crosses it carries the tickets mark. The 12 winners, sorted by id from t0, the best, to t11, are seated in the next epoch outside in: slot 0 gets t0, slot 1 t11, slot 2 t1, slot 3 t10, and so on inwards to t5 and t6 in the last two slots.](./images/04-ticket-contest.svg)
 

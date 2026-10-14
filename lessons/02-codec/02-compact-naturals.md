@@ -190,6 +190,20 @@ Check 128 by hand. It's at least 2^7 and below 2^14, so l = 1. The first byte is
 ℰ₁(44) = `0x2c`. Together: `0x812c`, the picture's bytes. You just did the Gray Paper's
 arithmetic in your head.
 
+The test's two longer rows, the same way:
+
+```text
+c0 00 40                    16,384 = 2^14: past 14 bits, so l = 2 bytes follow
+c0                            first byte: 2^8 − 2^6 = 192 = c0, plus ⌊16,384 / 2^16⌋ = 0
+00 40                         ℰ₂(16,384): 16,384 is 0x4000, little end first
+ff ba ff ff ff ff ff ff ff  2^64 − 70: at least 2^56, so the 9-byte form
+ff                            first byte: 255, "eight full bytes follow"
+ba ff ff ff ff ff ff ff       ℰ₈(x): x is 0xffffffffffffffba, little end first
+```
+
+The last test starts reading at offset 1 of `aa 80 80`: it skips `aa` and reads `80 80`,
+128, two bytes long.
+
 The tests import two names `numbers.ts` doesn't have yet. Stubs again, so the tests run
 and fail on the rule:
 

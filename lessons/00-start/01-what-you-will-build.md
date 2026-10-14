@@ -14,6 +14,7 @@ read most of the Gray Paper, one rule at a time, with code running beside it. Sn
   put a program (a *service*) on it, and the work for those programs runs in parallel on
   many *cores*. The name comes from "join-accumulate", part of its model of computing.
   *Example:* in [Part 15](../15-the-pvm/index.md) you'll run a real JAM service's code.
+  [Lesson 11.2](../11-assurances/02-timeouts.md) lets you walk one piece of work across a core, block by block.
 - **Gray Paper (GP).** JAM's specification: the document that defines every rule, mostly
   in maths. It is still being improved, and new versions change rules; this tutorial
   follows version 0.8.0. *Example:* "§4" means its section 4.
@@ -117,6 +118,10 @@ The official *test vectors* (the `davxy/jam-test-vectors` repository, which ever
 team tests against) are inputs paired with the exact outputs a correct client produces.
 They are the referee: when your code and a vector disagree, the vector wins. (Unless the
 vectors' own changelog says otherwise. Even referees publish corrections.)
+
+From [lesson 2.6](../02-codec/06-the-first-test-vectors.md) on, your client keeps score: a program of yours runs every official
+vector and counts how many it passes, all of each vector, not just a piece of it. The
+[scoreboard](../scoreboard.md) page lists the lessons where a family of vectors crosses the line.
 
 ## lasair, the neighbour
 

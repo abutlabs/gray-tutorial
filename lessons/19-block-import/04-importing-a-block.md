@@ -41,7 +41,39 @@ where a vector has one, and your client's own otherwise.
 
 ## The tests
 
-Each trace step has the state before a block, the block, and the state after:
+Each trace step has the state before a block, the block, and the state after. Importing
+one is the scoreboard's job too, at the end of this lesson, so the helper goes in
+`test/families.ts`:
+
+**Add to** `test/families.ts`
+
+```ts
+import { importBlock } from "../src/import.ts";
+import { Block } from "../src/block.ts";
+import { TINY } from "../src/config.ts";
+
+/** One step of a block-import trace: the state before, the block, the state after. */
+type TraceStep = {
+  pre_state: { state_root: string; keyvals: { key: string; value: string }[] };
+  block: unknown;
+  post_state: { state_root: string };
+};
+
+/** Block n of a trace, imported into the state before it: the state root it ends with (or
+ * why it was refused), and the root the trace says comes next. */
+export function importTrace(family: string, n: number) {
+  const name = `traces/${family}/${String(n).padStart(8, "0")}.json`;
+  const trace = vectorJson(name) as TraceStep;
+  const before: KeyValue[] = trace.pre_state.keyvals.map((e) => ({
+    key: fromHex(e.key),
+    value: fromHex(e.value),
+  }));
+  const after = importBlock(TINY, before, Block(TINY).fromJson(trace.block));
+  const root: string = "error" in after ? after.error : toHex(stateRoot(after));
+  const refused = trace.post_state.state_root === trace.pre_state.state_root;
+  return { root, expected: refused ? "refused" : trace.post_state.state_root, after };
+}
+```
 
 **Add to** `test/import.test.ts`
 
@@ -50,33 +82,10 @@ import { importBlock } from "../src/import.ts";
 import type { Refused } from "../src/import.ts";
 import { Block } from "../src/block.ts";
 import type { Header } from "../src/block.ts";
-import { fromHex, toHex } from "../src/bytes.ts";
 import { TINY } from "../src/config.ts";
 import type { KeyValue } from "../src/trie.ts";
-import { stateRoot } from "../src/trie.ts";
-import { traceState, vectorJson } from "./vectors.ts";
-
-/** Block n of a trace, imported into the state before it: the state root it ends with (or
- * why it was refused), and the root the trace says comes next. */
-function importTrace(family: string, n: number) {
-  const name = `traces/${family}/${String(n).padStart(8, "0")}.json`;
-  const trace = vectorJson(name) as TraceStep;
-  const before: KeyValue[] = trace.pre_state.keyvals.map((e) => ({
-    key: fromHex(e.key),
-    value: fromHex(e.value),
-  }));
-  const after: KeyValue[] | Refused = importBlock(TINY, before, Block(TINY).fromJson(trace.block));
-  const root: string = "error" in after ? after.error : toHex(stateRoot(after));
-  const refused = trace.post_state.state_root === trace.pre_state.state_root;
-  return { root, expected: refused ? "refused" : trace.post_state.state_root, after };
-}
-
-/** One step of a block-import trace: the state before, the block, the state after. */
-type TraceStep = {
-  pre_state: { state_root: string; keyvals: { key: string; value: string }[] };
-  block: unknown;
-  post_state: { state_root: string };
-};
+import { importTrace } from "./families.ts";
+import { traceState } from "./vectors.ts";
 
 test("Υ on every block of the fallback and safrole traces: each state root, as the trace's", () => {
   for (const family of ["fallback", "safrole"]) {
@@ -599,6 +608,92 @@ The *Block import* panel, on **7 · Accumulation and import**, has each block.
 
 ![Block import panel](./images/04-block-import.png)
 
+## The scoreboard
+
+A trace step runs whole when your client ends at the trace's state root, or refuses the
+block the trace refuses. The root is the whole state in 32 bytes ([Part 6](../06-state-and-merklization/index.md)): if it
+matches, every key and value does. Your client imports two trace families so far:
+
+**Add to** `test/families.ts`
+
+```ts
+/** A block-import trace step: the block imported to the trace's state root, or refused
+ * when the trace refuses it, for whatever reason (a trace doesn't say which rule). */
+function checkTrace(name: string) {
+  const [, family, file] = name.split("/");
+  const { root, expected, after } = importTrace(family, Number(file.replace(".json", "")));
+  if (expected === "refused" && "error" in after) return;
+  assert.equal(root, expected, `${root.slice(0, 18)}, not ${expected.slice(0, 18)}`);
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+  { folders: ["stf/history/tiny", "stf/history/full"], check: checkHistory },
+  { folders: ["stf/disputes/tiny", "stf/disputes/full"], check: checkDisputes },
+  { folders: ["stf/assurances/tiny", "stf/assurances/full"], check: checkAssurances },
+  { folders: ["stf/reports/tiny", "stf/reports/full"], check: checkReports },
+  { folders: ["stf/authorizations/tiny", "stf/authorizations/full"], check: checkAuthorizations },
+  { folders: ["stf/preimages/tiny", "stf/preimages/full"], check: checkPreimages },
+  { folders: ["stf/accumulate/tiny", "stf/accumulate/full"], check: checkAccumulate },
+  { folders: ["stf/statistics/tiny", "stf/statistics/full"], check: checkStatistics },
+  { folders: ["traces/fallback", "traces/safrole"], check: checkTrace },
+];
+```
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate         126 of 126  ✔
+stf/assurances           22 of 22  ✔
+stf/authorizations         6 of 6  ✔
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages             6 of 16
+    ✘ stf/preimages/full/preimage_not_needed-1.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimage_not_needed-2.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimages_order_check-1.json: accepted, not preimages_not_sorted_unique
+    … and 7 more
+stf/reports              92 of 92  ✔
+stf/safrole              46 of 46  ✔
+stf/statistics             8 of 8  ✔
+traces/fallback        100 of 100  ✔
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole         100 of 100  ✔
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+606 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939969821
+```
+
+> [!TIP] Milestone
+> **The first block-import traces.** All 200 blocks of `fallback` and
+> `safrole`, each imported into the state before it with every rule your client knows,
+> ending at the trace's state root.
+
 <details>
 <summary>lasair: the same order, in <code>conformance/trace_runner.ml</code></summary>
 
@@ -625,7 +720,7 @@ together once, at the end.
 ## What you have
 
 Υ, on real blocks: the `fallback` and `safrole` traces, 200 blocks, each root exactly the
-trace's, chained from genesis. Those blocks carry no work. The `storage` and `preimages`
+trace's, chained from genesis, and both families whole on the scoreboard. Those blocks carry no work. The `storage` and `preimages`
 traces do, and they find two things your client still gets wrong: [lesson 19.5](./05-work-on-the-chain.md).
 
 Next: [19.5 Work on the chain](./05-work-on-the-chain.md)

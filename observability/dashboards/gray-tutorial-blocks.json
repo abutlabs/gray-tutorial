@@ -114,6 +114,18 @@
    "asDropdown": false,
    "targetBlank": false,
    "tags": []
+  },
+  {
+   "type": "link",
+   "title": "8 · Official vectors",
+   "url": "/d/gray-tutorial-vectors",
+   "tooltip": "8 · Official vectors (the scoreboard)",
+   "icon": "dashboard",
+   "includeVars": true,
+   "keepTime": true,
+   "asDropdown": false,
+   "targetBlank": false,
+   "tags": []
   }
  ],
  "templating": {

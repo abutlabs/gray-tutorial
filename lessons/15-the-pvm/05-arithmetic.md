@@ -14,7 +14,8 @@ corners that catch people:
 
 - **32-bit instructions** work on the low 32 bits, and **sign-extend** the result back
   to 64: `add_32` of 2^31 − 1 and 1 isn't 2^31, it's `0xffffffff80000000`, which is
-  −2^31.
+  −2^31. The low 32 bits are `80000000`, 2^31, whose top bit is 1: as a signed 32-bit
+  number that's −2^31, and sign-extending copies the 1 into the 32 bits above, `ffffffff`.
 - **Division by zero** doesn't crash. Division, signed or not, gives 2^64 − 1, all
   ones, and the remainder gives back the dividend.
 - **−2^63 ÷ −1** would be 2^63, which doesn't fit in a signed 64-bit number, so the

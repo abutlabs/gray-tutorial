@@ -48,6 +48,13 @@ waiters **R^Q**, a report's dependencies **D(r)**. Taking done packages out of a
 **E**, the unlocking loop is **Q**, the hashes of some reports **P**. Everything that goes
 this block is **R\* = R! ⌢ Q(q)**. The queue's list for this block is ω[τ′ mod E].
 
+Try it on tiny, with letters for packages. It starts at the lesson's example: the next
+block brings D, which waits for A. Run it, and D waits in list 7. Now add A, waiting for
+nothing, and run the next block: both go. *The chain vectors* loads a queue where one A
+frees four waiters, one after another. Skip slots, or jump an epoch, to see waiters given up.
+
+<ReadyQueue />
+
 ## The tests
 
 The vector checks now cover the queue and the history too, and seven more vectors join:

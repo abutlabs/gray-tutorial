@@ -71,8 +71,11 @@ themselves, and a proof page for every 64. Three segments: ⌈3.046875⌉ = 4.
 
 ```ts
 import { Assurance, Preimage } from "../src/block.ts";
+import type { Config } from "../src/config.ts";
+import { FULL, TINY } from "../src/config.ts";
 import { coreStats, CoreStats, serviceStats, ServiceStats } from "../src/statistics.ts";
 import { WorkReport } from "../src/work.ts";
+import { vectorJson } from "./vectors.ts";
 
 /** The vectors in `dir` whose block is valid: a block that fails changes no tally. */
 function validVectors(dir: string) {
@@ -403,6 +406,159 @@ import** dashboard, one line per card.
 
 ![Core and service activity panel](./images/02-core-and-service-activity.png)
 
+## The scoreboard
+
+In [lesson 12.5](../12-guarantees/05-bad-reports.md) the scoreboard turned away every accepted reports vector, and in
+[lesson 14.1](../14-services/01-providing-preimages.md) four preimages vectors, all for the same reason: the vectors' statistics
+changed and your client's didn't. Now it keeps them. Both checks learn to compare them:
+
+**Add to** `test/families.ts`
+
+```ts
+import { CoreStats, coreStats, ServiceStats, serviceStats } from "../src/statistics.ts";
+
+/** Service tallies as the vectors write them: a list of ids, each with its tally. */
+type ServiceTallies = { id: number; record: unknown }[];
+
+/** The vectors' service tallies, as a map from service id to tally. */
+const serviceTallies = (json: ServiceTallies) =>
+  new Map(json.map((s) => [s.id, ServiceStats.fromJson(s.record)]));
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+type ReportsState = {
+  curr_validators: unknown[];
+  prev_validators: unknown[];
+  entropy: string[];
+  offenders: string[];
+  avail_assignments: unknown;
+  auth_pools: string[][];
+  recent_blocks: { history: unknown[] };
+  accounts: { id: number; data: { service: { code_hash: string; min_item_gas: number } } }[];
+  cores_statistics: unknown[];
+  services_statistics: ServiceTallies;
+};
+
+/** A reports vector: ρ′, the reporters and the reported packages, and the work counted for
+ * each core and service; or the rule broken. */
+function checkReports(name: string) {
+  const vector = vectorJson(name) as StfVector<ReportsInput, ReportsState>;
+  const config = configOf(name);
+  const { input, pre_state: pre } = vector;
+  const offenders = pre.offenders.map(fromHex);
+  const [active, previous] = [keys(pre.curr_validators), keys(pre.prev_validators)];
+  const entropy = pre.entropy.map(fromHex);
+  const assignments =
+    guarantorAssignments(config, input.slot, entropy, active, previous, offenders);
+  const guarantees = GuaranteesExtrinsic.fromJson(input.guarantees);
+  const cores = PendingReports(config).fromJson(pre.avail_assignments);
+  const pools = pre.auth_pools.map((pool) => pool.map(fromHex));
+  const reports = guarantees.map((g) => g.report);
+  const history = pre.recent_blocks.history.map((b) => RecentBlock.fromJson(b));
+  const services = new Map(pre.accounts.map(({ id, data: { service } }) => [id, {
+    code_hash: fromHex(service.code_hash),
+    min_item_gas: BigInt(service.min_item_gas),
+  }]));
+  const known = new Set(input.known_packages);
+  const count = active.length;
+  const error = guaranteeError(config, guarantees, input.slot, assignments, cores, pools, count) ??
+    reportError(reports, history, known, services);
+  sameError(error, vector);
+  if (error) return unchanged(vector, []);
+  const after = placeReports(cores, guarantees, input.slot);
+  const expected = PendingReports(config).fromJson(vector.post_state.avail_assignments);
+  assert.deepEqual(after, expected, "avail_assignments differs");
+  const signers = guarantees.flatMap((g) =>
+    signerKeys(g, assignmentFor(config, input.slot, g.slot, assignments).keys));
+  const ok = vector.output?.ok as { reporters: string[]; reported: unknown[] };
+  assert.deepEqual(reporters(signers).map(toHex), ok.reporters, "reporters differs");
+  const reported = reportedPackages(guarantees).map((p) => ({
+    work_package_hash: toHex(p.hash),
+    segment_tree_root: toHex(p.exports_root),
+  }));
+  assert.deepEqual(reported, ok.reported, "reported differs");
+  const post = vector.post_state;
+  const coreTallies = post.cores_statistics.map((c) => CoreStats.fromJson(c));
+  assert.deepEqual(coreStats(config, reports, [], []), coreTallies, "cores_statistics differs");
+  const serviceTally = serviceTallies(post.services_statistics);
+  const serviceWork = serviceStats(reports, [], new Map());
+  assert.deepEqual(serviceWork, serviceTally, "services_statistics differs");
+  unchanged(vector, ["avail_assignments", "cores_statistics", "services_statistics"]);
+}
+
+type PreimagesState = { accounts: PreimagesAccount[]; statistics: ServiceTallies };
+
+/** A preimages vector: δ′, each preimage stored and its request marked, and each service's
+ * provided preimages counted. Your client refuses no preimages (lesson 14.1's simple road),
+ * so it accepts every block. */
+function checkPreimages(name: string) {
+  const vector = vectorJson(name) as StfVector<PreimagesInput, PreimagesState>;
+  const { input, pre_state } = vector;
+  sameError(null, vector);
+  const preimages = input.preimages.map((p) => Preimage.fromJson(p));
+  const after = providePreimages(accountEntries(pre_state.accounts), preimages, input.slot);
+  const sorted = after.sort((a, b) => toHex(a.key).localeCompare(toHex(b.key)));
+  assert.deepEqual(sorted, accountEntries(vector.post_state.accounts), "accounts differs");
+  const expected = serviceTallies(vector.post_state.statistics);
+  assert.deepEqual(serviceStats([], preimages, new Map()), expected, "statistics differs");
+  unchanged(vector, ["accounts", "statistics"]);
+}
+```
+
+A reports block counts only the work it brings: no report becomes available in it and it
+carries no assurances, so `coreStats` gets two empty lists, as in the tests above.
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate         126 of 126  ✔
+stf/assurances           22 of 22  ✔
+stf/authorizations         6 of 6  ✔
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages             6 of 16
+    ✘ stf/preimages/full/preimage_not_needed-1.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimage_not_needed-2.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimages_order_check-1.json: accepted, not preimages_not_sorted_unique
+    … and 7 more
+stf/reports              92 of 92  ✔
+stf/safrole              46 of 46  ✔
+stf/statistics             8 of 8  ✔
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+406 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939804842
+```
+
+Every reports vector, and six preimages vectors. The ten left in `stf/preimages` are the
+blocks your client should refuse and doesn't, the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md)'s to fix, and the board
+will go on saying so.
+
+> [!TIP] Milestone
+> **Every reports vector.** All 92, tiny and full, whole: guarantees and reports
+> checked, reports seated on their cores, and each core's and service's work counted.
+
 <details>
 <summary>lasair: the data load, in <code>lib/statistics.ml</code></summary>
 
@@ -426,7 +582,8 @@ only have integers. Try it: 3 segments, (195 + 63) / 64 = 4.
 ## What you have
 
 All three scorecards: each validator's for the epoch ([lesson 18.1](./01-who-did-what.md)), and each core's
-and each service's for the block, matching every reports and preimages vector. [Part 18](./index.md) is
+and each service's for the block. Every state-transition family is on the scoreboard now,
+every vector in it passing whole but the ten preimages refusals. [Part 18](./index.md) is
 done. Every part so far built one piece of a block's state transition on its own;
 [Part 19](../19-block-import/index.md) starts putting them together, with the order the Gray Paper asks for.
 

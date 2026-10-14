@@ -31,6 +31,13 @@ the fallback.
   E(t, s, |i|), start at 5, answer host calls with F, then collapse. The gas used is u = g
   minus what's left (never counting below zero).
 
+Try it below. Service 0 is [lesson 16.4](./04-info.md)'s made-up record, with a balance of
+1,000. Tap host calls to build a run: the two writes of this lesson's tests, a checkpoint,
+and a transfer of a hundred ([lesson 17.3](../17-accumulation/03-sending-a-transfer.md) adds that one). X and Y sit side by side after
+each step. Then stop the machine, and see which one survives.
+
+<CheckpointRun />
+
 ## The tests
 
 The tests' bundles get their checkpoint, and `vectorService` is built from a helper that

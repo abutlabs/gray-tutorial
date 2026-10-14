@@ -135,6 +135,7 @@ export const PUBLISHED: string[] = [
   "glossary",
   "symbols",
   "",
+  "scoreboard",
 ];
 
 /** Pages that moved: old address to new. The build leaves a page at the old address that

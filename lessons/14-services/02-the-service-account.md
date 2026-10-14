@@ -50,6 +50,7 @@ each one, on top of the data itself.)
 
 ```ts
 import { footprint, minimumBalance, readService, ServiceInfo, serviceCode } from "../src/services.ts";
+import { fromHex } from "../src/bytes.ts";
 
 test("service 0 in real state: its code beside it, and its footprint adding up", () => {
   const { entries } = traceState("fallback", 1);

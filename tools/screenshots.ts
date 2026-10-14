@@ -22,6 +22,7 @@ const SHOTS: Shot[] = [
   { lesson: "0.4", panel: "Failed tests", nth: 2 }, // the planted bug's failing run
   { lesson: "1.1", panel: "Failed tests", nth: 2 },
   { lesson: "2.2", panel: "Failed tests", nth: 2 },
+  { lesson: "2.6", panel: "Each family (last run)" },
   { lesson: "2.7", panel: "Decode trace" },
   { lesson: "3.2", panel: "Failed tests", nth: 2 },
   { lesson: "4.7", panel: "Decode trace" },
@@ -92,6 +93,7 @@ const SHOTS: Shot[] = [
   { lesson: "19.4", panel: "Block import" },
   { lesson: "19.6", panel: "Block import" },
   { lesson: "20.3", panel: "Fuzz session" },
+  { lesson: "20.4", panel: "Each family (last run)" },
 ];
 
 const LOKI = "http://127.0.0.1:3100";
@@ -104,7 +106,8 @@ const FOOTER = 88; // the empty strip Grafana leaves below a lone panel, cut off
 
 type Panel = { uid: string; id: number; title: string; height: number; kind: string };
 
-/** Every logs panel on the dashboards, by title; theme dashboards before the overview. */
+/** Every logs or table panel on the dashboards that reads one kind of run, by title; theme
+ * dashboards before the overview. */
 function panels(): Map<string, Panel> {
   const dir = join(ROOT, "observability", "dashboards");
   const out = new Map<string, Panel>();
@@ -112,7 +115,7 @@ function panels(): Map<string, Panel> {
     const d = JSON.parse(readFileSync(join(dir, f), "utf8"));
     for (const p of d.panels) {
       const kind = /kind="([^"]+)"/.exec(p.targets?.[0]?.expr ?? "")?.[1];
-      if (p.type !== "logs" || !kind || out.has(p.title)) continue;
+      if (!["logs", "table"].includes(p.type) || !kind || out.has(p.title)) continue;
       out.set(p.title, { uid: d.uid, id: p.id, title: p.title, height: p.gridPos.h * 38 - 8, kind });
     }
   }
@@ -240,11 +243,12 @@ for (const l of lessons) {
   if (verify.status !== 0) throw new Error(`verify ${l.id} failed:\n${verify.stdout}${verify.stderr}`);
   for (const s of shots) {
     const panel = byTitle.get(s.panel);
-    if (!panel) throw new Error(`${l.id}: no logs panel titled ${s.panel}`);
+    if (!panel) throw new Error(`${l.id}: no logs or table panel titled ${s.panel}`);
     const runs = await runsSince(panel.kind, since);
     const run = s.nth ? runs[s.nth - 1] : runs.at(-1);
     if (!run) throw new Error(`${l.id}: no run of kind ${panel.kind} (${runs.length} runs)`);
-    const slug = s.panel.toLowerCase().replace(/σ/g, "sigma").replace(/[^a-z0-9]+/g, "-");
+    const slug = s.panel.toLowerCase().replace(/σ/g, "sigma").replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
     const file = join(LESSONS, dirname(l.file), "images", `${basename(l.file).slice(0, 2)}-${slug}.png`);
     photograph(panel, run, file);
     console.log(`${l.id}  ${s.panel}  ${run}  ${file.slice(LESSONS.length + 1)}`);

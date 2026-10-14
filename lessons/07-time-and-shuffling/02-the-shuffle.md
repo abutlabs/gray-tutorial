@@ -289,6 +289,96 @@ pick and the final order; try a hash of your own, and a longer list.
 
 ![Shuffle panel](./images/02-shuffle.png)
 
+## The scoreboard
+
+Like the trie's, the shuffle vectors' test runs their one file whole, so it becomes the
+scoreboard's `shuffle` family, and the test calls it:
+
+**Add to** `test/families.ts`
+
+```ts
+import { shuffleWithHash } from "../src/shuffle.ts";
+
+/** The shuffle vector: 0, 1, 2… shuffled by each case's hash, in the vector's order. */
+export function checkShuffle(name: string) {
+  const cases = vectorJson(name) as { input: number; entropy: string; output: number[] }[];
+  for (const { input, entropy, output } of cases) {
+    const items: number[] = Array.from({ length: input }, (_, i) => i);
+    assert.deepEqual(shuffleWithHash(items, fromHex(`0x${entropy}`)), output);
+  }
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+];
+```
+
+**Rewrite** `test/shuffle.test.ts`
+
+```ts
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { shuffle } from "../src/shuffle.ts";
+import { checkShuffle } from "./families.ts";
+
+test("a shuffle by hand: four letters, four numbers", () => {
+  const shuffled: string[] = shuffle(["a", "b", "c", "d"], [1, 1, 0, 0]);
+  assert.deepEqual(shuffled, ["b", "d", "a", "c"]);
+});
+
+test("the shuffle vectors: 0 to 341 items, shuffled by a hash", () =>
+  checkShuffle("shuffle/shuffle_tests.json"));
+```
+
+**Run**
+
+```sh
+npm test
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate           not run yet (126)
+stf/assurances           not run yet (22)
+stf/authorizations       not run yet (6)
+stf/disputes             not run yet (60)
+stf/history              not run yet (8)
+stf/preimages            not run yet (16)
+stf/reports              not run yet (92)
+stf/safrole              not run yet (46)
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+32 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939055623
+```
+
+> [!TIP] Milestone
+> **The shuffle vector.** All eight of its shuffles, from no items to 341, deal
+> the same hand as the vector's.
+
 <details>
 <summary>lasair: <code>sequence_from_hash</code>, in <code>lib/utilities.ml</code></summary>
 
@@ -313,7 +403,7 @@ last item into the gap exactly as yours does: `work.(index) <- work.(remaining -
 ## What you have
 
 A shuffle every node agrees on: give it a list and a hash, and every JAM client in the
-world deals the same hand. [Part 8](../08-safrole/index.md) puts epochs and entropy to work in Safrole, the
+world deals the same hand, the shuffle vector's included. [Part 8](../08-safrole/index.md) puts epochs and entropy to work in Safrole, the
 lottery that picks who makes each block, and borrows this lesson's way of reading numbers
 out of a hash. The shuffle itself comes back in [lesson 12.1](../12-guarantees/01-who-guarantees-what.md), to deal guarantors to
 cores.

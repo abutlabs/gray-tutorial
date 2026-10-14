@@ -23,7 +23,8 @@ order gets written once, and every direction follows it.
 - **Generic (`<T>`).** A type with a blank in it, filled in where it's used. *Example:*
   `Codec<number>` is a codec for numbers, `Codec<Bytes>` one for bytes.
 - **Blob.** Any run of bytes of no fixed length, written with its length in front (the
-  Gray Paper's ↕). *Example:* the three bytes 1, 2, 3 encode as `0x03010203`.
+  Gray Paper's ↕). *Example:* the three bytes 1, 2, 3 encode as `0x03010203`: `03`, the
+  length, then `01 02 03`.
 
 All five are in the [glossary](../glossary.md).
 
@@ -195,6 +196,20 @@ test("a hash is 32 bytes as they are; a blob has its length in front", () => {
   assert.deepEqual(blobDecoded, fromHex("0x0102030405"));
 });
 ```
+
+The tests' bytes, value by value:
+
+```text
+07                        7 as a u8: 1 byte
+c7 12                     4,807 as a u16: 2 bytes, little end first
+04 03 02 01               16,909,060 (0x01020304) as a u32: 4 bytes
+2a 00 00 00 00 00 00 00   42 as a u64: 8 bytes, however small the number
+80 80                     128 as a compact natural: 2 bytes
+c0 00 40                  16,384 as a compact natural: 3 bytes
+05 01 02 03 04 05         a 5-byte blob: its length, 05, then the 5 bytes
+```
+
+A hash is its 32 bytes and nothing else: its length is always 32, so none goes in front.
 
 **Run**
 

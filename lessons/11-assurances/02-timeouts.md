@@ -20,6 +20,15 @@ when any of these holds:
 
 Otherwise p stays, and waits another block.
 
+Try a report's whole life on tiny: six validators, two cores. Each block you import works
+in order. Its disputes clear a report judged bad ([lesson 10.3](../10-disputes/03-clearing-the-cores.md)). Its assurances make a
+report available, 5 of 6 in that one block, or let it time out. Then its guarantees put
+new reports on the cores left free ([lesson 12.3](../12-guarantees/03-onto-the-cores.md)). Report A starts on core 0, registered
+at slot 7: leave it alone until slot 12 and watch it go. Then try to guarantee a report
+onto a core that is still busy. (The validator set never changes size here.)
+
+<ReportLife />
+
 ## Splitting a function
 
 `clearCores` needs to know *which cores* became available, and [lesson 11.1](./01-available.md)'s
@@ -85,7 +94,7 @@ npm test
 reported 168 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733590641
 ```
 
-Same tests, same 160 passes: the shape changed, and nothing else did.
+Same tests, same 168 passes: the shape changed, and nothing else did.
 
 ## The tests
 

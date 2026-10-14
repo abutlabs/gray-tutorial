@@ -115,8 +115,8 @@ test("designate: the delegator picks the next validators; a count tiny can't hav
 ```
 
 The bytes by hand: the assigners are 2 and 3, four bytes each, little end first; the one
-always-accumulate entry is service 6 (`06 00 00 00`), then 1,000 gas in 8 bytes (`e8 03`
-and six zeros).
+always-accumulate entry is service 6 (`06 00 00 00`), then 1,000 gas in 8 bytes (1,000 is
+`0x03e8`, so `e8 03` and six zeros).
 
 `checkBlock` learns to compare the always-accumulate services, which only a `bless` could
 change:
@@ -671,6 +671,122 @@ Service 1 blesses (`OK`, the vectors' rule), and service 0 tries to designate a 
 validators tiny can't have (`HUH`). Both use exactly the vector's gas. The *Host calls*
 panel shows the two runs.
 
+## The scoreboard
+
+`checkBlock` compares whole blocks piece by piece, so that a red stays short, and only at
+the tiny size. The scoreboard runs the family at both sizes, and asks
+one question of each part of the state: the same as the vector's, or not?
+
+**Add to** `test/families.ts`
+
+```ts
+import { accumulateBlock, accumulationStateFromJson, outputsRoot } from "../src/accumulate.ts";
+import type { AccumulationStateJson } from "../src/accumulate.ts";
+
+type AccumulateInput = { slot: number; reports: unknown[] };
+type ServiceRecord = Record<string, number>;
+type AccumulateStatistics = { id: number; record: ServiceRecord }[];
+type AccumulateState = AccumulationStateJson & { statistics: AccumulateStatistics };
+
+/** An accumulate vector: every account, the privileges, the queue and history, τ′, the
+ * services' accumulation statistics, and the root of what services yielded. */
+function checkAccumulate(name: string) {
+  const vector = vectorJson(name) as StfVector<AccumulateInput, AccumulateState>;
+  const config = configOf(name);
+  const { input, pre_state, post_state } = vector;
+  const reports = input.reports.map((r) => WorkReport.fromJson(r));
+  const before = accumulationStateFromJson(pre_state);
+  const { state, statistics, outputs } = accumulateBlock(config, before, input.slot, reports);
+  assert.equal(toHex(outputsRoot(outputs)), vector.output?.ok, "output differs");
+  const expected = accumulationStateFromJson(post_state);
+  assert.deepEqual(state.accounts, expected.accounts, "accounts differs");
+  assert.deepEqual(state.privileges, expected.privileges, "privileges differs");
+  assert.deepEqual(state.free, expected.free, "privileges' always_acc differs");
+  assert.deepEqual(state.ready, expected.ready, "ready_queue differs");
+  assert.deepEqual(state.accumulated, expected.accumulated, "accumulated differs");
+  assert.equal(input.slot, post_state.slot, "slot differs"); // τ′ is the block's slot
+  const stats = post_state.statistics.map(({ id, record: r }) => [id, {
+    count: r.accumulate_count,
+    transfers: r.accumulate_transfer_count,
+    gasUsed: BigInt(r.accumulate_gas_used),
+  }] as const);
+  assert.deepEqual(statistics, new Map(stats), "statistics differs");
+  unchanged(vector, ["accounts", "privileges", "ready_queue", "accumulated", "slot", "statistics"]);
+}
+```
+
+**Replace in** `test/families.ts`
+
+```ts
+/** Every family your client runs so far. */
+export const FAMILIES: Family[] = [
+  { folders: ["codec/tiny", "codec/full"], check: checkCodec },
+  { folders: ["trie"], check: checkTrie },
+  { folders: ["shuffle"], check: checkShuffle },
+  { folders: ["stf/safrole/tiny", "stf/safrole/full"], check: checkSafrole },
+  { folders: ["stf/history/tiny", "stf/history/full"], check: checkHistory },
+  { folders: ["stf/disputes/tiny", "stf/disputes/full"], check: checkDisputes },
+  { folders: ["stf/assurances/tiny", "stf/assurances/full"], check: checkAssurances },
+  { folders: ["stf/reports/tiny", "stf/reports/full"], check: checkReports },
+  { folders: ["stf/authorizations/tiny", "stf/authorizations/full"], check: checkAuthorizations },
+  { folders: ["stf/preimages/tiny", "stf/preimages/full"], check: checkPreimages },
+  { folders: ["stf/accumulate/tiny", "stf/accumulate/full"], check: checkAccumulate },
+];
+```
+
+The full vectors run the same services under the full network's parameters: 341 cores'
+worth of gas budget, and a full epoch's queue.
+
+**Run**
+
+```sh
+npm run typecheck
+node bin/scoreboard.ts
+```
+
+```text
+...
+The official test vectors, each run whole by your client:
+
+codec                    30 of 30  ✔
+erasure                  not run yet (12)
+shuffle                    1 of 1  ✔
+stf/accumulate         126 of 126  ✔
+stf/assurances           22 of 22  ✔
+stf/authorizations         6 of 6  ✔
+stf/disputes             60 of 60  ✔
+stf/history                8 of 8  ✔
+stf/preimages             2 of 16
+    ✘ stf/preimages/full/preimage_needed-2.json: statistics changed
+    ✘ stf/preimages/full/preimage_not_needed-1.json: accepted, not preimage_unneeded
+    ✘ stf/preimages/full/preimage_not_needed-2.json: accepted, not preimage_unneeded
+    … and 11 more
+stf/reports              62 of 92
+    ✘ stf/reports/full/big_work_report_output-1.json: cores_statistics changed
+    ✘ stf/reports/full/different_core_same_guarantors-1.json: cores_statistics changed
+    ✘ stf/reports/full/high_work_report_gas-1.json: cores_statistics changed
+    … and 27 more
+stf/safrole              46 of 46  ✔
+stf/statistics           not run yet (8)
+traces/fallback          not run yet (100)
+traces/fuzzy             not run yet (200)
+traces/fuzzy_light       not run yet (200)
+traces/preimages         not run yet (100)
+traces/preimages_light   not run yet (100)
+traces/safrole           not run yet (100)
+traces/storage           not run yet (100)
+traces/storage_light     not run yet (100)
+trie                       1 of 1  ✔
+
+364 of 1,428 vectors pass.
+reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939598350
+```
+
+> [!TIP] Milestone
+> **Every accumulate vector.** All 126, tiny and full, whole: real services
+> run on your PVM, every account, privilege, queue and statistic after the block, and the
+> root of what they yielded, as the vectors have them.
+
 <details>
 <summary>lasair: one switch, in <code>lib/pvm_host.ml</code></summary>
 
@@ -692,8 +808,8 @@ one.
 ## What you have
 
 Every accumulate host call a block needs, and whole blocks that match all 63 official
-accumulate vectors: the gas budget, upgrades, yields and their root, provisions, and every
-privilege. That's [Part 17](./index.md) done. Next, the chain keeps score of all this work:
+accumulate vectors, and all 126 at both sizes on the scoreboard: the gas budget, upgrades,
+yields and their root, provisions, and every privilege. That's [Part 17](./index.md) done. Next, the chain keeps score of all this work:
 [Part 18](../18-statistics/index.md) builds the statistics.
 
 Next: [Part 18 · Statistics](../18-statistics/index.md)

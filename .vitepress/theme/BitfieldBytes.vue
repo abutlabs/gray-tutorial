@@ -37,7 +37,7 @@ const toggle = (c: number) => { if (c < props.cores) bitfield.value = flip(bitfi
   border: 1px solid var(--bit-low-line); margin-right: -1px; font-family: var(--vp-font-family-mono);
   background: var(--vp-c-bg-soft); cursor: pointer;
 }
-.compact .bit { width: 22px; }
+.compact .bit { width: 26px; } /* a finger's width on a phone, and 8 still fit */
 .bit.on { background: var(--bit-low); }
 .bit.unused { border-color: var(--vp-c-divider); cursor: default; opacity: 0.5; }
 .bit:not(.unused):hover { border-color: var(--vp-c-brand-1); }

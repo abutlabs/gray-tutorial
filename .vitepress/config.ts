@@ -8,6 +8,7 @@ import type { ShikiTransformer } from "shiki";
 import { readParts } from "../tools/lessons.ts";
 import { LEGEND, writeRedirects } from "./urls.ts";
 import { type PrintPage, writePrintPage } from "./print.ts";
+import { KEY as CONCEPTS_KEY } from "./theme/concepts.ts";
 import { type Snapshot, snippetNumbers, wholeFiles } from "../tools/snapshots.ts";
 
 const parts = readParts();
@@ -21,6 +22,7 @@ const printPages: PrintPage[] = [
       title: `${l.id} ${l.title.replace(/^[\d.]+\s+/, "")}`,
     })),
   ]),
+  { address: "scoreboard", title: "The scoreboard", part: true },
   { address: "glossary", title: "Glossary", part: true },
   { address: "symbols", title: "Gray Paper symbols", part: true },
 ];
@@ -39,9 +41,15 @@ export default defineConfig({
   // Grafana and the stack are on localhost on purpose; every other link must resolve
   ignoreDeadLinks: [/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/],
   lastUpdated: false,
+  // concepts-only mode (theme/concepts.ts), applied before the page draws so code never flashes
+  head: [["script", {}, `try{if(localStorage.getItem("${CONCEPTS_KEY}")==="on")document.documentElement.classList.add("concepts")}catch(e){}`]],
   // $$ ... $$ is a Gray Paper formula, drawn as maths when the site is built (MathJax, to
   // SVG: no script in the reader's browser, and print.html gets it too)
-  markdown: { math: true, config: snippetLabels, codeTransformers: [shellComments()] },
+  markdown: {
+    math: true,
+    config: (md) => { snippetLabels(md); textSymbols(md); },
+    codeTransformers: [shellComments()],
+  },
   // pages that moved keep their old address, as a page that sends the reader on; and the
   // whole tutorial on one page, print.html, for printing and reading offline
   buildEnd: (site) => {
@@ -52,6 +60,7 @@ export default defineConfig({
     // every word you type must match, so "ready queue" finds the ready queue first
     search: { provider: "local", options: { miniSearch: { searchOptions: { combineWith: "AND" } } } },
     nav: [
+      { text: "Scoreboard", link: "/scoreboard" },
       { text: "Glossary", link: "/glossary" },
       { text: "Symbols", link: "/symbols" },
       // a plain page outside the app (print.ts): `target` makes the link load it in full
@@ -74,11 +83,27 @@ export default defineConfig({
           link: `/${l.file.replace(/\.md$/, "")}`,
         })),
       })),
+      { text: "The scoreboard", link: "/scoreboard" },
       { text: "Glossary", link: "/glossary" },
       { text: "Gray Paper symbols", link: "/symbols" },
     ],
   },
 });
+
+// The Gray Paper's ↕ (a length in front) and ♈ (Ω_♈, provide) are also emoji, and phones
+// draw them as coloured pictures; the text presentation selector, U+FE0E, asks for the
+// plain symbol.
+function textSymbols(md: MarkdownIt): void {
+  md.core.ruler.push("text-symbols", (state) => {
+    for (const token of state.tokens) {
+      for (const child of token.children ?? []) {
+        if (child.type === "text" || child.type === "code_inline") {
+          child.content = child.content.replace(/([↕♈])(?!\uFE0E)/g, "$1\uFE0E");
+        }
+      }
+    }
+  });
+}
 
 // A label line above a code block ("**Add to** `src/x.ts`") becomes a tab on the block, and
 // its bold word a link to the list of labels in 0.1 (as the Book's Ferris icons link to theirs).
@@ -95,6 +120,12 @@ function snippetLabels(md: MarkdownIt): void {
   };
   md.core.ruler.push("snippet-labels", (state) => {
     const t = state.tokens;
+    // lasair's folds are code too: concepts-only mode (theme/concepts.ts) hides them
+    for (const token of t) {
+      if (token.type === "html_block" && /^<details>\s*<summary>lasair/.test(token.content)) {
+        token.content = token.content.replace("<details>", '<details class="lasair">');
+      }
+    }
     for (let i = 0; i + 3 < t.length; i++) {
       if (t[i].type !== "paragraph_open" || t[i + 2].type !== "paragraph_close" || t[i + 3].type !== "fence") continue;
       const m = LABEL.exec(t[i + 1].content);

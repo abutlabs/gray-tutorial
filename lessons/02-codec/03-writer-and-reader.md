@@ -14,8 +14,8 @@ structure in bookkeeping. Two little helpers make the bookkeeping disappear:
   calls one of its methods.
 - **Private field.** A field whose name starts with `#`: only the class's own methods can
   touch it. *Example:* the Reader's `#at`.
-- **Offset.** A position in a row of bytes, counted from 0. *Example:* in `c7 12 80 80`,
-  the compact 128 starts at offset 2.
+- **Offset.** A position in a row of bytes, counted from 0. *Example:* in `c7 12 80 80`
+  (4,807 in two bytes, then 128 in two), the 128 starts at offset 2.
 
 All three are in the [glossary](../glossary.md).
 
@@ -56,8 +56,16 @@ test("a reader reads back what a writer wrote, in the same order", () => {
 });
 ```
 
-Three values in, eight bytes out, three values back. `c712` is 4,807 ([lesson 2.1](./01-fixed-width-integers.md)),
-`8080` is 128 ([lesson 2.2](./02-compact-naturals.md)), and `deadbeef` is, well, a classic.
+Three values in, eight bytes out, three values back:
+
+```text
+c7 12         4,807 as ℰ₂: 2 bytes, little end first
+80 80         128 as a compact natural: 2 bytes
+de ad be ef   four bytes as they are: deadbeef, well, a classic
+              2 + 2 + 4 = 8 bytes, one after another
+```
+
+The first is [lesson 2.1](./01-fixed-width-integers.md)'s ℰ₂, the second [lesson 2.2](./02-compact-naturals.md)'s compact natural.
 
 ## The Writer
 

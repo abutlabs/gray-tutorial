@@ -15,7 +15,7 @@ reads and writes every one of them, byte for byte as the protocol's examples hav
 - **Unix socket.** A connection between two programs on the same computer, through a file
   path, read and written like a network connection. *Example:* `/tmp/jam_target.sock`.
 - **Frame.** One message on a stream of bytes: its length first, so the reader knows where
-  it ends. *Example:* `21 00 00 00`, then 33 bytes.
+  it ends. *Example:* `21 00 00 00` (33, as a u32), then 33 bytes.
 
 All three are in the [glossary](../glossary.md).
 
@@ -111,6 +111,17 @@ test("frames: a length in four bytes, then the message, however the bytes arrive
   for await (const message of readFrames(inPieces())) messages.push(toHex(message));
   assert.deepEqual(messages, [EXAMPLES[1], EXAMPLES[0]]);
 });
+```
+
+The README's PeerInfo example, byte by byte:
+
+```text
+00                      kind 0: PeerInfo
+01                      fuzz_version 1, a u8
+02 00 00 00             fuzz_features 2, a u32: bit 2, forks
+00 07 00                jam_version 0.7.0: three u8s
+00 01 19                app_version 0.1.25 (0x19 is 25)
+06 66 75 7a 7a 65 72    app_name: its length, 6, then "fuzzer" in UTF-8
 ```
 
 The third test feeds two frames to `readFrames` three bytes at a time, the way a slow

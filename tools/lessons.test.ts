@@ -373,3 +373,33 @@ test("every program up to 1.2 has a debug configuration, named for its lesson", 
   const programs = [...madeIn.keys()].filter((p) => p.startsWith("bin/"));
   assert.deepEqual(named.sort(), programs.sort());
 });
+
+// The scoreboard (lesson 2.6, scoreboard.md): a lesson where a vector family crosses the
+// line ends with a section that runs it, The scoreboard, and a Milestone note; the page
+// lists those lessons in order, each with the count its board ends with. A lesson that
+// changes the families on the board runs it, so no family joins unseen.
+test("every scoreboard milestone is on the scoreboard page, with the count its board shows", () => {
+  const page = readFileSync(join(LESSONS, "scoreboard.md"), "utf8");
+  const listed = [...page.matchAll(/^\| \[([\d.]+)\]\(\.\/([^)#]+)#the-scoreboard\) \|[^|]+\| ([\d,]+) \|$/gm)]
+    .map(([, id, file, board]) => ({ id, file, board }));
+  const run: { id: string; file: string; board: string }[] = [];
+  const problems: string[] = [];
+  for (const lesson of parts.flatMap((p) => p.lessons)) {
+    const text = readFileSync(join(LESSONS, lesson.file), "utf8");
+    const boards = lesson.steps.filter((s) => s.kind === "run" && /^node bin\/scoreboard\.ts$/m.test(s.command));
+    const families = lesson.steps.some((s) => s.kind === "file" && s.path === "test/families.ts" &&
+      /^export const FAMILIES\b/m.test(s.code));
+    if (boards.length === 0) {
+      if (families) problems.push(`${lesson.id} changes FAMILIES but doesn't run the scoreboard`);
+      continue;
+    }
+    if (!/^## The scoreboard$/m.test(text)) problems.push(`${lesson.id} has no "## The scoreboard"`);
+    if (!/^> \[!TIP\] Milestone$/m.test(text)) problems.push(`${lesson.id} has no "> [!TIP] Milestone" note`);
+    const last = boards.at(-1)!;
+    const board = last.kind === "run" && /^([\d,]+) of 1,428 vectors pass\.$/m.exec(last.output ?? "")?.[1];
+    if (!board) problems.push(`${lesson.id}: its scoreboard run shows no "… of 1,428 vectors pass." line`);
+    run.push({ id: lesson.id, file: lesson.file, board: board || "?" });
+  }
+  assert.deepEqual(problems, []);
+  assert.deepEqual(listed, run);
+});
