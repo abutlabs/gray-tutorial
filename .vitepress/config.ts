@@ -14,6 +14,7 @@ import { albert } from "./albert.ts";
 import { eyeButton, serveWholeFiles, wholeAddress, writeWholeFiles } from "./whole.ts";
 import { writeEpub } from "./epub.ts";
 import { KEY as CONCEPTS_KEY } from "./theme/concepts.ts";
+import { unitCodes } from "./units.ts";
 import { snippetNumbers, wholeFiles } from "../tools/snapshots.ts";
 
 const parts = readParts();
@@ -58,7 +59,7 @@ export default defineConfig({
   // SVG: no script in the reader's browser, and print.html gets it too)
   markdown: {
     math: true,
-    config: (md) => { snippetLabels(md); eyeButtons(md); albert(md); textSymbols(md); checkBlocks(md); },
+    config: (md) => { snippetLabels(md); eyeButtons(md); albert(md); textSymbols(md); unitCodes(md); checkBlocks(md); },
     codeTransformers: [shellComments()],
   },
   vite: { plugins: [serveWholeFiles(join(import.meta.dirname, "..", "lessons"), base, whole)] },

@@ -2,7 +2,8 @@
 <style>
   text { fill: #3c3c43; text-anchor: middle; }
   .value, .enc, .offset { fill: #67676c; font-size: 13px; }
-  .bytes { fill: #1b1b1f; }
+  .bytes { fill: #0f766e; font-weight: bold; }
+  .len { fill: #a16207; }
   .offset { text-anchor: start; }
   .field { stroke-width: 1.5; }
   .f0 { fill: #e8f0fe; stroke: #5b8def; }
@@ -11,7 +12,8 @@
   @media (prefers-color-scheme: dark) {
     text { fill: #dfdfd6; }
     .value, .enc, .offset { fill: #a8a8a0; }
-    .bytes { fill: #ffffff; }
+    .bytes { fill: #4fd1c5; }
+    .len { fill: #e0b04a; }
     .f0 { fill: #1e2a44; stroke: #7aa2f7; }
     .f1 { fill: #1b3329; stroke: #4fc08d; }
   }
@@ -49,7 +51,7 @@
 <text class="name" x="467.6" y="172">payload</text>
 <text class="value" x="467.6" y="192">0x0102030405</text>
 <rect class="field f1" x="378" y="204" width="179.20000000000002" height="44" rx="6"/>
-<text class="bytes" x="467.6" y="232">05 01 02 03 04 05</text>
+<text class="bytes" x="467.6" y="232"><tspan class="len">05</tspan> 01 02 03 04 05</text>
 <text class="enc" x="467.6" y="270">ℰ(5), then 5 bytes</text>
 <text class="offset" x="378" y="290">54</text>
 <text class="offset" x="563.2" y="290">60</text>

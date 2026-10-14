@@ -224,7 +224,7 @@ one byte, bigger ones more, and the first byte says how many follow. *Example:* 
 `0x05`, one byte; 300 takes two. ([2.2](./02-codec/02-compact-naturals.md))
 
 **Leading ones.** The one-bits at the very start of a byte, before its first zero; in a
-compact natural, how many more bytes follow. *Example:* `110xxxxx` has two.
+compact natural, how many more bytes follow. *Example:* `0b110xxxxx` has two.
 ([2.2](./02-codec/02-compact-naturals.md))
 
 **Blob.** Any run of bytes of no fixed length. Encoded with its length in front (the GP's

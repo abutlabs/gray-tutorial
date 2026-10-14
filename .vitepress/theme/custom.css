@@ -152,17 +152,46 @@
 .vp-doc td:first-child > a[href^="#"] { font-size: 1.3em; text-decoration: none; }
 
 /* Lesson 2.2's widgets: the bit colours of its diagram (tools/diagrams.ts), for the marker,
-   x's top bits in the first byte, and its low bits. */
+   x's top bits in the first byte, and its low bits. Wherever bits and bytes are drawn, amber
+   is structure: what tells a decoder how to read what follows (a compact natural's marker,
+   a length, a count, a tag). What changed, after a tap, is red: --changed. */
 :root {
   --bit-mark: #fdf3e1; --bit-mark-line: #d39b2a;
   --bit-top: #e8f0fe; --bit-top-line: #5b8def;
   --bit-low: #e6f6ef; --bit-low-line: #3fa97a;
 }
+:root { --changed: var(--vp-c-danger-soft); --changed-line: var(--vp-c-danger-1); }
 .dark {
   --bit-mark: #3a2e14; --bit-mark-line: #e0b04a;
   --bit-top: #1e2a44; --bit-top-line: #7aa2f7;
   --bit-low: #1b3329; --bit-low-line: #4fc08d;
 }
+/* Bits or bytes (theme/units.ts; WRITING.md, Bits and bytes): copper for bits, written 0b…,
+   teal for bytes, written in hex. In prose the code itself takes the colour. In a widget a
+   tag names each row (.unit-tag), and every cell has a bar under it (.unit-bit, .unit-byte),
+   whatever the cell's own colour means there. */
+:root {
+  --unit-bits: #b45309; --unit-bits-soft: #fbeee2;
+  --unit-bytes: #0f766e; --unit-bytes-soft: #e0f2ef;
+}
+.dark {
+  --unit-bits: #f0a35e; --unit-bits-soft: #3a2918;
+  --unit-bytes: #4fd1c5; --unit-bytes-soft: #132e2b;
+}
+.vp-doc code.bits { color: var(--unit-bits); background-color: var(--unit-bits-soft); }
+.vp-doc code.bytes { color: var(--unit-bytes); background-color: var(--unit-bytes-soft); }
+.unit-tag {
+  display: inline-block; padding: 0 6px; border: 1px solid; border-radius: 4px; line-height: 18px;
+  font-family: var(--vp-font-family-mono); font-size: 12px; font-weight: 600; vertical-align: 1px;
+}
+.unit-tag.bits { color: var(--unit-bits); border-color: var(--unit-bits); background: var(--unit-bits-soft); }
+.unit-tag.bytes { color: var(--unit-bytes); border-color: var(--unit-bytes); background: var(--unit-bytes-soft); }
+.unit-bit, .unit-byte { position: relative; }
+.unit-bit::after, .unit-byte::after {
+  content: ""; position: absolute; left: 3px; right: 3px; bottom: 2px; height: 3px; border-radius: 2px; pointer-events: none;
+}
+.unit-bit::after { background: var(--unit-bits); }
+.unit-byte::after { background: var(--unit-bytes); }
 .widget { margin: 16px 0; padding: 16px; border: 1px solid var(--vp-c-divider); border-radius: 8px; }
 .widget button.small {
   padding: 2px 10px; border: 1px solid var(--vp-c-divider); border-radius: 6px;

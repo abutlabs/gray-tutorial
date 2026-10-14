@@ -15,6 +15,7 @@ interface Field {
   name: string;
   value: string;
   bytes: string; // as hex, "…" for bytes left out
+  length?: number; // how many of those bytes are a length in front (amber, as in the widget)
   encoding: string;
   from: number; // its first byte's offset
 }
@@ -27,7 +28,7 @@ const WORK_ITEM: Field[][] = [[
 ], [
   { name: "accumulate_gas_limit", value: "42", bytes: "2a 00 00 00 00 00 00 00", encoding: "ℰ₈", from: 44 },
   { name: "export_count", value: "4", bytes: "04 00", encoding: "ℰ₂", from: 52 },
-  { name: "payload", value: "0x0102030405", bytes: "05 01 02 03 04 05", encoding: "ℰ(5), then 5 bytes", from: 54 },
+  { name: "payload", value: "0x0102030405", bytes: "05 01 02 03 04 05", length: 1, encoding: "ℰ(5), then 5 bytes", from: 54 },
 ]];
 const SHOWN_TO = 60; // the payload's last byte + 1
 const TOTAL = 236; // work_item.bin's size
@@ -39,6 +40,12 @@ const ROW = 150;
 
 const escape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const widthOf = (...texts: string[]) => Math.max(...texts.map((t) => t.length)) * CHAR + 2 * PAD;
+
+/** A field's bytes, a length in front of them marked as one. */
+function bytesOf(f: Field): string {
+  const pairs = f.bytes.split(" "), n = f.length ?? 0;
+  return n ? `<tspan class="len">${pairs.slice(0, n).join(" ")}</tspan> ${escape(pairs.slice(n).join(" "))}` : escape(f.bytes);
+}
 
 /** A work item's first bytes, field after field: name and value above, bytes, encoding below. */
 export function workItemBytes(): string {
@@ -53,7 +60,7 @@ export function workItemBytes(): string {
         `<text class="name" x="${mid}" y="${top + 22}">${escape(f.name)}</text>`,
         `<text class="value" x="${mid}" y="${top + 42}">${escape(f.value)}</text>`,
         `<rect class="field f${(r + i) % 2}" x="${x}" y="${top + 54}" width="${w}" height="44" rx="6"/>`,
-        `<text class="bytes" x="${mid}" y="${top + 82}">${escape(f.bytes)}</text>`,
+        `<text class="bytes" x="${mid}" y="${top + 82}">${bytesOf(f)}</text>`,
         `<text class="enc" x="${mid}" y="${top + 120}">${escape(f.encoding)}</text>`,
         `<text class="offset" x="${x}" y="${top + 140}">${f.from}</text>`,
       );
@@ -74,7 +81,8 @@ export function workItemBytes(): string {
 <style>
   text { fill: #3c3c43; text-anchor: middle; }
   .value, .enc, .offset { fill: #67676c; font-size: 13px; }
-  .bytes { fill: #1b1b1f; }
+  .bytes { fill: #0f766e; font-weight: bold; }
+  .len { fill: #a16207; }
   .offset { text-anchor: start; }
   .field { stroke-width: 1.5; }
   .f0 { fill: #e8f0fe; stroke: #5b8def; }
@@ -83,7 +91,8 @@ export function workItemBytes(): string {
   @media (prefers-color-scheme: dark) {
     text { fill: #dfdfd6; }
     .value, .enc, .offset { fill: #a8a8a0; }
-    .bytes { fill: #ffffff; }
+    .bytes { fill: #4fd1c5; }
+    .len { fill: #e0b04a; }
     .f0 { fill: #1e2a44; stroke: #7aa2f7; }
     .f1 { fill: #1b3329; stroke: #4fc08d; }
   }
@@ -102,16 +111,17 @@ export function compactNaturals(): string {
   const at = (b: number, i: number) => X0 + b * (BYTE + BYTE_GAP) + i * BIT;
   const cell = (cls: string, x: number, y: number, bit: string) => [
     `<rect class="${cls}" x="${x}" y="${y}" width="${BIT}" height="26"/>`,
-    `<text x="${x + BIT / 2}" y="${y + 18}">${bit}</text>`,
+    `<text x="${x + BIT / 2}" y="${y + 17}">${bit}</text>`,
+    `<rect class="bitbar" x="${x + 4}" y="${y + 21}" width="${BIT - 8}" height="2.5" rx="1"/>`, // bits are copper
   ];
   // The key: a bit is one small square; a byte is a thick box of eight.
   const keyByte = 200;
   const parts: string[] = [
     ...cell("plain", 16, 8, "1"),
-    `<text class="sub" x="${16 + BIT + 10}" y="26">one bit: 0 or 1</text>`,
+    `<text class="sub bits" x="${16 + BIT + 10}" y="26">one bit: 0 or 1</text>`,
     ...[..."10000000"].flatMap((bit, i) => cell("plain", keyByte + i * BIT, 8, bit)),
     `<rect class="byte" x="${keyByte}" y="8" width="${BYTE}" height="26" rx="3"/>`,
-    `<text class="sub" x="${keyByte + BYTE + 10}" y="26">one byte: 8 bits</text>`,
+    `<text class="sub bytes" x="${keyByte + BYTE + 10}" y="26">one byte: 8 bits</text>`,
   ];
   for (const [k, x] of COMPACT.entries()) {
     const top = KEY + k * BLOCK, { l, bytes, roles } = compact(x);
@@ -127,9 +137,9 @@ export function compactNaturals(): string {
     const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
     parts.push(
       `<text class="label" x="16" y="${yX + 18}">x = ${x}</text>`,
-      `<text class="sub" x="16" y="${yX + 36}">${xBits.length} bits</text>`,
+      `<text class="sub bits" x="16" y="${yX + 36}">${xBits.length} bits</text>`,
       `<text class="label" x="16" y="${yE + 18}">ℰ(${x})</text>`,
-      `<text class="sub" x="16" y="${yE + 36}">${plural(bytes.length, "byte")}</text>`,
+      `<text class="sub bytes" x="16" y="${yE + 36}">${plural(bytes.length, "byte")}</text>`,
       `<text class="group" x="${start + (topCount * BIT) / 2}" y="${top + 22}">${l === 0 ? "7 bits" : `top ${topCount} bits`}</text>`,
       // Each group of x's bits, carried down into its place in ℰ(x).
       `<polygon class="carry top" points="${start},${yX + 26} ${lowAt},${yX + 26} ${lowAt},${yE} ${start},${yE}"/>`,
@@ -150,7 +160,7 @@ export function compactNaturals(): string {
         `<text class="hex" x="${at(b, 0) + BYTE / 2}" y="${yE + 46}">0x${bytes[b].toString(16).padStart(2, "0")}</text>`,
       );
     }
-    const marker = l === 0 ? "0: no more bytes follow" : "10: one more byte follows";
+    const marker = l === 0 ? "0b0: no more bytes follow" : "0b10: one more byte follows";
     parts.push(`<text class="note" x="${at(0, 0)}" y="${yE + 68}">↑ ${marker}</text>`);
   }
   const width = at(1, 8) + 16;
@@ -159,24 +169,29 @@ export function compactNaturals(): string {
   text { fill: #3c3c43; text-anchor: middle; }
   .label, .sub { text-anchor: start; }
   .group, .hex, .sub { fill: #67676c; font-size: 13px; }
-  .note { fill: #c2410c; font-size: 12px; text-anchor: start; }
+  .note { fill: #a16207; font-size: 12px; text-anchor: start; }
+  .group.bits, .sub.bits { fill: #b45309; }
+  .sub.bytes, .hex { fill: #0f766e; }
+  .bitbar { fill: #b45309; stroke: none; }
   .plain { fill: #f6f6f7; stroke: #9a9aa0; }
   .mark { fill: #fdf3e1; stroke: #d39b2a; }
   .top { fill: #e8f0fe; stroke: #5b8def; }
   .low { fill: #e6f6ef; stroke: #3fa97a; }
   .carry { stroke: none; opacity: 0.45; }
   .number { fill: none; stroke: #9a9aa0; stroke-dasharray: 4 3; }
-  .byte { fill: none; stroke: #3c3c43; stroke-width: 2; }
+  .byte { fill: none; stroke: #0f766e; stroke-width: 2; }
   @media (prefers-color-scheme: dark) {
     text { fill: #dfdfd6; }
     .group, .hex, .sub { fill: #a8a8a0; }
-    .note { fill: #ff9a5c; }
+    .note { fill: #e0b04a; }
+    .sub.bits, .bitbar { fill: #f0a35e; }
+    .sub.bytes, .hex { fill: #4fd1c5; }
     .plain { fill: #2a2a2e; stroke: #8a8a90; }
     .mark { fill: #3a2e14; stroke: #e0b04a; }
     .top { fill: #1e2a44; stroke: #7aa2f7; }
     .low { fill: #1b3329; stroke: #4fc08d; }
     .number { stroke: #8a8a90; }
-    .byte { stroke: #dfdfd6; }
+    .byte { stroke: #4fd1c5; }
   }
 </style>
 ${parts.join("\n")}
@@ -189,7 +204,7 @@ interface TrieNode {
   x: number;
   y: number;
   kind: "branch" | "leaf";
-  key?: string; // a leaf's key, as bits
+  key?: string; // a leaf's key's first byte, as bits (0b left off)
   path?: number; // how many of those bits lead to it
   note: string;
 }
@@ -198,19 +213,19 @@ interface TrieNode {
 const TRIE: TrieNode[] = [
   { x: 330, y: 30, kind: "branch", note: "the root: H(this node)" },
   { x: 170, y: 140, kind: "branch", note: "64 bytes: both sides' hashes" },
-  { x: 490, y: 140, kind: "leaf", key: "1111 1111", path: 1, note: "0xff…: alone on the 1 side" },
-  { x: 80, y: 250, kind: "leaf", key: "0000 0001", path: 2, note: "0x01…" },
-  { x: 290, y: 250, kind: "leaf", key: "0100 0000", path: 2, note: "0x40…" },
+  { x: 490, y: 140, kind: "leaf", key: "1111_1111", path: 1, note: "0xff…: alone on the 1 side" },
+  { x: 80, y: 250, kind: "leaf", key: "0000_0001", path: 2, note: "0x01…" },
+  { x: 290, y: 250, kind: "leaf", key: "0100_0000", path: 2, note: "0x40…" },
 ];
 const EDGES: [number, number, string][] = [[0, 1, "0"], [0, 2, "1"], [1, 3, "0"], [1, 4, "1"]];
 
-/** The bits of a key, the ones that pick its path drawn strong. */
+/** The bits of a key, written 0b…, the ones that pick its path drawn strong in the edges' blue. */
 function keyBits(bits: string, path: number): string {
   let seen = 0, strong = "", rest = "";
   for (const ch of bits) {
-    if (ch !== " " && seen < path) { strong += ch; seen++; } else rest += ch;
+    if (ch !== "_" && seen < path) { strong += ch; seen++; } else rest += ch;
   }
-  return `<tspan class="path">${strong}</tspan>${escape(rest)}`;
+  return `0b<tspan class="path">${strong}</tspan>${escape(rest)}`;
 }
 
 /** Lesson 6.1's trie: branches and leaves, the bits that sort the keys, the root on top. */
@@ -236,7 +251,7 @@ export function stateTrie(): string {
   text { fill: #3c3c43; text-anchor: middle; }
   .note { fill: #67676c; font-size: 12px; }
   .key { fill: #67676c; font-size: 13px; }
-  .path { fill: #d14d1e; font-weight: bold; }
+  .path { fill: #5b8def; font-weight: bold; }
   .bit { fill: #5b8def; font-weight: bold; }
   .edge { stroke: #9a9aa0; stroke-width: 1.5; }
   .branch { fill: #e8f0fe; stroke: #5b8def; stroke-width: 1.5; }
@@ -244,7 +259,7 @@ export function stateTrie(): string {
   @media (prefers-color-scheme: dark) {
     text { fill: #dfdfd6; }
     .note, .key { fill: #a8a8a0; }
-    .path { fill: #ff8c5a; }
+    .path { fill: #7aa2f7; }
     .bit { fill: #7aa2f7; }
     .edge { stroke: #6b6b72; }
     .branch { fill: #1e2a44; stroke: #7aa2f7; }

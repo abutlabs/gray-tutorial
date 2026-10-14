@@ -54,13 +54,13 @@ const hue = (i: number) => ({ "--hue": String((i * 67 + 140) % 360) });
     </div>
     <p v-if="x === null" class="error">x is a whole number from 0 to 2^64 − 1.</p>
     <template v-else>
-      <div class="label">x, biggest byte first, as the number reads</div>
-      <div class="bytes">
-        <div v-for="i in [...bytes.keys()].reverse()" :key="i" class="byte" :style="hue(i)"><b>{{ toHex([bytes[i]]).slice(2) }}</b><small>{{ bytes[i] }} × {{ weight(i) }}</small></div>
+      <div class="label"><span class="unit-tag bytes">bytes</span> x, biggest byte first, as the number reads</div>
+      <div class="byte-row">
+        <div v-for="i in [...bytes.keys()].reverse()" :key="i" class="byte unit-byte" :style="hue(i)"><b>{{ toHex([bytes[i]]).slice(2) }}</b><small>{{ bytes[i] }} × {{ weight(i) }}</small></div>
       </div>
-      <div class="label">ℰ{{ "₀₁₂₃₄₅₆₇₈"[l] }}(x), smallest byte first, as JAM writes</div>
-      <div class="bytes">
-        <div v-for="(b, i) in bytes" :key="i" class="byte" :style="hue(i)"><b>{{ toHex([b]).slice(2) }}</b><small>{{ b }} × {{ weight(i) }}</small></div>
+      <div class="label"><span class="unit-tag bytes">bytes</span> ℰ{{ "₀₁₂₃₄₅₆₇₈"[l] }}(x), smallest byte first, as JAM writes</div>
+      <div class="byte-row">
+        <div v-for="(b, i) in bytes" :key="i" class="byte unit-byte" :style="hue(i)"><b>{{ toHex([b]).slice(2) }}</b><small>{{ b }} × {{ weight(i) }}</small></div>
       </div>
       <p class="line">
         {{ sum.length ? sum.map(({ b, i }) => `${b} × ${weight(i)}`).join(" + ") : "0" }}
@@ -93,7 +93,7 @@ const hue = (i: number) => ({ "--hue": String((i * 67 + 140) % 360) });
   font-family: inherit; font-size: 15px;
 }
 .label { font-size: 13px; color: var(--vp-c-text-2); margin-top: 12px; }
-.bytes { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0; }
+.byte-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0; }
 .byte {
   display: flex; flex-direction: column; align-items: center; min-width: 64px; padding: 4px 8px;
   border: 2px solid var(--vp-c-text-1); border-radius: 4px; font-family: var(--vp-font-family-mono);

@@ -12,7 +12,7 @@ const RECIPES: Recipe[] = ["C(i)", "C(255, s)", "C(s, h)"];
 const MAX_SERVICE = 2 ** 32 - 1;
 const PER_ROW = 8;
 const GOALS = [
-  { id: "time", say: "τ's key, C(11): 0b and 30 zeros" },
+  { id: "time", say: "τ's key, C(11): 0x0b and 30 zeros" },
   { id: "account", say: "service 0x04030201's account: ff 01 00 02 00 03 00 04 00, then zeros" },
   { id: "zero", say: "service 0's account: ff and 30 zeros, the key a component 255 would have" },
   { id: "weave", say: "weave another service into the same hash: only bytes 0, 2, 4 and 6 change" },
@@ -104,7 +104,7 @@ watch([recipe, hex, s, typed], ([r, h, sv, a], [, hBefore, sBefore, aBefore]) =>
     </p>
     <div v-else class="key" role="list" aria-label="the key's 31 bytes">
       <div v-for="(row, r) in rowsOf(key)" :key="r" class="row">
-        <div v-for="(c, k) in row" :key="k" class="cell" :class="c.from.kind" role="listitem"
+        <div v-for="(c, k) in row" :key="k" class="cell unit-byte" :class="c.from.kind" role="listitem"
           :aria-label="`byte ${r * PER_ROW + k}: ${toHex([c.byte]).slice(2)}, from ${labelOf(c)}`">
           <small class="at">{{ r * PER_ROW + k }}</small>
           <b>{{ toHex([c.byte]).slice(2) }}</b>

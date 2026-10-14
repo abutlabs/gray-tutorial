@@ -95,13 +95,13 @@ function pick(id: string) {
     </p>
 
     <table class="code">
-      <thead><tr><th><span class="sr-only">now</span></th><th>at</th><th>bytes</th><th>in words</th></tr></thead>
+      <thead><tr><th><span class="sr-only">now</span></th><th>at</th><th>opcode, then bytes</th><th>in words</th></tr></thead>
       <tbody>
         <tr v-for="ins in lines" :key="ins.at" :class="ins.at !== here ? '' : stopped ? last.exit : 'now'">
           <td class="mark">{{ ins.at !== here ? "" : stopped ? (last.exit === "halt" ? "■" : "✕") : "▶" }}</td>
           <td class="at">{{ ins.at }}</td>
           <td class="bytes">
-            <b>{{ code.code[ins.at] }}</b><span v-for="(b, k) in bytesOf(ins.at + 1, ins.next)" :key="k" class="arg">, {{ hex(b) }}</span>
+            <b :title="`opcode ${code.code[ins.at]}, in decimal as the Gray Paper numbers it`">{{ code.code[ins.at] }}</b><span v-for="(b, k) in bytesOf(ins.at + 1, ins.next)" :key="k" class="arg">, <code class="bytes">{{ hex(b) }}</code></span>
           </td>
           <td class="words">{{ say(ins) }}<span v-if="ins.skip" class="skip"> · skip {{ ins.skip }}</span></td>
         </tr>

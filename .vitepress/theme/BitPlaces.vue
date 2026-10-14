@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
   width?: number;
   presets?: number[];
   goals?: { value: number; say: string }[];
-  roles?: Role[]; // colour each place as the diagram does; none: a 1 is the marker's colour
+  roles?: Role[]; // colour each place as the diagram does; none: a 1 is just a bit, copper
   range?: string; // what these bits can hold
 }>(), {
   width: 8,
@@ -46,15 +46,15 @@ function set(v: number) {
     </div>
     <p class="range">{{ range }}</p>
     <div class="row">
-      <button v-for="(p, i) in places" :key="p" class="bit"
-        :class="[roles?.[i] ?? 'mark', { on: bits[i] === '1', split: i > 0 && roles && roles[i] !== roles[i - 1] }]"
+      <button v-for="(p, i) in places" :key="p" class="bit unit-bit"
+        :class="[roles?.[i] ?? 'plain', { on: bits[i] === '1', split: i > 0 && roles && roles[i] !== roles[i - 1] }]"
         :aria-pressed="bits[i] === '1'" :aria-label="`the ${p}s bit`" @click="set(value ^ p)">
         <span class="digit">{{ bits[i] }}</span>
         <span class="place">{{ p }}</span>
       </button>
     </div>
     <p class="sum">
-      <code>{{ bits }}</code> =
+      <code class="bits">0b{{ bits }}</code> =
       <template v-if="sum.length">{{ sum.join(" + ") }}{{ sum.length > 1 ? ` = ${value}` : "" }}</template>
       <template v-else>0</template>
     </p>
@@ -66,7 +66,7 @@ function set(v: number) {
     </div>
     <ul class="goals">
       <li v-for="g in goals" :key="g.value" :class="{ done: reached.has(g.value) }">
-        {{ reached.has(g.value) ? "✓" : "○" }} {{ g.say }}<template v-if="reached.has(g.value)">: <code>{{ bitsOf(g.value, width) }}</code></template>
+        {{ reached.has(g.value) ? "✓" : "○" }} {{ g.say }}<template v-if="reached.has(g.value)">: <code class="bits">0b{{ bitsOf(g.value, width) }}</code></template>
       </li>
     </ul>
   </div>
@@ -82,6 +82,7 @@ function set(v: number) {
 .bit:hover { border-color: var(--vp-c-brand-1); }
 .bit.split { margin-left: 12px; }
 .bit.mark.on { background: var(--bit-mark); border-color: var(--bit-mark-line); }
+.bit.plain.on { background: var(--unit-bits-soft); border-color: var(--unit-bits); }
 .bit.top { border-color: var(--bit-top-line); }
 .bit.top.on { background: var(--bit-top); }
 .bit.low { border-color: var(--bit-low-line); }

@@ -197,13 +197,13 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 Same assurance, two sizes. On tiny the bitfield is one byte, `0x01`: core 0, available.
-On full it's 42 bytes of `0x55` and a last `0x15`. `0x55` is `01010101` in binary, so
+On full it's 42 bytes of `0x55` and a last `0x15`. `0x55` is `0b01010101` in binary, so
 every *other* core says "got it": 171 of the 341. (The last byte is smaller because 341
 cores need only 5 of its 8 bits.)
 
 Which cores are those? Lowest bit first: core 0 is the lowest bit of byte 0, the one at
 the *right* end when the byte is written in binary, and core 7 the highest, at the left.
-So `01010101`, read from the right, is cores 0, 2, 4 and 6. Click cores and watch the
+So `0b01010101`, read from the right, is cores 0, 2, 4 and 6. Click cores and watch the
 bytes; "every other core" on full rebuilds the vector's bitfield:
 
 <CoreBitfield />
@@ -247,7 +247,7 @@ Your `Assurance(config)` takes the size as an argument every time, so it can't f
   > No: the bitfield never has a length. Both sides know C, so both know how many
   > bytes to read.
 
-**On full, the bitfield starts with `0x55`, which is `01010101` in binary. Which cores in that first byte say "got it"?**
+**On full, the bitfield starts with `0x55`, which is `0b01010101` in binary. Which cores in that first byte say "got it"?**
 
 - [ ] Cores 1, 3, 5 and 7
   > No: that reads the bits from the left. Lowest bit first means core 0 is the bit
@@ -255,7 +255,7 @@ Your `Assurance(config)` takes the size as an argument every time, so it can't f
 - [x] Cores 0, 2, 4 and 6
   > Yes: read from the right, the bits for cores 0 to 7 are 1, 0, 1, 0, 1, 0, 1, 0.
 - [ ] Cores 0 to 3, the first half
-  > No: that would be `00001111`, `0x0f`. `0x55` has its ones spread out, every other
+  > No: that would be `0b00001111`, `0x0f`. `0x55` has its ones spread out, every other
   > bit.
 
 **What goes wrong if a decoder reads a full assurance with tiny's 1-byte bitfield?**

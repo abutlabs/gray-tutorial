@@ -41,8 +41,8 @@ calculation takes one kind or the other, never both, so every value in it needs 
 
 One more trap while we're here: in JavaScript, `**` raises to a power, and `^` doesn't.
 `^` is *xor*, one of the bitwise operators below: it compares two numbers bit by bit and
-keeps the bits set in exactly one of them. 2 is `000010` and 53 is `110101`, so `2 ^ 53`
-is `110111`, which is 55. `2 ** 53` is 9007199254740992.
+keeps the bits set in exactly one of them. 2 is `0b000010` and 53 is `0b110101`, so `2 ^ 53`
+is `0b110111`, which is 55. `2 ** 53` is 9007199254740992.
 
 ## What the Gray Paper says
 
@@ -205,8 +205,8 @@ let ult (a : int64) (b : int64) = Int64.unsigned_compare a b < 0
 **What is `2 ^ 53` in JavaScript?**
 
 - [x] 55
-  > Yes: `^` is xor, a bitwise operator. 2 is `000010` and 53 is `110101`; xor keeps the
-  > bits set in exactly one of them, `110111`, which is 32 + 16 + 4 + 2 + 1 = 55.
+  > Yes: `^` is xor, a bitwise operator. 2 is `0b000010` and 53 is `0b110101`; xor keeps the
+  > bits set in exactly one of them, `0b110111`, which is 32 + 16 + 4 + 2 + 1 = 55.
 - [ ] 9007199254740992
   > No: that's `2 ** 53`. `^` doesn't raise to a power.
 - [ ] A `TypeError`

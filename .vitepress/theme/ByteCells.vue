@@ -10,7 +10,7 @@ defineProps<{ groups: { bits: string; roles: Role[]; note: string }[]; boxed?: b
   <div class="byte-cells">
     <div v-for="(g, n) in groups" :key="n" class="group">
       <div class="cells" :class="{ boxed }">
-        <span v-for="(bit, i) in g.bits" :key="i" class="cell" :class="g.roles[i]">{{ bit }}</span>
+        <span v-for="(bit, i) in g.bits" :key="i" class="cell unit-bit" :class="g.roles[i]">{{ bit }}</span>
       </div>
       <div class="note">{{ g.note }}</div>
     </div>
@@ -20,10 +20,10 @@ defineProps<{ groups: { bits: string; roles: Role[]; note: string }[]; boxed?: b
 <style scoped>
 .byte-cells { display: flex; gap: 12px; flex-wrap: wrap; margin: 4px 0 8px; }
 .cells { display: flex; }
-.cells.boxed { outline: 2px solid var(--vp-c-text-1); border-radius: 3px; }
+.cells.boxed { outline: 2px solid var(--unit-bytes); border-radius: 3px; }
 .cell {
   width: 20px; text-align: center; font-family: var(--vp-font-family-mono); font-size: 14px;
-  line-height: 24px; border: 1px solid; margin-right: -1px;
+  line-height: 24px; padding-bottom: 5px; border: 1px solid; margin-right: -1px;
 }
 .cell.mark { background: var(--bit-mark); border-color: var(--bit-mark-line); }
 .cell.top { background: var(--bit-top); border-color: var(--bit-top-line); }

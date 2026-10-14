@@ -10,7 +10,7 @@ So the Gray Paper has a second way to write a number, one that shrinks to fit.
   nine, with the first byte saying how many more follow. *Example:* 5 is `0x05`, one
   byte; 128 takes two, `0x8080`.
 - **Leading ones.** The one-bits at the very start of a byte, before its first zero.
-  *Example:* `110xxxxx` has two leading ones: two more bytes follow.
+  *Example:* `0b110xxxxx` has two leading ones: two more bytes follow.
 - **Off-by-one.** A bug that's wrong by exactly one, usually at the edge of a range.
   *Example:* a loop over ten items that runs eleven times.
 
@@ -25,16 +25,16 @@ of its bits carry the start of the number.
 x, enough for 0 to 127.
 
 Why 127? A byte's eight bits are worth 128, 64, 32, 16, 8, 4, 2 and 1, left to right, as
-in [lesson 1.1](../01-bytes-and-numbers/01-bytes-and-hex.md#hex), and the number is the sum of the places holding a 1. `01111111` has a 1 in every place but the
+in [lesson 1.1](../01-bytes-and-numbers/01-bytes-and-hex.md#hex), and the number is the sum of the places holding a 1. `0b01111111` has a 1 in every place but the
 first: 64 + 32 + 16 + 8 + 4 + 2 + 1 = 127. Add 1 and every 1 carries, as 999 + 1 does in
-decimal: `10000000`, 128. So seven bits reach 127 and no further, and 128 is the first
+decimal: `0b10000000`, 128. So seven bits reach 127 and no further, and 128 is the first
 number that needs the eighth. Click the bits to try it:
 
 <BitPlaces />
 
 **128 to 16,383: two bytes.** 128 needs 8 bits, one too many. So the first byte starts
-`10`: one more byte follows. That leaves 6 bits in the first byte and 8 in the second, 14
-in all. Write x in 14 bits, put its top 6 after the `10`, and its low 8 in the second
+`0b10`: one more byte follows. That leaves 6 bits in the first byte and 8 in the second, 14
+in all. Write x in 14 bits, put its top 6 after the `0b10`, and its low 8 in the second
 byte.
 
 The 14 places go on doubling past 128: 256, 512, up to 8,192, so the most they hold is
@@ -60,14 +60,14 @@ its two bytes:
 > more bytes follow". Nothing in the byte says which: the Gray Paper's types say what comes
 > where, and the decoder reads in that order.
 
-In the picture, each small square is one bit, a 0 or a 1, and each thick box is one byte
-of eight bits. The top row of each pair is x itself: a number, written as one unbroken
-strip of bits, not yet bytes. The bottom row is ℰ(x), the bytes that go on the wire. The
+In the picture, each small square is one bit, a 0 or a 1 with a copper bar under it, and
+each thick teal box is one byte of eight bits. The top row of each pair is x itself: a
+number, written as one unbroken strip of bits, not yet bytes. The bottom row is ℰ(x), the bytes that go on the wire. The
 shading shows where each group of x's bits ends up.
 
-![A key first: a small square is one bit, a thick box of eight squares is one byte. Then 127, 128 and 300. 127 is a strip of seven one-bits; its one byte is a 0, then those seven bits: 0x7f. 128 is a strip of 14 bits, six zero top bits then the low bits 10000000; its first byte is the marker 10 then the six top bits, 0x80, and its second byte is the low bits, 0x80. 300 has the top bits 000001 and the low bits 00101100, so its bytes are 0x81 and 0x2c](./images/02-compact-naturals.svg)
+![A key first: a small square is one bit, a thick box of eight squares is one byte. Then 127, 128 and 300. 127 is a strip of seven one-bits; its one byte is a 0, then those seven bits: 0x7f. 128 is a strip of 14 bits, six zero top bits then the low bits 0b10000000; its first byte is the marker 0b10 then the six top bits, 0x80, and its second byte is the low bits, 0x80. 300 has the top bits 0b000001 and the low bits 0b00101100, so its bytes are 0x81 and 0x2c](./images/02-compact-naturals.svg)
 
-128's two bytes are both `0x80`, but only by coincidence. The first is the marker `10`
+128's two bytes are both `0x80`, but only by coincidence. The first is the marker `0b10`
 with 128's top bits after it, which are all zero. The second is 128's low 8 bits. 300 has
 a top bit set, so its two bytes differ: `0x812c`.
 
@@ -76,12 +76,12 @@ start of the first byte, so each length holds 7 bits more than the last:
 
 | x is below | bytes | first byte | bits for x |
 | --- | --- | --- | --- |
-| 2^7 | 1 | `0xxxxxxx` | 7 |
-| 2^14 | 2 | `10xxxxxx` | 6 + 8 = 14 |
-| 2^21 | 3 | `110xxxxx` | 5 + 16 = 21 |
+| 2^7 | 1 | `0b0xxxxxxx` | 7 |
+| 2^14 | 2 | `0b10xxxxxx` | 6 + 8 = 14 |
+| 2^21 | 3 | `0b110xxxxx` | 5 + 16 = 21 |
 | ... | ... | ... | ... |
-| 2^56 | 8 | `11111110` | 0 + 56 = 56 |
-| 2^64 | 9 | `11111111` | 0 + 64 = 64 |
+| 2^56 | 8 | `0b11111110` | 0 + 56 = 56 |
+| 2^64 | 9 | `0b11111111` | 0 + 64 = 64 |
 
 When two or more bytes follow, they're little-endian, lowest first, as in [lesson
 2.1](./01-fixed-width-integers.md): 16,384 is `c0 00 40`. The last row breaks the
@@ -98,7 +98,7 @@ length.
 
 > [!NOTE]
 > If you know UTF-8, this is a cousin of its trick, but count with care. In UTF-8 the
-> leading ones count the first byte too, so `110xxxxx` means two bytes in all. Here it
+> leading ones count the first byte too, so `0b110xxxxx` means two bytes in all. Here it
 > means two *more*: three in all.
 
 ## What the Gray Paper says
@@ -140,14 +140,14 @@ Each case is a row of the table above:
   to be at least $2^{7l}$, and for l = 0 that's 1.
 - **The middle case** is every row up to eight bytes, in three pieces:
   - $2^8 - 2^{8-l}$ is the marker: l ones, then zeros. For l = 1 it's 256 − 128 = 128,
-    `10000000`; for l = 2 it's 256 − 64 = 192, `11000000`.
+    `0b10000000`; for l = 2 it's 256 − 64 = 192, `0b11000000`.
   - $\lfloor x / 2^{8l} \rfloor$ is x's top bits, added into the zeros after the marker.
   - $\mathcal{E}_l(x \bmod 2^{8l})$ is x's low l bytes, little-endian, from [lesson
     2.1](./01-fixed-width-integers.md).
 
   Its condition says there is some l from 0 to 7 with x at least $2^{7l}$ and below
   $2^{7(l+1)}$. Exactly one l fits each x: the number of bytes after the first.
-- **Otherwise** is the nine-byte row: $2^8 - 1$ is 255, `11111111`, and then all of x
+- **Otherwise** is the nine-byte row: $2^8 - 1$ is 255, `0b11111111`, and then all of x
   in eight bytes.
 
 ## The tests
@@ -426,7 +426,7 @@ returns a pair, `(value, bytes_consumed)`, where yours returns an object.
   > No: a compact natural's first byte gives its first bit to the marker. A lone byte
   > starts with 0, "no more follow", which leaves 7 bits: 0 to 127.
 - [x] One byte has 7 bits for x, and 128 needs an eighth
-  > Yes: 64 + 32 + 16 + 8 + 4 + 2 + 1 = 127 is the most 7 bits hold. 128 is `10000000`,
+  > Yes: 64 + 32 + 16 + 8 + 4 + 2 + 1 = 127 is the most 7 bits hold. 128 is `0b10000000`,
   > and that first place belongs to the marker.
 - [ ] 128 is negative as a signed byte, so it needs a second
   > No: nothing here is signed. The limit is the marker bit, not a sign bit.
@@ -437,10 +437,10 @@ returns a pair, `(value, bytes_consumed)`, where yours returns an object.
   > No: they match by coincidence. 300 is `0x812c`, and its two bytes differ.
 - [ ] A length, 128, then the value
   > No: the first byte isn't a length. Its leading ones say how many bytes follow:
-  > `0x80` is `10000000`, one leading one, so one more byte.
-- [x] The marker `10` with 128's top six bits, all zero; then 128's low eight bits
-  > Yes: 128 in 14 bits is `000000` then `10000000`. The marker and the zeros make
-  > `10000000`, `0x80`, and the low bits are `0x80` too.
+  > `0x80` is `0b10000000`, one leading one, so one more byte.
+- [x] The marker `0b10` with 128's top six bits, all zero; then 128's low eight bits
+  > Yes: 128 in 14 bits is `0b000000` then `0b10000000`. The marker and the zeros make
+  > `0b10000000`, `0x80`, and the low bits are `0x80` too.
 
 **What is ℰ(300), the compact natural?**
 
@@ -458,7 +458,7 @@ returns a pair, `(value, bytes_consumed)`, where yours returns an object.
 
 - [ ] Two: the leading ones count the bytes
   > No: that's how UTF-8 counts. Here the leading ones count the bytes after the first.
-- [x] Three: `c0` is `11000000`, two leading ones, so two more bytes follow
+- [x] Three: `c0` is `0b11000000`, two leading ones, so two more bytes follow
   > Yes: like the test's 16,384, `c0 00 40`.
 - [ ] 192: `c0` is the length
   > No: `c0` is 192 as a plain byte, but a compact natural's first byte isn't a length.
@@ -472,7 +472,7 @@ returns a pair, `(value, bytes_consumed)`, where yours returns an object.
 - [ ] Eight more bytes follow
   > No: that's `0xff`, eight leading ones. `0x80` has one.
 - [x] One more byte follows, and it belongs to the number
-  > Yes: `10000000` has one leading one, so the decoder takes the next byte as x's low
+  > Yes: `0b10000000` has one leading one, so the decoder takes the next byte as x's low
   > bits, whatever it really is. Followed by `05`, it would read 5.
 :::
 

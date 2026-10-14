@@ -17,7 +17,7 @@ const toggle = (c: number) => { if (c < props.cores) bitfield.value = flip(bitfi
   <div class="bitfield" :class="{ compact, inline }">
     <div v-for="(byte, b) in bitfield" :key="b" class="group">
       <div class="byte">
-        <button v-for="c in coresOf(b)" :key="c" class="bit"
+        <button v-for="c in coresOf(b)" :key="c" class="bit unit-bit"
           :class="{ on: c < cores && bitAt(bitfield, c), unused: c >= cores }" :disabled="c >= cores"
           :aria-pressed="bitAt(bitfield, c)" :aria-label="c < cores ? `core ${c}` : `unused bit`" @click="toggle(c)">
           <span class="digit">{{ bitAt(bitfield, c) ? 1 : 0 }}</span>
@@ -31,7 +31,7 @@ const toggle = (c: number) => { if (c < props.cores) bitfield.value = flip(bitfi
 
 <style scoped>
 .bitfield { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0; }
-.byte { display: flex; outline: 2px solid var(--vp-c-text-1); border-radius: 3px; }
+.byte { display: flex; outline: 2px solid var(--unit-bytes); border-radius: 3px; }
 .bit {
   display: flex; flex-direction: column; align-items: center; width: 28px; padding: 2px 0;
   border: 1px solid var(--bit-low-line); margin-right: -1px; font-family: var(--vp-font-family-mono);

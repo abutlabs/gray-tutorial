@@ -127,7 +127,7 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
           <div v-for="(p, i) in block.preimages" :key="i" class="item">
             service {{ p.requester }}'s data:
             <span class="cells">
-              <button v-for="(b, k) in p.blob" :key="k" class="cell-btn" :aria-label="`data byte ${k}, ${spaced([b])}: tap to add 1`"
+              <button v-for="(b, k) in p.blob" :key="k" class="cell-btn unit-byte" :aria-label="`data byte ${k}, ${spaced([b])}: tap to add 1`"
                 @click="edit({ kind: 'blob', preimage: i, byte: k })">{{ spaced([b]) }}</button>
             </span>
             <span class="twist">goes in as its requester and H(data) = {{ short(H(p.blob)) }}…</span>
@@ -140,7 +140,7 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
           <div v-for="(g, i) in block.guarantees" :key="i" class="item">
             report {{ i + 1 }} ({{ g.report.length }} bytes):
             <span class="cells">
-              <button v-for="(b, k) in g.report" :key="k" class="cell-btn" :aria-label="`report ${i + 1} byte ${k}, ${spaced([b])}: tap to add 1`"
+              <button v-for="(b, k) in g.report" :key="k" class="cell-btn unit-byte" :aria-label="`report ${i + 1} byte ${k}, ${spaced([b])}: tap to add 1`"
                 @click="edit({ kind: 'report', guarantee: i, byte: k })">{{ spaced([b]) }}</button>
             </span>
             slot <button class="small val" :aria-label="`guarantee ${i + 1}'s slot, ${g.slot}: tap to add 1`" @click="edit({ kind: 'slot', guarantee: i })">{{ g.slot }}</button>
@@ -243,7 +243,7 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
 .line { font-size: 14px; margin: 8px 0; line-height: 1.5; }
 .parts { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
 .part { margin: 0; padding: 8px 10px; border: 1px solid var(--vp-c-divider); border-radius: 6px; font-size: 14px; }
-.part.hit { border-color: var(--bit-mark-line); }
+.part.hit { border-color: var(--changed-line); }
 .head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; }
 .head span { font-size: 12px; color: var(--vp-c-text-2); }
 .item { margin: 6px 0; line-height: 2.2; }
@@ -256,7 +256,7 @@ const touched = (i: number) => diff.value?.parts[i] ?? false;
   background: var(--bit-top); font-family: var(--vp-font-family-mono); font-size: 13px; cursor: pointer;
 }
 .out { font-family: var(--vp-font-family-mono); font-size: 13px; padding: 2px 6px; border-radius: 4px; display: inline-block; }
-.out.hit, .seg.hit, .root.hit { background: var(--bit-mark); box-shadow: 0 0 0 1px var(--bit-mark-line); }
+.out.hit, .seg.hit, .root.hit { background: var(--changed); box-shadow: 0 0 0 1px var(--changed-line); }
 .glue { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; font-family: var(--vp-font-family-mono); font-size: 12px; max-width: 520px; }
 .seg { display: flex; flex-direction: column; padding: 2px 4px; border: 1px solid var(--vp-c-divider); border-radius: 3px; overflow-wrap: anywhere; }
 .seg small { font-family: var(--vp-font-family-base); font-size: 10px; color: var(--vp-c-text-2); }

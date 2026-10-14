@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { join } from "node:path";
-import { toHex } from "../.vitepress/theme/bytes.ts";
+import { bitsOf, toHex } from "../.vitepress/theme/bytes.ts";
 import { accountKey, bytesOf, COMPONENTS, componentKey, HASH_BYTES_USED, LESSON_HASH, padHash, parseHashBytes, parseNumber, wovenKey } from "../.vitepress/theme/state-keys.ts";
 import { build, fitsInLeaf, hashesRedone, keyOf, layout, leafFirstByte, leavesOf, nodesOf, rootIs } from "../.vitepress/theme/trie.ts";
 import type { Entry } from "../.vitepress/theme/trie.ts";
@@ -33,7 +33,8 @@ test("the trie widget puts each of 6.1's 21 real entries at the depth the lesson
 });
 
 test("the trie widget draws the lesson's three keys as its picture: 0xff alone on the 1 side", () => {
-  const [, a, b, c] = /Three keys starting `(0x[0-9a-f]{2})` \(`[01 ]+`\), `(0x[0-9a-f]{2})` \(`[01 ]+`\) and `(0x[0-9a-f]{2})`/.exec(lessonText(TRIE))!;
+  const [, a, aBits, b, bBits, c, cBits] = /Three keys starting `(0x[0-9a-f]{2})` \(`0b([01_]+)`\), `(0x[0-9a-f]{2})` \(`0b([01_]+)`\) and `(0x[0-9a-f]{2})`\s+\(`0b([01_]+)`\)/.exec(lessonText(TRIE))!;
+  for (const [hex, bits] of [[a, aBits], [b, bBits], [c, cBits]]) assert.equal(bits.replaceAll("_", ""), bitsOf(parseInt(hex, 16), 8), `${hex}'s bits`);
   const root = build([a, b, c].map((h) => ({ key: keyOf(parseInt(h, 16)), size: 4 })));
   const where = Object.fromEntries(leavesOf(root).map((l) => [toHex([l.entry.key[0]]), l.path]));
   assert.deepEqual(where, { "0x01": "00", "0x40": "01", "0xff": "1" });

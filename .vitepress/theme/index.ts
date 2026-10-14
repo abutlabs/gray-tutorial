@@ -12,6 +12,7 @@ import BitPlaces from "./BitPlaces.vue";
 import CompactNatural from "./CompactNatural.vue";
 import TwoBytes from "./TwoBytes.vue";
 import HexByte from "./HexByte.vue";
+import BitsAndBytes from "./BitsAndBytes.vue";
 import FixedWidth from "./FixedWidth.vue";
 import VectorMap from "./VectorMap.vue";
 import CoreBitfield from "./CoreBitfield.vue";
@@ -46,6 +47,7 @@ export default {
   enhanceApp({ app, router }) {
     // the lessons' widgets, placed in a lesson as <HexByte /> and so on (WRITING.md, Interactive)
     app.component("HexByte", HexByte); // 1.1
+    app.component("BitsAndBytes", BitsAndBytes); // 1.1
     app.component("FixedWidth", FixedWidth); // 2.1
     app.component("BitPlaces", BitPlaces); // 2.2
     app.component("TwoBytes", TwoBytes); // 2.2

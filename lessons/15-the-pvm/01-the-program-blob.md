@@ -333,7 +333,7 @@ above); your `deblob` shows the shape.
 - [ ] There are 5 instructions
   > No: there are only 3 bytes of code. `05` is the bitmask, one bit per byte of code.
 - [x] Bytes 0 and 2 of the code start an instruction
-  > Yes: `05` is 0000 0101. Read from the lowest bit: byte 0 yes, byte 1 no, byte 2 yes.
+  > Yes: `05` is `0b0000_0101`. Read from the lowest bit: byte 0 yes, byte 1 no, byte 2 yes.
 - [ ] The jump table's entry points at byte 5
   > No: the jump table is the `02` before the code: one entry, byte 2. `05` comes after
   > the code.

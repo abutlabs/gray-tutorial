@@ -84,6 +84,26 @@ least for every new panel a lesson sends the reader to.
   sits in its part's `images/`, has alt text and fits; and that every image is shown by
   some lesson.
 
+## Bits and bytes
+
+0 and 1 are digits in binary, hex and decimal alike, so `10000000` could be 128, four bytes,
+or ten million. A reader must never have to guess which. In prose, write bits as JavaScript
+does, `0b10000000` (`0b0000_0101` in groups); bytes in hex, `0x0102ff` or pairs with a space
+between, `10 00 00 00`; and decimal as plain digits. `tools/units.test.ts` refuses a bare run
+of 0s and 1s, except byte pairs and all zeros (zero in any base). The site colours each
+(`.vitepress/units.ts`): bits copper, bytes teal, with a tooltip saying how many. A lone pair
+is coloured as a byte only when it can't be decimal (`02`, `c7`, not `12`): write `0x12`
+where it matters.
+
+A widget does the same with classes from `custom.css`: `unit-bit` on every bit cell and
+`unit-byte` on every byte cell (a bar under the cell, whatever the cell's own colour means
+there), a `unit-tag` naming a row's unit, and `code.bits` or `code.bytes` around a value it
+writes out. Bit strings it writes start `0b`. A cell's own colour says what it is for:
+amber is structure, whatever tells a decoder how to read what follows (a compact
+natural's marker, a length, a count, a tag); red (`--changed`) is what a tap changed; a
+plain 1 bit is copper. Diagrams in `tools/diagrams.ts` use the same colours. *Why:* Aodh read a dump's `10 00 00 00` as
+the bits `10000000`, beside a widget that only ever showed bits.
+
 ## Diagrams
 
 Where an idea is a shape (bytes in a row, a trie, a queue), draw it, as the Rust Book draws

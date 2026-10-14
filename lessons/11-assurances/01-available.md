@@ -20,7 +20,7 @@ It's in the [glossary](../glossary.md).
 
 **Which bit is which core?** Appendix C packs bits into bytes **least significant
 first**: core 0 is the lowest bit of byte 0, core 7 the highest, core 8 the lowest bit
-of byte 1. So `0x05`, `0000 0101`, means cores 0 and 2.
+of byte 1. So `0x05`, `0b0000_0101`, means cores 0 and 2.
 
 Careful: that's the *opposite* of [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md)'s trie, which reads key bits most
 significant first. JAM uses both orders, each in its own place. Mixing them up is a
@@ -286,7 +286,7 @@ whole-number spellings of the same fraction. Pick the one you can check in your 
 **On full, an assurance's bitfield starts `05 01`. Which cores does it hold?**
 
 - [x] Cores 0, 2 and 8
-  > Yes: least significant bit first. `05` is `0000 0101`, bits 0 and 2. `01` is byte
+  > Yes: least significant bit first. `05` is `0b0000_0101`, bits 0 and 2. `01` is byte
   > 1's lowest bit, core 8.
 - [ ] Cores 5, 7 and 15
   > No: that reads each byte's bits from the left, as the trie of [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md) does.

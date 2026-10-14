@@ -3,6 +3,7 @@
      are encoded in vector-map.ts from the JSON's values, never pasted in. -->
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
+import { bytesAfterArrows } from "./units.ts";
 import { crossesRow, DUMP_FIELD, explain, flatten, isNumber, ITEM, ownerOf, ROW, rowsOf, ruleOf, shades, spaced } from "./vector-map.ts";
 import type { Node } from "./vector-map.ts";
 
@@ -94,7 +95,7 @@ onUnmounted(() => mq?.removeEventListener("change", fit));
     </p>
     <p class="line">
       <span v-if="tappedSay" class="tapped">{{ tappedSay }}</span>
-      {{ line }}
+      <template v-for="(part, n) in bytesAfterArrows(line)" :key="n"><code v-if="part.bytes" class="bytes">{{ part.text }}</code><template v-else>{{ part.text }}</template></template>
       <span v-if="across" class="across">{{ across }}</span>
     </p>
 
@@ -115,11 +116,11 @@ onUnmounted(() => mq?.removeEventListener("change", fit));
       </div>
 
       <div class="bin">
-        <div class="label">work_item.bin, {{ perRow }} to a row{{ perRow < ROW ? " (a gap after every 16, hexdump's rows)" : "" }}</div>
+        <div class="label"><span class="unit-tag bytes">bytes</span> work_item.bin, {{ perRow }} to a row, each 2 hex digits{{ perRow < ROW ? " (a gap after every 16, hexdump's rows)" : "" }}</div>
         <div class="grid" :style="{ '--per-row': perRow }" aria-label="the 236 bytes">
           <template v-for="r in rows" :key="r">
             <span class="offset" :class="{ gap: (r + perRow) % ROW === 0 && perRow < ROW }">{{ r }}</span>
-            <button v-for="i in Math.min(perRow, TOTAL - r)" :key="r + i - 1" class="byte"
+            <button v-for="i in Math.min(perRow, TOTAL - r)" :key="r + i - 1" class="byte unit-byte"
               :class="[SHADES[r + i - 1], { on: inSel(r + i - 1), len: isLength(r + i - 1), tap: tapped === r + i - 1, end: r + i === DUMP, gap: (r + perRow) % ROW === 0 && perRow < ROW }]"
               :aria-label="`byte ${r + i - 1}: ${spaced([BYTES[r + i - 1]])}`" :aria-pressed="inSel(r + i - 1)"
               @click="tapByte(r + i - 1)">{{ spaced([BYTES[r + i - 1]]) }}</button>

@@ -181,7 +181,7 @@ test at test/state.test.ts:9:1
 ...
 ```
 
-All three caught the stub. Component 11's key should start with its number, `0b`;
+All three caught the stub. Component 11's key should start with its number, `0x0b`;
 the stub's is all zeros, like every other key it makes.
 
 ## The code

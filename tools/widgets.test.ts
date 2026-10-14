@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { bitAt, bitfieldOf, bytesFor, isAvailable, needed } from "../.vitepress/theme/bitfield.ts";
-import { bitsOf, encodeFixed, HEX_DIGITS, leftOver, nibbles, toHex } from "../.vitepress/theme/bytes.ts";
+import { bigFirst, bitLength, bitsOf, byteCount, groupBits, encodeFixed, HEX_DIGITS, leftOver, MAX_BITS, nibbles, PLAYGROUND_GOALS, readings, readNumber, spacedHex, toHex } from "../.vitepress/theme/bytes.ts";
 import { compact, markerOf, MAX, strip } from "../.vitepress/theme/compact.ts";
 import { readLessons, ROOT, lessonText, lessonCode } from "./lessons.ts";
 
@@ -58,6 +58,56 @@ test("the hex byte widget's two digits are 1.1's hex, for every byte", () => {
   }
   assert.match(lessonCode("1.1"), /Uint8Array\.of\(1, 2, 255\)[\s\S]*"0x0102ff"/); // 1.1's first test
   assert.equal(toHex([1, 2, 255]), "0x0102ff");
+});
+
+test("the bits-and-bytes playground: 8 bits a byte, 2 hex digits a byte, JAM's order 2.1's", () => {
+  for (let bits = 1; bits <= MAX_BITS; bits++) {
+    const l = byteCount(bits);
+    assert.ok(8 * l >= bits && 8 * (l - 1) < bits, `${bits} bits take ${l} bytes`);
+    const max = (1n << BigInt(bits)) - 1n;
+    for (const x of [0n, 1n, 300n & max, max]) {
+      const big = bigFirst(x, l);
+      assert.equal(toHex(big).length, 2 + 2 * l, `${x}: two hex digits a byte`);
+      assert.equal(BigInt(toHex(big)), x, `${x}: the hex, as the number reads, is x`);
+      assert.equal(big.map((b) => bitsOf(b, 8)).join(""), bitsOf(x, 8 * l), `${x}: each byte is 8 of its bits`);
+      assert.deepEqual([...big].reverse(), encodeFixed(x, l), `${x}: as JAM writes it, ℰ_${l}`);
+      assert.ok(bitLength(x) <= bits || x === 0n);
+      const grouped = `0b${groupBits(bitsOf(x, bits))}`;
+      assert.equal(BigInt(grouped.replaceAll("_", "")), x, `${grouped}: still x`);
+      assert.ok(grouped.split("_").slice(1).every((g) => g.length === 8), `${grouped}: a _ between bytes`);
+    }
+  }
+});
+
+test("the playground's goals say what it shows when each is reached", () => {
+  const [bits128, byte16, u32, nine, ffff] = PLAYGROUND_GOALS;
+  assert.ok(bits128.say.includes(`0b${bitsOf(bits128.x, 8)}`) && bits128.say.includes(toHex([128])));
+  assert.ok(byte16.say.includes(toHex([16])) && byte16.say.includes(`0b${bitsOf(16, 8)}`));
+  assert.ok(u32.say.includes(spacedHex(bigFirst(16n, 4))) && u32.say.endsWith(spacedHex(encodeFixed(16n, 4))));
+  assert.equal(bitLength(nine.x), nine.bits);
+  assert.equal(byteCount(nine.bits), 2);
+  assert.equal(bitsOf(ffff.x, 16), "1".repeat(16));
+  assert.ok(ffff.say.includes(toHex(bigFirst(ffff.x, 2))));
+  for (const g of PLAYGROUND_GOALS) assert.ok(bitLength(g.x) <= g.bits, `${g.say}: fits`);
+});
+
+test("the playground reads a number as JavaScript does, and bare digits every way they can be read", () => {
+  for (const t of ["300", "0x12c", "0b100101100", "0b1_0010_1100", " 0x01 2c "]) {
+    assert.equal(readNumber(t)?.x, 300n, t);
+    assert.equal(readNumber(t)?.x, BigInt(t.replace(/[\s_]/g, "")), `${t}: as BigInt reads it`);
+  }
+  for (const t of ["", "0x", "0b", "0b2", "-5", "1e3", "12.5", "ten"]) assert.equal(readNumber(t), undefined, t);
+  assert.deepEqual(readings("10").map((r) => r.x), [10n, 16n, 2n]);
+  assert.deepEqual(readings("300").map((r) => r.x), [300n, 768n]);
+  assert.deepEqual(readings("0x10"), []);
+  // 1.1's words: "`10` could be ten, the byte `0x10` (16), or the bits `0b10` (2)", and 300's bytes
+  const words = lessonText("01-bytes-and-numbers/01-bytes-and-hex.md").replace(/\s+/g, " ");
+  const [ten, hex, bin] = readings("10");
+  assert.ok(words.includes(`\`${ten.written}\` could be ten, the byte \`${hex.written}\` (${hex.x}), or the bits \`${bin.written}\` (${bin.x})`));
+  assert.ok(words.includes(`300 needs ${bitLength(300n)} bits, \`0b${bitsOf(300, 9)}\``));
+  const [hi, lo] = bigFirst(300n, 2).map((b) => spacedHex([b]));
+  assert.ok(words.includes(`\`${hi}\` and \`${lo}\`, and 1 × 256 + 44 = 300. In hex that's \`${toHex(bigFirst(300n, 2))}\``));
+  assert.ok(words.includes(`like \`${spacedHex(encodeFixed(16n, 4))}\`: the four bytes 16, 0, 0 and 0`));
 });
 
 test("the fixed-width widget writes 2.1's and 3.1's values as the lessons' code does", () => {

@@ -328,7 +328,10 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 Read the output against the hex dump from [lesson 2.6](./06-the-first-test-vectors.md): `service` is bytes 0 to 4, then
-`code_hash` 4 to 36, `refine_gas_limit` 36 to 44. On the **1 · Basics** dashboard,
+`code_hash` 4 to 36, `refine_gas_limit` 36 to 44. Each value is the field's own bytes, in
+the file's order, as the vectors write bytes. So `extrinsic.0.len` reads `0x10000000`: the
+four bytes `10 00 00 00`, a u32 smallest byte first, which is 16. Not 268,435,456, and not
+the bits `0b10000000`. On the **1 · Basics** dashboard,
 *Decode trace* shows the same list for the run.
 
 ![Decode trace panel](./images/07-decode-trace.png)

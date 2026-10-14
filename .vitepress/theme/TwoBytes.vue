@@ -33,9 +33,9 @@ const top = computed(() => c.value.bytes[0] - markerOf(1)); // x's top 6 bits, a
     <template v-else>
       <ByteCells :groups="byteGroups(c)" boxed />
       <p class="line">
-        byte 1 = marker <span class="mark">10</span> ({{ markerOf(1) }})
-        + top bits <span class="top">{{ bitsOf(top, 6) }}</span> ({{ top }}) = {{ c.bytes[0] }} = {{ toHex([c.bytes[0]]) }}<br />
-        byte 2 = low bits <span class="low">{{ bitsOf(c.bytes[1], 8) }}</span> = {{ c.bytes[1] }} = {{ toHex([c.bytes[1]]) }}
+        byte 1 = marker <span class="mark">0b10</span> ({{ markerOf(1) }})
+        + top bits <span class="top">0b{{ bitsOf(top, 6) }}</span> ({{ top }}) = {{ c.bytes[0] }} = {{ toHex([c.bytes[0]]) }}<br />
+        byte 2 = low bits <span class="low">0b{{ bitsOf(c.bytes[1], 8) }}</span> = {{ c.bytes[1] }} = {{ toHex([c.bytes[1]]) }}
       </p>
     </template>
   </BitPlaces>

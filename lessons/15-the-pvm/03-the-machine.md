@@ -51,7 +51,9 @@ Arithmetic wraps around at 2^64.
 Below, step three tiny programs from this lesson's tests. The loop adds 10 + 9 + … + 1
 into r2: watch ı move on by 1 + skip(ı), the register each instruction writes light up,
 and ε stay ▸ until the return halts the machine. The loop without its `fallthrough`, and
-a jump into the middle, both panic. Find the instruction that does it, and why.
+a jump into the middle, both panic. Find the instruction that does it, and why. Each line's
+first number is its opcode in decimal, as the Gray Paper's table numbers it (51 is
+`load_imm`); the bytes after it are hex, as in the code below.
 
 <PvmStepper />
 

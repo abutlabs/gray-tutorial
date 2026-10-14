@@ -101,12 +101,12 @@ const said = (s: Step<Mountain>) =>
         <span class="name"><span class="word">place </span>{{ i - 1 }}</span>
         <span class="peak">{{ shown[i - 1] ? label(shown[i - 1]!) : "∅" }}</span>
         <span class="name">of {{ size(i - 1) }}</span>
-        <span class="bit">{{ shown[i - 1] ? 1 : 0 }}</span>
+        <span class="bit unit-bit">{{ shown[i - 1] ? 1 : 0 }}</span>
       </div>
     </div>
     <p v-if="!places" class="line">An empty belt: no places yet, n = 0.</p>
     <p v-else class="line">
-      {{ n }} in binary is <b>{{ n.toString(2) }}</b>. Read the places from the right: the peaks are its 1s.
+      {{ n }} in binary is <code class="bits">0b{{ n.toString(2) }}</code>. Read the places from the right: the peaks are its 1s.
     </p>
     <div class="controls">
       <button class="small" :disabled="n >= MOST || !!pending" @click="append">append item {{ n + 1 }}</button>
@@ -118,7 +118,7 @@ const said = (s: Step<Mountain>) =>
       <p class="sum">
         <template v-if="pending">appending item {{ n + 1 }}: carrying {{ carry ? label(carry.carried) : "" }}</template>
         <template v-else-if="last">
-          appended item {{ last.from + 1 }}: {{ binary(last.from) }} + 1 = {{ binary(n) }},
+          appended item {{ last.from + 1 }}: <code class="bits">0b{{ binary(last.from) }}</code> + 1 = <code class="bits">0b{{ binary(n) }}</code>,
           {{ merges(last.steps) }} merge{{ merges(last.steps) === 1 ? "" : "s" }}
         </template>
       </p>
@@ -126,7 +126,7 @@ const said = (s: Step<Mountain>) =>
         <li v-for="s in log" :key="s.place" :class="s.action">{{ said(s) }}</li>
       </ol>
     </div>
-    <p v-if="n >= MOST" class="line">63 items fill six places: 111111. Empty the belt to start again.</p>
+    <p v-if="n >= MOST" class="line">63 items fill six places: <code class="bits">0b111111</code>. Empty the belt to start again.</p>
     <ul class="goals">
       <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} {{ g.say }}</li>
     </ul>

@@ -41,6 +41,26 @@ digit, and the first counts 16 times the second: `2c` is 16 × 2 + 12 = 44, and 
 
 <HexByte />
 
+## More than one byte
+
+One byte stops at 255. A bigger number takes more bytes side by side, and each byte counts
+256 times the one on its right, as each bit counts twice the one on its right. 300 needs 9
+bits, `0b100101100`, one too many for a byte. So it takes two: `01` and `2c`, and 1 × 256 +
+44 = 300. In hex that's `0x012c`. Still two digits per byte, so 2 bytes are 4 digits and 4
+bytes are 8.
+
+Bits, bytes and decimal digits are easy to mix up, because 0 and 1 are digits in all three.
+`10` could be ten, the byte `0x10` (16), or the bits `0b10` (2). So this tutorial writes each
+the way JavaScript does: bits start `0b`, hex starts `0x`, and plain digits are decimal. A row
+of bytes is hex pairs with a space between, like `10 00 00 00`: the four bytes 16, 0, 0 and
+0. (That row is also how JAM writes the number 16 when it gives it four bytes, smallest byte
+first: [lesson 2.1](../02-codec/01-fixed-width-integers.md).) On the website, bits are copper
+and bytes are teal, in the text and in every widget.
+
+Pick a size in bits or bytes, flip bits, or type a number:
+
+<BitsAndBytes />
+
 ## What the Gray Paper says
 
 Section 3 (*Notational Conventions*) names the building blocks. Two you'll meet on nearly
@@ -273,7 +293,7 @@ you, inside Node.
   > No: that reads the digits the wrong way round. The first digit counts 16 times the
   > second, so here the 8 is worth 8 × 16. The byte 8 is `0x08`.
 - [x] 128
-  > Yes: 16 × 8 + 0 = 128. In bits it's `10000000`: only the first place, the one worth
+  > Yes: 16 × 8 + 0 = 128. In bits it's `0b10000000`: only the first place, the one worth
   > 128, holds a 1.
 
 **How does a test vector write the bytes 1, 2 and 255?**

@@ -124,9 +124,9 @@ const hashDiff = (i: number) => message.value.hash[i] !== signedMessage.value.ha
     </dl>
 
     <div class="strip">
-      <div class="label">1 · the prefix X_A: {{ message.prefix.length }} ASCII bytes</div>
+      <div class="label"><span class="unit-tag bytes">bytes</span> 1 · the prefix X_A: {{ message.prefix.length }} ASCII bytes</div>
       <div class="cells">
-        <span v-for="(b, i) in message.prefix" :key="i" class="cell letter" :class="{ diff: prefixDiff(i) }">
+        <span v-for="(b, i) in message.prefix" :key="i" class="cell unit-byte letter" :class="{ diff: prefixDiff(i) }">
           <span class="h">{{ hex(b) }}</span><span class="c">{{ letters[i] }}</span>
         </span>
       </div>
@@ -151,9 +151,9 @@ const hashDiff = (i: number) => message.value.hash[i] !== signedMessage.value.ha
     </div>
 
     <div class="strip">
-      <div class="label">3 · H(parent ⌢ bitfield): 32 bytes of Blake2b <span class="note">(outlined: bytes that differ from the message that was signed)</span></div>
+      <div class="label"><span class="unit-tag bytes">bytes</span> 3 · H(parent ⌢ bitfield): 32 bytes of Blake2b <span class="note">(outlined: bytes that differ from the message that was signed)</span></div>
       <div class="cells hash">
-        <span v-for="(b, i) in message.hash" :key="i" class="cell" :class="{ diff: hashDiff(i) }">{{ hex(b) }}</span>
+        <span v-for="(b, i) in message.hash" :key="i" class="cell unit-byte" :class="{ diff: hashDiff(i) }">{{ hex(b) }}</span>
       </div>
     </div>
 
@@ -207,7 +207,7 @@ button.small { min-height: 36px; min-width: 36px; }
 }
 .cell.letter { border-color: var(--bit-mark-line); background: var(--bit-mark); }
 .cell .c { font-size: 12px; color: var(--vp-c-text-2); }
-.cell.diff { outline: 2px solid var(--vp-c-danger-1); outline-offset: -1px; font-weight: 700; }
+.cell.diff { outline: 2px solid var(--changed-line); outline-offset: -1px; font-weight: 700; }
 .input { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 4px 0; }
 .input code { font-size: 13px; }
 .tag { font-size: 13px; font-family: var(--vp-font-family-mono); color: var(--vp-c-text-2); }

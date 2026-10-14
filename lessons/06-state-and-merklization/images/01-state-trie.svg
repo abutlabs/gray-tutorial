@@ -3,7 +3,7 @@
   text { fill: #3c3c43; text-anchor: middle; }
   .note { fill: #67676c; font-size: 12px; }
   .key { fill: #67676c; font-size: 13px; }
-  .path { fill: #d14d1e; font-weight: bold; }
+  .path { fill: #5b8def; font-weight: bold; }
   .bit { fill: #5b8def; font-weight: bold; }
   .edge { stroke: #9a9aa0; stroke-width: 1.5; }
   .branch { fill: #e8f0fe; stroke: #5b8def; stroke-width: 1.5; }
@@ -11,7 +11,7 @@
   @media (prefers-color-scheme: dark) {
     text { fill: #dfdfd6; }
     .note, .key { fill: #a8a8a0; }
-    .path { fill: #ff8c5a; }
+    .path { fill: #7aa2f7; }
     .bit { fill: #7aa2f7; }
     .edge { stroke: #6b6b72; }
     .branch { fill: #1e2a44; stroke: #7aa2f7; }
@@ -30,14 +30,14 @@
 <text class="note" x="235" y="198">64 bytes: both sides' hashes</text>
 <rect class="leaf" x="490" y="140" width="130" height="40" rx="6"/>
 <text x="555" y="157">leaf</text>
-<text class="key" x="555" y="173"><tspan class="path">1</tspan>111 1111</text>
+<text class="key" x="555" y="173">0b<tspan class="path">1</tspan>111_1111</text>
 <text class="note" x="555" y="198">0xff…: alone on the 1 side</text>
 <rect class="leaf" x="80" y="250" width="130" height="40" rx="6"/>
 <text x="145" y="267">leaf</text>
-<text class="key" x="145" y="283"><tspan class="path">00</tspan>00 0001</text>
+<text class="key" x="145" y="283">0b<tspan class="path">00</tspan>00_0001</text>
 <text class="note" x="145" y="308">0x01…</text>
 <rect class="leaf" x="290" y="250" width="130" height="40" rx="6"/>
 <text x="355" y="267">leaf</text>
-<text class="key" x="355" y="283"><tspan class="path">01</tspan>00 0000</text>
+<text class="key" x="355" y="283">0b<tspan class="path">01</tspan>00_0000</text>
 <text class="note" x="355" y="308">0x40…</text>
 </svg>

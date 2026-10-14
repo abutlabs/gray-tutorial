@@ -49,9 +49,9 @@ function step(by: bigint) {
         <div class="tile"><span class="tile-label">ℰ(x)</span><span class="tile-value">{{ toHex(c.bytes) }}</span></div>
       </div>
       <p class="why">{{ why }}</p>
-      <div class="label">x in bits</div>
+      <div class="label"><span class="unit-tag bits">bits</span> x</div>
       <ByteCells :groups="strip(c)" />
-      <div class="label">ℰ(x)</div>
+      <div class="label"><span class="unit-tag bytes">{{ c.bytes.length }} byte{{ c.bytes.length === 1 ? "" : "s" }}</span> ℰ(x), each byte boxed</div>
       <ByteCells :groups="byteGroups(c)" boxed />
     </template>
   </div>

@@ -3,233 +3,322 @@
   text { fill: #3c3c43; text-anchor: middle; }
   .label, .sub { text-anchor: start; }
   .group, .hex, .sub { fill: #67676c; font-size: 13px; }
-  .note { fill: #c2410c; font-size: 12px; text-anchor: start; }
+  .note { fill: #a16207; font-size: 12px; text-anchor: start; }
+  .group.bits, .sub.bits { fill: #b45309; }
+  .sub.bytes, .hex { fill: #0f766e; }
+  .bitbar { fill: #b45309; stroke: none; }
   .plain { fill: #f6f6f7; stroke: #9a9aa0; }
   .mark { fill: #fdf3e1; stroke: #d39b2a; }
   .top { fill: #e8f0fe; stroke: #5b8def; }
   .low { fill: #e6f6ef; stroke: #3fa97a; }
   .carry { stroke: none; opacity: 0.45; }
   .number { fill: none; stroke: #9a9aa0; stroke-dasharray: 4 3; }
-  .byte { fill: none; stroke: #3c3c43; stroke-width: 2; }
+  .byte { fill: none; stroke: #0f766e; stroke-width: 2; }
   @media (prefers-color-scheme: dark) {
     text { fill: #dfdfd6; }
     .group, .hex, .sub { fill: #a8a8a0; }
-    .note { fill: #ff9a5c; }
+    .note { fill: #e0b04a; }
+    .sub.bits, .bitbar { fill: #f0a35e; }
+    .sub.bytes, .hex { fill: #4fd1c5; }
     .plain { fill: #2a2a2e; stroke: #8a8a90; }
     .mark { fill: #3a2e14; stroke: #e0b04a; }
     .top { fill: #1e2a44; stroke: #7aa2f7; }
     .low { fill: #1b3329; stroke: #4fc08d; }
     .number { stroke: #8a8a90; }
-    .byte { stroke: #dfdfd6; }
+    .byte { stroke: #4fd1c5; }
   }
 </style>
 <rect class="plain" x="16" y="8" width="24" height="26"/>
-<text x="28" y="26">1</text>
-<text class="sub" x="50" y="26">one bit: 0 or 1</text>
+<text x="28" y="25">1</text>
+<rect class="bitbar" x="20" y="29" width="16" height="2.5" rx="1"/>
+<text class="sub bits" x="50" y="26">one bit: 0 or 1</text>
 <rect class="plain" x="200" y="8" width="24" height="26"/>
-<text x="212" y="26">1</text>
+<text x="212" y="25">1</text>
+<rect class="bitbar" x="204" y="29" width="16" height="2.5" rx="1"/>
 <rect class="plain" x="224" y="8" width="24" height="26"/>
-<text x="236" y="26">0</text>
+<text x="236" y="25">0</text>
+<rect class="bitbar" x="228" y="29" width="16" height="2.5" rx="1"/>
 <rect class="plain" x="248" y="8" width="24" height="26"/>
-<text x="260" y="26">0</text>
+<text x="260" y="25">0</text>
+<rect class="bitbar" x="252" y="29" width="16" height="2.5" rx="1"/>
 <rect class="plain" x="272" y="8" width="24" height="26"/>
-<text x="284" y="26">0</text>
+<text x="284" y="25">0</text>
+<rect class="bitbar" x="276" y="29" width="16" height="2.5" rx="1"/>
 <rect class="plain" x="296" y="8" width="24" height="26"/>
-<text x="308" y="26">0</text>
+<text x="308" y="25">0</text>
+<rect class="bitbar" x="300" y="29" width="16" height="2.5" rx="1"/>
 <rect class="plain" x="320" y="8" width="24" height="26"/>
-<text x="332" y="26">0</text>
+<text x="332" y="25">0</text>
+<rect class="bitbar" x="324" y="29" width="16" height="2.5" rx="1"/>
 <rect class="plain" x="344" y="8" width="24" height="26"/>
-<text x="356" y="26">0</text>
+<text x="356" y="25">0</text>
+<rect class="bitbar" x="348" y="29" width="16" height="2.5" rx="1"/>
 <rect class="plain" x="368" y="8" width="24" height="26"/>
-<text x="380" y="26">0</text>
+<text x="380" y="25">0</text>
+<rect class="bitbar" x="372" y="29" width="16" height="2.5" rx="1"/>
 <rect class="byte" x="200" y="8" width="192" height="26" rx="3"/>
-<text class="sub" x="402" y="26">one byte: 8 bits</text>
+<text class="sub bytes" x="402" y="26">one byte: 8 bits</text>
 <text class="label" x="16" y="104">x = 127</text>
-<text class="sub" x="16" y="122">7 bits</text>
+<text class="sub bits" x="16" y="122">7 bits</text>
 <text class="label" x="16" y="166">ℰ(127)</text>
-<text class="sub" x="16" y="184">1 byte</text>
+<text class="sub bytes" x="16" y="184">1 byte</text>
 <text class="group" x="236" y="78">7 bits</text>
 <polygon class="carry top" points="152,112 320,112 320,148 152,148"/>
 <rect class="top" x="152" y="86" width="24" height="26"/>
-<text x="164" y="104">1</text>
+<text x="164" y="103">1</text>
+<rect class="bitbar" x="156" y="107" width="16" height="2.5" rx="1"/>
 <rect class="top" x="176" y="86" width="24" height="26"/>
-<text x="188" y="104">1</text>
+<text x="188" y="103">1</text>
+<rect class="bitbar" x="180" y="107" width="16" height="2.5" rx="1"/>
 <rect class="top" x="200" y="86" width="24" height="26"/>
-<text x="212" y="104">1</text>
+<text x="212" y="103">1</text>
+<rect class="bitbar" x="204" y="107" width="16" height="2.5" rx="1"/>
 <rect class="top" x="224" y="86" width="24" height="26"/>
-<text x="236" y="104">1</text>
+<text x="236" y="103">1</text>
+<rect class="bitbar" x="228" y="107" width="16" height="2.5" rx="1"/>
 <rect class="top" x="248" y="86" width="24" height="26"/>
-<text x="260" y="104">1</text>
+<text x="260" y="103">1</text>
+<rect class="bitbar" x="252" y="107" width="16" height="2.5" rx="1"/>
 <rect class="top" x="272" y="86" width="24" height="26"/>
-<text x="284" y="104">1</text>
+<text x="284" y="103">1</text>
+<rect class="bitbar" x="276" y="107" width="16" height="2.5" rx="1"/>
 <rect class="top" x="296" y="86" width="24" height="26"/>
-<text x="308" y="104">1</text>
+<text x="308" y="103">1</text>
+<rect class="bitbar" x="300" y="107" width="16" height="2.5" rx="1"/>
 <rect class="number" x="152" y="86" width="168" height="26" rx="3"/>
 <rect class="mark" x="128" y="148" width="24" height="26"/>
-<text x="140" y="166">0</text>
+<text x="140" y="165">0</text>
+<rect class="bitbar" x="132" y="169" width="16" height="2.5" rx="1"/>
 <rect class="top" x="152" y="148" width="24" height="26"/>
-<text x="164" y="166">1</text>
+<text x="164" y="165">1</text>
+<rect class="bitbar" x="156" y="169" width="16" height="2.5" rx="1"/>
 <rect class="top" x="176" y="148" width="24" height="26"/>
-<text x="188" y="166">1</text>
+<text x="188" y="165">1</text>
+<rect class="bitbar" x="180" y="169" width="16" height="2.5" rx="1"/>
 <rect class="top" x="200" y="148" width="24" height="26"/>
-<text x="212" y="166">1</text>
+<text x="212" y="165">1</text>
+<rect class="bitbar" x="204" y="169" width="16" height="2.5" rx="1"/>
 <rect class="top" x="224" y="148" width="24" height="26"/>
-<text x="236" y="166">1</text>
+<text x="236" y="165">1</text>
+<rect class="bitbar" x="228" y="169" width="16" height="2.5" rx="1"/>
 <rect class="top" x="248" y="148" width="24" height="26"/>
-<text x="260" y="166">1</text>
+<text x="260" y="165">1</text>
+<rect class="bitbar" x="252" y="169" width="16" height="2.5" rx="1"/>
 <rect class="top" x="272" y="148" width="24" height="26"/>
-<text x="284" y="166">1</text>
+<text x="284" y="165">1</text>
+<rect class="bitbar" x="276" y="169" width="16" height="2.5" rx="1"/>
 <rect class="top" x="296" y="148" width="24" height="26"/>
-<text x="308" y="166">1</text>
+<text x="308" y="165">1</text>
+<rect class="bitbar" x="300" y="169" width="16" height="2.5" rx="1"/>
 <rect class="byte" x="128" y="148" width="192" height="26" rx="3"/>
 <text class="hex" x="224" y="194">0x7f</text>
-<text class="note" x="128" y="216">↑ 0: no more bytes follow</text>
+<text class="note" x="128" y="216">↑ 0b0: no more bytes follow</text>
 <text class="label" x="16" y="294">x = 128</text>
-<text class="sub" x="16" y="312">14 bits</text>
+<text class="sub bits" x="16" y="312">14 bits</text>
 <text class="label" x="16" y="356">ℰ(128)</text>
-<text class="sub" x="16" y="374">2 bytes</text>
+<text class="sub bytes" x="16" y="374">2 bytes</text>
 <text class="group" x="248" y="268">top 6 bits</text>
 <polygon class="carry top" points="176,302 320,302 320,338 176,338"/>
 <rect class="top" x="176" y="276" width="24" height="26"/>
-<text x="188" y="294">0</text>
+<text x="188" y="293">0</text>
+<rect class="bitbar" x="180" y="297" width="16" height="2.5" rx="1"/>
 <rect class="top" x="200" y="276" width="24" height="26"/>
-<text x="212" y="294">0</text>
+<text x="212" y="293">0</text>
+<rect class="bitbar" x="204" y="297" width="16" height="2.5" rx="1"/>
 <rect class="top" x="224" y="276" width="24" height="26"/>
-<text x="236" y="294">0</text>
+<text x="236" y="293">0</text>
+<rect class="bitbar" x="228" y="297" width="16" height="2.5" rx="1"/>
 <rect class="top" x="248" y="276" width="24" height="26"/>
-<text x="260" y="294">0</text>
+<text x="260" y="293">0</text>
+<rect class="bitbar" x="252" y="297" width="16" height="2.5" rx="1"/>
 <rect class="top" x="272" y="276" width="24" height="26"/>
-<text x="284" y="294">0</text>
+<text x="284" y="293">0</text>
+<rect class="bitbar" x="276" y="297" width="16" height="2.5" rx="1"/>
 <rect class="top" x="296" y="276" width="24" height="26"/>
-<text x="308" y="294">0</text>
+<text x="308" y="293">0</text>
+<rect class="bitbar" x="300" y="297" width="16" height="2.5" rx="1"/>
 <rect class="low" x="320" y="276" width="24" height="26"/>
-<text x="332" y="294">1</text>
+<text x="332" y="293">1</text>
+<rect class="bitbar" x="324" y="297" width="16" height="2.5" rx="1"/>
 <rect class="low" x="344" y="276" width="24" height="26"/>
-<text x="356" y="294">0</text>
+<text x="356" y="293">0</text>
+<rect class="bitbar" x="348" y="297" width="16" height="2.5" rx="1"/>
 <rect class="low" x="368" y="276" width="24" height="26"/>
-<text x="380" y="294">0</text>
+<text x="380" y="293">0</text>
+<rect class="bitbar" x="372" y="297" width="16" height="2.5" rx="1"/>
 <rect class="low" x="392" y="276" width="24" height="26"/>
-<text x="404" y="294">0</text>
+<text x="404" y="293">0</text>
+<rect class="bitbar" x="396" y="297" width="16" height="2.5" rx="1"/>
 <rect class="low" x="416" y="276" width="24" height="26"/>
-<text x="428" y="294">0</text>
+<text x="428" y="293">0</text>
+<rect class="bitbar" x="420" y="297" width="16" height="2.5" rx="1"/>
 <rect class="low" x="440" y="276" width="24" height="26"/>
-<text x="452" y="294">0</text>
+<text x="452" y="293">0</text>
+<rect class="bitbar" x="444" y="297" width="16" height="2.5" rx="1"/>
 <rect class="low" x="464" y="276" width="24" height="26"/>
-<text x="476" y="294">0</text>
+<text x="476" y="293">0</text>
+<rect class="bitbar" x="468" y="297" width="16" height="2.5" rx="1"/>
 <rect class="low" x="488" y="276" width="24" height="26"/>
-<text x="500" y="294">0</text>
+<text x="500" y="293">0</text>
+<rect class="bitbar" x="492" y="297" width="16" height="2.5" rx="1"/>
 <rect class="number" x="176" y="276" width="336" height="26" rx="3"/>
 <text class="group" x="416" y="268">low 8 bits</text>
 <polygon class="carry low" points="320,302 512,302 536,338 344,338"/>
 <rect class="mark" x="128" y="338" width="24" height="26"/>
-<text x="140" y="356">1</text>
+<text x="140" y="355">1</text>
+<rect class="bitbar" x="132" y="359" width="16" height="2.5" rx="1"/>
 <rect class="mark" x="152" y="338" width="24" height="26"/>
-<text x="164" y="356">0</text>
+<text x="164" y="355">0</text>
+<rect class="bitbar" x="156" y="359" width="16" height="2.5" rx="1"/>
 <rect class="top" x="176" y="338" width="24" height="26"/>
-<text x="188" y="356">0</text>
+<text x="188" y="355">0</text>
+<rect class="bitbar" x="180" y="359" width="16" height="2.5" rx="1"/>
 <rect class="top" x="200" y="338" width="24" height="26"/>
-<text x="212" y="356">0</text>
+<text x="212" y="355">0</text>
+<rect class="bitbar" x="204" y="359" width="16" height="2.5" rx="1"/>
 <rect class="top" x="224" y="338" width="24" height="26"/>
-<text x="236" y="356">0</text>
+<text x="236" y="355">0</text>
+<rect class="bitbar" x="228" y="359" width="16" height="2.5" rx="1"/>
 <rect class="top" x="248" y="338" width="24" height="26"/>
-<text x="260" y="356">0</text>
+<text x="260" y="355">0</text>
+<rect class="bitbar" x="252" y="359" width="16" height="2.5" rx="1"/>
 <rect class="top" x="272" y="338" width="24" height="26"/>
-<text x="284" y="356">0</text>
+<text x="284" y="355">0</text>
+<rect class="bitbar" x="276" y="359" width="16" height="2.5" rx="1"/>
 <rect class="top" x="296" y="338" width="24" height="26"/>
-<text x="308" y="356">0</text>
+<text x="308" y="355">0</text>
+<rect class="bitbar" x="300" y="359" width="16" height="2.5" rx="1"/>
 <rect class="byte" x="128" y="338" width="192" height="26" rx="3"/>
 <text class="hex" x="224" y="384">0x80</text>
 <rect class="low" x="344" y="338" width="24" height="26"/>
-<text x="356" y="356">1</text>
+<text x="356" y="355">1</text>
+<rect class="bitbar" x="348" y="359" width="16" height="2.5" rx="1"/>
 <rect class="low" x="368" y="338" width="24" height="26"/>
-<text x="380" y="356">0</text>
+<text x="380" y="355">0</text>
+<rect class="bitbar" x="372" y="359" width="16" height="2.5" rx="1"/>
 <rect class="low" x="392" y="338" width="24" height="26"/>
-<text x="404" y="356">0</text>
+<text x="404" y="355">0</text>
+<rect class="bitbar" x="396" y="359" width="16" height="2.5" rx="1"/>
 <rect class="low" x="416" y="338" width="24" height="26"/>
-<text x="428" y="356">0</text>
+<text x="428" y="355">0</text>
+<rect class="bitbar" x="420" y="359" width="16" height="2.5" rx="1"/>
 <rect class="low" x="440" y="338" width="24" height="26"/>
-<text x="452" y="356">0</text>
+<text x="452" y="355">0</text>
+<rect class="bitbar" x="444" y="359" width="16" height="2.5" rx="1"/>
 <rect class="low" x="464" y="338" width="24" height="26"/>
-<text x="476" y="356">0</text>
+<text x="476" y="355">0</text>
+<rect class="bitbar" x="468" y="359" width="16" height="2.5" rx="1"/>
 <rect class="low" x="488" y="338" width="24" height="26"/>
-<text x="500" y="356">0</text>
+<text x="500" y="355">0</text>
+<rect class="bitbar" x="492" y="359" width="16" height="2.5" rx="1"/>
 <rect class="low" x="512" y="338" width="24" height="26"/>
-<text x="524" y="356">0</text>
+<text x="524" y="355">0</text>
+<rect class="bitbar" x="516" y="359" width="16" height="2.5" rx="1"/>
 <rect class="byte" x="344" y="338" width="192" height="26" rx="3"/>
 <text class="hex" x="440" y="384">0x80</text>
-<text class="note" x="128" y="406">↑ 10: one more byte follows</text>
+<text class="note" x="128" y="406">↑ 0b10: one more byte follows</text>
 <text class="label" x="16" y="484">x = 300</text>
-<text class="sub" x="16" y="502">14 bits</text>
+<text class="sub bits" x="16" y="502">14 bits</text>
 <text class="label" x="16" y="546">ℰ(300)</text>
-<text class="sub" x="16" y="564">2 bytes</text>
+<text class="sub bytes" x="16" y="564">2 bytes</text>
 <text class="group" x="248" y="458">top 6 bits</text>
 <polygon class="carry top" points="176,492 320,492 320,528 176,528"/>
 <rect class="top" x="176" y="466" width="24" height="26"/>
-<text x="188" y="484">0</text>
+<text x="188" y="483">0</text>
+<rect class="bitbar" x="180" y="487" width="16" height="2.5" rx="1"/>
 <rect class="top" x="200" y="466" width="24" height="26"/>
-<text x="212" y="484">0</text>
+<text x="212" y="483">0</text>
+<rect class="bitbar" x="204" y="487" width="16" height="2.5" rx="1"/>
 <rect class="top" x="224" y="466" width="24" height="26"/>
-<text x="236" y="484">0</text>
+<text x="236" y="483">0</text>
+<rect class="bitbar" x="228" y="487" width="16" height="2.5" rx="1"/>
 <rect class="top" x="248" y="466" width="24" height="26"/>
-<text x="260" y="484">0</text>
+<text x="260" y="483">0</text>
+<rect class="bitbar" x="252" y="487" width="16" height="2.5" rx="1"/>
 <rect class="top" x="272" y="466" width="24" height="26"/>
-<text x="284" y="484">0</text>
+<text x="284" y="483">0</text>
+<rect class="bitbar" x="276" y="487" width="16" height="2.5" rx="1"/>
 <rect class="top" x="296" y="466" width="24" height="26"/>
-<text x="308" y="484">1</text>
+<text x="308" y="483">1</text>
+<rect class="bitbar" x="300" y="487" width="16" height="2.5" rx="1"/>
 <rect class="low" x="320" y="466" width="24" height="26"/>
-<text x="332" y="484">0</text>
+<text x="332" y="483">0</text>
+<rect class="bitbar" x="324" y="487" width="16" height="2.5" rx="1"/>
 <rect class="low" x="344" y="466" width="24" height="26"/>
-<text x="356" y="484">0</text>
+<text x="356" y="483">0</text>
+<rect class="bitbar" x="348" y="487" width="16" height="2.5" rx="1"/>
 <rect class="low" x="368" y="466" width="24" height="26"/>
-<text x="380" y="484">1</text>
+<text x="380" y="483">1</text>
+<rect class="bitbar" x="372" y="487" width="16" height="2.5" rx="1"/>
 <rect class="low" x="392" y="466" width="24" height="26"/>
-<text x="404" y="484">0</text>
+<text x="404" y="483">0</text>
+<rect class="bitbar" x="396" y="487" width="16" height="2.5" rx="1"/>
 <rect class="low" x="416" y="466" width="24" height="26"/>
-<text x="428" y="484">1</text>
+<text x="428" y="483">1</text>
+<rect class="bitbar" x="420" y="487" width="16" height="2.5" rx="1"/>
 <rect class="low" x="440" y="466" width="24" height="26"/>
-<text x="452" y="484">1</text>
+<text x="452" y="483">1</text>
+<rect class="bitbar" x="444" y="487" width="16" height="2.5" rx="1"/>
 <rect class="low" x="464" y="466" width="24" height="26"/>
-<text x="476" y="484">0</text>
+<text x="476" y="483">0</text>
+<rect class="bitbar" x="468" y="487" width="16" height="2.5" rx="1"/>
 <rect class="low" x="488" y="466" width="24" height="26"/>
-<text x="500" y="484">0</text>
+<text x="500" y="483">0</text>
+<rect class="bitbar" x="492" y="487" width="16" height="2.5" rx="1"/>
 <rect class="number" x="176" y="466" width="336" height="26" rx="3"/>
 <text class="group" x="416" y="458">low 8 bits</text>
 <polygon class="carry low" points="320,492 512,492 536,528 344,528"/>
 <rect class="mark" x="128" y="528" width="24" height="26"/>
-<text x="140" y="546">1</text>
+<text x="140" y="545">1</text>
+<rect class="bitbar" x="132" y="549" width="16" height="2.5" rx="1"/>
 <rect class="mark" x="152" y="528" width="24" height="26"/>
-<text x="164" y="546">0</text>
+<text x="164" y="545">0</text>
+<rect class="bitbar" x="156" y="549" width="16" height="2.5" rx="1"/>
 <rect class="top" x="176" y="528" width="24" height="26"/>
-<text x="188" y="546">0</text>
+<text x="188" y="545">0</text>
+<rect class="bitbar" x="180" y="549" width="16" height="2.5" rx="1"/>
 <rect class="top" x="200" y="528" width="24" height="26"/>
-<text x="212" y="546">0</text>
+<text x="212" y="545">0</text>
+<rect class="bitbar" x="204" y="549" width="16" height="2.5" rx="1"/>
 <rect class="top" x="224" y="528" width="24" height="26"/>
-<text x="236" y="546">0</text>
+<text x="236" y="545">0</text>
+<rect class="bitbar" x="228" y="549" width="16" height="2.5" rx="1"/>
 <rect class="top" x="248" y="528" width="24" height="26"/>
-<text x="260" y="546">0</text>
+<text x="260" y="545">0</text>
+<rect class="bitbar" x="252" y="549" width="16" height="2.5" rx="1"/>
 <rect class="top" x="272" y="528" width="24" height="26"/>
-<text x="284" y="546">0</text>
+<text x="284" y="545">0</text>
+<rect class="bitbar" x="276" y="549" width="16" height="2.5" rx="1"/>
 <rect class="top" x="296" y="528" width="24" height="26"/>
-<text x="308" y="546">1</text>
+<text x="308" y="545">1</text>
+<rect class="bitbar" x="300" y="549" width="16" height="2.5" rx="1"/>
 <rect class="byte" x="128" y="528" width="192" height="26" rx="3"/>
 <text class="hex" x="224" y="574">0x81</text>
 <rect class="low" x="344" y="528" width="24" height="26"/>
-<text x="356" y="546">0</text>
+<text x="356" y="545">0</text>
+<rect class="bitbar" x="348" y="549" width="16" height="2.5" rx="1"/>
 <rect class="low" x="368" y="528" width="24" height="26"/>
-<text x="380" y="546">0</text>
+<text x="380" y="545">0</text>
+<rect class="bitbar" x="372" y="549" width="16" height="2.5" rx="1"/>
 <rect class="low" x="392" y="528" width="24" height="26"/>
-<text x="404" y="546">1</text>
+<text x="404" y="545">1</text>
+<rect class="bitbar" x="396" y="549" width="16" height="2.5" rx="1"/>
 <rect class="low" x="416" y="528" width="24" height="26"/>
-<text x="428" y="546">0</text>
+<text x="428" y="545">0</text>
+<rect class="bitbar" x="420" y="549" width="16" height="2.5" rx="1"/>
 <rect class="low" x="440" y="528" width="24" height="26"/>
-<text x="452" y="546">1</text>
+<text x="452" y="545">1</text>
+<rect class="bitbar" x="444" y="549" width="16" height="2.5" rx="1"/>
 <rect class="low" x="464" y="528" width="24" height="26"/>
-<text x="476" y="546">1</text>
+<text x="476" y="545">1</text>
+<rect class="bitbar" x="468" y="549" width="16" height="2.5" rx="1"/>
 <rect class="low" x="488" y="528" width="24" height="26"/>
-<text x="500" y="546">0</text>
+<text x="500" y="545">0</text>
+<rect class="bitbar" x="492" y="549" width="16" height="2.5" rx="1"/>
 <rect class="low" x="512" y="528" width="24" height="26"/>
-<text x="524" y="546">0</text>
+<text x="524" y="545">0</text>
+<rect class="bitbar" x="516" y="549" width="16" height="2.5" rx="1"/>
 <rect class="byte" x="344" y="528" width="192" height="26" rx="3"/>
 <text class="hex" x="440" y="574">0x2c</text>
-<text class="note" x="128" y="596">↑ 10: one more byte follows</text>
+<text class="note" x="128" y="596">↑ 0b10: one more byte follows</text>
 </svg>

@@ -21,8 +21,8 @@ const halves = computed(() => nibbles(value.value));
 <template>
   <BitPlaces v-model="value" :roles="ROLES" :presets="[44, 0]" :goals="GOALS" :range="RANGE">
     <p class="line">
-      first half <span class="top">{{ bitsOf(halves.high, 4) }}</span> = {{ halves.high }} → <b>{{ HEX_DIGITS[halves.high] }}</b>,
-      second half <span class="low">{{ bitsOf(halves.low, 4) }}</span> = {{ halves.low }} → <b>{{ HEX_DIGITS[halves.low] }}</b><br />
+      first half <span class="top">0b{{ bitsOf(halves.high, 4) }}</span> = {{ halves.high }} → <b>{{ HEX_DIGITS[halves.high] }}</b>,
+      second half <span class="low">0b{{ bitsOf(halves.low, 4) }}</span> = {{ halves.low }} → <b>{{ HEX_DIGITS[halves.low] }}</b><br />
       16 × {{ halves.high }} + {{ halves.low }} = {{ value }}
     </p>
     <div class="digits" aria-hidden="true">

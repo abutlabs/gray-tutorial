@@ -4,6 +4,7 @@
      encoded in header-map.ts from the vectors' values, never pasted in. -->
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { bytesAfterArrows } from "./units.ts";
 import { ownerOf, spaced } from "./codec-map.ts";
 import type { Node } from "./codec-map.ts";
 import { APPENDIX_C, cellsOf, chainOf, E, explain, goalsOf, HEADERS, nearest, nodesOf, ruleOf, shades, valueOf } from "./header-map.ts";
@@ -90,7 +91,7 @@ const subLabel = (n: Node) => (/\]$/.test(n.path) ? `[${name(n)}]` : name(n));
     </p>
     <p class="line">
       <span v-if="tappedSay" class="tapped">{{ tappedSay }}</span>
-      {{ line }}
+      <template v-for="(part, n) in bytesAfterArrows(line)" :key="n"><code v-if="part.bytes" class="bytes">{{ part.text }}</code><template v-else>{{ part.text }}</template></template>
     </p>
 
     <ol class="fields" :aria-label="`${map.v.name}'s fields`">
@@ -101,7 +102,7 @@ const subLabel = (n: Node) => (/\]$/.test(n.path) ? `[${name(n)}]` : name(n));
         </button>
         <div class="strip">
           <template v-for="c in r.cells" :key="c.kind === 'byte' ? c.i : `f${c.start}`">
-            <button v-if="c.kind === 'byte'" class="byte" :class="[map.shades[c.i], { on: inSel(c.i), tap: tapped === c.i }]"
+            <button v-if="c.kind === 'byte'" class="byte unit-byte" :class="[map.shades[c.i], { on: inSel(c.i), tap: tapped === c.i }]"
               :aria-label="`byte ${c.i}: ${spaced([bytes[c.i]])}`" :aria-pressed="inSel(c.i)" @click="tapByte(c.i)">{{ spaced([bytes[c.i]]) }}</button>
             <button v-else class="fold" :class="[map.shades[c.start], { on: inSel(c.start) }]"
               :aria-label="`show the ${c.end - c.start} bytes ${c.start} to ${c.end - 1}`" @click="unfold(c.piece)">+{{ c.end - c.start }}</button>

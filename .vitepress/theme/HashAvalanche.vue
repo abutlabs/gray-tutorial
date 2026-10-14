@@ -80,16 +80,16 @@ const load = (how: Encoding) => numOk.value && change(encodeNumber(num.value, ho
       input, then one of its bits to flip it, and compare the hash before and after.
     </p>
 
-    <div class="label">input, {{ input.length }} {{ input.length === 1 ? "byte" : "bytes" }}<template v-if="loadedSay">: {{ num }} as {{ loadedSay }}</template></div>
-    <div class="bytes" aria-label="the input's bytes">
-      <button v-for="(b, i) in input" :key="i" class="byte" :class="{ on: sel === i }" :aria-pressed="sel === i"
+    <div class="label"><span class="unit-tag bytes">bytes</span> input, {{ input.length }} {{ input.length === 1 ? "byte" : "bytes" }}<template v-if="loadedSay">: {{ num }} as {{ loadedSay }}</template></div>
+    <div class="byte-row" aria-label="the input's bytes">
+      <button v-for="(b, i) in input" :key="i" class="byte unit-byte" :class="{ on: sel === i }" :aria-pressed="sel === i"
         :aria-label="`byte ${i}: ${spaced([b])}`" @click="sel = i">{{ spaced([b]) }}</button>
       <span v-if="!input.length" class="none">no bytes at all</span>
     </div>
     <template v-if="input.length">
-      <div class="label">byte {{ sel }}'s 8 bits: tap one to flip it</div>
-      <div class="bits">
-        <button v-for="(d, k) in selBits" :key="k" class="bit" :class="{ one: d === 1 }" :aria-pressed="d === 1"
+      <div class="label"><span class="unit-tag bits">bits</span> byte {{ sel }}'s 8 bits: tap one to flip it</div>
+      <div class="bit-row">
+        <button v-for="(d, k) in selBits" :key="k" class="bit unit-bit" :class="{ one: d === 1 }" :aria-pressed="d === 1"
           :aria-label="`byte ${sel}'s ${PLACES[k]}s bit`" @click="flip(k)">
           <span class="digit">{{ d }}</span><span class="place">{{ PLACES[k] }}</span>
         </button>
@@ -123,7 +123,7 @@ const load = (how: Encoding) => numOk.value && change(encodeNumber(num.value, ho
         </div>
       </div>
     </div>
-    <div class="label">its 256 bits, 16 to a row<template v-if="flips">: the {{ changed }} that flipped are marked</template></div>
+    <div class="label"><span class="unit-tag bits">bits</span> its 256 bits, 16 to a row<template v-if="flips">: the {{ changed }} that flipped are marked</template></div>
     <div class="grid" aria-hidden="true">
       <span v-for="(b, i) in bits" :key="i" class="cell" :class="{ flipped: flips?.[i] }">{{ b }}</span>
     </div>
@@ -163,20 +163,20 @@ const load = (how: Encoding) => numOk.value && change(encodeNumber(num.value, ho
 .tile.flips .tile-value { min-width: 7ch; }
 .range { font-size: 14px; color: var(--vp-c-text-2); margin: 0 0 12px; line-height: 1.5; }
 .label { font-size: 13px; color: var(--vp-c-text-2); margin: 8px 0 4px; }
-.bytes { display: flex; flex-wrap: wrap; gap: 4px; min-height: 36px; align-items: center; }
+.byte-row { display: flex; flex-wrap: wrap; gap: 4px; min-height: 36px; align-items: center; }
 .byte {
   min-width: 36px; min-height: 36px; padding: 0 4px; border: 1px solid var(--bit-top-line); border-radius: 4px;
   background: var(--bit-top); font-family: var(--vp-font-family-mono); font-size: 15px; cursor: pointer;
 }
 .byte.on { outline: 2px solid var(--vp-c-brand-1); outline-offset: 1px; font-weight: 700; }
 .none { font-size: 14px; color: var(--vp-c-text-3); }
-.bits { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; max-width: 420px; }
+.bit-row { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; max-width: 420px; }
 .bit {
   display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 4px 0;
   border: 1px solid var(--vp-c-divider); border-radius: 6px; background: var(--vp-c-bg-soft);
   font-family: var(--vp-font-family-mono); cursor: pointer;
 }
-.bit.one { background: var(--bit-mark); border-color: var(--bit-mark-line); }
+.bit.one { background: var(--unit-bits-soft); border-color: var(--unit-bits); }
 .digit { font-size: 20px; font-weight: 600; }
 .bit:not(.one) .digit { color: var(--vp-c-text-3); }
 .place { font-size: 11px; color: var(--vp-c-text-2); }
@@ -196,13 +196,13 @@ button.small { min-height: 36px; min-width: 36px; }
 .hashes { display: flex; flex-wrap: wrap; gap: 4px 24px; }
 .hex { font-family: var(--vp-font-family-mono); font-size: 14px; line-height: 1.6; }
 .hex-row { display: flex; gap: 0.6ch; }
-.hex .diff { background: var(--bit-mark); border-radius: 2px; box-shadow: 0 0 0 1px var(--bit-mark-line); }
+.hex .diff { background: var(--changed); border-radius: 2px; box-shadow: 0 0 0 1px var(--changed-line); }
 .grid {
   display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 1px; max-width: 400px;
   font-family: var(--vp-font-family-mono); font-size: 11px; text-align: center;
 }
 .cell { padding: 1px 0; border: 1px solid var(--vp-c-divider); border-radius: 2px; color: var(--vp-c-text-3); }
-.cell.flipped { background: var(--bit-mark); border-color: var(--bit-mark-line); color: var(--vp-c-text-1); font-weight: 700; }
+.cell.flipped { background: var(--changed); border-color: var(--changed-line); color: var(--vp-c-text-1); font-weight: 700; }
 .line { font-size: 14px; margin: 8px 0; line-height: 1.5; min-height: 3em; }
 .encodings { font-family: var(--vp-font-family-mono); font-size: 13px; border-collapse: collapse; margin: 4px 0; display: table; }
 .encodings th, .encodings td { padding: 3px 8px; border: 1px solid var(--vp-c-divider); text-align: left; overflow-wrap: anywhere; }

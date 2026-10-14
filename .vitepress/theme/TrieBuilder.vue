@@ -127,7 +127,7 @@ watch(shape, () => {
     </div>
     <p class="legend">
       <span class="dot branch-dot">n</span> a branch, splitting on bit n · <span class="dot leaf-dot">0x40…</span> a leaf, the
-      bits that placed it in orange · <span class="dot empty-dot">∅</span> an empty side, 32 zero bytes
+      bits that placed it in blue, the edges they follow · <span class="dot empty-dot">∅</span> an empty side, 32 zero bytes
     </p>
     <p class="change" aria-live="polite">
       <template v-if="refused">{{ refused }}</template>
@@ -142,7 +142,7 @@ watch(shape, () => {
     <ul class="entries">
       <li v-for="r in rows" :key="r.id">
         <div class="key-bits" role="group" :aria-label="`the key ${hex(r.first)}…, bit 0 to 7`">
-          <button v-for="b in 8" :key="b" class="bitbtn" :class="{ on: bitsOf(r.first, 8)[b - 1] === '1', used: b <= pathOf(r.first).length }"
+          <button v-for="b in 8" :key="b" class="bitbtn unit-bit" :class="{ on: bitsOf(r.first, 8)[b - 1] === '1', used: b <= pathOf(r.first).length }"
             :aria-pressed="bitsOf(r.first, 8)[b - 1] === '1'" :aria-label="`bit ${b - 1}`" @click="flipBit(r, b - 1)">
             {{ bitsOf(r.first, 8)[b - 1] }}
           </button>
@@ -151,7 +151,7 @@ watch(shape, () => {
         <div class="value">
           <label>value <input :value="r.size" inputmode="numeric" spellcheck="false" :aria-label="`${hex(r.first)}'s value, in bytes`"
             @input="setSize(r, ($event.target as HTMLInputElement).value)" /> bytes</label>
-          <span class="leafbyte">leaf starts <b>{{ bitsOf(leafFirstByte(r.size), 8).slice(0, 2) }} {{ bitsOf(leafFirstByte(r.size), 8).slice(2) }}</b>:
+          <span class="leafbyte">leaf starts <code class="bits">0b{{ bitsOf(leafFirstByte(r.size), 8).slice(0, 2) }}_{{ bitsOf(leafFirstByte(r.size), 8).slice(2) }}</code>:
             {{ fitsInLeaf(r.size) ? `the ${r.size} bytes inside` : "the value's hash" }}</span>
           <button class="small" :aria-label="`remove ${hex(r.first)}…`" @click="remove(r)">remove</button>
         </div>
@@ -179,7 +179,7 @@ watch(shape, () => {
 .label { fill: var(--vp-c-text-1); font-size: 12px; font-weight: 600; text-anchor: middle; }
 .label.small { font-size: 11px; font-weight: 400; }
 .key { fill: var(--vp-c-text-2); font-size: 10px; text-anchor: middle; }
-.path { fill: var(--bit-mark-line); font-weight: 700; }
+.path { fill: var(--bit-top-line); font-weight: 700; }
 .redone .branch, .redone .leaf, .edge.redone { stroke: var(--bit-mark-line); stroke-width: 3; }
 .legend { font-size: 13px; color: var(--vp-c-text-2); margin: 6px 0; line-height: 1.8; }
 .dot { font-family: var(--vp-font-family-mono); padding: 0 5px; border: 1.5px solid; border-radius: 4px; }
@@ -196,7 +196,7 @@ watch(shape, () => {
   background: var(--vp-c-bg-soft); cursor: pointer;
 }
 .bitbtn.on { color: var(--vp-c-text-1); }
-.bitbtn.used { background: var(--bit-mark); border-color: var(--bit-mark-line); }
+.bitbtn.used { background: var(--bit-top); border-color: var(--bit-top-line); }
 .bitbtn:hover { border-color: var(--vp-c-brand-1); }
 .hex { margin-left: 10px; font-family: var(--vp-font-family-mono); font-weight: 600; }
 .value { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 6px; font-size: 14px; }

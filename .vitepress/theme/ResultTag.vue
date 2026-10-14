@@ -93,11 +93,11 @@ watch(() => sizes.value[0]?.length, (n) => { if (n === 3) mark("gas"); });
       <button class="small" @click="output = [...START]">aa bb cc</button>
     </div>
 
-    <div class="label">O(result), {{ encoded.bytes.length }} byte{{ encoded.bytes.length === 1 ? "" : "s" }}</div>
+    <div class="label"><span class="unit-tag bytes">bytes</span> O(result), {{ encoded.bytes.length }} byte{{ encoded.bytes.length === 1 ? "" : "s" }}</div>
     <div class="cells">
-      <span class="cell tag">{{ hex2(encoded.tag[0]) }}</span>
-      <span v-for="(b, i) in encoded.length" :key="`l${i}`" class="cell length">{{ hex2(b) }}</span>
-      <span v-for="(c, i) in outputCells" :key="`o${i}`" class="cell output" :class="{ more: c.startsWith('+') }">{{ c }}</span>
+      <span class="cell unit-byte tag">{{ hex2(encoded.tag[0]) }}</span>
+      <span v-for="(b, i) in encoded.length" :key="`l${i}`" class="cell unit-byte length">{{ hex2(b) }}</span>
+      <span v-for="(c, i) in outputCells" :key="`o${i}`" class="cell unit-byte output" :class="{ more: c.startsWith('+') }">{{ c }}</span>
     </div>
     <p class="key">
       <span class="swatch tag"></span> tag
@@ -147,7 +147,7 @@ watch(() => sizes.value[0]?.length, (n) => { if (n === 3) mark("gas"); });
         <input v-model="texts[i]" class="number" inputmode="numeric" spellcheck="false" :aria-label="f.say" />
       </div>
       <div v-if="sizes[i]" class="cells">
-        <span v-for="(b, j) in sizes[i]" :key="j" class="cell" :class="j ? 'output' : 'tag'">{{ hex2(b) }}</span>
+        <span v-for="(b, j) in sizes[i]" :key="j" class="cell unit-byte" :class="j ? 'output' : 'tag'">{{ hex2(b) }}</span>
         <span class="count">{{ sizes[i]!.length }} byte{{ sizes[i]!.length === 1 ? "" : "s" }}</span>
       </div>
       <p v-else class="error">A whole number from 0 to {{ f.max }}.</p>

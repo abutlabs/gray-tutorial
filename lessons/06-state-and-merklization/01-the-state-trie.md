@@ -46,10 +46,10 @@ And the root, M, of some entries:
 - one entry: the hash of its leaf;
 - more: split them on the next bit of their keys, and hash the branch of the two halves.
 
-Three keys starting `0x01` (`0000 0001`), `0x40` (`0100 0000`) and `0xff`
-(`1111 1111`) make this trie:
+Three keys starting `0x01` (`0b0000_0001`), `0x40` (`0b0100_0000`) and `0xff`
+(`0b1111_1111`) make this trie:
 
-![The trie of the keys 0x01, 0x40 and 0xff. The root is a branch. Its 1 side is the leaf for 0xff, the only key whose first bit is 1. Its 0 side is another branch, whose 0 side is the leaf for 0x01 (first bits 00) and whose 1 side is the leaf for 0x40 (first bits 01). A branch holds both sides' hashes, and the root is the hash of the top branch.](./images/01-state-trie.svg)
+![The trie of the keys 0x01, 0x40 and 0xff. The root is a branch. Its 1 side is the leaf for 0xff, the only key whose first bit is 1. Its 0 side is another branch, whose 0 side is the leaf for 0x01 (first bits 0b00) and whose 1 side is the leaf for 0x40 (first bits 0b01). A branch holds both sides' hashes, and the root is the hash of the top branch.](./images/01-state-trie.svg)
 
 `0xff` is alone on the 1 side, so it becomes a leaf right away. The other two need a
 second bit to part ways.
@@ -538,10 +538,10 @@ three cases off like the Gray Paper's own definition.
 **In the little trie of `0x01`, `0x40` and `0xff`, why is `0xff` a leaf straight under the root, and the other two a level deeper?**
 
 - [x] It's the only key whose first bit is 1, so one bit already sets it apart
-  > Yes: `0xff` is `1111 1111`, and the others start with 0. `0x01` (`00…`) and `0x40`
+  > Yes: `0xff` is `0b1111_1111`, and the others start with 0. `0x01` (`0b00…`) and `0x40`
   > (`01…`) need their second bit to part ways.
 - [ ] It's the biggest key, and the biggest goes nearest the root
-  > No: bits decide, not size. A key `0x80`, `1000 0000`, alone on the 1 side, would sit
+  > No: bits decide, not size. A key `0x80`, `0b1000_0000`, alone on the 1 side, would sit
   > there just the same.
 - [ ] The trie keeps itself balanced: one key on one side, two on the other
   > No: a trie doesn't balance. In the real state, `0xff` is alone on the 1 side and the

@@ -234,7 +234,7 @@ inside itself, so no caller can forget to add a size.
   > No: nothing in a byte says what it is ([lesson 2.2](./02-compact-naturals.md)).
   > Any byte can start a compact natural, so the Reader just reads one.
 - [x] It would read a wrong number, and every value after it would start in the wrong place
-  > Yes: `c7` is `11000111`, two leading ones, so it would take three bytes, `c7 12 80`,
+  > Yes: `c7` is `0b11000111`, two leading ones, so it would take three bytes, `c7 12 80`,
   > as 491,538. The next read would then start at offset 3, halfway through the 128.
 - [ ] It would still find 4,807, just a little more slowly
   > No: the same bytes read by a different rule give a different number. Only reading in
