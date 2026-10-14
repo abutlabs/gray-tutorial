@@ -2,25 +2,13 @@
 
 We will build a TypeScript JAM client per the [Gray Paper](https://graypaper.com/) specifications, _from scratch_.
 
-The Gray Tutor is designed for learnability and observability. By the end of this tutorial, your JAM client will be able to pass the official test vectors, _byte for byte_. Our goal is to make onboarding JAM protocol developers more approachable. Therefore we will build a  guided JAM implementation from the ground up.
+The Gray Tutor is built for learnability and observability. AI could be considered at it's core - _less truth, more trust_. That is why to solutions we build with AI need to keep the human in the loop. The Gray Tutor's purpose
+is to show that is not only possible, but lowers the barrier of entry to complex systems while improving learning materials and observability beyond projects who are slower to adopt the Technology. 
 
-## Start here
-
-1. **Read [0.1 What you will build](./00-start/01-what-you-will-build.md).** A short read
-   with nothing to type: what JAM is, what a client does, and where this tutorial goes.
-2. **Set up with [0.2 Set up the project](./00-start/02-set-up-the-project.md).** Node 26,
-   the tools, the dashboard, and an empty client ready for its first test.
-3. **Then one lesson at a time, in order.** Each one explains one rule in plain words,
-   gives you the code in small snippets, and has you run it.
+By the end of this tutorial, your JAM client will be able to pass the official test vectors, _byte for byte_. Our goal is to make onboarding JAM protocol developers more approachable. Therefore we will build a  guided JAM implementation from the ground up.
 
 Stuck on a word? Every JAM word, Gray Paper symbol and programming term is in the
-[glossary](./glossary.md), in plain English with an example.
-
-## Who it's for
-
-Anyone curious how JAM works inside, willing to build a client to find out. You don't need
-to know the Gray Paper before you get started. Each concept arrives when it's
-needed, with an example first. Typescript experience recommended.
+[glossary](./glossary.md).
 
 ## How to read it
 
@@ -35,28 +23,14 @@ after [lesson 14.2](./14-services/02-the-service-account.md), your own files sav
 there. `npm run compare -- 14.2` shows how
 yours differs instead.
 
-**Building a JAM Prize implementation?** This tutorial gives you a whole client's code, and
-some lessons show lasair's implementation. The Prize rules ask teams to build
-clean-room and to declare any implementation code they view: read
-[the note on the Prize rules](https://abutlabs.github.io/jam-learning/lasair/index.html#prize-rules)
-first.
+## Built with Reference to Lasair
 
-## How it works
+This tutorial is built with reference to [Lasair](https://github.com/abutlabs/lasair) and how we have passed the M1 fuzzer. Lasair is an oCaml (currently private) JAM client which aims to run as validators on the future network at M4 Full-Speed. The tutorial uses Typescript to drive understanding. Abutlabs hopes that this content opens the door to other developers to becoming involved with the JAM protocol and build on it.
 
-Each lesson explains a piece of the Gray Paper, gives you the code for it in small
-snippets, and has you run it. You assemble the snippets into your own client in
-`client/`, run the tests, and watch it grow, from an empty folder to a program that
-imports JAM blocks and agrees byte for byte with the official test vectors. From
-[lesson 0.3](./00-start/03-watch-your-client.md) on, it reports every run to Grafana, so you can watch what it does.
-
-## Built next to an OCaml client
-
-This tutorial is built with reference to [Lasair](https://github.com/abutlabs/lasair), another (currently private) JAM client. Lasair aims to run as validators on the real network. TypeScript is not suited for production level blockchain clients. Instead, this tutorial uses Typescript to drive understanding. Abutlabs hopes that this type of learning content opens developers to becoming involved with the JAM protocol.
-
-| | lasair | Your Gray Tutor client |
+| | lasair | The Gray Tutor |
 | --- | --- | --- |
 | Language | OCaml | TypeScript |
-| Built for | client diversity, conformance, then speed | **Understanding** |
+| Built for | client diversity, conformance, speed | **Understanding** |
 | How it runs | compiled to machine code before it runs | Node strips the types and runs the JavaScript: it starts as bytecode, and the busiest parts become machine code as it runs |
 | 64-bit numbers | `Int64`: plain machine arithmetic | `bigint`: exact, but much slower |
 | Several cores | native multicore | Worker threads; Each worker has isolated event loop, V8 instance, and memory space |
