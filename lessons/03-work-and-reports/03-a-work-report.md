@@ -44,6 +44,10 @@ on full) can rebuild the whole thing.
 Hence `erasure_shards`: one per validator. Which means, for the first time, tiny and full
 vectors differ: 6 shards on tiny, 1,023 on full.
 
+Where does a report go once it's made? Onto a core, where it waits for validators to say
+they hold their pieces, and then either on to the chain or off the core when time runs out.
+[Lesson 11.2](../11-assurances/02-timeouts.md) lets you walk one across a core, block by block.
+
 Two fields are compact naturals: `core_index`, and `auth_gas_used`. Remember [lesson 1.2](../01-bytes-and-numbers/02-numbers.md)?
 `auth_gas_used` is the field where lasair's signed-number bug lived.
 

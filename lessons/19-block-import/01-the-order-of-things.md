@@ -45,6 +45,14 @@ accumulate, is listed as made from E_A and ρ† alone, but its full definition 
 also reads the ready queue ω. That's state from before the block, there from the start, so
 the order doesn't change.
 
+Here is the whole list as a map. The block and the state before it sit at the top: they're
+wave 0. Tap any value. What it's made from turns green, what's made from it turns blue, and
+its wave is one more than its latest input's. Try γ′ to see what Safrole waits for. Then
+follow the reports from ρ† down, one tap a wave: that chain is what makes the list four
+waves deep.
+
+<ImportWaves />
+
 ## The tests
 
 **New file** `test/import.test.ts`

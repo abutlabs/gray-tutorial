@@ -39,6 +39,10 @@ All four are in the [glossary](../glossary.md), with the rest.
 One case worth knowing: a service with a digest but no code to run (its code's preimage
 isn't there) runs nothing and uses no gas, but its digest still counts.
 
+Step 1's reports come at the end of a long trip: guaranteed onto a core, vouched for by
+the validators, made available. [Lesson 11.2](../11-assurances/02-timeouts.md) lets you walk one report through that trip,
+block by block, until it lands here.
+
 Now the Gray Paper's names for those steps. The reports in step 1 are **R!**. The round
 in step 3 is the parallel accumulation function **Δ\***, and one service's part of it,
 [lesson 16.7](../16-host-calls/07-a-services-inputs.md)'s work, is **Δ₁**. The statistics are **S(s) = (N(s), T(s), G(s))**, and the

@@ -49,11 +49,15 @@ for (let i = 0; i < bytes.length; i += 16) {
 }
 ```
 
+You give it a file and how many bytes to show from the start: `48` shows the first 48,
+and leaving the number off shows 64. The work item's file is 236 bytes. Show its first 52,
+which is exactly its first four fields: 4 + 32 + 8 + 8 bytes.
+
 **Run**
 
 ```sh
 cat ../vectors/codec/tiny/work_item.json
-node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 48
+node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 52
 ```
 
 ```text
@@ -65,9 +69,16 @@ node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 48
 04 03 02 01 70 a5 08 29 85 1e 8f 6a 8c 80 f9 28
 06 ae 0e 95 eb 7c 06 ad 06 4e 31 1c c3 91 07 b3
 21 9e 53 2e 2a 00 00 00 00 00 00 00 2a 00 00 00
+00 00 00 00
 ```
 
 ![The work item's first 60 bytes, field after field: service 16909060 as 04 03 02 01 (ℰ₄), code_hash as its 32 bytes, both gas limits 42 as 2a and seven zeros (ℰ₈), export_count 4 as 04 00 (ℰ₂), and the payload as its length 5 then its five bytes, with 176 more bytes after](./images/06-work-item-bytes.svg)
+
+The two files are the same work item. The `.json` is the item written out for people,
+with each field's name. The `.bin` is the same item encoded, the bytes a client decodes.
+The bytes follow the JSON's fields in order, each one encoded the way
+[lesson 2.1](./01-fixed-width-integers.md) to [lesson 2.5](./05-sequences-and-records.md) taught, and nothing else: no names, and no
+lengths for fields whose size never changes.
 
 Read the first bytes against the JSON:
 
@@ -75,11 +86,21 @@ Read the first bytes against the JSON:
   least significant byte first.
 - The next 32 bytes, `70 a5 08 29 ...`, are `code_hash`, as they are.
 - `2a 00 00 00 00 00 00 00` is `refine_gas_limit`, 42, as ℰ₈.
+- The last eight are `accumulate_gas_limit`, also 42 as ℰ₈: `2a 00 00 00` at the end of
+  the third row, and `00 00 00 00` on the fourth. A row is just 16 bytes, so a field can
+  run on into the next one.
 
 The `tiny` and `full` folders hold the same structures under JAM's two parameter sets.
 The small "tiny" one (6 validators, 2 cores) is what tests run fast with, and "full" is
 the real network. For the structures in this lesson the two are identical, and later
 ones differ.
+
+Here is the whole work item, all 236 bytes, beside its JSON. Tap a field to light up its
+bytes and see the rule that wrote them, on its real value. Tap a byte to find its field.
+The amber bytes are the only lengths in the file: the payload's, and how many items each
+list holds.
+
+<VectorMap />
 
 ## A helper for vectors
 

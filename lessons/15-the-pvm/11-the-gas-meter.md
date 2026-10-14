@@ -21,6 +21,15 @@ it's in been paid for yet?
 - A host call doesn't reset it: `ecalli` isn't a terminator, so when the host is done, the
   rest of the block is already paid for.
 
+Try it below, on a small program of three blocks: a start, a loop that runs three laps,
+and an end with a host call. Each block's price comes from [lesson 15.10](./10-the-pipeline.md)'s model CPU.
+Set the starting gas and step. The gas drops by a whole block's price as each block is
+entered, and the loop pays at every lap. With too little for the next block, the machine
+stops with oog at its door, and nothing in that step runs. After the `ecalli`, the rest
+of its block is already paid for.
+
+<GasMeter />
+
 ## The tests
 
 **Add to** `test/gas.test.ts`

@@ -34,6 +34,14 @@ transitions: X′ decodes (X^mov for `move_reg`, X^dec for the rest), X″ start
 ready instruction S, X‴ ticks the clock, and X picks: decode if it can, else start if it
 can, else stop if everything is retired, else tick.
 
+Step through it below. Pick one of this lesson's blocks, or build your own, and move a
+cycle at a time. Each row is a line of the block; each column is the start of a cycle,
+as the printout further down catches it. Four loads start together and finish together.
+In a chain, each load waits for the register the one before it is making. Two divides
+take turns at the one divider. When everything has retired, the block's cost appears.
+
+<PipelineCycles />
+
 ## The tests
 
 **Add to** `test/gas.test.ts`

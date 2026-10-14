@@ -12,6 +12,7 @@ import CompactNatural from "./CompactNatural.vue";
 import TwoBytes from "./TwoBytes.vue";
 import HexByte from "./HexByte.vue";
 import FixedWidth from "./FixedWidth.vue";
+import VectorMap from "./VectorMap.vue";
 import CoreBitfield from "./CoreBitfield.vue";
 import AssuranceGrid from "./AssuranceGrid.vue";
 import TrieBuilder from "./TrieBuilder.vue";
@@ -23,6 +24,11 @@ import GuarantorSeats from "./GuarantorSeats.vue";
 import CheckpointRun from "./CheckpointRun.vue";
 import ReadyQueue from "./ReadyQueue.vue";
 import SafroleEpoch from "./SafroleEpoch.vue";
+import AuthorizerPool from "./AuthorizerPool.vue";
+import PvmStepper from "./PvmStepper.vue";
+import PipelineCycles from "./PipelineCycles.vue";
+import GasMeter from "./GasMeter.vue";
+import ImportWaves from "./ImportWaves.vue";
 import "./custom.css";
 
 export default {
@@ -36,6 +42,7 @@ export default {
     app.component("BitPlaces", BitPlaces); // 2.2
     app.component("TwoBytes", TwoBytes); // 2.2
     app.component("CompactNatural", CompactNatural); // 2.2
+    app.component("VectorMap", VectorMap); // 2.6
     app.component("CoreBitfield", CoreBitfield); // 4.2
     app.component("TrieBuilder", TrieBuilder); // 6.1
     app.component("StateKeyWeave", StateKeyWeave); // 6.2
@@ -45,8 +52,13 @@ export default {
     app.component("AssuranceGrid", AssuranceGrid); // 11.1
     app.component("ReportLife", ReportLife); // 11.2
     app.component("GuarantorSeats", GuarantorSeats); // 12.1
+    app.component("AuthorizerPool", AuthorizerPool); // 13.1
+    app.component("PvmStepper", PvmStepper); // 15.3
+    app.component("PipelineCycles", PipelineCycles); // 15.10
+    app.component("GasMeter", GasMeter); // 15.11
     app.component("CheckpointRun", CheckpointRun); // 16.6
     app.component("ReadyQueue", ReadyQueue); // 17.2
+    app.component("ImportWaves", ImportWaves); // 19.1
     if (typeof window === "undefined") return;
     reloadOnStaleBuild();
     listenForSnippetTaps();

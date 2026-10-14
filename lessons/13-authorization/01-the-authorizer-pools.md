@@ -36,6 +36,14 @@ Each block, α′[c] is made in three steps:
 comes late in the block. In C(1) and C(2) ([lesson 6.2](../06-state-and-merklization/02-state-keys.md)) the pools are lists with their
 length in front, and the queues are 80 hashes exactly: 514 and 5,120 bytes on tiny.
 
+Try it below, on one core, with letters for hashes. Step on block by block and watch the
+pool fill to 8, then slide: the newest in on the right, the oldest out on the left. Give
+a block a guarantee using a letter that's in the pool twice, and see the leftmost copy
+go. Slide past slot 80 and the queue starts again from entry 0. Then switch to the
+trace's queue, A 80 times over: take an A out, put an A in, and the pool never changes.
+
+<AuthorizerPool />
+
 ## The codecs first
 
 The tests read pools from real states as well as from vectors, so the codecs come first,
