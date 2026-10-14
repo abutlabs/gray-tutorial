@@ -1,0 +1,38 @@
+# The concepts e-book (.vitepress/epub.ts), for an e-reader: run by hand (Actions, "e-book",
+# Run workflow; or `gh workflow run epub.yml`). It checks the tools, builds the book and
+# publishes it as a release, tagged with the date, on the repository's Releases page.
+name: e-book
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      # the diagrams' labels are drawn with a system monospace font (epub.ts, png)
+      - run: sudo apt-get install -y --no-install-recommends fonts-dejavu-core
+      - run: npm ci
+      - run: npm run typecheck && npm test
+      - name: Build the e-book
+        run: npm run epub
+        env:
+          SITE_BASE: /the-gray-tutor/
+      - name: Publish it as a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          day=$(date -u +%Y-%m-%d)
+          tag="epub-$day-${GITHUB_SHA::7}"
+          gh release create "$tag" .vitepress/dist/the-gray-tutor-concepts.epub \
+            --target "$GITHUB_SHA" \
+            --title "The Gray Tutor: the concepts, $day" \
+            --notes "The concepts edition of The Gray Tutor for an e-reader, from ${GITHUB_SHA::7}: every lesson's prose, diagrams and formulas, with the code folded away, and each lesson's check as review questions with the answers at the chapter's end. On a Kindle: send the .epub with Send to Kindle."

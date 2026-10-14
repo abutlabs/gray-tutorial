@@ -38,7 +38,8 @@ const again = () => { tapped.value = questions.map(() => []); };
       <li v-for="(q, qi) in questions" :key="qi" class="question">
         <p class="ask" v-html="q.question"></p>
         <ul class="options">
-          <li v-for="(o, oi) in q.options" :key="oi">
+          <!-- data-right and the hidden reasons are in the built page for the EPUB (../epub.ts) -->
+          <li v-for="(o, oi) in q.options" :key="oi" :data-right="o.right ? 'yes' : undefined">
             <button
               type="button"
               class="option"
@@ -49,7 +50,7 @@ const again = () => { tapped.value = questions.map(() => []); };
               <span class="mark" aria-hidden="true">{{ tapped[qi].includes(oi) ? (o.right ? "✓" : "✗") : "" }}</span>
               <span v-html="o.text"></span>
             </button>
-            <p v-if="tapped[qi].includes(oi)" class="why" :class="o.right ? 'right' : 'wrong'">
+            <p v-show="tapped[qi].includes(oi)" class="why" :class="o.right ? 'right' : 'wrong'">
               <span class="sr-only">{{ o.right ? "Right." : "Not this one." }}</span>
               <span v-html="o.why"></span>
             </p>

@@ -1,6 +1,6 @@
 # The website on GitHub Pages, https://abutlabs.github.io/the-gray-tutor/. Every push to
 # main checks the tools and the lessons' links (npm test, and the build fails on a dead
-# link), then publishes the site.
+# link), then publishes the site. The e-book has its own workflow, epub.yml.
 name: pages
 
 on:

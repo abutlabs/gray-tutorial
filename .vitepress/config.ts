@@ -9,6 +9,7 @@ import { readParts } from "../tools/lessons.ts";
 import { LEGEND, writeRedirects } from "./urls.ts";
 import { type PrintPage, writePrintPage } from "./print.ts";
 import { checkBlocks } from "./checks.ts";
+import { writeEpub } from "./epub.ts";
 import { KEY as CONCEPTS_KEY } from "./theme/concepts.ts";
 import { type Snapshot, snippetNumbers, wholeFiles } from "../tools/snapshots.ts";
 
@@ -62,6 +63,9 @@ export default defineConfig({
   buildEnd: (site) => {
     writeRedirects(site.outDir, site.site.base);
     writePrintPage(site.outDir, site.site.base, printPages);
+    // the same pages as an e-book, the concepts edition, for an e-reader (epub.ts): only
+    // when asked (npm run epub), so a release carries it, not every build
+    if (process.env.EPUB) writeEpub(site.outDir, site.site.base, printPages);
   },
   themeConfig: {
     // the professor beside the title (lessons/public/logo.svg)
@@ -74,6 +78,8 @@ export default defineConfig({
       { text: "Symbols", link: "/symbols" },
       // a plain page outside the app (print.ts): `target` makes the link load it in full
       { text: "One page", link: "/print.html", target: "_self" },
+      // the e-book's latest release (.github/workflows/epub.yml)
+      { text: "E-book", link: "https://github.com/abutlabs/the-gray-tutor/releases/latest" },
       { text: "JAM learning", link: "https://abutlabs.github.io/jam-learning/" },
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/abutlabs/the-gray-tutor" }],
