@@ -359,7 +359,7 @@ npm run typecheck
 ℹ pass 401
 ℹ fail 0
 ...
-reported 401 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736324569
+reported 401 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736324569
 ...
 ```
 
@@ -425,7 +425,7 @@ node bin/disassemble.ts ../vectors/traces/fallback/00000001.json 0 4
       5  jump             → 92078
       9  add_imm_64       r1, r1, -96
      12  store_ind_u64    r0, r1, 88
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=disassemble-1791736329537
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=disassemble-1791736329537
 ```
 
 The very first two instructions are jumps, and that's no accident: the PVM starts

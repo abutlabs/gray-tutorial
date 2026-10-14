@@ -221,7 +221,7 @@ npm run typecheck
 ℹ pass 165
 ℹ fail 0
 ...
-reported 165 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791732278807
+reported 165 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791732278807
 ...
 ```
 
@@ -301,7 +301,7 @@ progress_with_verdicts-3: verdicts_not_sorted_unique
 progress_with_verdicts-4: accepted
 progress_with_verdicts-5: bad_vote_split
 progress_with_verdicts-6: accepted
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=dispute-check-1791732283740
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=dispute-check-1791732283740
 ```
 
 Twenty-nine vectors and not one "the vector says": your client's disputes agree with all
@@ -413,7 +413,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 146 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939173161
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939173161
 ```
 
 > [!TIP] Milestone

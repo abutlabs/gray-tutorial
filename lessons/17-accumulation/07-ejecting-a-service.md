@@ -341,7 +341,7 @@ npm run typecheck
 ℹ pass 561
 ℹ fail 0
 ...
-reported 561 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740202859
+reported 561 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791740202859
 ...
 ```
 
@@ -364,7 +364,7 @@ host call 100 (log, from JIP-1): φ₇ = WHAT, 61129 gas left
 host call 5 (write): φ₇ = 1, 52269 gas left
 the service stops: "halt", using 151715 gas
 the test vector says: 151715
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791740212297
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791740212297
 ```
 
 Service 0 ejects service 2 (`OK`), using exactly the vector's gas. The *Host calls* panel,

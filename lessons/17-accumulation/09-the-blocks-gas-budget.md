@@ -366,7 +366,7 @@ npm run typecheck
 ℹ pass 571
 ℹ fail 0
 ...
-reported 571 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769462885
+reported 571 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791769462885
 ...
 ```
 
@@ -448,7 +448,7 @@ service 0: 2 digest(s), 0 transfer(s), 354620 gas
   the vector says: 2 digest(s), 0 transfer(s), 354620 gas
 service 2: 1 digest(s), 0 transfer(s), 0 gas
   the vector says: 1 digest(s), 0 transfer(s), 0 gas
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791769474334
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=accumulate-1791769474334
 ```
 
 Two rounds, one report each: the budget at work. [Lesson 17.4](./04-rounds.md)'s gift shows the other way

@@ -266,7 +266,7 @@ npm run typecheck
 ℹ pass 293
 ℹ fail 0
 ...
-reported 293 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734610469
+reported 293 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791734610469
 ...
 ```
 
@@ -332,7 +332,7 @@ banned_validator_guarantee-1: banned_validator (the vector: banned_validator)
 big_work_report_output-1: guarantees pass (the vector: accepted)
 core_engaged-1: core_engaged (the vector: core_engaged)
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=guarantee-check-1791734622303
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=guarantee-check-1791734622303
 ```
 
 Wherever the rules refuse a guarantee, the vector agrees. Where the guarantees pass but the

@@ -273,7 +273,7 @@ or isn't waiting, is skipped:
 > data, with no repeats. Five vectors at each size break those rules (both
 > `preimage_not_needed` and three of the four `preimages_order_check`), and the test
 > above skips refused vectors, so your client never meets them. The [hardening
-> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the refusals.
+> pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) adds the refusals.
 
 **Run**
 
@@ -295,7 +295,7 @@ npm run typecheck
 ℹ pass 393
 ℹ fail 0
 ...
-reported 393 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736048893
+reported 393 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736048893
 ...
 ```
 
@@ -362,7 +362,7 @@ service 0: 143 bytes, hash 0x6ae18b8b…  request [] → [8]
 service 0: 3 bytes, hash 0xd0c7d4d8…  request [] → [8]
 service 0: 84 bytes, hash 0x70e9dc78…  request [] → [8]
 service 0: 223 bytes, hash 0x35c3078c…  request [] → [8]
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=preimages-1791736053778
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=preimages-1791736053778
 ```
 
 Four pieces of data that service 0 was waiting for, from 3 bytes to 223, each one's
@@ -461,13 +461,13 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 238 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939482202
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939482202
 ```
 
 2 of 16, and the board says why for the rest. Ten are blocks the vectors refuse,
 `preimage_unneeded` and `preimages_not_sorted_unique`, which your client accepts: the
 simple road the note above took, and the [hardening
-pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the refusals.
+pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) adds the refusals.
 Those ten stay red on your board until you take it. The other four store their preimages
 exactly as the vectors do, and then the vectors' service statistics count them,
 `statistics changed`: [lesson 18.2](../18-statistics/02-what-cores-and-services-did.md) keeps those, and they cross the line there.

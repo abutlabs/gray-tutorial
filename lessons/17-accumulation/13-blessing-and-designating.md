@@ -56,7 +56,7 @@ manager left the delegator alone, R takes the holder's own choice: service 2.
 Your client follows the vectors: they're what a client is checked against. Both bless
 vectors fail under
 the strict rule; the switch is one line, noted in
-[HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) for when a new version of the paper settles it.
+[HARDENING.md](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) for when a new version of the paper settles it.
 
 ## The tests
 
@@ -640,7 +640,7 @@ npm run typecheck
 ℹ pass 588
 ℹ fail 0
 ...
-reported 588 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769561954
+reported 588 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791769561954
 ...
 ```
 
@@ -664,7 +664,7 @@ host call 17 (designate): φ₇ = HUH, 1526031 gas left
 ...
 the service stops: "halt", using 507819 gas
 the test vector says: 507819
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791769574399
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791769574399
 ```
 
 Service 1 blesses (`OK`, the vectors' rule), and service 0 tries to designate a number of
@@ -779,7 +779,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 364 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939598350
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939598350
 ```
 
 > [!TIP] Milestone

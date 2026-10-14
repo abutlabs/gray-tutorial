@@ -186,7 +186,7 @@ pages' permission: o is read only *for the program*, not for whoever sets it up.
 > its heap, the stack and the arguments must add up to no more than 2^32 bytes, and the
 > arguments must fit in Z_I. If not, the machine panics without running anything.
 > `standardProgram` lays out whatever it's given, which is fine for the real service
-> here; the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the check, since a service's code comes from
+> here; the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) adds the check, since a service's code comes from
 > anyone.
 
 Now the machine learns its last instruction. A host call is a new way to stop:
@@ -260,7 +260,7 @@ npm run typecheck
 ℹ pass 431
 ℹ fail 0
 ...
-reported 431 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736885963
+reported 431 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736885963
 ...
 ```
 
@@ -366,7 +366,7 @@ step 16  at 123715  load_imm_jump
 ...
 step 38  at 121489  ecalli
 the machine stops: {"host":2}, with r10 = 0
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=start-1791736891343
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=start-1791736891343
 ```
 
 Four sections, with empty zones between them, just as the table said. Then 38 steps of
@@ -396,7 +396,7 @@ let init_registers (args : bytes) : int64 array =
 RA, SP, A0, A1: lasair's comments use the register names from RISC-V, the instruction set
 the PVM is based on. The return address, the stack pointer, the first two arguments: the
 same jobs your registers 0, 1, 7 and 8 do. lasair also checks Y's size rule, the one the
-note above leaves for the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md).
+note above leaves for the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md).
 
 </details>
 

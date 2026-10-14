@@ -67,22 +67,22 @@ It runs in Docker, so start Docker Desktop first.
 
 The stack is its own repo, [abutlabs/observability](https://github.com/abutlabs/observability).
 Clone it next door, so the two folders sit side by side, and start it. `cd ..` takes
-you to the folder that holds `gray-tutorial/`, and the clone is needed only once:
+you to the folder that holds `the-gray-tutor/`, and the clone is needed only once:
 
 ```sh
 cd ..
 git clone https://github.com/abutlabs/observability.git
 cd observability
 ./obs up
-cd ../gray-tutorial
+cd ../the-gray-tutor
 ```
 
 Now open Grafana at http://localhost:3300 and go to *Dashboards*. There's a folder
-**gray-tutorial** holding the tutorial's dashboards: **0 · Your client**, where every run
+**the-gray-tutor** holding the tutorial's dashboards: **0 · Your client**, where every run
 lands, and one per theme, from **1 · Basics** to **7 · Accumulation and import**. A bar at
 the top of each links them all. (The stack found them in this repo's
 `observability/dashboards/` because the folders are neighbours. If yours aren't,
-start it with `OBS_PROJECT_DIRS=/path/to/gray-tutorial ./obs up`.)
+start it with `OBS_PROJECT_DIRS=/path/to/the-gray-tutor ./obs up`.)
 
 They're empty. Nothing has said anything yet. [Lesson 0.3](./03-watch-your-client.md) fixes that.
 
@@ -176,7 +176,7 @@ When something here doesn't work, it's almost always one of these:
 - **`Could not find '.../test/**/*.test.ts'`, or `ERR_UNKNOWN_FILE_EXTENSION` for a `.ts`
   file.** This terminal is on an older Node. `nvm use`, then `node --version` should say
   `v26.` and something. (At the repo root, the tutorial's own commands say it in words:
-  `The Gray Tutorial needs Node 26`.)
+  `The Gray Tutor needs Node 26`.)
 - **`./obs up` says it `failed to connect to the docker API`** (older Docker: `Cannot
   connect to the Docker daemon`). Docker isn't running. Start Docker Desktop, wait until
   it's running, and `./obs up` again.

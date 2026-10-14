@@ -89,7 +89,7 @@ npm run typecheck
 ℹ pass 25
 ℹ fail 0
 ...
-reported 25 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791727153621
+reported 25 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791727153621
 ...
 ```
 
@@ -130,7 +130,7 @@ node bin/decode.ts work_package ../vectors/codec/tiny/work_package.bin
 ...
   587..619   items.1.extrinsic.0.hash       0x80b628780612e8928705018d1ced53b2f76607ad026a86e4f36c99ac0491f8eb
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791727189774
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791727189774
 ```
 
 The trace paths show the nesting: `context.anchor_slot`, `items.1.import_segments.0.index`.

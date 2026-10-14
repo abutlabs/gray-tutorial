@@ -173,7 +173,7 @@ npm run typecheck
 ℹ pass 168
 ℹ fail 0
 ...
-reported 168 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733586523
+reported 168 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791733586523
 ...
 ```
 
@@ -230,7 +230,7 @@ node bin/available.ts ../vectors/stf/assurances/tiny/some_assurances-1.json
 core   0: 5 of 6 hold its data: available!
 core   1: 4 of 6 hold its data: still waiting
 reports that became available: 1
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=available-1791733590339
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=available-1791733590339
 ```
 
 Now the full-size version, `../vectors/stf/assurances/full/some_assurances-1.json`. Its

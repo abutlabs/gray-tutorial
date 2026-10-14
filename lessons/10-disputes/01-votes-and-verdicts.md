@@ -271,7 +271,7 @@ npm run typecheck
 ℹ pass 96
 ℹ fail 0
 ...
-reported 96 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731877727
+reported 96 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791731877727
 ...
 ```
 
@@ -334,7 +334,7 @@ report 0x11da6d1f…: 5 of 5 say valid, judged by κ
   every vote signed by its judge: true. The report is good.
 report 0x7b0aa173…: 0 of 5 say valid, judged by κ
   every vote signed by its judge: true. The report is bad.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=verdicts-1791731881564
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=verdicts-1791731881564
 ```
 
 Two trials in one block: one report cleared, one condemned. Now try

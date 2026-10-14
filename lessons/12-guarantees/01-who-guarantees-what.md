@@ -260,7 +260,7 @@ npm run typecheck
 ℹ pass 196
 ℹ fail 0
 ...
-reported 196 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734292556
+reported 196 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791734292556
 ...
 ```
 
@@ -333,7 +333,7 @@ slot 14, rotation 3
   the last one:  core 0: 1 2 5 | core 1: 0 3 4
 guarantee for core 0, made at slot 10 (the last rotation):
   signed by 1, 2, 5: all assigned to core 0? true
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=guarantors-1791734301753
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=guarantors-1791734301753
 ```
 
 The block is at slot 14, but the guarantee was made at slot 10, in the last rotation.

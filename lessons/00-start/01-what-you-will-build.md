@@ -146,7 +146,7 @@ client code.
 
 One laptop screen is enough:
 
-1. Open `gray-tutorial/` in VS Code. Lessons open rendered.
+1. Open `the-gray-tutor/` in VS Code. Lessons open rendered.
 2. On a lesson, press <kbd>⌘K</kbd> <kbd>V</kbd> (<kbd>Ctrl+K</kbd> <kbd>V</kbd> on
    Windows and Linux) to keep it on one side and your code on the other. (To see a
    lesson's source: right-click its tab, *Reopen Editor With... > Text Editor*.)

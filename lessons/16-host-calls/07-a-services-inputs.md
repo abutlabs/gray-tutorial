@@ -238,7 +238,7 @@ npm run typecheck
 ℹ pass 476
 ℹ fail 0
 ...
-reported 476 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738499570
+reported 476 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791738499570
 ...
 ```
 
@@ -324,7 +324,7 @@ service 1729: 1 input(s), 200000 gas, "halt"
 service 1730: 1 input(s), 200000 gas, "halt"
   gas used 34413; the vector says 34413
   storage: 0x6672656164 = 0x00
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738508312
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=accumulate-1791738508312
 ```
 
 `same_round_storage_isolation-1` accumulates two services in the same round. Each starts

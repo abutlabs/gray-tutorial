@@ -268,7 +268,7 @@ npm run typecheck
 ℹ pass 54
 ℹ fail 0
 ...
-reported 54 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728700903
+reported 54 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728700903
 ...
 ```
 
@@ -314,7 +314,7 @@ node bin/chain.ts
 
 ```text
 99 of 99 links hold.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=chain-1791728701859
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=chain-1791728701859
 ```
 
 On the **2 · Blocks and state** dashboard, the *Chain* panel lists all hundred blocks:

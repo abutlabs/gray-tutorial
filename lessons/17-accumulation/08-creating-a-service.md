@@ -42,7 +42,7 @@ knows η′₀ until the block, so nobody can aim for an id.
 
 One honest note: no official vector creates a service at a public id, so that formula is
 checked against the Gray Paper and by hand, not by a vector. It's in
-[HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md), to confirm against the conformance fuzzer (no block-import trace
+[HARDENING.md](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md), to confirm against the conformance fuzzer (no block-import trace
 creates a service).
 
 **The round** already handles new accounts: [lesson 17.7](./07-ejecting-a-service.md) taught it that an id a run created
@@ -332,7 +332,7 @@ npm run typecheck
 ℹ pass 569
 ℹ fail 0
 ...
-reported 569 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740238119
+reported 569 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791740238119
 ...
 ```
 
@@ -361,7 +361,7 @@ host call 5 (write): φ₇ = 1, 1807016 gas left
 sent 500 to service 5, with 10 gas and the memo "welcome"
 the service stops: "halt", using 196983 gas
 the test vector says: 196983
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791740247569
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791740247569
 ```
 
 Service 0, the registrar, creates service 5 (its choice of id), then sends it 500 as an

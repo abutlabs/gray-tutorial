@@ -161,7 +161,7 @@ npm run typecheck
 ℹ pass 48
 ℹ fail 0
 ...
-reported 48 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728274365
+reported 48 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728274365
 ...
 ```
 
@@ -202,7 +202,7 @@ node bin/decode.ts header ../vectors/codec/tiny/header_1.bin
 ...
   497..498   tickets_mark.11.attempt        0x03
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728274814
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791728274814
 ```
 
 Read it top to bottom: no epoch mark (`0x00`), a tickets mark (`0x01`), and then twelve

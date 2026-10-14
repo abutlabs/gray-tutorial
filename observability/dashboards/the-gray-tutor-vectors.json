@@ -1,9 +1,9 @@
 {
- "uid": "gray-tutorial-vectors",
+ "uid": "the-gray-tutor-vectors",
  "title": "8 · Official vectors",
  "description": "Your client's scoreboard: every official test vector, run whole, run after run.",
  "tags": [
-  "gray-tutorial"
+  "the-gray-tutor"
  ],
  "timezone": "browser",
  "refresh": "10s",
@@ -22,7 +22,7 @@
   {
    "type": "link",
    "title": "0 · Your client",
-   "url": "/d/gray-tutorial",
+   "url": "/d/the-gray-tutor",
    "tooltip": "0 · Your client",
    "icon": "dashboard",
    "includeVars": true,
@@ -34,7 +34,7 @@
   {
    "type": "link",
    "title": "1 · Basics",
-   "url": "/d/gray-tutorial-basics",
+   "url": "/d/the-gray-tutor-basics",
    "tooltip": "1 · Basics (Parts 0-2)",
    "icon": "dashboard",
    "includeVars": true,
@@ -46,7 +46,7 @@
   {
    "type": "link",
    "title": "2 · Blocks and state",
-   "url": "/d/gray-tutorial-blocks",
+   "url": "/d/the-gray-tutor-blocks",
    "tooltip": "2 · Blocks and state (Parts 3-6)",
    "icon": "dashboard",
    "includeVars": true,
@@ -58,7 +58,7 @@
   {
    "type": "link",
    "title": "3 · Consensus",
-   "url": "/d/gray-tutorial-consensus",
+   "url": "/d/the-gray-tutor-consensus",
    "tooltip": "3 · Consensus (Parts 7-9)",
    "icon": "dashboard",
    "includeVars": true,
@@ -70,7 +70,7 @@
   {
    "type": "link",
    "title": "4 · Checks",
-   "url": "/d/gray-tutorial-checks",
+   "url": "/d/the-gray-tutor-checks",
    "tooltip": "4 · Checks (Parts 10-12)",
    "icon": "dashboard",
    "includeVars": true,
@@ -82,7 +82,7 @@
   {
    "type": "link",
    "title": "5 · Services",
-   "url": "/d/gray-tutorial-services",
+   "url": "/d/the-gray-tutor-services",
    "tooltip": "5 · Services (Parts 13-14)",
    "icon": "dashboard",
    "includeVars": true,
@@ -94,7 +94,7 @@
   {
    "type": "link",
    "title": "6 · The PVM",
-   "url": "/d/gray-tutorial-pvm",
+   "url": "/d/the-gray-tutor-pvm",
    "tooltip": "6 · The PVM (Part 15)",
    "icon": "dashboard",
    "includeVars": true,
@@ -106,7 +106,7 @@
   {
    "type": "link",
    "title": "7 · Accumulation and import",
-   "url": "/d/gray-tutorial-accumulation",
+   "url": "/d/the-gray-tutor-accumulation",
    "tooltip": "7 · Accumulation and import (Parts 16-20)",
    "icon": "dashboard",
    "includeVars": true,
@@ -118,7 +118,7 @@
   {
    "type": "link",
    "title": "8 · Official vectors",
-   "url": "/d/gray-tutorial-vectors",
+   "url": "/d/the-gray-tutor-vectors",
    "tooltip": "8 · Official vectors (the scoreboard)",
    "icon": "dashboard",
    "includeVars": true,
@@ -138,8 +138,8 @@
      "type": "loki",
      "uid": "loki"
     },
-    "query": "label_values({job=\"gray_tutorial\"}, client)",
-    "definition": "label_values({job=\"gray_tutorial\"}, client)",
+    "query": "label_values({job=\"the_gray_tutor\"}, client)",
+    "definition": "label_values({job=\"the_gray_tutor\"}, client)",
     "refresh": 2,
     "sort": 1,
     "includeAll": false,
@@ -159,8 +159,8 @@
      "type": "loki",
      "uid": "loki"
     },
-    "query": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
-    "definition": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
+    "query": "label_values({job=\"the_gray_tutor\", client=\"$client\"}, run_id)",
+    "definition": "label_values({job=\"the_gray_tutor\", client=\"$client\"}, run_id)",
     "refresh": 2,
     "sort": 2,
     "includeAll": true,
@@ -203,7 +203,7 @@
    },
    "targets": [
     {
-     "expr": "gray_tutorial_vectors_passed{client=\"$client\"}",
+     "expr": "the_gray_tutor_vectors_passed{client=\"$client\"}",
      "refId": "A",
      "instant": true
     }
@@ -250,7 +250,7 @@
    },
    "targets": [
     {
-     "expr": "gray_tutorial_vectors_total{client=\"$client\"}",
+     "expr": "the_gray_tutor_vectors_total{client=\"$client\"}",
      "refId": "A",
      "instant": true
     }
@@ -297,7 +297,7 @@
    },
    "targets": [
     {
-     "expr": "100 * gray_tutorial_vectors_passed{client=\"$client\"} / gray_tutorial_vectors_total{client=\"$client\"}",
+     "expr": "100 * the_gray_tutor_vectors_passed{client=\"$client\"} / the_gray_tutor_vectors_total{client=\"$client\"}",
      "refId": "A",
      "instant": true
     }
@@ -357,7 +357,7 @@
    },
    "targets": [
     {
-     "expr": "count(last_over_time({job=\"gray_tutorial\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"family\" | run=\"true\" | keep family, passed | unwrap passed [$__range]))",
+     "expr": "count(last_over_time({job=\"the_gray_tutor\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"family\" | run=\"true\" | keep family, passed | unwrap passed [$__range]))",
      "refId": "A",
      "queryType": "instant"
     }
@@ -404,12 +404,12 @@
    },
    "targets": [
     {
-     "expr": "last_over_time({job=\"gray_tutorial\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"family\" | run=\"true\" | keep family, passed | unwrap passed [$__range])",
+     "expr": "last_over_time({job=\"the_gray_tutor\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"family\" | run=\"true\" | keep family, passed | unwrap passed [$__range])",
      "refId": "A",
      "queryType": "instant"
     },
     {
-     "expr": "last_over_time({job=\"gray_tutorial\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"family\" | keep family, total | unwrap total [$__range])",
+     "expr": "last_over_time({job=\"the_gray_tutor\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"family\" | keep family, total | unwrap total [$__range])",
      "refId": "B",
      "queryType": "instant"
     }
@@ -512,7 +512,7 @@
    },
    "targets": [
     {
-     "expr": "max by (client) (gray_tutorial_vectors_passed{client=\"$client\"})",
+     "expr": "max by (client) (the_gray_tutor_vectors_passed{client=\"$client\"})",
      "refId": "A",
      "legendFormat": "passing"
     }
@@ -562,7 +562,7 @@
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"failed\" | line_format \"FAIL  {{.vector}}  {{.why}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"failed\" | line_format \"FAIL  {{.vector}}  {{.why}}\"",
      "refId": "A",
      "queryType": "range"
     }

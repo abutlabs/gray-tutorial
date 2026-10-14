@@ -230,7 +230,7 @@ npm run typecheck
 ℹ pass 23
 ℹ fail 0
 ...
-reported 23 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726654909
+reported 23 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791726654909
 ...
 ```
 
@@ -324,7 +324,7 @@ node bin/decode.ts work_item ../vectors/codec/tiny/work_item.bin
   196..200   extrinsic.0.len                0x10000000
   200..232   extrinsic.1.hash               0x6c437d85cd8327f42a35d427ede1b5871347d3aae7442f2df1ff80f834acf17a
   232..236   extrinsic.1.len                0x11000000
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791726655368
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791726655368
 ```
 
 Read the output against the hex dump from [lesson 2.6](./06-the-first-test-vectors.md): `service` is bytes 0 to 4, then

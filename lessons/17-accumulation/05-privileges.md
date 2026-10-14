@@ -474,7 +474,7 @@ npm run typecheck
 ℹ pass 543
 ℹ fail 0
 ...
-reported 543 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791739196226
+reported 543 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791739196226
 ...
 ```
 
@@ -547,7 +547,7 @@ host call 100 (log, from JIP-1): φ₇ = WHAT, 703828 gas left
 host call 5 (write): φ₇ = 1, 695155 gas left
 the service stops: "halt", using 1308944 gas
 the test vector says: 1308944
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791739203939
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791739203939
 ```
 
 **Run**
@@ -565,7 +565,7 @@ host call 100 (log, from JIP-1): φ₇ = WHAT, 707763 gas left
 host call 5 (write): φ₇ = 1, 699061 gas left
 the service stops: "halt", using 1305017 gas
 the test vector says: 1305017
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791739204669
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791739204669
 ```
 
 The first service holds core 0 and hands it over: φ₇ = 0, `OK`. The second isn't core

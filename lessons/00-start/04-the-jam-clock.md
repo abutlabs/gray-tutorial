@@ -128,7 +128,7 @@ test at test/time.test.ts:16:1
     actual: 0,
     expected: 600,
 ...
-reported 2 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791725866613
+reported 2 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791725866613
 ```
 
 Red, for the right reason: both tests ran, and both caught the stub. Here is how to read a
@@ -248,7 +248,7 @@ npm run typecheck
 ℹ skipped 0
 ℹ todo 0
 ℹ duration_ms 48.3
-reported 2 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=…&var-run_id=test-1791722258705
+reported 2 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=…&var-run_id=test-1791722258705
 
 > typecheck
 > tsc -p .
@@ -290,7 +290,7 @@ node bin/now.ts
 
 ```text
 It is JAM timeslot ….
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=now-1791725866841
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=now-1791725866841
 ```
 
 A number in the millions: every six-second slot since the start of 2025. On the
@@ -352,11 +352,11 @@ node bin/now.ts 3
 
 ```text
 It is JAM timeslot ….
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=now-1791731852333
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=now-1791731852333
 It is JAM timeslot ….
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=now-1791731856001
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=now-1791731856001
 It is JAM timeslot ….
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=now-1791731862002
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=now-1791731862002
 ```
 
 Three slots, one after the other: the first at once, the next two six seconds apart,
@@ -386,7 +386,7 @@ let timeslot_of_unix (unix_ts : int64) : timeslot option =
 
 The same division. lasair also refuses moments before the era: it returns `None`, OCaml's
 "no value here", and the caller must deal with it. (Your clock will learn that in the
-[hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md); nobody is importing blocks from 2024.) `let open Int64 in` lets the
+[hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md); nobody is importing blocks from 2024.) `let open Int64 in` lets the
 function write `sub` and `div` for `Int64.sub` and `Int64.div`.
 
 JAM time is this simple on purpose: every node works out the same slot from its own

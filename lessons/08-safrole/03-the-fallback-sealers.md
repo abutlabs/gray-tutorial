@@ -175,7 +175,7 @@ npm run typecheck
 ℹ pass 74
 ℹ fail 0
 ...
-reported 74 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791730474850
+reported 74 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791730474850
 ...
 ```
 
@@ -239,7 +239,7 @@ slot   9 of the epoch: validator 1
 slot  10 of the epoch: validator 4
 slot  11 of the epoch: validator 1
 the sealers match the vector: true
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=sealers-1791730478835
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=sealers-1791730478835
 ```
 
 Count them up: validator 1 seals 5 of the 12 slots, validators 2, 3 and 4 just one each.

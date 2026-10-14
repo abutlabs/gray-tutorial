@@ -281,7 +281,7 @@ bug, not the program's: a panic is the program's fault, a thrown `Error` is your
 > **The simple road.** `step` moves ı on *before* running the instruction, so a jump that
 > panics leaves ı at the next instruction, not where it was. And `run` doesn't reset ı
 > after the machine stops, as the Gray Paper's Ψ does. Nothing reads ı after a stop until
-> [Part 16](../16-host-calls/index.md)'s host calls, and the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) puts both right.
+> [Part 16](../16-host-calls/index.md)'s host calls, and the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) puts both right.
 
 **Run**
 
@@ -302,7 +302,7 @@ npm run typecheck
 ℹ pass 404
 ℹ fail 0
 ...
-reported 404 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736334899
+reported 404 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736334899
 ...
 ```
 
@@ -377,7 +377,7 @@ step 10  at  6  add_64         r2 = 27
 step 33  at 12  branch_ne_imm
 step 34  at 15  jump_ind
 the machine stops: halt, with r2 = 55
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=run-1791736339857
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=run-1791736339857
 ```
 
 34 steps: two loads, the fallthrough, ten trips round the loop at three instructions

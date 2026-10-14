@@ -431,7 +431,7 @@ npm run typecheck
 ℹ pass 548
 ℹ fail 0
 ...
-reported 548 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791739213626
+reported 548 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791739213626
 ...
 ```
 
@@ -478,7 +478,7 @@ still waiting: 0
 assigners: 0,0 → 1,0
 service 0: 1 digest(s), 0 transfer(s), 1308944 gas
   the vector says: 1 digest(s), 0 transfer(s), 1308944 gas
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791739226282
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=accumulate-1791739226282
 ```
 
 Service 0 held both cores, gave core 0 to service 1, and the block agrees: core 0's

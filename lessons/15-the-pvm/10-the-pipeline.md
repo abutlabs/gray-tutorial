@@ -248,7 +248,7 @@ npm run typecheck
 ℹ pass 443
 ℹ fail 0
 ...
-reported 443 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791737113888
+reported 443 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791737113888
 ...
 ```
 
@@ -309,7 +309,7 @@ cycle 18  . E E E F
 cycle 28  . F F F F
 cycle 29  . . . . .
 the block at 92078 costs 26 gas
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=pipeline-1791737119776
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=pipeline-1791737119776
 ```
 
 One column per instruction in the buffer: the stack-pointer add, the three stores and the

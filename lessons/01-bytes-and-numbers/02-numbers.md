@@ -121,7 +121,7 @@ npm test
 ...
 ℹ fail 0
 ...
-reported 7 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726099568
+reported 7 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791726099568
 ```
 
 All green on the first try, because these tests pin down how JavaScript already

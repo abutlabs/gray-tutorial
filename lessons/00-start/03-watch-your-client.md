@@ -72,26 +72,26 @@ export class Run {
 
   /** A number the run measured, such as how many tests passed. */
   number(name: string, value: number): void {
-    this.#numbers.push(`gray_tutorial_${name}{run_id="${this.id}"} ${value}\n`);
+    this.#numbers.push(`the_gray_tutor_${name}{run_id="${this.id}"} ${value}\n`);
   }
 
   /** Sends the run to the stack: where to see it in Grafana, or null if the stack is down. */
   async report(): Promise<string | null> {
-    const labels = { job: "gray_tutorial", client: CLIENT, kind: this.kind, run_id: this.id };
+    const labels = { job: "the_gray_tutor", client: CLIENT, kind: this.kind, run_id: this.id };
     try {
       const loki = await fetch(`${LOKI}/loki/api/v1/push`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ streams: [{ stream: labels, values: this.#events }] }),
       });
-      const group = `${PUSHGATEWAY}/metrics/job/gray_tutorial/client/${CLIENT}/kind/${this.kind}`;
+      const group = `${PUSHGATEWAY}/metrics/job/the_gray_tutor/client/${CLIENT}/kind/${this.kind}`;
       const push = await fetch(group, { method: "PUT", body: this.#numbers.join("") });
       if (!loki.ok || !push.ok) throw new Error("the stack said no");
     } catch {
       console.log("not reported: is the observability stack up? (../observability/obs up)");
       return null;
     }
-    return `${GRAFANA}/d/gray-tutorial?var-client=${CLIENT}&var-run_id=${this.id}`;
+    return `${GRAFANA}/d/the-gray-tutor?var-client=${CLIENT}&var-run_id=${this.id}`;
   }
 }
 
@@ -141,7 +141,7 @@ node bin/hello.ts
 ```
 
 ```text
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=hello-1791724085683
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=hello-1791724085683
 ```
 
 Open the link. In *Everything your client reported* there it is:
@@ -230,7 +230,7 @@ npm run typecheck
 ℹ skipped 0
 ℹ todo 0
 ℹ duration_ms 31.6
-reported 0 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791724085928
+reported 0 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791724085928
 
 > typecheck
 > tsc -p .

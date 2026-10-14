@@ -263,7 +263,7 @@ npm run typecheck
 ℹ pass 437
 ℹ fail 0
 ...
-reported 437 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736897027
+reported 437 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736897027
 ...
 ```
 
@@ -327,7 +327,7 @@ store_ind_u64    cycles  25  slots 1  ALU+store
 move_reg         cycles   0  slots 1  none
 move_reg         cycles   0  slots 1  none
 load_imm_jump    cycles  15  slots 1  none
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=costs-1791736902016
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=costs-1791736902016
 ```
 
 You met this block in [lesson 15.8](./08-a-real-program.md): a function getting started. It makes room on the

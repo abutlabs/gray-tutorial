@@ -222,7 +222,7 @@ npm run typecheck
 ℹ pass 515
 ℹ fail 0
 ...
-reported 515 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738801360
+reported 515 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791738801360
 ...
 ```
 
@@ -289,7 +289,7 @@ service 1729: 1 digest(s), 29643 gas
 service 1730: 1 digest(s), 34413 gas
   the vector says: 1 digest(s), 34413 gas
   storage: 0x6672656164 = 0x00
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738806530
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=accumulate-1791738806530
 ```
 
 Two services in one round, each writing its own key, each using exactly the vector's gas.

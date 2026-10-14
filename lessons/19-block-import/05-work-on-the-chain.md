@@ -225,7 +225,7 @@ npm run typecheck
 ℹ pass 646
 ℹ fail 0
 ...
-reported 646 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791773679824
+reported 646 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791773679824
 ...
 ```
 
@@ -244,7 +244,7 @@ block 2, slot 2: imported; root 0x435a89d7… = the trace's
 block 99, slot 99: imported; root 0x660d19aa… = the trace's
 block 100, slot 100: imported; root 0xdee30047… = the trace's
 100 of 100 state roots as the trace's
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=import-1791773693155
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=import-1791773693155
 ```
 
 A hundred blocks with work, chained, every root right. The full `storage` and `preimages`

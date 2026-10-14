@@ -119,7 +119,7 @@ npm run typecheck
 ℹ pass 44
 ℹ fail 0
 ...
-reported 44 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728308105
+reported 44 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728308105
 ...
 ```
 

@@ -91,7 +91,7 @@ npm test
 ℹ pass 168
 ℹ fail 0
 ...
-reported 168 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733590641
+reported 168 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791733590641
 ```
 
 Same tests, same 168 passes: the shape changed, and nothing else did.
@@ -239,7 +239,7 @@ npm run typecheck
 ℹ pass 170
 ℹ fail 0
 ...
-reported 170 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733601118
+reported 170 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791733601118
 ...
 ```
 
@@ -296,7 +296,7 @@ node bin/release.ts ../vectors/stf/assurances/tiny/no_assurances_with_stale_repo
 ```text
 core   0 at slot 12: timed out (waiting since 7)
 core   1 at slot 12: stays
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=release-1791733608115
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=release-1791733608115
 ```
 
 Two reports, nobody assuring either, and two different fates: one has waited its five

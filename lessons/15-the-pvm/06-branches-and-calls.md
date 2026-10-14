@@ -246,7 +246,7 @@ comparison it wants (`branch_lt_s_imm` → `lt_s`) and whether its other side is
 φ_B. In `load_imm_jump_ind`, the address is worked out *before* φ_A changes: write the
 two lines the other way round and a call through r0 would jump to its own way back.
 No test here calls through the same register it writes, though, so nothing would catch
-that mistake yet: the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the test.
+that mistake yet: the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) adds the test.
 
 **Run**
 
@@ -271,7 +271,7 @@ npm run typecheck
 ℹ pass 422
 ℹ fail 0
 ...
-reported 422 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736644236
+reported 422 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736644236
 ...
 ```
 
@@ -332,7 +332,7 @@ branch_lt_u      falls through
 branch_lt_s      jumps
 branch_ge_u      jumps
 branch_ge_s      falls through
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=branches-1791736649004
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=branches-1791736649004
 ```
 
 Read it in pairs. Every unsigned comparison and its signed twin disagree about −1 and 1:

@@ -277,7 +277,7 @@ npm run typecheck
 ℹ pass 455
 ℹ fail 0
 ...
-reported 455 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738018596
+reported 455 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791738018596
 ...
 ```
 
@@ -351,7 +351,7 @@ host call 100 (log, from JIP-1): φ₇ = WHAT, 85927 gas left
 host call 2 (fetch): φ₇ = 1, 84820 gas left
 host call 2 (fetch): φ₇ = 1, 83258 gas left
 the service stops: "halt", with 82133 gas left
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791738023798
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791738023798
 ```
 
 Now there's a conversation. Service 1729 asks for the constants (122 bytes, so it asks a

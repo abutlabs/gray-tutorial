@@ -373,7 +373,7 @@ npm run typecheck
 ℹ pass 85
 ℹ fail 0
 ...
-reported 85 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791771407614
+reported 85 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791771407614
 ...
 ```
 
@@ -455,12 +455,12 @@ validators moved along one set; offenders zeroed: 0
 ring root γ_Z: new, 0xa778826f…
 sealers: fallback keys; tickets mark: false
 the whole state after matches the vector: true
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=safrole-1791771413102
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=safrole-1791771413102
 a ticket: attempt 3, id 0x34341918…
 a ticket: attempt 1, id 0x5af49b10…
 a ticket: attempt 3, id 0xd6feae23…
 refused: bad_ticket_proof (the vector says: bad_ticket_proof)
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=safrole-1791771413261
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=safrole-1791771413261
 ```
 
 A new epoch, a new ring root; and three tickets whose ids are in order and whose attempts
@@ -588,7 +588,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 78 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939093198
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939093198
 ```
 
 > [!TIP] Milestone

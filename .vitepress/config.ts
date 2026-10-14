@@ -1,6 +1,6 @@
 // The website: the same Markdown files as in VS Code, with a sidebar, search, copy
 // buttons and dark mode. `npm run site` serves it at http://localhost:5173; GitHub Pages
-// serves it at https://abutlabs.github.io/gray-tutorial/ (SITE_BASE, set by the workflow).
+// serves it at https://abutlabs.github.io/the-gray-tutor/ (SITE_BASE, set by the workflow).
 
 import { defineConfig } from "vitepress";
 import type MarkdownIt from "markdown-it";
@@ -31,18 +31,24 @@ const printPages: PrintPage[] = [
 const whole = wholeFiles();
 // each file snippet's number in its lesson, for its anchor: #snippet-2 is the lesson's second
 const numbers = snippetNumbers();
+// "/" locally; "/the-gray-tutor/" on GitHub Pages (SITE_BASE, set by the workflow)
+const base = process.env.SITE_BASE ?? "/";
 
 export default defineConfig({
-  title: "Gray Tutorial",
+  title: "The Gray Tutor",
   description: "Build a JAM client in TypeScript, one Gray Paper rule at a time.",
   srcDir: "lessons",
-  base: process.env.SITE_BASE ?? "/",
+  base,
   cleanUrls: true,
   // Grafana and the stack are on localhost on purpose; every other link must resolve
   ignoreDeadLinks: [/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/],
   lastUpdated: false,
   // concepts-only mode (theme/concepts.ts), applied before the page draws so code never flashes
-  head: [["script", {}, `try{if(localStorage.getItem("${CONCEPTS_KEY}")==="on")document.documentElement.classList.add("concepts")}catch(e){}`]],
+  head: [
+    ["script", {}, `try{if(localStorage.getItem("${CONCEPTS_KEY}")==="on")document.documentElement.classList.add("concepts")}catch(e){}`],
+    // the professor in the browser tab; head links don't get the base added for them
+    ["link", { rel: "icon", type: "image/svg+xml", href: `${base}logo.svg` }],
+  ],
   // $$ ... $$ is a Gray Paper formula, drawn as maths when the site is built (MathJax, to
   // SVG: no script in the reader's browser, and print.html gets it too)
   markdown: {
@@ -57,6 +63,8 @@ export default defineConfig({
     writePrintPage(site.outDir, site.site.base, printPages);
   },
   themeConfig: {
+    // the professor beside the title (lessons/public/logo.svg)
+    logo: { src: "/logo.svg", alt: "" },
     // every word you type must match, so "ready queue" finds the ready queue first
     search: { provider: "local", options: { miniSearch: { searchOptions: { combineWith: "AND" } } } },
     nav: [
@@ -67,7 +75,7 @@ export default defineConfig({
       { text: "One page", link: "/print.html", target: "_self" },
       { text: "JAM learning", link: "https://abutlabs.github.io/jam-learning/" },
     ],
-    socialLinks: [{ icon: "github", link: "https://github.com/abutlabs/gray-tutorial" }],
+    socialLinks: [{ icon: "github", link: "https://github.com/abutlabs/the-gray-tutor" }],
     outline: { level: [2, 3] },
     docFooter: { prev: "Previous lesson", next: "Next lesson" },
     // in reading order, so the pager and the arrow keys walk the lessons; the glossary is an

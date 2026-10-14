@@ -365,7 +365,7 @@ npm run typecheck
 ℹ pass 534
 ℹ fail 0
 ...
-reported 534 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738822352
+reported 534 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791738822352
 ...
 ```
 
@@ -451,7 +451,7 @@ host call 5 (write): φ₇ = 1, 148562 gas left
 sent 100 to service 1, with 80000 gas and the memo "gift"
 the service stops: "halt", using 255437 gas
 the test vector says: 255437
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791738827853
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791738827853
 ```
 
 Service 0 reads its input, sends the gift (φ₇ = 0 is `OK`), and stops having used exactly

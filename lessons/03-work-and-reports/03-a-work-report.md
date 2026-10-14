@@ -121,7 +121,7 @@ npm run typecheck
 ℹ pass 32
 ℹ fail 0
 ...
-reported 32 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791727156593
+reported 32 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791727156593
 ...
 ```
 
@@ -158,7 +158,7 @@ node bin/decode.ts work_report ../vectors/codec/full/work_report.bin
 ...
   273..274   core_index                     0x03
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791727157021
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791727157021
 ```
 
 `0xff03`, little end first, is `0x03ff`: 1,023 shards, one per validator on the full

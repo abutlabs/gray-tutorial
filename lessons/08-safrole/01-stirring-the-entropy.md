@@ -188,7 +188,7 @@ npm run typecheck
 ℹ pass 72
 ℹ fail 0
 ...
-reported 72 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791730458811
+reported 72 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791730458811
 ...
 ```
 
@@ -249,7 +249,7 @@ VRF output 0x92e69aed566b11bf…
 η2  0xbb30a42c1e62f0af…  →  0xee155ace9c402920…
 η3  0xe88bd757ad5b9bed…  →  0xbb30a42c1e62f0af…
 η′ matches the vector: true
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=entropy-1791730462383
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=entropy-1791730462383
 ```
 
 Look at the four η lines: a staircase. Each old value steps down one row, η₀'s to η₁,

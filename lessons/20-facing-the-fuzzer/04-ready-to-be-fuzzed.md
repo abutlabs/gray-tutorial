@@ -136,10 +136,10 @@ kill $!
 ```
 
 ```text
-target: gray-tutorial
+target: the-gray-tutor
 initialize: the genesis root
 100 of 100 blocks as the trace has them
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=fuzz-1791774913630
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=fuzz-1791774913630
 ```
 
 The target, started the fuzzer's way, and a session with it: `&` runs the target in the
@@ -180,14 +180,14 @@ hundred megabytes. When this lesson was written, the image built, the Bandersnat
 library loaded in it as native code, and the target started and listened:
 
 ```sh
-docker build --platform linux/amd64 -t gray-tutorial-target .
-docker run --platform linux/amd64 -e JAM_FUZZ=1 -e JAM_FUZZ_SPEC=tiny -e JAM_FUZZ_DATA_PATH=/tmp/jam/data -e JAM_FUZZ_SOCK_PATH=/tmp/jam/fuzz.sock gray-tutorial-target
+docker build --platform linux/amd64 -t the-gray-tutor-target .
+docker run --platform linux/amd64 -e JAM_FUZZ=1 -e JAM_FUZZ_SPEC=tiny -e JAM_FUZZ_DATA_PATH=/tmp/jam/data -e JAM_FUZZ_SOCK_PATH=/tmp/jam/fuzz.sock the-gray-tutor-target
 ```
 
 The official fuzzer starts the image itself, with its own socket path, and connects.
 Its *lanes* (from replays of recorded sessions, through generated blocks with mutations,
 to changing validator sets) go further than any trace, and the rows of
-[HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) are where to look when a session ends with a wrong root.
+[HARDENING.md](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) are where to look when a session ends with a wrong root.
 
 ## The scoreboard
 
@@ -230,11 +230,11 @@ traces/storage_light   100 of 100  ✔
 trie                       1 of 1  ✔
 
 1,406 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791940234821
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791940234821
 ```
 
 1,406 of 1,428. Each of the 22 left has a name: ten blocks with preimages your client
-should refuse, the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md)'s to add, and twelve erasure-coding vectors,
+should refuse, the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md)'s to add, and twelve erasure-coding vectors,
 the code validators use to share a work-package's data, which a block importer never
 needs. Every other question the official vectors ask, your client answers as they do,
 whole. The *8 · Official vectors* dashboard in Grafana has the climb, run by run, from the
@@ -275,6 +275,6 @@ refusals, and imports all eight block-import traces, each block into the state i
 itself, every root right and every bad block refused. It speaks the
 conformance fuzzer's protocol, keeps the chain's ancestry for the one check the state
 can't make, and starts the way the fuzzer starts its targets. That's what JAM's first
-milestone, M1, asks of a client, with the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md)'s ten refusals still to add. Lesson [0.1](../00-start/01-what-you-will-build.md)
+milestone, M1, asks of a client, with the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md)'s ten refusals still to add. Lesson [0.1](../00-start/01-what-you-will-build.md)
 promised a program that answers "valid, and here is the new state" or "invalid, go away".
 It's yours.

@@ -71,7 +71,7 @@ npm test
 ℹ pass 196
 ℹ fail 0
 ...
-reported 196 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734301991
+reported 196 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791734301991
 ```
 
 Green, [Part 10](../10-disputes/index.md)'s offender tests among them: the message has a new home, and nothing else
@@ -213,7 +213,7 @@ npm run typecheck
 ℹ pass 198
 ℹ fail 0
 ...
-reported 198 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734316847
+reported 198 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791734316847
 ...
 ```
 
@@ -284,7 +284,7 @@ core 1: signed by 0xad93247b…, 0x8b8c5d43…, 0xab0084d0…; all real: true
   0x8b8c5d436f92ecf605421e873a99ec528761eb52a88a2f9a057b3b3003e6f32a
   0xab0084d01534b31c1dd87c81645fd762482a90027754041ca1b56133d0466c06
   0xad93247bd01307550ec7acd757ce6fb805fcf73db364063265b30a949e90d933
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=reporters-1791734322115
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=reporters-1791734322115
 ```
 
 The same three guarantors signed for core 0 *and* core 1: one guarantee from this

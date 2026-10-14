@@ -144,7 +144,7 @@ that just ran was a terminator.
 > starts a block, and so far it always does. A machine started or resumed in the middle
 > of a block, as the inner machines of the `machine` and `invoke` host calls (still to be
 > written) can be, needs 𝔏; the [hardening
-> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds it.
+> pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) adds it.
 
 **Run**
 
@@ -166,7 +166,7 @@ npm run typecheck
 ℹ pass 446
 ℹ fail 0
 ...
-reported 446 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791737125469
+reported 446 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791737125469
 ...
 ```
 
@@ -242,7 +242,7 @@ with 100 gas:
   block at  92078 costs 26, leaving 59
   block at 123687 costs 27, leaving 32
   stops: "oog" at 121410, having spent 68
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=gas-1791737130606
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=gas-1791737130606
 ```
 
 The same 38 steps as [lesson 15.8](./08-a-real-program.md), now in five payments: 15, 26 ([lesson 15.10](./10-the-pipeline.md)'s block),

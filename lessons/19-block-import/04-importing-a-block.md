@@ -521,7 +521,7 @@ npm run typecheck
 ℹ pass 645
 ℹ fail 0
 ...
-reported 645 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791773644549
+reported 645 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791773644549
 ...
 ```
 
@@ -600,7 +600,7 @@ block 98, slot 98: imported; root 0x797484f7… = the trace's
 block 99, slot 99: imported; root 0xd05254e8… = the trace's
 block 100, slot 100: imported; root 0x109f30f2… = the trace's
 100 of 100 state roots as the trace's
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=import-1791773655822
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=import-1791773655822
 ```
 
 All 100: tickets entered, epochs changed, seals checked, and the same root at every step.
@@ -686,7 +686,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 606 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939969821
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939969821
 ```
 
 > [!TIP] Milestone

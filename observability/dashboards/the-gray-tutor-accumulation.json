@@ -1,9 +1,9 @@
 {
- "uid": "gray-tutorial-pvm",
- "title": "6 · The PVM (Part 15)",
- "description": "The PVM, from unpacking a program to running a real one with gas.",
+ "uid": "the-gray-tutor-accumulation",
+ "title": "7 · Accumulation and import (Parts 16-20)",
+ "description": "Host calls and accumulation, the statistics a block keeps, block import (its plan, the whole state, real blocks), and sessions with the fuzzer.",
  "tags": [
-  "gray-tutorial"
+  "the-gray-tutor"
  ],
  "timezone": "browser",
  "refresh": "10s",
@@ -22,7 +22,7 @@
   {
    "type": "link",
    "title": "0 · Your client",
-   "url": "/d/gray-tutorial",
+   "url": "/d/the-gray-tutor",
    "tooltip": "0 · Your client",
    "icon": "dashboard",
    "includeVars": true,
@@ -34,7 +34,7 @@
   {
    "type": "link",
    "title": "1 · Basics",
-   "url": "/d/gray-tutorial-basics",
+   "url": "/d/the-gray-tutor-basics",
    "tooltip": "1 · Basics (Parts 0-2)",
    "icon": "dashboard",
    "includeVars": true,
@@ -46,7 +46,7 @@
   {
    "type": "link",
    "title": "2 · Blocks and state",
-   "url": "/d/gray-tutorial-blocks",
+   "url": "/d/the-gray-tutor-blocks",
    "tooltip": "2 · Blocks and state (Parts 3-6)",
    "icon": "dashboard",
    "includeVars": true,
@@ -58,7 +58,7 @@
   {
    "type": "link",
    "title": "3 · Consensus",
-   "url": "/d/gray-tutorial-consensus",
+   "url": "/d/the-gray-tutor-consensus",
    "tooltip": "3 · Consensus (Parts 7-9)",
    "icon": "dashboard",
    "includeVars": true,
@@ -70,7 +70,7 @@
   {
    "type": "link",
    "title": "4 · Checks",
-   "url": "/d/gray-tutorial-checks",
+   "url": "/d/the-gray-tutor-checks",
    "tooltip": "4 · Checks (Parts 10-12)",
    "icon": "dashboard",
    "includeVars": true,
@@ -82,7 +82,7 @@
   {
    "type": "link",
    "title": "5 · Services",
-   "url": "/d/gray-tutorial-services",
+   "url": "/d/the-gray-tutor-services",
    "tooltip": "5 · Services (Parts 13-14)",
    "icon": "dashboard",
    "includeVars": true,
@@ -94,7 +94,7 @@
   {
    "type": "link",
    "title": "6 · The PVM",
-   "url": "/d/gray-tutorial-pvm",
+   "url": "/d/the-gray-tutor-pvm",
    "tooltip": "6 · The PVM (Part 15)",
    "icon": "dashboard",
    "includeVars": true,
@@ -106,7 +106,7 @@
   {
    "type": "link",
    "title": "7 · Accumulation and import",
-   "url": "/d/gray-tutorial-accumulation",
+   "url": "/d/the-gray-tutor-accumulation",
    "tooltip": "7 · Accumulation and import (Parts 16-20)",
    "icon": "dashboard",
    "includeVars": true,
@@ -118,7 +118,7 @@
   {
    "type": "link",
    "title": "8 · Official vectors",
-   "url": "/d/gray-tutorial-vectors",
+   "url": "/d/the-gray-tutor-vectors",
    "tooltip": "8 · Official vectors (the scoreboard)",
    "icon": "dashboard",
    "includeVars": true,
@@ -138,8 +138,8 @@
      "type": "loki",
      "uid": "loki"
     },
-    "query": "label_values({job=\"gray_tutorial\"}, client)",
-    "definition": "label_values({job=\"gray_tutorial\"}, client)",
+    "query": "label_values({job=\"the_gray_tutor\"}, client)",
+    "definition": "label_values({job=\"the_gray_tutor\"}, client)",
     "refresh": 2,
     "sort": 1,
     "includeAll": false,
@@ -159,8 +159,8 @@
      "type": "loki",
      "uid": "loki"
     },
-    "query": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
-    "definition": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
+    "query": "label_values({job=\"the_gray_tutor\", client=\"$client\"}, run_id)",
+    "definition": "label_values({job=\"the_gray_tutor\", client=\"$client\"}, run_id)",
     "refresh": 2,
     "sort": 2,
     "includeAll": true,
@@ -189,21 +189,34 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "The PVM, from unpacking a program to running a real one with gas. One row per Part, its panels in lesson order; a panel's ⓘ says which program fills it."
+    "content": "Host calls and accumulation, the statistics a block keeps, and the plan of a block import. One row per Part, its panels in lesson order; a panel's ⓘ says which program fills it."
    }
   },
   {
-   "id": 31,
+   "id": 101,
+   "type": "row",
+   "collapsed": false,
+   "panels": [],
+   "title": "Parts 16-17 · Host calls and accumulation",
+   "gridPos": {
+    "x": 0,
+    "y": 2,
+    "w": 24,
+    "h": 1
+   }
+  },
+  {
+   "id": 42,
    "type": "logs",
-   "title": "Program",
-   "description": "What bin/program.ts unpacked from a service's code: the preimage's layers (metadata, standard program, PVM blob) and the blob's jump table, code and bitmask.",
+   "title": "Host calls",
+   "description": "What bin/host.ts saw: every host call a real service made during accumulation, the answer it got in φ₇, the gas left, the transfers it sent, and how the service stopped.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"program\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"host\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"sent\\\"}}sent {{.amount}} to service {{.dest}}, with {{.gas}} gas, memo {{.memo}}{{else if .name}}host call {{.call}} ({{.name}}): {{.said}}, {{.gas}} gas left{{else}}stops {{.exit}}{{if .used}}, using {{.used}} gas{{else}}, {{.gas}} gas left{{end}}{{end}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -217,23 +230,23 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 2,
+    "y": 3,
     "w": 24,
     "h": 8
    }
   },
   {
-   "id": 32,
+   "id": 43,
    "type": "logs",
-   "title": "Disassembly",
-   "description": "What bin/disassemble.ts decoded: each instruction's place in the code, its name, registers, immediates and jump target.",
+   "title": "Accumulate",
+   "description": "What bin/accumulate.ts did: a test vector's block accumulated, which packages went and how many reports still wait, the cores' assigners before and after, the reports each round took, the outputs and their root, then each service's digests, transfers received and gas next to the vector's.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"disassemble\", run_id=~\"$run_id\"} | json | line_format \"{{.at}}  {{.text}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"accumulate\", run_id=~\"$run_id\"} | json | line_format \"{{if .slot}}slot {{.slot}}: accumulated {{.went}}; {{.waiting}} still waiting{{if .assigners}}; assigners {{.assigners}}{{end}}{{if .rounds}}; reports per round {{.rounds}}{{end}}{{if .root}}; outputs {{.outputs}}, root {{.root}}{{end}}{{else}}service {{.s}}:{{if .count}} {{.count}} digest(s),{{end}}{{if .inputs}} {{.inputs}} input(s),{{end}}{{if .transfers}} {{.transfers}} transfer(s),{{end}} used {{.used}} (vector: {{.expected}}){{end}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -247,23 +260,36 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 10,
+    "y": 11,
     "w": 24,
-    "h": 10
+    "h": 8
    }
   },
   {
-   "id": 33,
+   "id": 102,
+   "type": "row",
+   "collapsed": false,
+   "panels": [],
+   "title": "Part 18 · Statistics",
+   "gridPos": {
+    "x": 0,
+    "y": 19,
+    "w": 24,
+    "h": 1
+   }
+  },
+  {
+   "id": 44,
    "type": "logs",
-   "title": "PVM run",
-   "description": "What bin/run.ts executed: each step's number, the instruction counter, the instruction, the registers it changed, and how the step ended.",
+   "title": "Validator statistics",
+   "description": "What bin/statistics.ts did: each validator's tally (blocks, tickets, preimages, preimage bytes, guarantees, assurances) before and after one block.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"run\", run_id=~\"$run_id\"} | json | line_format \"step {{.n}} at {{.at}}: {{.name}}  {{.changed}}  ({{.exit}})\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"statistics\", run_id=~\"$run_id\"} | json | line_format \"validator {{.i}}: {{.before}} -> {{.after}}{{if eq .epoch_turned \\\"true\\\"}} (new epoch){{end}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -279,21 +305,21 @@
     "x": 0,
     "y": 20,
     "w": 24,
-    "h": 10
+    "h": 8
    }
   },
   {
-   "id": 34,
+   "id": 45,
    "type": "logs",
-   "title": "Memory",
-   "description": "What bin/memory.ts did: a page's bytes before and after a store, the values loaded back, and a fault on a page that isn't there.",
+   "title": "Core and service activity",
+   "description": "What bin/activity.ts did: one block's tallies for each core (data load, popularity, the work it took on) and each service (its share of that work), the fields that aren't zero.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"memory\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"activity\", run_id=~\"$run_id\"} | json | line_format \"{{.who}}: {{.did}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -307,23 +333,36 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 30,
+    "y": 28,
     "w": 24,
-    "h": 7
+    "h": 8
    }
   },
   {
-   "id": 35,
+   "id": 103,
+   "type": "row",
+   "collapsed": false,
+   "panels": [],
+   "title": "Part 19 · Block import",
+   "gridPos": {
+    "x": 0,
+    "y": 36,
+    "w": 24,
+    "h": 1
+   }
+  },
+  {
+   "id": 46,
    "type": "logs",
-   "title": "ALU",
-   "description": "What bin/alu.ts computed: the arithmetic edge cases the Gray Paper spells out, each instruction with its answer in hex and as a signed number.",
+   "title": "Block import plan",
+   "description": "What bin/plan.ts printed: the Gray Paper's block-import steps (§4.2) in waves, each with what it's made from and the lesson that builds it. Steps in one wave don't need each other.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"alu\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}  {{.what}}  {{.answer}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"plan\", run_id=~\"$run_id\"} | json | line_format \"wave {{.wave}}: {{.makes}} ← {{.from}} (lesson {{.lesson}})\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -339,21 +378,21 @@
     "x": 0,
     "y": 37,
     "w": 24,
-    "h": 8
+    "h": 10
    }
   },
   {
-   "id": 36,
+   "id": 104,
    "type": "logs",
-   "title": "Branches",
-   "description": "What bin/branches.ts ran: every branch with r0 = −1 against 1, and whether it jumped. Unsigned, −1 is the biggest number there is; signed, it's less than 1.",
+   "title": "Whole state",
+   "description": "What bin/whole-state.ts read from a real state: each component by its Gray Paper letter and size, then each service account and its entries.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"branches\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}  taken: {{.taken}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"state\", run_id=~\"$run_id\"} | json | line_format \"{{if .letter}}C({{.i}}) {{.letter}}: {{.size}} bytes{{else}}service {{.s}}: balance {{.balance}}, {{.items}} entries{{end}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -367,23 +406,23 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 45,
+    "y": 47,
     "w": 24,
-    "h": 8
+    "h": 10
    }
   },
   {
-   "id": 37,
+   "id": 105,
    "type": "logs",
-   "title": "Bits",
-   "description": "What bin/bits.ts ran: the ten bit-and-byte instructions on one number, each answer in hex and as a signed number.",
+   "title": "Block import",
+   "description": "What bin/import.ts did with a trace, block after block: imported or refused, and whether the state root is the trace's.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"bits\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}({{.x}})  {{.answer}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"import\", run_id=~\"$run_id\"} | json | line_format \"{{if .n}}block {{.n}}, slot {{.slot}}: {{.what}}; root {{.root}}… {{if eq .same \\\"true\\\"}}= the trace's{{else}}≠ the trace's{{end}}{{else}}{{.family}}: {{.matched}} of 100 state roots as the trace's{{end}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -397,83 +436,36 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 53,
-    "w": 24,
-    "h": 8
-   }
-  },
-  {
-   "id": 38,
-   "type": "logs",
-   "title": "A real program starts",
-   "description": "What bin/start.ts did: the bootstrap service's memory as Y lays it out, its starting registers, every step from accumulation's entry point, and the host call it stops at.",
-   "datasource": {
-    "type": "loki",
-    "uid": "loki"
-   },
-   "targets": [
-    {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"start\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
-     "refId": "A",
-     "queryType": "range"
-    }
-   ],
-   "options": {
-    "showTime": false,
-    "wrapLogMessage": true,
-    "sortOrder": "Ascending",
-    "enableLogDetails": true,
-    "prettifyLogMessage": false
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 61,
+    "y": 57,
     "w": 24,
     "h": 12
    }
   },
   {
-   "id": 39,
-   "type": "logs",
-   "title": "Costs",
-   "description": "What bin/costs.ts listed: each instruction of a real basic block with its row from the Gray Paper's cost table: cycles, decode slots and execution units.",
-   "datasource": {
-    "type": "loki",
-    "uid": "loki"
-   },
-   "targets": [
-    {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"costs\", run_id=~\"$run_id\"} | json | line_format \"{{.at}}  {{.name}}  cycles {{.cycles}}  slots {{.slots}}  {{.units}}\"",
-     "refId": "A",
-     "queryType": "range"
-    }
-   ],
-   "options": {
-    "showTime": false,
-    "wrapLogMessage": true,
-    "sortOrder": "Ascending",
-    "enableLogDetails": true,
-    "prettifyLogMessage": false
-   },
+   "id": 106,
+   "type": "row",
+   "collapsed": false,
+   "panels": [],
+   "title": "Part 20 · Facing the fuzzer",
    "gridPos": {
     "x": 0,
-    "y": 73,
+    "y": 69,
     "w": 24,
-    "h": 8
+    "h": 1
    }
   },
   {
-   "id": 40,
+   "id": 107,
    "type": "logs",
-   "title": "Pipeline",
-   "description": "What bin/pipeline.ts drew: a real basic block's reorder buffer, cycle by cycle (W waiting, E executing, F finished, . retired), and the gas the block costs.",
+   "title": "Target",
+   "description": "Each message the target got in a session, and its answer.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"pipeline\", run_id=~\"$run_id\"} | json | line_format \"{{if .row}}cycle {{.cycle}}  {{.row}}{{else}}block {{.block}} costs {{.cost}} gas{{end}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"target\", run_id=~\"$run_id\"} | json | line_format \"{{.request}} → {{.reply}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -487,23 +479,23 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 81,
+    "y": 70,
     "w": 24,
-    "h": 8
+    "h": 10
    }
   },
   {
-   "id": 41,
+   "id": 108,
    "type": "logs",
-   "title": "Gas",
-   "description": "What bin/gas.ts ran: the bootstrap service with a gas budget, each basic block it paid for on the way in, and where it stopped: at its first host call, or out of gas.",
+   "title": "Fuzz session",
+   "description": "What bin/fuzz.ts saw, block by block: the target's answer, and whether it is the trace's.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"gas\", run_id=~\"$run_id\"} | json | line_format \"budget {{.budget}}: {{if .exit}}stops {{.exit}} having spent {{.spent}}{{else}}block at {{.at}} costs {{.paid}}{{end}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"fuzz\", run_id=~\"$run_id\"} | json | line_format \"{{if .n}}block {{.n}}, slot {{.slot}}: {{.said}}{{if eq .ok \\\"true\\\"}}, as the trace has it{{else}}, NOT as the trace has it{{end}}{{else}}{{.family}}: {{.agreed}} of 100 blocks as the trace has them{{end}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -517,9 +509,9 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 89,
+    "y": 80,
     "w": 24,
-    "h": 8
+    "h": 12
    }
   }
  ]

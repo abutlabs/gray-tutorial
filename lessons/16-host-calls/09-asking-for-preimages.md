@@ -411,7 +411,7 @@ npm run typecheck
 ℹ pass 486
 ℹ fail 0
 ...
-reported 486 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738525132
+reported 486 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791738525132
 ...
 ```
 
@@ -430,7 +430,7 @@ node bin/accumulate.ts ../vectors/stf/accumulate/tiny/preimage_len_bound-1.json
 service 0: 1 input(s), 2000000 gas, "halt"
   gas used 133691; the vector says 133691
   storage: 0x0100000000 = 0x774935b629cc42513a66c8ed1a09f88b00fe35689032bafd5a26d52f464c48080000, 0x00 = 0x01000000, 0x02774935b629cc42513a66c8ed1a09f88b00fe35689032bafd5a26d52f464c48080000 = 0x010101
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738530109
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=accumulate-1791738530109
 ```
 
 Service 0 asks with a length of 2^32, gets HUH and files no request, on exactly the vector's

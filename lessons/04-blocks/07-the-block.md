@@ -76,7 +76,7 @@ npm run typecheck
 ℹ pass 52
 ℹ fail 0
 ...
-reported 52 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728275436
+reported 52 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728275436
 ...
 ```
 
@@ -119,7 +119,7 @@ node bin/decode.ts block ../vectors/codec/tiny/block.bin
    32..64    header.parent_state_root       0x2591ebd047489f1006361a4254731466a946174af02fe1d86681d254cfd4a00b
 ...
  5086..5150  extrinsic.disputes.faults.0.signature 0x557e5ee3660be9247c4908c74a46c91eebd713925dd7f2ede3ef4900ba277039f7d46ec15432116176cce8ce39d8ae21eabafdf71796eeb724ee7e4ff1dd1fd7
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728275906
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791728275906
 ```
 
 145 fields, from `header.parent` at byte 0 to the last fault's signature ending at byte
@@ -217,7 +217,7 @@ traces/storage_light     not run yet (100)
 trie                     not run yet (1)
 
 30 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791938953569
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791938953569
 ```
 
 > [!TIP] Milestone

@@ -275,7 +275,7 @@ npm run typecheck
 ℹ pass 87
 ℹ fail 0
 ...
-reported 87 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791771418763
+reported 87 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791771418763
 ...
 ```
 
@@ -327,7 +327,7 @@ block 47, slot 47: validator 0 (0xff71c6c0…), by a fallback key: seal and entr
 block 48, slot 48: validator 2 (0x9326edb2…), by a winning ticket: seal and entropy source check out
 block 49, slot 49: validator 1 (0xdee6d555…), by a winning ticket: seal and entropy source check out
 block 50, slot 50: validator 2 (0x9326edb2…), by a winning ticket: seal and entropy source check out
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=seals-1791771424353
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=seals-1791771424353
 ```
 
 Blocks 46 and 47 are the end of a fallback epoch. Block 48 starts a new epoch whose

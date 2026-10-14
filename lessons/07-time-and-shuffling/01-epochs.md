@@ -199,7 +199,7 @@ npm run typecheck
 ℹ pass 69
 ℹ fail 0
 ...
-reported 69 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791729464631
+reported 69 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791729464631
 ...
 ```
 
@@ -262,7 +262,7 @@ slot 72: epoch 6 begins. Epoch mark: true. η₁ is now 0x4ae60fe5dd387d08…
 slot 84: epoch 7 begins. Epoch mark: true. η₁ is now 0x76af9e385ba89964…
 slot 96: epoch 8 begins. Epoch mark: true. η₁ is now 0x5a9144b76436afd1…
 8 new epochs in 100 blocks.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=epochs-1791729468062
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=epochs-1791729468062
 ```
 
 `0xcf7f084e…` should look familiar: it's the η₀ that `bin/read-state.ts` showed you in

@@ -206,7 +206,7 @@ npm run typecheck
 ℹ pass 71
 ℹ fail 0
 ...
-reported 71 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791729471524
+reported 71 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791729471524
 ...
 ```
 
@@ -279,7 +279,7 @@ node bin/shuffle.ts 8 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 2867850673 mod   2 = 1: pick 3
  573291173 mod   1 = 0: pick 5
 shuffled: 1, 2, 6, 0, 7, 4, 3, 5
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=shuffle-1791729474845
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=shuffle-1791729474845
 ```
 
 That's the second shuffle vector, worked out step by step. Look at the third pick: the
@@ -372,7 +372,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 32 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939055623
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939055623
 ```
 
 > [!TIP] Milestone

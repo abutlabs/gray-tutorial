@@ -141,7 +141,7 @@ npm run typecheck
 ℹ pass 38
 ℹ fail 0
 ...
-reported 38 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728269567
+reported 38 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728269567
 ...
 ```
 
@@ -188,12 +188,12 @@ node bin/decode.ts assurances_extrinsic ../vectors/codec/full/assurances_extrins
 ...
    33..34    0.bitfield                     0x01
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728270087
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791728270087
     0..1     length                         0x02
 ...
    33..76    0.bitfield                     0x55555555555555555555555555555555555555555555555555555555555555555555555555555555555515
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728270298
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791728270298
 ```
 
 Same assurance, two sizes. On tiny the bitfield is one byte, `0x01`: core 0, available.

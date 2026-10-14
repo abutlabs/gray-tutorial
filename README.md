@@ -1,4 +1,4 @@
-# Gray Tutorial
+# The Gray Tutor
 
 How to use this project - Fork this repo and Build a JAM client in TypeScript.
 
@@ -8,7 +8,7 @@ every step, and finish with a block importer that agrees byte for byte with the
 official test vectors. A scoreboard counts them as you go, every vector run whole, from 4
 in lesson 2.6 to 1,406 of 1,428 at the end, and Grafana keeps the climb.
 
-Read the lessons online at https://abutlabs.github.io/gray-tutorial/, part of
+Read the lessons online at https://abutlabs.github.io/the-gray-tutor/, part of
 [JAM learning](https://abutlabs.github.io/jam-learning/). To build the client you need
 this repository too: the tools, the dashboards and the test vectors live here.
 
@@ -37,13 +37,13 @@ Written and checked on macOS. Linux should work the same way; on Windows, use WS
 ## Where things go
 
 The tutorial expects the observability stack in a folder beside it. Clone both into
-any folder of your own (`YOUR-NAME/gray-tutorial` is your fork of this repository):
+any folder of your own (`YOUR-NAME/the-gray-tutor` is your fork of this repository):
 
 ```sh
 mkdir jam && cd jam
 git clone https://github.com/abutlabs/observability.git
-git clone git@github.com:YOUR-NAME/gray-tutorial.git
-cd gray-tutorial
+git clone git@github.com:YOUR-NAME/the-gray-tutor.git
+cd the-gray-tutor
 ```
 
 You end up with:
@@ -51,7 +51,7 @@ You end up with:
 ```
 jam/
 ├── observability/      the Grafana stack: ../observability/obs up, from the tutorial
-└── gray-tutorial/      this repository
+└── the-gray-tutor/      this repository
     ├── lessons/        what you read
     ├── client/         what you build (a repository of its own, if you like: see below)
     └── vectors/        the official test vectors, after npm run vectors
@@ -59,7 +59,7 @@ jam/
 
 ## Start
 
-In the `gray-tutorial` folder, get Node 26 (nvm reads it from `.nvmrc`, installs it the
+In the `the-gray-tutor` folder, get Node 26 (nvm reads it from `.nvmrc`, installs it the
 first time, then switches to it) and check it, since nothing below works without it:
 
 ```sh
@@ -88,11 +88,11 @@ again. Three ways to live with that:
 - **Type `nvm use`** in each new terminal.
 
 On an older Node, the tutorial's commands stop and say so:
-`The Gray Tutorial needs Node 26, and this terminal has v20.15.0.`
+`The Gray Tutor needs Node 26, and this terminal has v20.15.0.`
 
 Your client reports every run to that stack from lesson 0.3 on. Its dashboards are in
-Grafana's *gray-tutorial* folder: start at *0 · Your client*
-(http://localhost:3300/d/gray-tutorial), which links one dashboard per theme of the
+Grafana's *the-gray-tutor* folder: start at *0 · Your client*
+(http://localhost:3300/d/the-gray-tutor), which links one dashboard per theme of the
 tutorial, from *1 · Basics* to *7 · Accumulation and import*. Grafana's own Home page
 belongs to the stack and shows its networks, not your client.
 

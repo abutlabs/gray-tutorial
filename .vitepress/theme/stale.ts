@@ -4,7 +4,7 @@
 // search box would never open. Reloading the page fetches the new build. At most once a
 // minute, so a file that is really missing can't make the page reload forever.
 
-const KEY = "gray-tutorial:reloaded-for-new-build";
+const KEY = "the-gray-tutor:reloaded-for-new-build";
 
 export function reloadOnStaleBuild(): void {
   window.addEventListener("vite:preloadError", (event) => {

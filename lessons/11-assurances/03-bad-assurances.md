@@ -220,7 +220,7 @@ npm run typecheck
 ℹ pass 193
 ℹ fail 0
 ...
-reported 193 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791733612505
+reported 193 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791733612505
 ...
 ```
 
@@ -277,7 +277,7 @@ no_assurances-1: accepted
 no_assurances_with_stale_report-1: accepted
 some_assurances-1: accepted
 val_set_size_change_clears_pending_reports-1: accepted
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=assurance-check-1791733621501
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=assurance-check-1791733621501
 ```
 
 Eleven vectors, eleven verdicts, and no "the vector says" anywhere: your rules and the
@@ -380,7 +380,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 168 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939213633
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939213633
 ```
 
 > [!TIP] Milestone

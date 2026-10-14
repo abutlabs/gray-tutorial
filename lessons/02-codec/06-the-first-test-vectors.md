@@ -239,7 +239,7 @@ npm run typecheck
 ℹ pass 21
 ℹ fail 0
 ...
-reported 21 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726654352
+reported 21 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791726654352
 ...
 ```
 
@@ -436,7 +436,7 @@ traces/storage_light     not run yet (100)
 trie                     not run yet (1)
 
 4 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791938884683
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791938884683
 ```
 
 Four of 1,428. The other codec vectors are structures you haven't written yet, and the

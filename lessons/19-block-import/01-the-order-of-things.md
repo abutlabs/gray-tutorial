@@ -240,7 +240,7 @@ npm run typecheck
 ℹ pass 640
 ℹ fail 0
 ...
-reported 640 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791741143636
+reported 640 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791741143636
 ...
 ```
 
@@ -297,7 +297,7 @@ wave 4:
   δ′ ← E_P, δ‡, τ′  (lesson 14.1)
   α′ ← H, E_G, ϕ′, α  (lesson 13.1)
   π′ ← E_G, E_P, E_A, E_T, τ, κ′, π, H, 𝐒  (lesson 18)
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=plan-1791741154262
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=plan-1791741154262
 ```
 
 That's the map of your client: every step of a block, in four waves, with the lesson that

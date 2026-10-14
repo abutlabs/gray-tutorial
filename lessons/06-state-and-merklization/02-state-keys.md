@@ -254,7 +254,7 @@ npm run typecheck
 ℹ pass 63
 ℹ fail 0
 ...
-reported 63 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728959119
+reported 63 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728959119
 ...
 ```
 
@@ -360,7 +360,7 @@ depth  8    2017-byte value  C(8): κ, the validators
 depth  1      89-byte value  C(255, 0): an account
 ...
 the header promises it: true
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=state-1791728962505
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=state-1791728962505
 ```
 
 The same 21 leaves as [lesson 6.1](./01-the-state-trie.md), now with names. The one alone at depth 1 is service

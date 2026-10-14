@@ -150,7 +150,7 @@ npm run typecheck
 ℹ pass 55
 ℹ fail 0
 ...
-reported 55 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728702707
+reported 55 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728702707
 ...
 ```
 
@@ -208,7 +208,7 @@ node bin/chain.ts preimages
 ```text
 99 of 99 links hold.
 100 of 100 extrinsics match their headers.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=chain-1791728703751
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=chain-1791728703751
 ```
 
 The *Chain* panel now ends each block's line with `extrinsic matches: true`. Try the

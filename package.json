@@ -1,5 +1,5 @@
 {
-  "name": "gray-tutorial",
+  "name": "the-gray-tutor",
   "private": true,
   "type": "module",
   "description": "Build a JAM client in TypeScript, one Gray Paper rule at a time.",

@@ -317,7 +317,7 @@ npm run typecheck
 ℹ pass 636
 ℹ fail 0
 ...
-reported 636 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740899975
+reported 636 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791740899975
 ...
 ```
 
@@ -380,7 +380,7 @@ node bin/activity.ts
 core 0: imports 8, extrinsic_count 8, extrinsic_size 1526, exports 17, bundle_size 17180, gas_used 821
 core 1: imports 1, extrinsic_count 3, extrinsic_size 1926, exports 18, bundle_size 12487, gas_used 697
 service 42: refinement_count 2, refinement_gas_used 1518, imports 9, extrinsic_count 11, extrinsic_size 3452, exports 35
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=activity-1791740914594
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=activity-1791740914594
 ```
 
 A block of two guarantees, one report for each core, both for service 42. Each core's
@@ -396,7 +396,7 @@ node bin/activity.ts ../vectors/stf/assurances/tiny/some_assurances-1.json
 ```text
 core 0: da_load 28761, popularity 5
 core 1: popularity 4
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=activity-1791740914740
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=activity-1791740914740
 ```
 
 Core 0's report became available, so core 0 carries its data load: 12345 + 4 × 4104.
@@ -548,11 +548,11 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 406 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939804842
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939804842
 ```
 
 Every reports vector, and six preimages vectors. The ten left in `stf/preimages` are the
-blocks your client should refuse and doesn't, the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md)'s to fix, and the board
+blocks your client should refuse and doesn't, the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md)'s to fix, and the board
 will go on saying so.
 
 > [!TIP] Milestone

@@ -182,7 +182,7 @@ npm run typecheck
 ℹ pass 66
 ℹ fail 0
 ...
-reported 66 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728965838
+reported 66 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728965838
 ...
 ```
 
@@ -248,7 +248,7 @@ node bin/read-state.ts ../vectors/traces/safrole/00000012.json
 ...
 κ0: ed25519 0x4418fb8c85bb3985394a8c2756d3643457ce614546202a2f50b093d762499ace
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=read-state-1791728969293
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=read-state-1791728969293
 ```
 
 Block 12 of the `safrole` trace starts an epoch, and its state says the time is slot 11:

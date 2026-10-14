@@ -182,7 +182,7 @@ npm run typecheck
 ℹ pass 427
 ℹ fail 0
 ...
-reported 427 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736873566
+reported 427 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736873566
 ...
 ```
 
@@ -237,7 +237,7 @@ sign_extend_8          0xfffffffffffffff0 = -16
 sign_extend_16         0x00000000000001f0 = 496
 zero_extend_16         0x00000000000001f0 = 496
 reverse_bytes          0xf001000000000000 = -1152640029630136320
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=bits-1791736879612
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=bits-1791736879612
 ```
 
 0x1f0 is five 1s with four 0s below them, and you can count each answer off the string

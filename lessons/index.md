@@ -1,8 +1,8 @@
-# Gray Tutorial
+# The Gray Tutor
 
 We will build a TypeScript JAM client per the [Gray Paper](https://graypaper.com/) specifications, _from scratch_.
 
-The Gray Tutorial is designed for learnability and observability. By the end of this tutorial, your JAM client will be able to pass the official test vectors, _byte for byte_. Our goal is to make onboarding JAM protocol developers more approachable. Therefore we will build a  guided JAM implementation from the ground up.
+The Gray Tutor is designed for learnability and observability. By the end of this tutorial, your JAM client will be able to pass the official test vectors, _byte for byte_. Our goal is to make onboarding JAM protocol developers more approachable. Therefore we will build a  guided JAM implementation from the ground up.
 
 ## Start here
 
@@ -53,7 +53,7 @@ imports JAM blocks and agrees byte for byte with the official test vectors. From
 
 This tutorial is built with reference to [Lasair](https://github.com/abutlabs/lasair), another (currently private) JAM client. Lasair aims to run as validators on the real network. TypeScript is not suited for production level blockchain clients. Instead, this tutorial uses Typescript to drive understanding. Abutlabs hopes that this type of learning content opens developers to becoming involved with the JAM protocol.
 
-| | lasair | Your Gray Tutorial client |
+| | lasair | Your Gray Tutor client |
 | --- | --- | --- |
 | Language | OCaml | TypeScript |
 | Built for | client diversity, conformance, then speed | **Understanding** |
@@ -235,6 +235,6 @@ This tutorial is built with reference to [Lasair](https://github.com/abutlabs/la
 
 Every part is written: the road ends at a block importer, JAM's first milestone. A
 client that runs a real network goes further: the edge cases in
-[HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md), each with the
+[HARDENING.md](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md), each with the
 case that needs it; speed, which M3 and M4 measure; and making blocks rather than only
 importing them, with networking, which M2 asks for. Those are for another tutorial.

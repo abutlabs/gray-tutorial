@@ -257,7 +257,7 @@ npm run typecheck
 ℹ pass 58
 ℹ fail 0
 ...
-reported 58 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728705670
+reported 58 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728705670
 ...
 ```
 
@@ -310,7 +310,7 @@ node bin/assurances.ts ../vectors/stf/assurances/tiny/assurances_with_bad_signat
 validator 1: FORGED
 ...
 5 of 6 signatures are valid.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=assurances-1791728707489
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=assurances-1791728707489
 ```
 
 Caught! Validator 1's assurance carries a signature its key never made. The new

@@ -483,7 +483,7 @@ npm run typecheck
 ℹ pass 581
 ℹ fail 0
 ...
-reported 581 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769533387
+reported 581 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791769533387
 ...
 ```
 
@@ -507,7 +507,7 @@ host call 27 (provide): φ₇ = 0, 1887193 gas left
 ...
 the service stops: "halt", using 138939 gas
 the test vector says: 138939
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791769545883
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791769545883
 ```
 
 The same 8 bytes, "preimage", twice. In the first vector service 0 provides them to

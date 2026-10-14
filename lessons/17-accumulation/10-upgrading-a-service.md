@@ -230,7 +230,7 @@ npm run typecheck
 ℹ pass 573
 ℹ fail 0
 ...
-reported 573 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769486717
+reported 573 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791769486717
 ...
 ```
 
@@ -248,7 +248,7 @@ host call 20 (upgrade): φ₇ = 0, 1889085 gas left
 ...
 the service stops: "halt", using 139939 gas
 the test vector says: 139939
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791769501847
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791769501847
 ```
 
 Call 20 answers 0, `OK`, and service 0 uses exactly the vector's gas. Its new code hash is

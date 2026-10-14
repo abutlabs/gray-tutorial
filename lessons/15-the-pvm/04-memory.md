@@ -281,7 +281,7 @@ npm run typecheck
 ℹ pass 407
 ℹ fail 0
 ...
-reported 407 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736620345
+reported 407 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736620345
 ...
 ```
 
@@ -339,7 +339,7 @@ page 0x20000 after:  0x8077665544332211  (little-endian: the lowest byte first)
 r3 = 0x1122334455667780  (all 8 bytes back)
 r4 = 0xffffffffffffff80  (one byte, 0x80, sign-extended: −128)
 load from 0x30005, where there's no page: a fault at 0x30000
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=memory-1791736626608
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=memory-1791736626608
 ```
 
 Look at the page after the store: `0x8077665544332211`, the register's bytes *backwards*.

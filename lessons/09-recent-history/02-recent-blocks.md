@@ -259,7 +259,7 @@ A negative `slice` counts from the end, so it keeps the last eight.
 > lists them. The Gray Paper holds them in a *dictionary*, and dictionaries are encoded
 > sorted by key ([lesson 3.3](../03-work-and-reports/03-a-work-report.md)), here the
 > package hash. The vectors only ever list them in order, so this is fine for now; the
-> [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) sorts
+> [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) sorts
 > them.
 
 **Run**
@@ -279,7 +279,7 @@ npm run typecheck
 ℹ pass 92
 ℹ fail 0
 ...
-reported 92 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731468082
+reported 92 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791731468082
 ...
 ```
 
@@ -336,7 +336,7 @@ slot  47  header 0x12d04d3e…  state root 0x2f529bd8…  reported: 1
 slot  48  header 0x1beca774…  state root 0xd095c60f…  reported: 1
 slot  49  header 0x7c7ee195…  state root 0x00000000…  reported: 1
 the belt: ● · · · ● ●
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=history-1791731472054
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=history-1791731472054
 ```
 
 Eight blocks, slots 42 to 49, and only the newest still waiting for its state root. Now
@@ -455,7 +455,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 86 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939138847
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939138847
 ```
 
 > [!TIP] Milestone

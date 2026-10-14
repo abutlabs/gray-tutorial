@@ -190,7 +190,7 @@ hash is the account's code hash. Lessons to come, from [Part 15](../15-the-pvm/i
 > the code hash) ([lesson 6.2](../06-state-and-merklization/02-state-keys.md)), and only there counts: the same bytes in another service's
 > preimages aren't this service's code. A real client builds that one key and looks it
 > up. (6.2's `preimageKey` takes the data, not its hash, so it can't build it as it
-> stands.) The [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) has it.
+> stands.) The [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) has it.
 
 **Run**
 
@@ -211,7 +211,7 @@ npm run typecheck
 ℹ pass 395
 ℹ fail 0
 ...
-reported 395 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736058671
+reported 395 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736058671
 ...
 ```
 
@@ -268,7 +268,7 @@ code hash 0x128fc8f0578f393b…: 159322 bytes of code
 keeps 4 items in 159534 bytes
 balance 18446744073709551615, of which it must keep 0
 last accumulated at slot 0
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=service-1791736063580
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=service-1791736063580
 ```
 
 That balance is 2^64 − 1, the largest 8-byte number there is, and its free allowance is

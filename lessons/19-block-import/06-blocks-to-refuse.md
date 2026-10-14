@@ -73,7 +73,7 @@ service grew its heap without enough gas left to pay for it.
 `grow_heap` ([lesson 16.3](../16-host-calls/03-growing-the-heap.md)), when growing would cost more gas than is left: Gray Paper 0.8.0 stops
 the machine out of gas, with the gas as it was. The 0.8.0 test vectors, and the traces,
 follow a later change to the paper (pull request 533): the gas is spent, all of it, as for
-any other host call that runs out. [HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) listed this from [lesson 16.3](../16-host-calls/03-growing-the-heap.md) on, with
+any other host call that runs out. [HARDENING.md](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) listed this from [lesson 16.3](../16-host-calls/03-growing-the-heap.md) on, with
 exactly this case: "traces that run a service out of gas while it grows its heap".
 
 Your `charge` ([lesson 16.1](../16-host-calls/01-calling-the-host.md)) already spends gas that way: it takes the gas off first, and
@@ -129,7 +129,7 @@ npm run typecheck
 ℹ pass 648
 ℹ fail 0
 ...
-reported 648 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791773731003
+reported 648 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791773731003
 ...
 ```
 
@@ -152,7 +152,7 @@ block 39, slot 39: refused: bad_code_hash; root 0xe9a2c0ff… = the trace's
 block 40, slot 40: imported; root 0x09189a2a… = the trace's
 ...
 100 of 100 state roots as the trace's
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=import-1791773751077
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=import-1791773751077
 ```
 
 Blocks 37, 38 and 39 are refused, and the state stays as it was, as the trace's does: the
@@ -365,7 +365,7 @@ traces/storage_light   100 of 100  ✔
 trie                       1 of 1  ✔
 
 1,406 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791940142186
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791940142186
 ```
 
 Under a minute on a laptop with ten processors, and every trace family whole, the seven
@@ -400,7 +400,7 @@ A JAM block importer. All eight official block-import traces, 800 blocks, each i
 into the state your client made from the one before, every state root right; the bad
 blocks refused, the state left as it was. On the scoreboard, 1,406 of the 1,428 official
 vectors pass whole, safrole's proofs and ring roots included. The ten preimages refusals
-are the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md)'s
+are the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md)'s
 to add; the other twelve are erasure coding, which validators use to share a
 work-package's data and a block importer never needs. JAM's first milestone, M1, asks a
 client for the conformance tests and for importing blocks: the second is done, and the

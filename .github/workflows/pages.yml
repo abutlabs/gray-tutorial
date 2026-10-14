@@ -1,4 +1,4 @@
-# The website on GitHub Pages, https://abutlabs.github.io/gray-tutorial/. Every push to
+# The website on GitHub Pages, https://abutlabs.github.io/the-gray-tutor/. Every push to
 # main checks the tools and the lessons' links (npm test, and the build fails on a dead
 # link), then publishes the site.
 name: pages
@@ -31,7 +31,7 @@ jobs:
       - name: Build the site
         run: npm run site:build
         env:
-          SITE_BASE: /gray-tutorial/
+          SITE_BASE: /the-gray-tutor/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

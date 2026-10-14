@@ -191,7 +191,7 @@ memory map, so that's a short walk, not a million steps. New pages come from [le
 > vectors already follow a later change to the Gray Paper, its pull request 533: the gas
 > drains to zero, so all of it counts as used. Service 1729 never runs short while
 > growing, so the two agree here. And the Gray Paper's own `h` counts writable pages,
-> which would come out short if they ever had gaps between a and b. Both wait in the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md). The Gray Paper keeps
+> which would come out short if they ever had gaps between a and b. Both wait in the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md). The Gray Paper keeps
 > changing, so a client says which version it follows.
 
 **Replace in** `src/host.ts`
@@ -259,7 +259,7 @@ npm run typecheck
 ℹ pass 458
 ℹ fail 0
 ...
-reported 458 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738028819
+reported 458 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791738028819
 ...
 ```
 
@@ -290,7 +290,7 @@ host call 2 (fetch): φ₇ = 1, 86270 gas left
 host call 2 (fetch): φ₇ = 1, 84708 gas left
 the service stops: "halt", using 16417 gas
 the test vector says: 16417
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791738033858
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791738033858
 ```
 
 Now the bin compares its answer with the vector's. There it is: 16,417, to the last unit

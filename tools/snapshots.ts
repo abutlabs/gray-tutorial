@@ -16,7 +16,7 @@ export interface Snapshot {
 
 /** Every snapshot, by "<lesson file>:<label line>" (the label's line, from 1). */
 export function wholeFiles(): Map<string, Snapshot> {
-  const dir = mkdtempSync(join(tmpdir(), "gray-tutorial-snapshots-"));
+  const dir = mkdtempSync(join(tmpdir(), "the-gray-tutor-snapshots-"));
   const out = new Map<string, Snapshot>();
   try {
     for (const lesson of readLessons()) {

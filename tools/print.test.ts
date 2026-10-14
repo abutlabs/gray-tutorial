@@ -21,19 +21,19 @@ test("on the one page, ids get the page's prefix and links to its pages stay on 
   const text = [
     '<h2 id="the-test">The test <a href="#the-test">#</a></h2>',
     '<a href="./04-codecs">2.4</a>',
-    '<a href="/gray-tutorial/02-codec/04-codecs#the-code">its code</a>',
-    '<a href="/gray-tutorial/02-codec/">Part 2</a>',
-    '<a href="https://github.com/abutlabs/gray-tutorial">the repo</a>',
-    '<a href="/gray-tutorial/glossary">a page not on it</a>',
+    '<a href="/the-gray-tutor/02-codec/04-codecs#the-code">its code</a>',
+    '<a href="/the-gray-tutor/02-codec/">Part 2</a>',
+    '<a href="https://github.com/abutlabs/the-gray-tutor">the repo</a>',
+    '<a href="/the-gray-tutor/glossary">a page not on it</a>',
   ].join("");
-  assert.equal(forOnePage(text, page, pages, "/gray-tutorial/"), [
+  assert.equal(forOnePage(text, page, pages, "/the-gray-tutor/"), [
     '<h2 id="p-02-codec-03-writer-and-reader--the-test">The test ',
     '<a href="#p-02-codec-03-writer-and-reader--the-test">#</a></h2>',
     '<a href="#p-02-codec-04-codecs">2.4</a>',
     '<a href="#p-02-codec-04-codecs--the-code">its code</a>',
     '<a href="#p-02-codec">Part 2</a>',
-    '<a href="https://github.com/abutlabs/gray-tutorial">the repo</a>',
-    '<a href="/gray-tutorial/glossary">a page not on it</a>',
+    '<a href="https://github.com/abutlabs/the-gray-tutor">the repo</a>',
+    '<a href="/the-gray-tutor/glossary">a page not on it</a>',
   ].join(""));
 });
 

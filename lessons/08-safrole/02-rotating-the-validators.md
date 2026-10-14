@@ -198,7 +198,7 @@ npm run typecheck
 ℹ pass 73
 ℹ fail 0
 ...
-reported 73 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791730466785
+reported 73 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791730466785
 ...
 ```
 
@@ -263,7 +263,7 @@ staging   cab2 ab00 4418 8b8c ad93 f30a  →  cab2 ab00 4418 8b8c ad93 f30a
 pending   4418 ad93 cab2 f30a 8b8c ab00  →  cab2 0000 4418 8b8c ad93 f30a
 active    ab00 f30a 8b8c 4418 ad93 cab2  →  4418 ad93 cab2 f30a 8b8c ab00
 previous  4418 cab2 8b8c f30a ab00 ad93  →  ab00 f30a 8b8c 4418 ad93 cab2
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=rotation-1791730470419
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=rotation-1791730470419
 ```
 
 Read it like a slide puzzle. The six validators are an old cast (`4418` is validator 0,

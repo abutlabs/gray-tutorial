@@ -1,9 +1,9 @@
 {
- "uid": "gray-tutorial-consensus",
- "title": "3 · Consensus (Parts 7-9)",
- "description": "Epochs and the shuffle; Safrole's entropy, validators, sealers and lottery; the recent-history belt.",
+ "uid": "the-gray-tutor-checks",
+ "title": "4 · Checks (Parts 10-12)",
+ "description": "What a block may carry: disputes, assurances and guarantees, each rule on its own, then every test vector checked.",
  "tags": [
-  "gray-tutorial"
+  "the-gray-tutor"
  ],
  "timezone": "browser",
  "refresh": "10s",
@@ -22,7 +22,7 @@
   {
    "type": "link",
    "title": "0 · Your client",
-   "url": "/d/gray-tutorial",
+   "url": "/d/the-gray-tutor",
    "tooltip": "0 · Your client",
    "icon": "dashboard",
    "includeVars": true,
@@ -34,7 +34,7 @@
   {
    "type": "link",
    "title": "1 · Basics",
-   "url": "/d/gray-tutorial-basics",
+   "url": "/d/the-gray-tutor-basics",
    "tooltip": "1 · Basics (Parts 0-2)",
    "icon": "dashboard",
    "includeVars": true,
@@ -46,7 +46,7 @@
   {
    "type": "link",
    "title": "2 · Blocks and state",
-   "url": "/d/gray-tutorial-blocks",
+   "url": "/d/the-gray-tutor-blocks",
    "tooltip": "2 · Blocks and state (Parts 3-6)",
    "icon": "dashboard",
    "includeVars": true,
@@ -58,7 +58,7 @@
   {
    "type": "link",
    "title": "3 · Consensus",
-   "url": "/d/gray-tutorial-consensus",
+   "url": "/d/the-gray-tutor-consensus",
    "tooltip": "3 · Consensus (Parts 7-9)",
    "icon": "dashboard",
    "includeVars": true,
@@ -70,7 +70,7 @@
   {
    "type": "link",
    "title": "4 · Checks",
-   "url": "/d/gray-tutorial-checks",
+   "url": "/d/the-gray-tutor-checks",
    "tooltip": "4 · Checks (Parts 10-12)",
    "icon": "dashboard",
    "includeVars": true,
@@ -82,7 +82,7 @@
   {
    "type": "link",
    "title": "5 · Services",
-   "url": "/d/gray-tutorial-services",
+   "url": "/d/the-gray-tutor-services",
    "tooltip": "5 · Services (Parts 13-14)",
    "icon": "dashboard",
    "includeVars": true,
@@ -94,7 +94,7 @@
   {
    "type": "link",
    "title": "6 · The PVM",
-   "url": "/d/gray-tutorial-pvm",
+   "url": "/d/the-gray-tutor-pvm",
    "tooltip": "6 · The PVM (Part 15)",
    "icon": "dashboard",
    "includeVars": true,
@@ -106,7 +106,7 @@
   {
    "type": "link",
    "title": "7 · Accumulation and import",
-   "url": "/d/gray-tutorial-accumulation",
+   "url": "/d/the-gray-tutor-accumulation",
    "tooltip": "7 · Accumulation and import (Parts 16-20)",
    "icon": "dashboard",
    "includeVars": true,
@@ -118,7 +118,7 @@
   {
    "type": "link",
    "title": "8 · Official vectors",
-   "url": "/d/gray-tutorial-vectors",
+   "url": "/d/the-gray-tutor-vectors",
    "tooltip": "8 · Official vectors (the scoreboard)",
    "icon": "dashboard",
    "includeVars": true,
@@ -138,8 +138,8 @@
      "type": "loki",
      "uid": "loki"
     },
-    "query": "label_values({job=\"gray_tutorial\"}, client)",
-    "definition": "label_values({job=\"gray_tutorial\"}, client)",
+    "query": "label_values({job=\"the_gray_tutor\"}, client)",
+    "definition": "label_values({job=\"the_gray_tutor\"}, client)",
     "refresh": 2,
     "sort": 1,
     "includeAll": false,
@@ -159,8 +159,8 @@
      "type": "loki",
      "uid": "loki"
     },
-    "query": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
-    "definition": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
+    "query": "label_values({job=\"the_gray_tutor\", client=\"$client\"}, run_id)",
+    "definition": "label_values({job=\"the_gray_tutor\", client=\"$client\"}, run_id)",
     "refresh": 2,
     "sort": 2,
     "includeAll": true,
@@ -189,7 +189,7 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "Epochs and the shuffle; Safrole's entropy, validators, sealers and lottery; the recent-history belt. One row per Part, its panels in lesson order; a panel's ⓘ says which program fills it."
+    "content": "What a block may carry: disputes, assurances and guarantees, each rule on its own, then every test vector checked. One row per Part, its panels in lesson order; a panel's ⓘ says which program fills it."
    }
   },
   {
@@ -197,7 +197,7 @@
    "type": "row",
    "collapsed": false,
    "panels": [],
-   "title": "Part 7 · Time and shuffling",
+   "title": "Part 10 · Disputes",
    "gridPos": {
     "x": 0,
     "y": 2,
@@ -206,17 +206,17 @@
    }
   },
   {
-   "id": 11,
+   "id": 20,
    "type": "logs",
-   "title": "Epochs",
-   "description": "What bin/epochs.ts saw: each block's slot, its epoch and its phase in the epoch, and, where a new epoch begins, whether the header carries an epoch mark.",
+   "title": "Verdicts",
+   "description": "What bin/verdicts.ts found: each verdict's report, how many votes say valid, which set judged (κ or λ), whether every vote is signed by its judge, and the outcome.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"epochs\", run_id=~\"$run_id\"} | json | line_format \"slot {{.slot}}  epoch {{.epoch}}  phase {{.phase}}{{if eq .newEpoch \\\"true\\\"}}  NEW EPOCH, epoch mark: {{.mark}}{{end}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"verdicts\", run_id=~\"$run_id\"} | json | line_format \"report {{.report}}: {{.valid}} of {{.votes}} valid, judged by {{.set}}, signed: {{.signed}}, {{.decided}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -232,21 +232,21 @@
     "x": 0,
     "y": 3,
     "w": 24,
-    "h": 10
+    "h": 8
    }
   },
   {
-   "id": 12,
+   "id": 21,
    "type": "logs",
-   "title": "Shuffle",
-   "description": "What bin/shuffle.ts did: each pick (the number from the hash, mod how many are left, the index it lands on, the item picked), then the shuffled order.",
+   "title": "Offenders",
+   "description": "What bin/offenders.ts found: each culprit (a guarantor of a bad report) and each fault (a vote against the verdict), with whether its signature is really theirs.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"shuffle\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"pick\\\"}}{{.number}} mod {{.left}} = {{.index}}: pick {{.picked}}{{else}}shuffled: {{.order}}{{end}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"offenders\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"culprit\\\"}}culprit {{.key}}: guaranteed {{.report}}, really theirs: {{.signed}}{{else}}fault {{.key}}: voted {{.said}} on {{.report}}, really theirs: {{.signed}}{{end}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -260,7 +260,67 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 13,
+    "y": 11,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
+   "id": 22,
+   "type": "logs",
+   "title": "Cores",
+   "description": "What bin/cores.ts found: each core that loses its pending report because the report was judged bad or wonky, then how many cores keep theirs.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"cores\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"cleared\\\"}}core {{.core}}: report {{.report}} judged {{.verdict}}, off the core{{else}}{{.kept}} of {{.cores}} cores keep their reports{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 19,
+    "w": 24,
+    "h": 6
+   }
+  },
+  {
+   "id": 48,
+   "type": "logs",
+   "title": "Dispute checks",
+   "description": "What bin/check-disputes.ts did: the disputes of every disputes test vector of one size, checked against the rules of GP §10 (verdicts, then culprits and faults): accepted, or the first rule broken, and the vector's own verdict if it differs.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"dispute-check\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}: {{.ours}}{{if eq .agree \\\"false\\\"}} (the vector says {{.theirs}}){{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 25,
     "w": 24,
     "h": 10
    }
@@ -270,26 +330,26 @@
    "type": "row",
    "collapsed": false,
    "panels": [],
-   "title": "Part 8 · Safrole",
+   "title": "Part 11 · Assurances",
    "gridPos": {
     "x": 0,
-    "y": 23,
+    "y": 35,
     "w": 24,
     "h": 1
    }
   },
   {
-   "id": 13,
+   "id": 23,
    "type": "logs",
-   "title": "Entropy",
-   "description": "What bin/entropy.ts computed from a safrole vector: each of η's four hashes before and after the block, then whether a new epoch began and whether η′ matches the vector.",
+   "title": "Availability",
+   "description": "What bin/available.ts counted: for each core with a pending report, how many validators hold its data, and whether that's more than two thirds (available).",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"entropy\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"eta\\\"}}η{{.index}}  {{.before}} → {{.after}}{{else}}slot {{.slot}}, new epoch: {{.newEpoch}}, η′ matches the vector: {{.matches}}{{end}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"available\", run_id=~\"$run_id\"} | json | line_format \"core {{.core}}: {{.assured}} of {{.validators}} hold its data, available: {{.available}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -303,83 +363,23 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 24,
-    "w": 24,
-    "h": 8
-   }
-  },
-  {
-   "id": 14,
-   "type": "logs",
-   "title": "Validator rotation",
-   "description": "What bin/rotation.ts computed from a safrole vector: each validator set before and after the block, every validator shown by the first four hex digits of its Ed25519 key (0000: an offender, zeroed).",
-   "datasource": {
-    "type": "loki",
-    "uid": "loki"
-   },
-   "targets": [
-    {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"rotation\", run_id=~\"$run_id\"} | json | line_format \"{{.set}}  {{.before}}  →  {{.after}}\"",
-     "refId": "A",
-     "queryType": "range"
-    }
-   ],
-   "options": {
-    "showTime": false,
-    "wrapLogMessage": true,
-    "sortOrder": "Ascending",
-    "enableLogDetails": true,
-    "prettifyLogMessage": false
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 32,
-    "w": 24,
-    "h": 8
-   }
-  },
-  {
-   "id": 15,
-   "type": "logs",
-   "title": "Sealers",
-   "description": "What bin/sealers.ts computed: for each slot of the new epoch, the fallback sealer's key and which validator of κ′ it belongs to, then whether all of them match the vector.",
-   "datasource": {
-    "type": "loki",
-    "uid": "loki"
-   },
-   "targets": [
-    {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"sealers\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"sealer\\\"}}slot {{.phase}}: validator {{.validator}}  {{.key}}{{else}}the sealers match the vector: {{.matches}}{{end}}\"",
-     "refId": "A",
-     "queryType": "range"
-    }
-   ],
-   "options": {
-    "showTime": false,
-    "wrapLogMessage": true,
-    "sortOrder": "Ascending",
-    "enableLogDetails": true,
-    "prettifyLogMessage": false
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 40,
+    "y": 36,
     "w": 24,
     "h": 10
    }
   },
   {
-   "id": 16,
+   "id": 24,
    "type": "logs",
-   "title": "Lottery",
-   "description": "What bin/lottery.ts found: whether the block closes a full ticket lottery, and if so the slot of the next epoch each winning ticket will seal (rank 0 is the best ticket).",
+   "title": "Releases",
+   "description": "What bin/release.ts decided for each core's pending report: it became available, it timed out, it was cleared because the validator set resized, or it stays.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"lottery\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"seat\\\"}}slot {{.phase}}: ticket {{.rank}}  {{.id}}{{else}}slot {{.before}} → {{.after}}, tickets mark: {{.mark}}{{end}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"release\", run_id=~\"$run_id\"} | json | line_format \"core {{.core}} at slot {{.slot}} (waiting since {{.since}}): {{.fate}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -393,53 +393,23 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 50,
-    "w": 24,
-    "h": 10
-   }
-  },
-  {
-   "id": 17,
-   "type": "logs",
-   "title": "Safrole",
-   "description": "What bin/safrole.ts told about one block of Safrole: the slot, η₀ stirred, whether a new epoch began, the rotation, the sealers, the marks, and whether the whole state after matches the vector.",
-   "datasource": {
-    "type": "loki",
-    "uid": "loki"
-   },
-   "targets": [
-    {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"safrole\", run_id=~\"$run_id\"} | json | line_format \"{{.what}}\"",
-     "refId": "A",
-     "queryType": "range"
-    }
-   ],
-   "options": {
-    "showTime": false,
-    "wrapLogMessage": true,
-    "sortOrder": "Ascending",
-    "enableLogDetails": true,
-    "prettifyLogMessage": false
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 60,
+    "y": 46,
     "w": 24,
     "h": 8
    }
   },
   {
-   "id": 104,
+   "id": 47,
    "type": "logs",
-   "title": "VRF output",
-   "description": "What bin/vrf.ts read from real blocks: each header's entropy source, its VRF output, and η′₀ stirred with it.",
+   "title": "Assurance checks",
+   "description": "What bin/check-assurances.ts did: every assurances test vector of one size, checked against the rules of GP §11.2: accepted, or the first rule broken, and the vector's own verdict if it differs.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"vrf\", run_id=~\"$run_id\"} | json | line_format \"block {{.n}}, slot {{.slot}}: entropy source {{.source}}  VRF output {{.output}}  η′₀ {{.eta0}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"assurance-check\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}: {{.ours}}{{if eq .agree \\\"false\\\"}} (the vector says {{.theirs}}){{end}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -453,37 +423,7 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 68,
-    "w": 24,
-    "h": 8
-   }
-  },
-  {
-   "id": 105,
-   "type": "logs",
-   "title": "Seals",
-   "description": "What bin/seals.ts found for real blocks: who made each one, whether a winning ticket or a fallback key sealed it, and whether its seal and entropy source check out.",
-   "datasource": {
-    "type": "loki",
-    "uid": "loki"
-   },
-   "targets": [
-    {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"seals\", run_id=~\"$run_id\"} | json | line_format \"block {{.n}}, slot {{.slot}}: validator {{.author}}, by {{.by}}: {{.verdict}}\"",
-     "refId": "A",
-     "queryType": "range"
-    }
-   ],
-   "options": {
-    "showTime": false,
-    "wrapLogMessage": true,
-    "sortOrder": "Ascending",
-    "enableLogDetails": true,
-    "prettifyLogMessage": false
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 76,
+    "y": 54,
     "w": 24,
     "h": 8
    }
@@ -493,26 +433,26 @@
    "type": "row",
    "collapsed": false,
    "panels": [],
-   "title": "Part 9 · Recent history",
+   "title": "Part 12 · Guarantees",
    "gridPos": {
     "x": 0,
-    "y": 84,
+    "y": 62,
     "w": 24,
     "h": 1
    }
   },
   {
-   "id": 18,
+   "id": 25,
    "type": "logs",
-   "title": "Belt",
-   "description": "What bin/belt.ts built: the mountain belt after each append (● a mountain, · an empty place, smallest first) and its super-peak.",
+   "title": "Guarantors",
+   "description": "What bin/guarantors.ts checked: for each guarantee, its core, the slot it was made at, which rotation's assignment it answers to, its signers, and whether they're all assigned to that core.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"belt\", run_id=~\"$run_id\"} | json | line_format \"after {{.items}}: {{.peaks}}  super-peak {{.superPeak}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"guarantors\", run_id=~\"$run_id\"} | json | line_format \"core {{.core}}, made at slot {{.made}} ({{.which}}): signers {{.signers}}, all assigned: {{.assigned}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -526,23 +466,23 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 85,
+    "y": 63,
     "w": 24,
-    "h": 10
+    "h": 8
    }
   },
   {
-   "id": 19,
+   "id": 26,
    "type": "logs",
-   "title": "Recent history",
-   "description": "What bin/history.ts read from a real state: each remembered block (slot, header hash, state root, how many work-packages it reported), then the belt's peaks.",
+   "title": "Reporters",
+   "description": "What bin/reporters.ts checked: each guarantee's signers (short keys) and whether every signature is real, then how many distinct reporters signed.",
    "datasource": {
     "type": "loki",
     "uid": "loki"
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"history\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"block\\\"}}slot {{.slot}}  header {{.header_hash}}  state root {{.state_root}}  reported {{.reported}}{{else}}the belt: {{.peaks}}{{end}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"reporters\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"guarantee\\\"}}core {{.core}}: signed by {{.signers}}, all real: {{.signed}}{{else}}reporters: {{.count}} keys from {{.signatures}} signatures{{end}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -556,7 +496,67 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 95,
+    "y": 71,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
+   "id": 27,
+   "type": "logs",
+   "title": "Placed",
+   "description": "What bin/placed.ts did: each guaranteed report placed on its core (and whether the core was empty), then the packages the block reports, sorted by hash.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"placed\", run_id=~\"$run_id\"} | json | line_format \"{{if eq .step \\\"placed\\\"}}core {{.core}} ({{.was}}): package {{.package}} from slot {{.slot}}{{else}}reported: package {{.package}}, exports root {{.exports_root}}{{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 79,
+    "w": 24,
+    "h": 8
+   }
+  },
+  {
+   "id": 49,
+   "type": "logs",
+   "title": "Guarantee checks",
+   "description": "What bin/check-guarantees.ts did: the guarantees and reports of every reports test vector of one size, checked against the rules of GP §11 (the guarantees', then the reports'): accepted, or the first rule broken, and the vector's own verdict if it differs.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"guarantee-check\", run_id=~\"$run_id\"} | json | line_format \"{{.name}}: {{.ours}}{{if eq .agree \\\"false\\\"}} (the vector says {{.theirs}}){{end}}\"",
+     "refId": "A",
+     "queryType": "range"
+    }
+   ],
+   "options": {
+    "showTime": false,
+    "wrapLogMessage": true,
+    "sortOrder": "Ascending",
+    "enableLogDetails": true,
+    "prettifyLogMessage": false
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 87,
     "w": 24,
     "h": 10
    }

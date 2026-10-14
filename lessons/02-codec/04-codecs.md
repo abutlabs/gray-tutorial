@@ -117,7 +117,7 @@ reach 2^64 (`bigint`, [lesson 1.2](../01-bytes-and-numbers/02-numbers.md)) and c
 
 `json as number` tells TypeScript "trust me, the vectors write a number here". The test
 vectors are well-formed, so the first pass trusts them; checking them is a job for the
-[hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md).
+[hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md).
 
 ## Bytes
 
@@ -229,7 +229,7 @@ npm run typecheck
 ℹ pass 15
 ℹ fail 0
 ...
-reported 15 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791726352348
+reported 15 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791726352348
 ...
 ```
 

@@ -377,7 +377,7 @@ npm run typecheck
 ℹ pass 523
 ℹ fail 0
 ...
-reported 523 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738811802
+reported 523 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791738811802
 ...
 ```
 
@@ -398,7 +398,7 @@ accumulated: 0x9aa14535, 0xd97d7965
 still waiting: 0
 service 1729: 2 digest(s), 40441 gas
   the vector says: 2 digest(s), 40441 gas
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738817098
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=accumulate-1791738817098
 ```
 
 A comes in, D was waiting for it, both go, nobody's left waiting, and service 1729's two

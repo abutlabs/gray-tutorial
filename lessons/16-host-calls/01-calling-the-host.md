@@ -182,7 +182,7 @@ npm run typecheck
 ℹ pass 450
 ℹ fail 0
 ...
-reported 450 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738006180
+reported 450 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791738006180
 ...
 ```
 
@@ -245,7 +245,7 @@ node bin/host.ts
 ```text
 host call 2 (fetch): WHAT, 98757 gas left
 the service stops: "panic", with 98733 gas left
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791738012768
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791738012768
 ```
 
 A real service this time: 1729, from the accumulate test vectors. Its very first host call

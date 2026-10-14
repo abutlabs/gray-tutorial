@@ -303,7 +303,7 @@ npm run typecheck
 ℹ pass 83
 ℹ fail 0
 ...
-reported 83 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791771400406
+reported 83 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791771400406
 ...
 ```
 
@@ -383,12 +383,12 @@ a new epoch: false
 sealers: fallback keys; tickets mark: false
 the lottery holds 3 ticket(s), the best 0x00e51b1c…
 the whole state after matches the vector: true
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=safrole-1791771403660
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=safrole-1791771403660
 a ticket: attempt 3, id 0xd6feae23…
 a ticket: attempt 1, id 0x5af49b10…
 a ticket: attempt 2, id 0x34341918…
 refused: bad_ticket_order (the vector says: bad_ticket_order)
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=safrole-1791771403778
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=safrole-1791771403778
 ```
 
 The first block's three tickets go up (`0x00e5…`, `0x015d…`, `0x2016…`) and all enter.

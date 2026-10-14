@@ -17,7 +17,7 @@ assurances ([lesson 11.2](../11-assurances/02-timeouts.md)) have done their clea
 the root of the segments it exports. [Lesson 9.2](../09-recent-history/02-recent-blocks.md)'s `recordBlock` takes exactly these, as
 `work_packages`. A dictionary is kept **sorted by key**, so they're listed by package
 hash, not in the order the guarantees came. ([Lesson 9.2](../09-recent-history/02-recent-blocks.md) left sorting to the [hardening
-pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md). Here the vectors insist on it.)
+pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md). Here the vectors insist on it.)
 
 ## The tests
 
@@ -137,7 +137,7 @@ npm run typecheck
 ℹ pass 200
 ℹ fail 0
 ...
-reported 200 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734328669
+reported 200 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791734328669
 ...
 ```
 
@@ -201,7 +201,7 @@ core 1 (empty): now holds package 0x316504b8…, since 14
 cores holding a report now: 2 of 2
 reported: package 0x316504b8…, exports root 0x5c9dca80…
 reported: package 0x63c03371…, exports root 0x5c9dca80…
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=placed-1791734334389
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=placed-1791734334389
 ```
 
 Core 0 gets `0x63c0…` and core 1 gets `0x3165…`, but the reported list starts with

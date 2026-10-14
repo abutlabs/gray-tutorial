@@ -234,7 +234,7 @@ npm run typecheck
 ℹ pass 79
 ℹ fail 0
 ...
-reported 79 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791730491045
+reported 79 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791730491045
 ...
 ```
 
@@ -303,7 +303,7 @@ a new epoch: true
 validators moved along one set; offenders zeroed: 1
 sealers: fallback keys; tickets mark: false
 the whole state after matches the vector: true
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=safrole-1791730495403
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=safrole-1791730495403
 ```
 
 That's the busiest vector of all: a new epoch, an offender, fallback sealers. Try the

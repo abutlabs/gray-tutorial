@@ -89,7 +89,7 @@ npm run typecheck
 ℹ pass 40
 ℹ fail 0
 ...
-reported 40 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728271225
+reported 40 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728271225
 ...
 ```
 
@@ -127,7 +127,7 @@ node bin/decode.ts guarantees_extrinsic ../vectors/codec/tiny/guarantees_extrins
 ...
   555..557   0.signatures.1.validator_index 0x0100
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728271657
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791728271657
 ```
 
 Scroll the trace: the whole work-report goes by first (`0.report.package_spec...` down

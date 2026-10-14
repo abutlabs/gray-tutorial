@@ -370,7 +370,7 @@ npm run typecheck
 ℹ pass 416
 ℹ fail 0
 ...
-reported 416 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736632944
+reported 416 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736632944
 ...
 ```
 
@@ -435,7 +435,7 @@ shar_r_64      −8 >> 1, arithmetic              0xfffffffffffffffc = -4
 shlo_r_64      −8 >> 1, logical                 0x7ffffffffffffffc = 9223372036854775804
 rot_r_64       1 rotated right by 1             0x8000000000000000 = -9223372036854775808
 mul_upper_u_u  (2^64 − 1)², upper 64 bits       0xfffffffffffffffe = -2
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=alu-1791736638573
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=alu-1791736638573
 ```
 
 Every corner from the list above, worked out by your PVM and shown twice, as raw bits

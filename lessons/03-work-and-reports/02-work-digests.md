@@ -260,7 +260,7 @@ npm run typecheck
 ℹ pass 30
 ℹ fail 0
 ...
-reported 30 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791727155485
+reported 30 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791727155485
 ...
 ```
 
@@ -297,7 +297,7 @@ node bin/decode.ts work_result ../vectors/codec/tiny/work_result_1.bin
    79..80    refine_load.extrinsic_count    0x00
    80..81    refine_load.extrinsic_size     0x00
    81..82    refine_load.exports            0x00
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791727155961
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791727155961
 ```
 
 There it is, the whole sad story of `work_result_1` in one byte: `result 0x02`, a panic.

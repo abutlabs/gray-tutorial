@@ -47,8 +47,8 @@ test("masks: times, durations, run ids, paths into the client, colours", () => {
   assert.equal(normalize("at 2026-10-11T13:01:02.123Z"), "at <time>");
   assert.equal(normalize("ℹ duration_ms 52.3"), "ℹ duration_ms <ms>");
   assert.equal(normalize("run test-1791722258705 reported"), "run test-<run> reported");
-  assert.equal(normalize("Cannot find module '/Users/a/gray-tutorial/.tangled/src/time.ts'"), "Cannot find module '…/client/src/time.ts'");
-  assert.equal(normalize("imported from /home/b/jam/gray-tutorial/client/test/x.ts"), "imported from …/client/test/x.ts");
+  assert.equal(normalize("Cannot find module '/Users/a/the-gray-tutor/.tangled/src/time.ts'"), "Cannot find module '…/client/src/time.ts'");
+  assert.equal(normalize("imported from /home/b/jam/the-gray-tutor/client/test/x.ts"), "imported from …/client/test/x.ts");
   assert.equal(normalize("\x1b[32m✔ ok\x1b[39m"), "✔ ok");
-  assert.equal(normalize("d/gray-tutorial?var-client=you&var-run_id=x"), normalize("d/gray-tutorial?var-client=tutorial-check&var-run_id=x"));
+  assert.equal(normalize("d/the-gray-tutor?var-client=you&var-run_id=x"), normalize("d/the-gray-tutor?var-client=tutorial-check&var-run_id=x"));
 });

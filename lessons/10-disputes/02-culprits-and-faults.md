@@ -156,7 +156,7 @@ npm run typecheck
 ℹ pass 99
 ℹ fail 0
 ...
-reported 99 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731886863
+reported 99 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791731886863
 ...
 ```
 
@@ -217,7 +217,7 @@ culprit 0xcab2b9ff…: guaranteed report 0x7b0aa173…
 fault 0x4418fb8c…: voted invalid on report 0x11da6d1f…
   the vote is really theirs: true
 offenders mark: 0xad93247b…, 0xcab2b9ff…, 0x4418fb8c…
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=offenders-1791731890899
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=offenders-1791731890899
 ```
 
 Put it next to [lesson 10.1](./01-votes-and-verdicts.md)'s `bin/verdicts.ts` on the same vector, and the whole trial

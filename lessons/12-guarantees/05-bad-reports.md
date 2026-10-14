@@ -59,7 +59,7 @@ separately.
 Two more rules this lesson leaves out: the report's *lookup* anchor must be at most L slots
 old, and must be one of the last L blocks' headers. Checking the second needs the header
 chain itself, which no state holds, and no vector tests either. They wait in
-[HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md).
+[HARDENING.md](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md).
 
 ## The tests
 
@@ -279,7 +279,7 @@ npm run typecheck
 ℹ pass 386
 ℹ fail 0
 ...
-reported 386 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734631104
+reported 386 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791734631104
 ...
 ```
 
@@ -361,7 +361,7 @@ banned_validator_guarantee-1: banned_validator
 big_work_report_output-1: accepted
 core_engaged-1: core_engaged
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=guarantee-check-1791734639549
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=guarantee-check-1791734639549
 ```
 
 Forty-four vectors, and not one "the vector says": your client's reports step agrees with
@@ -492,7 +492,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 230 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939267270
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939267270
 ```
 
 62 of 92: every refused block, and not one accepted block. The board says why. A block

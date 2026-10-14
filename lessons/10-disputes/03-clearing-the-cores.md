@@ -202,7 +202,7 @@ npm run typecheck
 ℹ pass 101
 ℹ fail 0
 ...
-reported 101 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791731896437
+reported 101 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791731896437
 ...
 ```
 
@@ -266,7 +266,7 @@ node bin/cores.ts ../vectors/stf/disputes/tiny/progress_invalidates_avail_assign
 ```text
 core 0: its report 0xf9076864… was judged bad
 1 of 2 cores keep their reports
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=cores-1791731900567
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=cores-1791731900567
 ```
 
 Both cores' reports were on trial in this block. Core 0's was judged bad, so it leaves;

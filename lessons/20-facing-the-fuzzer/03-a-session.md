@@ -61,7 +61,7 @@ type TraceStep = {
 
 const family = process.argv[2] ?? "fallback";
 const given = process.argv[3]; // a target already running, if any
-const path = given ?? join(tmpdir(), `gray-tutorial-${process.pid}.sock`);
+const path = given ?? join(tmpdir(), `the-gray-tutor-${process.pid}.sock`);
 const start = () => spawn(process.execPath, ["bin/target.ts", path], { stdio: "ignore" });
 const target = given ? undefined : start();
 /** Connects to the target, trying again for a few seconds while it starts. */
@@ -99,7 +99,7 @@ const hello = await ask({
     fuzz_features: 1 | 2, // ancestry and forks
     jam_version: { major: 0, minor: 8, patch: 0 },
     app_version: { major: 0, minor: 1, patch: 0 },
-    app_name: new TextEncoder().encode("gray-tutorial-fuzzer"),
+    app_name: new TextEncoder().encode("the-gray-tutor-fuzzer"),
   },
 });
 const app = hello.kind === "peer_info" ? new TextDecoder().decode(hello.value.app_name) : "?";
@@ -173,10 +173,10 @@ node bin/fuzz.ts fuzzy
 ```
 
 ```text
-target: gray-tutorial
+target: the-gray-tutor
 initialize: the genesis root
 100 of 100 blocks as the trace has them
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=fuzz-1791774871759
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=fuzz-1791774871759
 ```
 
 A hundred blocks, each answered as the trace has it: the three bad ones with an Error, the

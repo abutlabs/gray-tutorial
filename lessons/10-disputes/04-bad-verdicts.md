@@ -204,7 +204,7 @@ of them. This order names the same one as the vector, for every disputes vector.
 > **The simple road.** The test vectors' list of error names has one more for rule 6:
 > `bad_validator_index`, for a vote whose judge index is past the end of K. No vector
 > uses it yet, so `signed` folds an index out of range into `bad_signature`, and every
-> vector agrees. The [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) gives it its own name.
+> vector agrees. The [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) gives it its own name.
 
 **Run**
 
@@ -222,7 +222,7 @@ npm run typecheck
 ℹ pass 133
 ℹ fail 0
 ...
-reported 133 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791732266078
+reported 133 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791732266078
 ...
 ```
 
@@ -297,7 +297,7 @@ progress_with_verdicts-3: verdicts_not_sorted_unique (the vector: verdicts_not_s
 progress_with_verdicts-4: verdicts pass (the vector: accepted)
 progress_with_verdicts-5: bad_vote_split (the vector: bad_vote_split)
 progress_with_verdicts-6: verdicts pass (the vector: accepted)
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=dispute-check-1791732270772
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=dispute-check-1791732270772
 ```
 
 Every line where the rules found a bad verdict agrees with the vector, and

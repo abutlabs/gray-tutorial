@@ -195,7 +195,7 @@ npm run typecheck
 ℹ pass 81
 ℹ fail 0
 ...
-reported 81 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791771392845
+reported 81 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791771392845
 ...
 ```
 
@@ -255,7 +255,7 @@ block 4, slot 4: entropy source 0xc50ffdad…
   VRF output 0xd34b355c…, η′₀ 0x7973268a… (the trace: 0x7973268a…)
 block 5, slot 5: entropy source 0x450dad32…
   VRF output 0x8c273b7e…, η′₀ 0xe63da799… (the trace: 0xe63da799…)
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=vrf-1791771397022
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=vrf-1791771397022
 ```
 
 Each block's η′₀ matches the trace's. And look at blocks 2 and 3: the same entropy source,

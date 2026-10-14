@@ -111,7 +111,7 @@ type Panel = { uid: string; id: number; title: string; height: number; kind: str
 function panels(): Map<string, Panel> {
   const dir = join(ROOT, "observability", "dashboards");
   const out = new Map<string, Panel>();
-  for (const f of readdirSync(dir).sort().reverse()) { // gray-tutorial.json last
+  for (const f of readdirSync(dir).sort().reverse()) { // the-gray-tutor.json last
     const d = JSON.parse(readFileSync(join(dir, f), "utf8"));
     for (const p of d.panels) {
       const kind = /kind="([^"]+)"/.exec(p.targets?.[0]?.expr ?? "")?.[1];
@@ -124,7 +124,7 @@ function panels(): Map<string, Panel> {
 
 /** The runs of one kind that started at or after a time, oldest first. */
 async function runsSince(kind: string, since: number): Promise<string[]> {
-  const query = `{job="gray_tutorial", client="${CLIENT}", kind="${kind}"}`;
+  const query = `{job="the_gray_tutor", client="${CLIENT}", kind="${kind}"}`;
   const url = `${LOKI}/loki/api/v1/label/run_id/values?query=${encodeURIComponent(query)}`
     + `&start=${since - 60_000}000000`;
   const ids = ((await (await fetch(url)).json()) as { data?: string[] }).data ?? [];

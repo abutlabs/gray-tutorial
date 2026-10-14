@@ -355,7 +355,7 @@ npm run typecheck
 ℹ pass 537
 ℹ fail 0
 ...
-reported 537 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791739179951
+reported 537 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791739179951
 ...
 ```
 
@@ -428,7 +428,7 @@ service 0: 1 digest(s), 0 transfer(s), 255437 gas
   the vector says: 1 digest(s), 0 transfer(s), 255437 gas
 service 1: 0 digest(s), 1 transfer(s), 61711 gas
   the vector says: 0 digest(s), 1 transfer(s), 61711 gas
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791739188404
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=accumulate-1791739188404
 ```
 
 Two services, two rounds: service 0 with its one digest in round 1, service 1 with its

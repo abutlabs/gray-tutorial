@@ -222,7 +222,7 @@ compare with them. `reporters` and `signerKeys` come from [lesson 12.2](../12-gu
 > last rotation is signed with that rotation's keys, which can be λ's. The statistics
 > vectors only use κ′, so this is fine for now; when [Part 19](../19-block-import/index.md) puts the block
 > together, 𝐆 should come straight from [lesson 12.2](../12-guarantees/02-signed-and-counted.md)'s step. The [hardening
-> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) does that.
+> pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) does that.
 
 **Run**
 
@@ -250,7 +250,7 @@ npm run typecheck
 ℹ pass 598
 ℹ fail 0
 ...
-reported 598 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791740875939
+reported 598 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791740875939
 ...
 ```
 
@@ -317,7 +317,7 @@ validator 2: fresh → 0 0 0 0 1 0
 validator 3: fresh → 0 0 0 0 1 0
 validator 4: fresh → 0 0 0 0 0 0
 validator 5: fresh → 0 0 0 0 0 0
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=statistics-1791740888363
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=statistics-1791740888363
 ```
 
 The first block of a new epoch: every tally starts fresh, the author, validator 1, gets its
@@ -394,7 +394,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 372 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939736998
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939736998
 ```
 
 > [!TIP] Milestone

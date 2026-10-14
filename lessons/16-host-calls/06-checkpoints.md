@@ -331,7 +331,7 @@ npm run typecheck
 ℹ pass 467
 ℹ fail 0
 ...
-reported 467 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738269977
+reported 467 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791738269977
 ...
 ```
 
@@ -353,7 +353,7 @@ host call 2 (fetch): φ₇ = 1, 86270 gas left
 host call 2 (fetch): φ₇ = 1, 84708 gas left
 the service stops: "halt", using 16417 gas
 the test vector says: 16417
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=host-1791738276309
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=host-1791738276309
 ```
 
 The same conversation as [lesson 16.3](./03-growing-the-heap.md), through Ψ_A now. And across the accumulate vectors,

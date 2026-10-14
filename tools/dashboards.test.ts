@@ -21,8 +21,8 @@ const dashboards = readdirSync(DIR)
   .filter((f) => f.endsWith(".json"))
   .map((f) => JSON.parse(readFileSync(join(DIR, f), "utf8")) as Dashboard)
   .sort((a, b) => a.title.localeCompare(b.title));
-const overview = dashboards.find((d) => d.uid === "gray-tutorial")!;
-const scoreboard = dashboards.find((d) => d.uid === "gray-tutorial-vectors")!;
+const overview = dashboards.find((d) => d.uid === "the-gray-tutor")!;
+const scoreboard = dashboards.find((d) => d.uid === "the-gray-tutor-vectors")!;
 const themes = dashboards.filter((d) => d !== overview && d !== scoreboard);
 const parts = readParts();
 const partOf = (dir: string) => Number(dir.split("-")[0]); // "07-time-and-shuffling" → 7
@@ -36,7 +36,7 @@ function covers(d: Dashboard): number[] {
 }
 
 test("every dashboard has the same link bar, to all of them in order, and the same menus", () => {
-  assert.ok(overview, "the overview keeps uid gray-tutorial: the run links point to it");
+  assert.ok(overview, "the overview keeps uid the-gray-tutor: the run links point to it");
   assert.equal(dashboards[0], overview, "the overview sorts first");
   const urls = dashboards.map((d) => `/d/${d.uid}`);
   for (const d of dashboards) {
@@ -47,7 +47,7 @@ test("every dashboard has the same link bar, to all of them in order, and the sa
 });
 
 test("each Part is on exactly one theme dashboard", () => {
-  assert.ok(scoreboard, "the scoreboard's dashboard keeps uid gray-tutorial-vectors");
+  assert.ok(scoreboard, "the scoreboard's dashboard keeps uid the-gray-tutor-vectors");
   const seen = themes.flatMap(covers).sort((a, b) => a - b);
   assert.deepEqual(seen, parts.map((p) => partOf(p.dir)));
 });

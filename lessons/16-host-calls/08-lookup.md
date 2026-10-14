@@ -218,7 +218,7 @@ npm run typecheck
 ℹ pass 480
 ℹ fail 0
 ...
-reported 480 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791738514291
+reported 480 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791738514291
 ...
 ```
 
@@ -236,7 +236,7 @@ node bin/accumulate.ts ../vectors/stf/accumulate/tiny/lookup_foreign_preimage-1.
 service 0: 1 input(s), 2000000 gas, "halt"
   gas used 140681; the vector says 140681
   storage: 0x0100000000 = 0x774935b629cc42513a66c8ed1a09f88b00fe35689032bafd5a26d52f464c48080000, 0x00 = 0x01000000, 0x02774935b629cc42513a66c8ed1a09f88b00fe35689032bafd5a26d52f464c48080000 = 0x010106
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791738519670
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=accumulate-1791738519670
 ```
 
 The bin from [lesson 16.7](./07-a-services-inputs.md) needs no change: point it at the new vector, and service 0's gas

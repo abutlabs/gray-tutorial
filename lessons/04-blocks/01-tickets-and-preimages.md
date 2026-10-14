@@ -129,7 +129,7 @@ npm run typecheck
 ℹ pass 36
 ℹ fail 0
 ...
-reported 36 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728268478
+reported 36 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728268478
 ...
 ```
 
@@ -162,7 +162,7 @@ node bin/decode.ts preimages_extrinsic ../vectors/codec/tiny/preimages_extrinsic
     0..1     length                         0x03
     1..5     0.requester                    0x04030201
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728269291
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791728269291
 ```
 
 A list of three preimages: `length 0x03`, then each requester and its blob. The blob's

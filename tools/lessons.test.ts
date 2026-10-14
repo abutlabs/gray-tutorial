@@ -109,7 +109,8 @@ test("visual tutorial verification: every picture exists, is used, has alt text,
       shown.add(path);
     }
   }
-  for (const f of files.filter((f) => /\.(png|jpe?g|gif|webp|svg)$/i.test(f))) {
+  // public/ is the website's own files (the logo), served as they are, not a lesson's pictures
+  for (const f of files.filter((f) => /\.(png|jpe?g|gif|webp|svg)$/i.test(f) && !f.startsWith("public/"))) {
     assert.ok(shown.has(join(LESSONS, f)), `lessons/${f} is shown by a lesson`);
   }
 });
@@ -137,7 +138,7 @@ function prose(text: string): string {
   return text.replace(/```[\s\S]*?```|`[^`\n]*`|!?\[[^\]]*\]\([^)]*\)|^#.*$|<[^>\n]+>/gm, " ");
 }
 const pages = readdirSync(LESSONS, { recursive: true }).map(String).filter((f) => f.endsWith(".md"));
-const HARDENING = "https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md";
+const HARDENING = "https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md";
 const lessonAt = new Map(parts.flatMap((p) => p.lessons).map((l) => [l.file, l.id]));
 
 // As the Rust Book links every cross-reference: a reader can always follow one.

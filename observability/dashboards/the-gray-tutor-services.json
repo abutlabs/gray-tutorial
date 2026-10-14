@@ -1,9 +1,9 @@
 {
- "uid": "gray-tutorial-services",
+ "uid": "the-gray-tutor-services",
  "title": "5 · Services (Parts 13-14)",
  "description": "The cores' authorizer pools, preimages handed to services, and a service's account.",
  "tags": [
-  "gray-tutorial"
+  "the-gray-tutor"
  ],
  "timezone": "browser",
  "refresh": "10s",
@@ -22,7 +22,7 @@
   {
    "type": "link",
    "title": "0 · Your client",
-   "url": "/d/gray-tutorial",
+   "url": "/d/the-gray-tutor",
    "tooltip": "0 · Your client",
    "icon": "dashboard",
    "includeVars": true,
@@ -34,7 +34,7 @@
   {
    "type": "link",
    "title": "1 · Basics",
-   "url": "/d/gray-tutorial-basics",
+   "url": "/d/the-gray-tutor-basics",
    "tooltip": "1 · Basics (Parts 0-2)",
    "icon": "dashboard",
    "includeVars": true,
@@ -46,7 +46,7 @@
   {
    "type": "link",
    "title": "2 · Blocks and state",
-   "url": "/d/gray-tutorial-blocks",
+   "url": "/d/the-gray-tutor-blocks",
    "tooltip": "2 · Blocks and state (Parts 3-6)",
    "icon": "dashboard",
    "includeVars": true,
@@ -58,7 +58,7 @@
   {
    "type": "link",
    "title": "3 · Consensus",
-   "url": "/d/gray-tutorial-consensus",
+   "url": "/d/the-gray-tutor-consensus",
    "tooltip": "3 · Consensus (Parts 7-9)",
    "icon": "dashboard",
    "includeVars": true,
@@ -70,7 +70,7 @@
   {
    "type": "link",
    "title": "4 · Checks",
-   "url": "/d/gray-tutorial-checks",
+   "url": "/d/the-gray-tutor-checks",
    "tooltip": "4 · Checks (Parts 10-12)",
    "icon": "dashboard",
    "includeVars": true,
@@ -82,7 +82,7 @@
   {
    "type": "link",
    "title": "5 · Services",
-   "url": "/d/gray-tutorial-services",
+   "url": "/d/the-gray-tutor-services",
    "tooltip": "5 · Services (Parts 13-14)",
    "icon": "dashboard",
    "includeVars": true,
@@ -94,7 +94,7 @@
   {
    "type": "link",
    "title": "6 · The PVM",
-   "url": "/d/gray-tutorial-pvm",
+   "url": "/d/the-gray-tutor-pvm",
    "tooltip": "6 · The PVM (Part 15)",
    "icon": "dashboard",
    "includeVars": true,
@@ -106,7 +106,7 @@
   {
    "type": "link",
    "title": "7 · Accumulation and import",
-   "url": "/d/gray-tutorial-accumulation",
+   "url": "/d/the-gray-tutor-accumulation",
    "tooltip": "7 · Accumulation and import (Parts 16-20)",
    "icon": "dashboard",
    "includeVars": true,
@@ -118,7 +118,7 @@
   {
    "type": "link",
    "title": "8 · Official vectors",
-   "url": "/d/gray-tutorial-vectors",
+   "url": "/d/the-gray-tutor-vectors",
    "tooltip": "8 · Official vectors (the scoreboard)",
    "icon": "dashboard",
    "includeVars": true,
@@ -138,8 +138,8 @@
      "type": "loki",
      "uid": "loki"
     },
-    "query": "label_values({job=\"gray_tutorial\"}, client)",
-    "definition": "label_values({job=\"gray_tutorial\"}, client)",
+    "query": "label_values({job=\"the_gray_tutor\"}, client)",
+    "definition": "label_values({job=\"the_gray_tutor\"}, client)",
     "refresh": 2,
     "sort": 1,
     "includeAll": false,
@@ -159,8 +159,8 @@
      "type": "loki",
      "uid": "loki"
     },
-    "query": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
-    "definition": "label_values({job=\"gray_tutorial\", client=\"$client\"}, run_id)",
+    "query": "label_values({job=\"the_gray_tutor\", client=\"$client\"}, run_id)",
+    "definition": "label_values({job=\"the_gray_tutor\", client=\"$client\"}, run_id)",
     "refresh": 2,
     "sort": 2,
     "includeAll": true,
@@ -216,7 +216,7 @@
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"pools\", run_id=~\"$run_id\"} | json | line_format \"core {{.core}}: {{.before}}  − {{.gone}}, + {{.joined}}  →  {{.after}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"pools\", run_id=~\"$run_id\"} | json | line_format \"core {{.core}}: {{.before}}  − {{.gone}}, + {{.joined}}  →  {{.after}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -259,7 +259,7 @@
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"preimages\", run_id=~\"$run_id\"} | json | line_format \"service {{.service}}: {{.bytes}} bytes, hash {{.hash}}  request {{.was}} → {{.now}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"preimages\", run_id=~\"$run_id\"} | json | line_format \"service {{.service}}: {{.bytes}} bytes, hash {{.hash}}  request {{.was}} → {{.now}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -289,7 +289,7 @@
    },
    "targets": [
     {
-     "expr": "{job=\"gray_tutorial\", client=\"$client\", kind=\"service\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"service\", run_id=~\"$run_id\"} | json | line_format \"{{.line}}\"",
      "refId": "A",
      "queryType": "range"
     }

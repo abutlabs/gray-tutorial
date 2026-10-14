@@ -49,7 +49,7 @@ The finished board passes 1,406 of 1,428. The 22 left, and why:
 - **Ten preimages vectors**, five at each size: blocks that carry a preimage nobody is
   waiting for (`preimage_unneeded`), or preimages out of order (`preimages_not_sorted_unique`).
   The Gray Paper says to refuse them; [lesson 14.1](./14-services/01-providing-preimages.md) takes the simple road and accepts them,
-  and the [hardening pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) adds the refusals.
+  and the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) adds the refusals.
 - **Twelve erasure-coding vectors**: the code validators use to split a work-package's data
   among themselves (Gray Paper Appendix H). A block importer never needs it, so the tutorial
   doesn't build it, and the board says *not run yet*.

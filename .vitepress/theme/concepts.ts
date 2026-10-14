@@ -4,7 +4,7 @@
 // is kept in the browser, and the <head> script in config.ts applies it before the page
 // draws, so a folded page never flashes its code first.
 
-export const KEY = "gray-tutorial:concepts";
+export const KEY = "the-gray-tutor:concepts";
 const CLASS = "concepts";
 
 /** Whether the page is in concepts-only mode. */

@@ -71,7 +71,8 @@ export function writePrintPage(outDir: string, base: string, pages: PrintPage[])
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gray Tutorial, on one page</title>
+<title>The Gray Tutor, on one page</title>
+<link rel="icon" type="image/svg+xml" href="${base}logo.svg">
 <link rel="stylesheet" href="${base}assets/${css}">
 <script>
   // light or dark, as the reader's system is (the diagrams follow it too); light to print
@@ -100,7 +101,7 @@ export function writePrintPage(outDir: string, base: string, pages: PrintPage[])
 </head>
 <body>
 <div class="one-page vp-doc">
-<h1>Gray Tutorial</h1>
+<h1>The Gray Tutor</h1>
 <p class="note">The whole tutorial on one page: print it (most browsers can print to a PDF), or
 save it to read offline. The website, with search and the whole-file folds, is
 <a href="${base}">here</a>.</p>

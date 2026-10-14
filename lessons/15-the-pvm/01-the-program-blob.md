@@ -192,7 +192,7 @@ function.
 > shorter than its own sizes, a giant jump table, or a jump target off the end of the
 > code all slip through, and a program comes from any service, so from anyone. The
 > real service's code is well formed, so this is fine for now; the [hardening
-> pass](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) checks every size.
+> pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) checks every size.
 
 **Run**
 
@@ -214,7 +214,7 @@ npm run typecheck
 ℹ pass 398
 ℹ fail 0
 ...
-reported 398 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791736314079
+reported 398 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791736314079
 ...
 ```
 
@@ -288,7 +288,7 @@ the code preimage: 159322 bytes
     code: 128413 bytes, 39849 instructions
     bitmask: 16052 bytes
 most common opcodes: 130 (6871×), 123 (4950×), 51 (3474×), 149 (3021×), 151 (2021×)
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=program-1791736319548
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=program-1791736319548
 ```
 
 159,322 bytes: 80 of metadata (it calls itself `jam-bootstrap-service`, version 0.1.29,

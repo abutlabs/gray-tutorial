@@ -7,7 +7,7 @@ import { readFileSync } from "node:fs";
 const need = Number(readFileSync(new URL("../.nvmrc", import.meta.url), "utf8").trim());
 const have = Number(process.versions.node.split(".")[0]);
 if (have < need) {
-  console.error(`The Gray Tutorial needs Node ${need}, and this terminal has ${process.version}.`);
+  console.error(`The Gray Tutor needs Node ${need}, and this terminal has ${process.version}.`);
   console.error("Run `nvm use` in this folder, then try again.");
   process.exit(1);
 }

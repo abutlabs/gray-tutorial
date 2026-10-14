@@ -277,7 +277,7 @@ npm run typecheck
 ℹ pass 60
 ℹ fail 0
 ...
-reported 60 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728952545
+reported 60 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728952545
 ...
 ```
 
@@ -355,7 +355,7 @@ depth  4  0x10000000000000000000000000000000000000000000000000000000000000  1-by
 depth  1  0xff000000000000000000000000000000000000000000000000000000000000  89-byte value, hashed
 21 entries, state root 0xd6e78dc07a9ae915ada8306bf0da89b11044a2d4ee71ae0c5faf61f34f6b3a0c
 the header promises it: true
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=state-1791728955705
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=state-1791728955705
 ```
 
 Twenty-one entries, one root, and the header agrees. Now read the leaves, in key order,
@@ -470,7 +470,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 31 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939036335
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939036335
 ```
 
 > [!TIP] Milestone

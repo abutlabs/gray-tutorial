@@ -309,7 +309,7 @@ npm run typecheck
 ℹ pass 642
 ℹ fail 0
 ...
-reported 642 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791773578784
+reported 642 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791773578784
 ...
 ```
 
@@ -377,7 +377,7 @@ C(15) ξ: 300 bytes
 C(16) θ: 1 bytes
 service 0: balance 18446744073709551615, 154 entries
 171 entries in all, every one read
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=state-1791773590083
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=state-1791773590083
 ```
 
 The state before block 50 of the `storage` trace: sixteen components, and service 0

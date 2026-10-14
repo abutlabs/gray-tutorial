@@ -129,7 +129,7 @@ npm run typecheck
 ℹ pass 42
 ℹ fail 0
 ...
-reported 42 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791728272265
+reported 42 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791728272265
 ...
 ```
 
@@ -166,7 +166,7 @@ node bin/decode.ts disputes_extrinsic ../vectors/codec/full/disputes_extrinsic.b
 ...
    37..39    verdicts.0.votes.length        0x82ab
 ...
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=decode-1791728272718
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791728272718
 ```
 
 `0x82ab` is a two-byte compact natural ([lesson 2.2](../02-codec/02-compact-naturals.md)): the first byte's leading `1` says

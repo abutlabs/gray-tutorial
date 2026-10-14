@@ -285,7 +285,7 @@ npm run typecheck
 ℹ pass 390
 ℹ fail 0
 ...
-reported 390 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791734931482
+reported 390 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791734931482
 ...
 ```
 
@@ -343,7 +343,7 @@ core 0: b6ab baad dbe5 1989 6d74 8da3 332d f9e9
   − b6ab, + 5b83  →  baad dbe5 1989 6d74 8da3 332d f9e9 5b83
 core 1: 80ef 510d fae1 e38b 678d af59 73cc c874
   − 510d, + 9c89  →  80ef fae1 e38b 678d af59 73cc c874 9c89
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=pools-1791734945852
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=pools-1791734945852
 ```
 
 Core 0 used `b6ab`, its oldest, so it leaves from the front and `5b83` joins at the
@@ -502,7 +502,7 @@ traces/storage_light     not run yet (100)
 trie                       1 of 1  ✔
 
 236 of 1,428 vectors pass.
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=scoreboard-1791939335722
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=scoreboard-1791939335722
 ```
 
 > [!TIP] Milestone

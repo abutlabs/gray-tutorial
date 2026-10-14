@@ -655,7 +655,7 @@ npm run typecheck
 ℹ pass 577
 ℹ fail 0
 ...
-reported 577 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791769507532
+reported 577 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791769507532
 ...
 ```
 
@@ -746,7 +746,7 @@ service 1: 1 digest(s), 0 transfer(s), 183402 gas
   the vector says: 1 digest(s), 0 transfer(s), 183402 gas
 service 2: 1 digest(s), 0 transfer(s), 0 gas
   the vector says: 1 digest(s), 0 transfer(s), 0 gas
-reported to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=accumulate-1791769522327
+reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=accumulate-1791769522327
 ```
 
 Service 1 yields; the root is the vector's. The *Accumulate* panel, on **7 · Accumulation

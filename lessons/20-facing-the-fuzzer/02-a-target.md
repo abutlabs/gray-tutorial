@@ -53,7 +53,7 @@ check. The traces never needed it: their tests gave your importer no ancestry, s
 
 One honest note: the Gray Paper also asks that the lookup anchor's state root be the one
 its child block names. The protocol's ancestry gives only slots and hashes, so the base
-rule here checks those two; [HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md) keeps the rest.
+rule here checks those two; [HARDENING.md](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) keeps the rest.
 
 ## The tests
 
@@ -242,7 +242,7 @@ const ME: PeerInfo = {
   fuzz_features: FEATURES,
   jam_version: { major: 0, minor: 8, patch: 0 },
   app_version: { major: 0, minor: 1, patch: 0 },
-  app_name: new TextEncoder().encode("gray-tutorial"),
+  app_name: new TextEncoder().encode("the-gray-tutor"),
 };
 
 /** A state the target has made: its entries, and the last L blocks of its chain. */
@@ -335,7 +335,7 @@ npm run typecheck
 ℹ pass 653
 ℹ fail 0
 ...
-reported 653 tests to Grafana: http://127.0.0.1:3300/d/gray-tutorial?var-client=you&var-run_id=test-1791774851666
+reported 653 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791774851666
 ...
 ```
 
@@ -436,7 +436,7 @@ The same rule, and the same reason it lives in the target rather than the state
 transition: β keeps eight blocks, and L is 24. lasair walks parent links back from the
 block's parent; your target keeps each state's own last L blocks beside it. lasair also
 checks the anchor's state root where it knows the child header, the part your client
-leaves to [HARDENING.md](https://github.com/abutlabs/gray-tutorial/blob/main/HARDENING.md).
+leaves to [HARDENING.md](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md).
 
 </details>
 
