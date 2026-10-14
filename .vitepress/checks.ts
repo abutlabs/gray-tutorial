@@ -98,6 +98,7 @@ export function checkBlocks(md: MarkdownIt): void {
     const token = state.push("html_block", "", 0);
     token.content = `<CheckYourself data="${encodeURIComponent(JSON.stringify(rendered))}" />\n`;
     token.map = [startLine, end + 1];
+    token.meta = { check: true }; // Albert sits in it (albert.ts)
     state.line = end + 1;
     return true;
   }, { alt: ["paragraph", "reference", "blockquote", "list"] });

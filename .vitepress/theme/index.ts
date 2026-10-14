@@ -6,6 +6,7 @@ import { listenForZoom, makePicturesFocusable } from "./zoom.ts";
 import { listenForResize, placeSideArrows } from "./side-arrows.ts";
 import { reloadOnStaleBuild } from "./stale.ts";
 import { listenForSnippetTaps } from "./concepts.ts";
+import { listenForEyeTaps } from "./eye.ts";
 import ConceptsToggle from "./ConceptsToggle.vue";
 import BitPlaces from "./BitPlaces.vue";
 import CompactNatural from "./CompactNatural.vue";
@@ -77,6 +78,7 @@ export default {
     if (typeof window === "undefined") return;
     reloadOnStaleBuild();
     listenForSnippetTaps();
+    listenForEyeTaps();
     listenForKeys();
     listenForZoom();
     listenForResize();

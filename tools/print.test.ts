@@ -37,7 +37,8 @@ test("on the one page, ids get the page's prefix and links to its pages stay on 
   ].join(""));
 });
 
-test("the whole-file folds stay on the website", () => {
-  const fold = '<details class="whole-file" v-pre><summary>The whole file</summary><pre>…</pre></details>\n';
-  assert.equal(forOnePage(`<p>a</p>${fold}<p>b</p>`, "", new Set([""]), "/"), "<p>a</p><p>b</p>");
+test("the snippets' eyes stay on the website", () => {
+  const eye = '<button type="button" class="eye" aria-pressed="false" title="t" aria-label="t" data-whole="/whole/x/1.html"><svg viewBox="0 0 24 24"><path d="M2 12"/></svg></button>';
+  const block = (inside: string) => `<div class="language-ts vp-adaptive-theme has-eye">${inside}<button title="Copy Code" class="copy"></button><pre><code>x</code></pre></div>`;
+  assert.equal(forOnePage(block(eye), "", new Set([""]), "/"), block(""));
 });

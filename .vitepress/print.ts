@@ -25,14 +25,14 @@ export function docText(html: string): string {
 /**
  * A page's text, ready for the one page: its ids prefixed with the page's, and every link to
  * a page on the one page (another page, or a heading on this one) turned into a link to its
- * place on the one page. Other links stay as they are. The whole-file folds stay on the
- * website: each holds a whole file, and on one page they'd make it ten times the size.
+ * place on the one page. Other links stay as they are. The snippets' eyes stay on the
+ * website: the whole files they show would make the one page ten times the size.
  */
 export function forOnePage(text: string, address: string, addresses: Set<string>, base: string): string {
   const id = sectionId(address);
   const pageUrl = new URL(base + address, "https://site.invalid");
-  const withoutFolds = text.replace(/<details class="whole-file"[\s\S]*?<\/details>\n?/g, "");
-  const withIds = withoutFolds.replace(/ id="([^"]+)"/g, ` id="${id}--$1"`);
+  const withoutEyes = text.replace(/<button type="button" class="eye"[\s\S]*?<\/button>/g, "");
+  const withIds = withoutEyes.replace(/ id="([^"]+)"/g, ` id="${id}--$1"`);
   return withIds.replace(/ href="([^"]*)"/g, (whole, href: string) => {
     if (href.startsWith("#")) return ` href="#${id}--${href.slice(1)}"`;
     if (/^[a-z]+:/i.test(href)) return whole; // another site
@@ -93,7 +93,7 @@ export function writePrintPage(outDir: string, base: string, pages: PrintPage[])
   .one-page section.page { margin-top: 48px; }
   @media print {
     .one-page { max-width: none; padding: 0; }
-    .one-page .note, .header-anchor, .snippet-anchor, details.whole-file, button.copy, span.lang { display: none; }
+    .one-page .note, .header-anchor, .snippet-anchor, button.copy, span.lang { display: none; }
     .one-page section.part { break-before: page; border: 0; }
     .one-page div[class*="language-"] pre { white-space: pre-wrap; word-break: break-word; }
   }
@@ -103,7 +103,7 @@ export function writePrintPage(outDir: string, base: string, pages: PrintPage[])
 <div class="one-page vp-doc">
 <h1>The Gray Tutor</h1>
 <p class="note">The whole tutorial on one page: print it (most browsers can print to a PDF), or
-save it to read offline. The website, with search and the whole-file folds, is
+save it to read offline. The website, with search and every snippet's whole file, is
 <a href="${base}">here</a>.</p>
 <ul class="contents">
 ${contents.join("\n")}

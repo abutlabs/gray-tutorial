@@ -171,8 +171,9 @@ export function chapterBody(text: string, address: string, book: Book, n: number
   // the code, as Concepts only folds it: the byte tables and outputs (language-text) stay
   $('div[class*="language-"]').not(".language-text").remove();
   $("p.snippet-label").not(".output").remove();
-  $("details.whole-file, details.lasair").remove();
-  $("a.header-anchor, button.copy, span.lang").remove();
+  $("details.lasair").remove();
+  // Albert sits on code, and the book leaves the code out: he's met in lesson 0.1 instead
+  $("a.header-anchor, button.copy, button.eye, span.lang, a.albert").remove();
   // a code block's colours are the site's theme, as CSS variables no e-reader reads
   $("pre, pre *").removeAttr("style").removeAttr("tabindex");
   // other folds: an e-reader may not open them, so they're shown open

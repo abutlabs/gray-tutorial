@@ -1,5 +1,5 @@
-// The whole file after each "Add to" and "Replace in" snippet, for the website's fold under
-// the snippet ("where does this go?"). It follows the lessons' file steps with tangle, as
+// The whole file after each "Add to" and "Replace in" snippet, behind the eye on the
+// snippet's code block on the website ("where does this go?", .vitepress/whole.ts). It follows the lessons' file steps with tangle, as
 // verify does, and marks the lines the step changed.
 
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";

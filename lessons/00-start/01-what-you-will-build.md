@@ -96,7 +96,27 @@ changes from run to run; times, durations and run ids will differ too, and so ma
 number in an error, by one or two, if your imports sit differently. Paths are inside
 `client/`. A code block with no label above it is for reading, unless the words around it
 say to type it and where, as the setup commands in [lesson 0.2](./02-set-up-the-project.md) do. On the
-website, a label is a link back to this list.
+website, a label is a link back to this list, and an **Add to** or **Replace in** block has
+an eye in its corner: tap it to see the whole file after that step, the lines it changed
+marked, and tap again to come back.
+
+### Meet Albert {#albert}
+
+The professor in the logo is Albert. He perches on the corner of a few code blocks, the way
+Ferris the crab does in the Rust Book, and he can't keep a straight face.
+
+![Albert sticking his tongue out](./images/01-albert-tongue.svg)
+
+**Tongue out:** the block runs the scoreboard. Every time it climbs, this is what he does.
+
+![Albert, eyebrows up, mouth in a little O](./images/01-albert-oh.svg) ![Albert frowning under a question mark](./images/01-albert-puzzled.svg) ![Albert winking](./images/01-albert-wink.svg) ![Albert with one eyebrow raised](./images/01-albert-eyebrow.svg) ![Albert looking up, thinking](./images/01-albert-hmm.svg)
+
+**Any other face:** something is about to go red on purpose (a **Run, expect it to fail**
+block, or a *Break it on purpose* section), or there's a question for you. Which face he
+pulls is up to him.
+
+He's only there for fun: whatever he marks, the words around it say too. On the website, tap
+him to come back here.
 
 Every lesson is checked before you see it: a script follows it from an empty folder,
 applies every snippet and runs every **Run** block. If anything breaks, the lesson

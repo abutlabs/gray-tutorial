@@ -325,6 +325,26 @@ on both sides. Paste real output from `.verify-output/<lesson>/line-<n>.txt`, wh
 writes for every run. A Run with an Output block needs no `# prints:` lines, so its block
 is pure commands.
 
+## Albert
+
+Albert, the professor in the logo, perches on code blocks as Ferris does in the Rust Book.
+Nobody places him by hand: the website does (`.vitepress/albert.ts`), from what a lesson
+already has.
+
+- **Tongue out** on a **Run** block that runs `bin/scoreboard.ts`.
+- **A mix of his other faces** on every **Run, expect it to fail** block, on the last code
+  block of a section whose heading starts *Break it*, and in the corner of every check.
+  The face depends on the page and the place, so it is the same every build, and never
+  the same twice in a row on a page.
+
+So writing a lesson the usual way places him. He is for fun: the words never lean on him,
+since VS Code's preview and the e-book don't show him. An **Add to** or **Replace in** block
+gets an eye beside its copy button the same way, which swaps in the whole file after the
+step. A new face is drawn in `.vitepress/theme/albert.ts` from the logo's own parts, then
+`npm run diagrams`, and lesson 0.1's *Meet Albert* shows it (`tools/albert.test.ts`
+checks all of this). *Why:* a reader who sees the tongue knows the board climbed before
+reading a word, and a tutorial with a few jokes in it is easier to keep going with.
+
 ## Code style the tools rely on
 
 - One import per line, at the top. A snippet's leading imports are merged into the

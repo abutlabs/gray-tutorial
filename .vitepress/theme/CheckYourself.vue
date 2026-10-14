@@ -29,6 +29,8 @@ const again = () => { tapped.value = questions.map(() => []); };
 
 <template>
   <div class="widget check-yourself">
+    <!-- Albert, in the box's corner (../albert.ts) -->
+    <slot />
     <div class="readout" aria-live="polite">
       <div class="tile"><span class="tile-label">answered</span><span class="tile-value">{{ answered }} / {{ questions.length }}</span></div>
       <div class="tile"><span class="tile-label">right first time</span><span class="tile-value">{{ rightFirst }} / {{ questions.length }}</span></div>
