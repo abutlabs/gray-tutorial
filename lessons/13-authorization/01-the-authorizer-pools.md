@@ -10,7 +10,7 @@ lesson keeps the pools moving, and it's all of [Part 13](./index.md).
 ## New words
 
 - **Authorizer queue.** ϕ[c]. For each core, 80 authorizer hashes waiting their turn; one
-  joins the core's pool every slot. *Example:* at slot 85, the queue's entry 5 (85 mod
+  joins the core's pool every block. *Example:* at slot 85, the queue's entry 5 (85 mod
   80) joins.
 
 It's in the [glossary](../glossary.md), with the authorizer ([lesson 3.1](../03-work-and-reports/01-a-work-package.md)) and its
@@ -537,6 +537,54 @@ describing an older rule, "remove first pool entry, shift pool left". The code m
 and that comment didn't. Comments go stale; tests don't.
 
 </details>
+
+## Check your understanding
+
+::: check
+**A core's pool is `A B A C`. A guarantee in this block used A on that core, the slot is 85, and the queue's entry 5 is D. What is the pool after?**
+
+- [ ] `A B C D`
+  > No: that takes out the second A, the newer one. The rule takes the *leftmost* copy,
+  > the one that's been there longest.
+- [x] `B A C D`
+  > Yes: the oldest A leaves and the rest close up. Then D, entry 85 mod 80 = 5, joins on
+  > the right. Four is under O = 8, so nothing drops off.
+- [ ] `B C D`
+  > No: one guarantee takes out one copy. The second A stays.
+
+**A pool holds 8 already, `A B C D E F G H`, and no guarantee used the core. The queue's entry for this slot is X. What happens?**
+
+- [ ] X is turned away: the pool is full
+  > No: the queue's entry joins every block. A full pool is dealt with afterwards, by
+  > step 3.
+- [ ] H, the newest, makes room for X
+  > No: step 3 keeps the *newest* O. H stays; the oldest goes.
+- [x] X joins on the right, and A drops off the front: `B C D E F G H X`
+  > Yes: with X the pool holds 9, and step 3 keeps the newest 8. A has been there
+  > longest.
+
+**At slot 85, why does the queue's entry 5 join, and not entry 85?**
+
+- [x] The queue is a wheel of 80 entries: 85 mod 80 = 5
+  > Yes: the slot picks the entry, ϕ′[c][τ′ mod Q]. On full, at slot 645, it's entry 5
+  > again: the wheel has gone round eight times.
+- [ ] Entries 0 to 4 have been used up and removed, so entry 5 is next
+  > No: joining the pool removes nothing from the queue. It stays 80 hashes, and the same
+  > entry is read again 80 slots later.
+- [ ] The wheel moves one entry each block, and this is the fifth block
+  > No: it's read by the slot number itself. A slot with no block simply skips its entry.
+
+**With the stub `nextPools`, which changes nothing, the 99 real blocks of the `preimages` trace still passed. Why?**
+
+- [ ] Those blocks had no guarantees, so no pool changed
+  > No: their guarantees used 85 authorizers between them. Something else hid the stub.
+- [x] Every pool and every queue in that trace holds the same authorizer, 8 and 80 times over
+  > Yes: take an A out, put an A in, and the pool reads exactly as before. Only the hand
+  > tests and the vectors can catch a stub.
+- [ ] The test compares the pools after the block with themselves
+  > No: it works from the pools *before* the block and compares with the pools after.
+  > Only the queues come from after the block, because the rule uses ϕ′.
+:::
 
 ## What you have
 

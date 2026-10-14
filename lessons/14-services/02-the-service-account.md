@@ -298,6 +298,51 @@ holds 18,446,744,073,709,551,615.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Service 0 keeps two preimages and nothing in storage, and its footprint says 4 items. Why 4?**
+
+- [ ] One for the account, one for the code, and one for each preimage
+  > No: the account record isn't counted, and the code is one of the two preimages
+  > already.
+- [x] Each request counts 2 items, and there are two requests
+  > Yes: items is 2 per request plus 1 per storage entry, 2 × 2 + 0 = 4. The data and its
+  > request each take an entry in the state.
+- [ ] Two preimages and two storage entries
+  > No: its storage is empty. A storage entry counts 1, and there are none.
+
+**A service keeps 4 items in 159,534 octets, with no free allowance. What is its minimum balance?**
+
+- [ ] 159,534
+  > No: that's only the 1 per octet. The base deposit, 100, and 10 per item come on top.
+- [ ] 100
+  > No: that's only the base deposit. Every item and every octet adds to it.
+- [x] 159,674
+  > Yes: 100 + 10 × 4 + 1 × 159,534 = 159,674.
+
+**The bootstrap service must keep 0 of its balance. Why 0?**
+
+- [ ] Its balance, 2^64 − 1, is so big that the deposit doesn't apply
+  > No: the minimum doesn't look at the balance at all. It's worked out from what the
+  > service stores, and the balance is only checked against it.
+- [x] Its free allowance, 2^64 − 1, is more than the deposit, and the minimum never goes below 0
+  > Yes: 159,674 − (2^64 − 1) is negative, and max(0, …) makes it 0.
+- [ ] Bootstrap services are exempt from the deposit rule
+  > No: the rule has no exemptions. The same max(0, 100 + 10·i + o − f) applies; this
+  > service's f is just enormous.
+
+**Where is service 0's code, all 159,322 bytes of it?**
+
+- [ ] Inside its account record, under C(255, s)
+  > No: the record is 89 bytes. It holds only the code's 32-byte hash, c.
+- [ ] In a code store of its own, outside the state
+  > No: there is no other store. The code is in the state, beside the account.
+- [x] In the state, as one of the service's preimages: the value whose hash is c
+  > Yes: the account names its code by hash, and `serviceCode` finds the value that
+  > hashes to it.
+:::
+
 ## What you have
 
 [Part 14](./index.md), done: services get the data they asked for, and your client can read any

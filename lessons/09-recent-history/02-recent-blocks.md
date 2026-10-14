@@ -482,6 +482,50 @@ the road yours doesn't take yet (the note above).
 
 </details>
 
+## Check your understanding
+
+::: check
+**In `bin/history.ts`'s output, only slot 49's state root is zeros. Why?**
+
+- [ ] Block 49 changed nothing, so its state is empty
+  > No: every new entry starts with zeros, whatever its block did. Slot 48's root was
+  > zeros too, one block earlier.
+- [x] A block's state root comes after the block, so it's written in by the next one
+  > Yes: block 50 brings it as `parent_state_root`, H_R. Until then, the zeros are
+  > "inaccurate but safe".
+- [ ] Only the oldest blocks keep a state root, to save space
+  > No: slots 42 to 48 all have theirs. Only the newest is still waiting.
+
+**β_H holds slots 42 to 49. Block 50 arrives. What does β_H hold after it?**
+
+- [x] Slots 43 to 50, with 49's state root filled in and 50's zeros
+  > Yes: all three steps. Fill in the blank, add the new entry, keep the last H = 8.
+- [ ] Slots 42 to 50, nine blocks
+  > No: H = 8. The ninth entry pushes slot 42 out.
+- [ ] Slots 42 to 49, unchanged until the epoch ends
+  > No: β changes every block. Each block adds itself and forgets the oldest.
+
+**Each entry keeps the work-packages its block reported. What does the chain use them for?**
+
+- [ ] To run the packages' work again later
+  > No: an entry keeps only each package's hash and exports root, not its work.
+- [x] To turn away a report of a package it has already seen
+  > Yes: with eight blocks of reported packages to hand, a package reported again is
+  > easy to spot.
+- [ ] To build the belt
+  > No: the belt grows from each block's accumulation root, not from its reported
+  > packages.
+
+**What is an entry's `beefy_root`?**
+
+- [ ] The block's header hash, under another name
+  > No: `header_hash` is its own field, a Blake2b hash of the header.
+- [ ] The accumulation root that block appended
+  > No: that's only the newest item. `beefy_root` covers every item the belt holds.
+- [x] The belt's super-peak, just after that block
+  > Yes: [lesson 9.1](./01-the-mountain-belt.md)'s M_R of the belt, once the block's accumulation root is on it.
+:::
+
 ## What you have
 
 The chain's short-term memory: eight blocks, kept up to date, with the blank from last

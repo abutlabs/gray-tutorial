@@ -325,6 +325,54 @@ above); your `deblob` shows the shape.
 
 </details>
 
+## Check your understanding
+
+::: check
+**In the hand-made blob, the last byte is `05`. What does it say?**
+
+- [ ] There are 5 instructions
+  > No: there are only 3 bytes of code. `05` is the bitmask, one bit per byte of code.
+- [x] Bytes 0 and 2 of the code start an instruction
+  > Yes: `05` is 0000 0101. Read from the lowest bit: byte 0 yes, byte 1 no, byte 2 yes.
+- [ ] The jump table's entry points at byte 5
+  > No: the jump table is the `02` before the code: one entry, byte 2. `05` comes after
+  > the code.
+
+**Why does a program blob need a bitmask at all?**
+
+- [ ] To mark which instructions a service is allowed to run
+  > No: the bitmask says nothing about permission. It only says where each instruction
+  > starts.
+- [ ] To make the code smaller
+  > No: it makes the blob bigger, by a bit per byte of code: 16,052 bytes of it in the
+  > bootstrap service.
+- [x] Instructions take 1 to 16 bytes, so an argument byte could pass for an opcode
+  > Yes: an argument byte can hold any value, opcode numbers included. Only the bitmask
+  > says which bytes start an instruction.
+
+**The bootstrap service has 128,413 bytes of code, 39,849 instructions, and a 16,052-byte bitmask. Where does 16,052 come from?**
+
+- [x] One bit per byte of code: 128,413 ÷ 8, rounded up
+  > Yes: 128,413 ÷ 8 is 16,051.6, and the last, part-filled byte makes 16,052.
+- [ ] One bit per instruction
+  > No: that would be 39,849 ÷ 8, about 4,982 bytes. Every byte of code gets a bit,
+  > whether it starts an instruction or not.
+- [ ] The blob writes its length in front of it, like the code's
+  > No: only the jump table's count and the code's length are written. The bitmask's
+  > length follows from the code's.
+
+**The code preimage starts with 80 bytes of metadata, `jam-bootstrap-service` among them. What does the PVM do with them?**
+
+- [ ] Checks the name before it runs the code
+  > No: nothing in the PVM reads the metadata.
+- [x] Nothing: they're for people, and unpacking steps over them
+  > Yes: E(↕m) puts their length in front, so `unpackCode` reads the length, takes that
+  > many bytes, and goes on to the standard program.
+- [ ] Loads them into read-only memory, with the data
+  > No: the read-only data is o, the 9,904 bytes the standard program sizes. The metadata
+  > sits outside the standard program altogether.
+:::
+
 ## What you have
 
 A real service's code, unpacked down to its instructions: metadata, memory layout, jump

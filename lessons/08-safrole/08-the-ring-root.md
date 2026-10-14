@@ -625,6 +625,53 @@ fuzzer.
 
 </details>
 
+## Check your understanding
+
+::: check
+**γ′_Z is the ring root of which validators?**
+
+- [ ] κ′, the validators active this epoch
+  > No: tickets entered this epoch win slots in the next one, so they're checked against
+  > the next epoch's validators.
+- [x] γ′_P, the validators who'll be active next epoch
+  > Yes: a ticket proves "one of next epoch's validators made me", so the ring is theirs.
+- [ ] Every validator in all four sets
+  > No: one ring, one set: γ′_P, the newly pending validators.
+
+**Why does a ticket carry a ring proof, and not an ordinary signature?**
+
+- [x] It proves one of the ring's validators made it, without saying which
+  > Yes: so nobody knows who holds a winning ticket until that validator makes its block,
+  > and nobody can plan an attack on it.
+- [ ] A ring proof is shorter
+  > No: it's 784 bytes; an Ed25519 signature is 64. Keeping the author secret is worth the
+  > size.
+- [ ] An ordinary signature can't be checked against keys in the state
+  > No: assurances are, against κ's Ed25519 keys ([lesson 6.3](../06-state-and-merklization/03-reading-the-state.md)). But an ordinary
+  > signature says who signed, and a ticket mustn't.
+
+**On tiny, one validator's key in γ′_P is an offender's, zeroed. What does the ring hold in its place?**
+
+- [ ] Nothing: the ring shrinks to 5 keys
+  > No: the ring has a fixed size, the chain's validator count, 6 on tiny.
+- [ ] The 32 zero bytes, as they are
+  > No: a ring is made of points on the curve. A key that isn't one is swapped out.
+- [x] The padding point
+  > Yes: a key that isn't a point on the curve becomes padding, and the ring stays at 6.
+
+**A ticket's proof is made for X_T ⌢ η′₂ ⌢ its attempt. Why η′₂?**
+
+- [ ] It shouldn't matter: any entropy would do, even η₀
+  > No: η₀ changes with every block. A proof made for one η₀ would stop checking out a
+  > block later, and block authors stir it.
+- [x] It's entropy from two epochs back, fixed before anyone could make a ticket for it
+  > Yes: nobody could have shaped it to suit their tickets, and it stays the same for the
+  > whole epoch the tickets are entered in.
+- [ ] No entropy is needed: the attempt alone would do
+  > No: a VRF's output depends only on its key and input. Without entropy, each validator's
+  > ids would be the same every epoch, and so would the lottery's result.
+:::
+
 ## What you have
 
 Safrole with real cryptography: ring roots for each new set of validators, and ticket

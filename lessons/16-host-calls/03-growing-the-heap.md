@@ -29,6 +29,9 @@ Then:
   writable (all zeros), and φ₇ stays as asked. Without that much gas: out of gas, and
   φ₇ is h.
 
+So `grow_heap` is the exception to [lesson 16.1](./01-calling-the-host.md)'s gas taken before anything else: its price
+depends on how many pages it's asked for, so it works out the pages first, then the price.
+
 To find a and b, `grow_heap` needs the program's o and s, so accumulation's F hands it the
 service's code.
 
@@ -317,6 +320,49 @@ pages. Same answer, more detective work. Your `accumulateHost` simply hands
 `growHeap` the code, as the Gray Paper's F does.
 
 </details>
+
+## Check your understanding
+
+::: check
+**Before this lesson, service 1729 spent 1,450 gas more than the vector. Where did 1,450 come from?**
+
+- [x] Two `grow_heap` calls answered WHAT at 1,000 each, where the real thing costs 275: 2 × (1,000 − 275)
+  > Yes: both calls ask for page 51, where the heap already ends, so each is the cheap
+  > kind: 275.
+- [ ] `grow_heap`'s 121 gas a page, for 12 pages
+  > No: 12 × 121 is 1,452, close but wrong. Neither call adds a page, so neither pays 121.
+- [ ] The `log` call, charged as an unknown host call
+  > No: `log` still costs 1,000, and the vector charges it the same.
+
+**In the test program the heap ends at page 50. It asks `grow_heap` for φ₇ = 53. What happens?**
+
+- [ ] It pays 275 + 53 × 121
+  > No: it pays only for new pages: 50, 51 and 52.
+- [x] Pages 50, 51 and 52 become writable, for 275 + 3 × 121 = 638, and φ₇ stays 53
+  > Yes: φ₇ is the page the heap should end at, one past its last page, and growing
+  > leaves it as asked.
+- [ ] Pages 50 to 53 become writable, for 275 + 4 × 121
+  > No: 53 is one past the last page, so it isn't included.
+
+**A program calls `grow_heap` with φ₇ = 0. Why would it?**
+
+- [ ] To give its heap back
+  > No: `grow_heap` never shrinks the heap. Asking for less than it has changes nothing.
+- [ ] It wouldn't: 0 is an error, and the machine panics
+  > No: asking for no more than the heap has is allowed. It's the cheap case.
+- [x] To ask where its heap ends: for 275, φ₇ becomes h, 50 in the test
+  > Yes: nothing changes, and φ₇ answers with the end of the heap.
+
+**Why does accumulation's host hand `grow_heap` the service's code?**
+
+- [x] To find a and b: a depends on the size of o, the read-only data, and b on the stack size
+  > Yes: the heap starts one zone above o and may reach a zone short of the stack. Both
+  > come from the code's sizes.
+- [ ] To charge for how big the program is
+  > No: the price is only 275, plus 121 for each page added.
+- [ ] To copy w into the new pages
+  > No: w is already in place. New pages are all zeros.
+:::
 
 ## What you have
 

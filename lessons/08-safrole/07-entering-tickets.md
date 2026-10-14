@@ -421,6 +421,50 @@ rule in every vector, so the order of the checks never shows.
 
 </details>
 
+## Check your understanding
+
+::: check
+**On tiny, how many tickets may each validator enter, and with which attempts?**
+
+- [ ] 3, attempts 0 to 2, as the vectors' README says
+  > No: that's the old fixed number. Gray Paper 0.8.0 made it n, and the vectors follow
+  > the paper.
+- [x] 4, attempts 0 to 3: ⌈2 × 12 / 6⌉
+  > Yes: n = ⌈2E / |γ′_P|⌉ = ⌈24 / 6⌉ = 4. Six validators with four tickets each can fill
+  > the 12-ticket lottery twice over.
+- [ ] 2, attempts 0 and 1, the same as on full
+  > No: full's 2 is ⌈1200 / 1023⌉. Tiny has fewer validators, so each gets more.
+
+**A block brings tickets whose ids start `0xd6fe`, `0x5af4` and `0x3434`. Why is it refused?**
+
+- [ ] Their ids are too high to win
+  > No: a high ticket still gets in if the lottery has room. What breaks the rule is the
+  > order.
+- [ ] Attempt 3 is too high on tiny
+  > No: tiny allows attempts 0 to 3, so 3 is fine.
+- [x] The ids don't go strictly up: `0x5af4…` comes after `0xd6fe…`
+  > Yes: `bad_ticket_order`. Strictly up also means no ticket can come twice.
+
+**In `publish-tickets-no-mark-7`, a tiny block at slot 10 brings tickets. What happens?**
+
+- [x] It's refused: `unexpected_ticket`
+  > Yes: phase 10 is Y, and once m′ ≥ Y the lottery is closed. A block may bring no
+  > tickets at all.
+- [ ] They enter the lottery, as long as there are no more than K = 3
+  > No: K is the limit while the lottery is open. From phase 10 on, the limit is 0.
+- [ ] They're kept for the next epoch's lottery
+  > No: nothing carries over. A block that breaks a rule is refused whole.
+
+**Tiny's lottery holds 12 tickets, and a block brings 2, both with lower ids than the lottery's worst two. What does it hold afterwards?**
+
+- [ ] 14 tickets
+  > No: it keeps at most E, 12 on tiny.
+- [ ] The same 12: a full lottery takes no more tickets
+  > No: a full lottery still takes better ones. The worst drop out to make room.
+- [x] 12: the 2 new ones in, the 2 worst old ones out
+  > Yes: it keeps the E lowest ids, old and new together.
+:::
+
 ## What you have
 
 Tickets entering the lottery, checked by every rule but one, and refused blocks named as

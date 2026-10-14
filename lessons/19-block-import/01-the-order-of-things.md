@@ -337,6 +337,54 @@ One order, no waves running side by side: simpler, and fast enough. Note
 
 </details>
 
+## Check your understanding
+
+::: check
+**Why can't a client just run the Gray Paper's list from top to bottom?**
+
+- [ ] The list leaves out some of the steps
+  > No: it has every new piece of state, sixteen steps in all. The trouble is their
+  > order.
+- [x] γ′ comes before η′, and γ′ is made from η′
+  > Yes: the list is in the Gray Paper's order, not an order you can run. Top to
+  > bottom, Safrole would need the new entropy before anything had made it.
+- [ ] Every step needs every other step, so nothing can go first
+  > No: then no order would exist at all. Seven steps need only the block and the
+  > state before it, and they go first.
+
+**Why must ρ† be made before ρ‡?**
+
+- [ ] It needn't: the two could be made in either order
+  > No: ρ‡ ≺ (E_A, ρ†). ρ‡ is made from ρ†, so ρ† has to exist first.
+- [ ] ρ† is the cores after the whole block, and ρ‡ a draft of it
+  > No: that's ρ′. Both daggers are halfway values: ρ† after the judgments, ρ‡ after
+  > the assurances too.
+- [x] The assurances work on the cores as the judgments leave them
+  > Yes: ρ† is the cores with the reports judged bad taken off. Only then do the
+  > assurances say which reports became available, and ρ‡ is what's left.
+
+**What puts a step in the first wave?**
+
+- [x] Everything it's made from is in the block or the state before it
+  > Yes: η′ ← H, τ, η, all there from the start. A step's wave is one more than its
+  > latest input's, and the block and the old state are wave 0.
+- [ ] Being near the top of the Gray Paper's list
+  > No: γ′ is third in the list and waits until wave 2. ψ′ is seventh and in wave 1.
+- [ ] Being quick to compute
+  > No: speed doesn't come into it. Only the ingredients do.
+
+**β_H′, δ′, α′ and π′ all land in wave 4. What are they waiting for?**
+
+- [ ] Safrole's γ′, made in wave 2
+  > No: none of them is made from γ′. π′ needs κ′, but wave 1 makes that.
+- [x] Accumulation, which waits for 𝐑*, which waits for ρ†
+  > Yes: ρ† in wave 1, 𝐑* in wave 2, accumulation in wave 3. Then β_H′ needs its θ′,
+  > δ′ its δ‡, α′ its ϕ′ and π′ its 𝐒.
+- [ ] Nothing: the last wave is just whatever is left over
+  > No: a step goes in the first wave where all its inputs are ready. These four are
+  > made from what accumulation makes, so wave 4 is their first chance.
+:::
+
 ## What you have
 
 The plan of a block import: every step the Gray Paper lists, what it's made from, the

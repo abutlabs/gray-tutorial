@@ -390,6 +390,51 @@ handed out.
 
 </details>
 
+## Check your understanding
+
+::: check
+**In the test, service 0 creates a service with 20 bytes of code, and the new one starts with 221. Where does 221 come from?**
+
+- [ ] Every new service starts with the same balance
+  > No: it grows with the code. With 900 bytes of code, the new one would need 1,101.
+- [x] It's the new service's own minimum balance, and service 0 pays it
+  > Yes: 2 items and 81 + 20 = 101 bytes make 100 + 2 × 10 + 101 = 221. Service 0 is
+  > left with 779.
+- [ ] The chain creates it, as a welcome gift
+  > No: the chain makes no money here. Service 0's balance goes down by exactly 221.
+
+**Why is a run's first free id worked out from η′₀?**
+
+- [ ] So that ids go up in order, one after another
+  > No: the first id is hashed, so it lands anywhere in the public range. Only after
+  > it do the ids step 42 at a time.
+- [ ] To keep new ids small
+  > No: a free id is always public, 2^16 or more. The small ids are the registrar's.
+- [x] So that nobody can aim for a particular id
+  > Yes: nobody knows η′₀ until the block, so nobody can work the id out in advance.
+
+**One run ejects service 2, then, as the registrar, creates a service at id 2. What does the round end with?**
+
+- [ ] The new service 2, because it was made last
+  > No: the merge doesn't look at what an id holds, only at whether it's there.
+- [x] The old service 2
+  > Yes: id 2 was there before the round and is there after, so the merge sees nothing
+  > created and nothing removed. Three of the vectors end exactly so.
+- [ ] No service 2, because the eject wins
+  > No: an id is removed only if it's missing when the run ends, and 2 isn't missing.
+
+**In `create_service-1`, service 0 creates service 5, then sends it 500. In round 2, service 5 gets the money but uses no gas. Why?**
+
+- [x] Its code isn't there yet: `new` only asked for it
+  > Yes: the new account keeps one request, for its own code, not yet provided. No
+  > code means nothing to run, but the money still arrives.
+- [ ] A service can't accumulate in the block it was created in
+  > No: there's no such rule. Given its code, it could run.
+- [ ] 500 is too little to pay for a run
+  > No: a run is paid for in gas, not balance. The transfer brought 10 gas, and even
+  > that went unused, because there was no code.
+:::
+
 ## What you have
 
 Services that make services: paid for, numbered so nobody can aim, and the registrar's

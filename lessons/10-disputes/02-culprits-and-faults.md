@@ -252,6 +252,50 @@ size between epochs. That's why your `outcome` takes the judges' count.
 
 </details>
 
+## Check your understanding
+
+::: check
+**In `progress_with_verdicts-4`, report `0x7b0a…` is judged bad. Who becomes a culprit?**
+
+- [ ] Every judge who voted invalid on it
+  > No: they voted with the verdict. Nobody is punished for being right.
+- [ ] Every judge who voted valid on it
+  > No: a "valid" vote on a bad report makes a fault, not a culprit. And this verdict
+  > had 0 valid votes.
+- [x] The validators who guaranteed it, caught by their own guarantee signatures
+  > Yes: two culprits, `0xad93…` and `0xcab2…`. Their evidence is the guarantee they
+  > signed.
+
+**In the same block, validator `0x4418…` voted invalid on report `0x11da…`, which is judged good. What is it?**
+
+- [ ] A culprit
+  > No: a culprit guaranteed a bad report. This validator cast a vote on a good one.
+- [x] A fault, with its own signed "invalid" vote as the evidence
+  > Yes: it voted against the verdict. Its key goes into the offenders mark and ψ_O.
+- [ ] Nothing: a judge may vote as it likes
+  > No: a vote against the verdict is a fault, and the block names it.
+
+**Why is a culprit's evidence checked against `jam_guarantee` ⌢ the report's hash?**
+
+- [x] It's the very message a guarantor signs when vouching for a report
+  > Yes: only that validator's key could have signed it, so the guarantee convicts its
+  > own signer.
+- [ ] It's the message of an "invalid" vote
+  > No: that's `jam_invalid` ⌢ the hash, a fault's evidence.
+- [ ] Any signature by the key will do: the prefix is decoration
+  > No: in `progress_with_bad_signatures-2`, the second culprit's signature fails on
+  > that message, and the forgery is caught.
+
+**In `progress_with_verdicts-4`, the offenders are culprits `0xad93…` and `0xcab2…` and fault `0x4418…`. In what order does the offenders mark list them?**
+
+- [ ] `0x4418…`, `0xad93…`, `0xcab2…`, sorted
+  > No: that's how ψ_O keeps them, as a set. The mark keeps the block's order.
+- [x] `0xad93…`, `0xcab2…`, `0x4418…`: the culprits first, then the faults
+  > Yes: H_O is the culprits' keys in the block's order, then the faults'.
+- [ ] `0x4418…` first, since the votes came before the offenses
+  > No: faults come after culprits in the mark, whatever happened first.
+:::
+
 ## What you have
 
 The consequences of a trial: offenders named with evidence that checks out, kept in ψ_O,

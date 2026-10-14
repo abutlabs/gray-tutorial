@@ -400,6 +400,50 @@ note above leaves for the [hardening pass](https://github.com/abutlabs/the-gray-
 
 </details>
 
+## Check your understanding
+
+::: check
+**`ecalli 2` stops the machine. Where is ı?**
+
+- [ ] At the next instruction, so the program carries on by itself
+  > No: the machine stops and hands over to the host, and it carries on only once the
+  > host has answered.
+- [x] On the `ecalli` itself, until the host has answered
+  > Yes: registers and memory are as they were. The host changes what it must, then the
+  > machine carries on from the next instruction.
+- [ ] At jump-table address 2
+  > No: the 2 isn't a place in the program. It says which host call: 2 is `fetch`.
+
+**Why does Y leave an empty zone between the sections of memory?**
+
+- [x] A program that runs off the end of one section hits nothing, not the next section
+  > Yes: an overrun faults or panics, instead of quietly reading or writing other data.
+- [ ] Pages have to be 64 kB apart
+  > No: pages are 4,096 bytes, and inside a section they sit side by side: w and its heap
+  > page at 0x30000 and 0x31000.
+- [ ] It makes memory faster to reach
+  > No: every address is reached the same way. The gaps are for safety, not speed.
+
+**`TINY_PROGRAM`'s o is 3 bytes, at 0x10000. Where does Y put w?**
+
+- [ ] 0x11000, the page after o's
+  > No: sections never touch. An empty zone separates o from w.
+- [ ] 0x20000, the zone after o's
+  > No: 0x20000 starts the empty zone. o's 3 bytes, rounded up, take the zone from
+  > 0x10000 to 0x1ffff, and the next zone is the gap.
+- [x] 0x30000
+  > Yes: 2 · 2^16 + Z(3) = 0x20000 + 0x10000. o's zone, then a gap, then w.
+
+**The bootstrap service starts with r8 = 3. What is the 3?**
+
+- [ ] The service has three inputs
+  > No: it has none. r8 counts bytes of arguments.
+- [x] Three bytes of arguments: slot 1, service 0 and 0 inputs, each a one-byte compact natural
+  > Yes: E(t, s, |i|) is `01 00 00`, and r7 says where it is, 0xfeff0000.
+- [ ] It's service 3
+  > No: it's service 0. r8 is the arguments' length.
+:::
+
 ## What you have
 
 A machine that runs every instruction in the Gray Paper, and a real service started on

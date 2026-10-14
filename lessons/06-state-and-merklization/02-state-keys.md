@@ -392,6 +392,65 @@ has the same recipe a second time, as `state_key_from_index_service` in
 
 </details>
 
+## Check your understanding
+
+::: check
+**In [lesson 6.1](./01-the-state-trie.md), the key `0x10` and 30 zeros sat at depth 4. What is it?**
+
+- [ ] C(10), ρ, reports awaiting availability
+  > No: `0x10` is hex, so it's 16, not 10. C(10)'s key starts `0x0a`.
+- [x] C(16), θ, the last accumulation outputs
+  > Yes: C(i) is the byte i, then 30 zeros, and 16 is `0x10`. Its value is θ's 1 byte,
+  > just as the table says.
+- [ ] Service 16's account
+  > No: an account's key starts with 255, `0xff`. A key that's one byte and then zeros is
+  > a component.
+
+**What is service `0x04030201`'s account key?**
+
+- [ ] `ff 04 03 02 01`, then 26 zeros
+  > No: that's the id most significant byte first, with no gaps. ℰ₄ starts with the lowest
+  > byte, and C(255, s) puts a zero after each one.
+- [ ] `ff 01 02 03 04`, then 26 zeros
+  > No: the bytes are in the right order, but C(255, s) puts a zero after each one.
+- [x] `ff 01 00 02 00 03 00 04 00`, then 22 zeros
+  > Yes: 255, then ℰ₄(s), `01 02 03 04`, with a zero after each byte. 1 + 8 + 22 = 31.
+
+**What is the key `0xff` and 30 zeros?**
+
+- [x] Service 0's account
+  > Yes: C(255, 0) is 255, then ℰ₄(0) spread out, which is all zeros. In
+  > [lesson 6.1](./01-the-state-trie.md) it sat alone at depth 1, holding 89 bytes.
+- [ ] Component 255, the last part of the state
+  > No: there are 16 components, C(1) to C(16). 255 starts every account key.
+- [ ] An empty key, kept for an entry not filled in yet
+  > No: the state has no placeholder entries. Every key holds a value; this one holds
+  > service 0's 89-byte account.
+
+**Service 0 and service `0x04030201` each keep something under the same h. How do their two keys differ?**
+
+- [ ] Not at all: the key comes from the hash of h, and h is the same
+  > No: C(s, h) weaves the service in. Without it, two services' items would land on the
+  > same key.
+- [x] In bytes 0, 2, 4 and 6 only: `00 00 00 00` for one, `01 02 03 04` for the other
+  > Yes: the service's four bytes take turns with the hash's first four. The other 27
+  > bytes come from H(h), the same for both.
+- [ ] In every byte, because the service is hashed in along with h
+  > No: the service isn't hashed. Its bytes go into the key as they are, which is why
+  > `bin/state.ts` can read the service back out of a key.
+
+**Why does C(s, h) hash h instead of using it as it is?**
+
+- [x] So every key is exactly 31 bytes, whatever went in
+  > Yes: a storage key can be any length. Its hash is always 32 bytes, and 27 of them fit
+  > beside the service's four.
+- [ ] To keep the item secret
+  > No: the value sits in the state as it is, and anyone who knows h can work out the key.
+  > The hash is about size.
+- [ ] So that two services can't use the same h
+  > No: they can, and their keys still differ, by the service bytes woven in.
+:::
+
 ## What you have
 
 A map of the state: for any key, which part of JAM it holds, and for any part of JAM,

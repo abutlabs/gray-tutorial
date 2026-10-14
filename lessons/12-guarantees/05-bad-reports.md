@@ -523,6 +523,49 @@ the same block, which is how a gap like this can sit unnoticed.
 
 </details>
 
+## Check your understanding
+
+::: check
+**A report's anchor is one of the recent blocks, but its state root differs from that block's. What happens?**
+
+- [ ] Accepted: the anchor is recent, and that's what matters
+  > No: it must match the block too, as the block really was.
+- [x] Refused, `bad_state_root`
+  > Yes: rule 7. Same state root, belt root and slot as the recent block it names.
+- [ ] Refused, `anchor_not_recent`
+  > No: the anchor is found among the recent blocks. It's its details that are wrong.
+
+**A package was reported two blocks ago. A guarantee reports it again. What happens?**
+
+- [ ] Accepted, if new guarantors sign it
+  > No: who signs doesn't matter. The package isn't new.
+- [ ] Accepted, once the first report has been accumulated
+  > No: a package accumulated recently is in the pipeline, and refused too.
+- [x] Refused, `duplicate_package`
+  > Yes: rule 5. It's in the recent blocks' reported packages, kept for exactly this
+  > ([lesson 9.2](../09-recent-history/02-recent-blocks.md)).
+
+**A report looks up segments from package A, reported in this same block. Is the lookup's segments root checked?**
+
+- [x] Yes: it must match A's exports root, from A's report in this block
+  > Yes: the Gray Paper's lookup map is this block's packages and the recent ones'.
+  > `rootOf` looks here first.
+- [ ] No: a package in the same block can't be checked yet
+  > No: its root is right there, in that report's `package_spec`. That's the gap
+  > lasair's harness leaves.
+- [ ] Refused: a lookup may only name a package from an earlier block
+  > No: this block's packages count, for prerequisites and lookups both.
+
+**A report's two results ask for 6,000,000 and 5,000,000 accumulation gas. What happens?**
+
+- [ ] Accepted: each is under 10,000,000
+  > No: G_A limits the results together, not each one.
+- [x] Refused, `work_report_gas_too_high`: 11,000,000 is over G_A
+  > Yes: rule 4. All of a report's results together get at most 10,000,000.
+- [ ] Accepted, if each meets its service's minimum gas
+  > No: that's a floor, rule 10. G_A is a ceiling, and this report is over it.
+:::
+
 ## What you have
 
 The whole reports step, checked: thirteen checks on the guarantees, fourteen on the reports,

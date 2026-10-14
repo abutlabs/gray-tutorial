@@ -434,6 +434,56 @@ the rest with the newly done packages. Your `unlock` is the same recursion as a 
 
 </details>
 
+## Check your understanding
+
+::: check
+**On tiny, report D arrives at slot 43, waiting for package A. Which of the queue's lists does it wait in?**
+
+- [ ] List 11, the last: new waiters join the end of the queue
+  > No: the queue isn't one line. It's 12 lists, one for each slot of an epoch, and a
+  > waiter goes in the list for the slot it arrived at.
+- [x] List 7
+  > Yes: 43 mod 12 = 7. Tiny's epoch is 12 slots long, and the lists are used like a
+  > ring.
+- [ ] List 43
+  > No: there are only 12 lists, one for each slot of an epoch. Slot 43 wraps round
+  > to list 7.
+
+**At slot 44, A arrives, waiting for nothing. When does D accumulate?**
+
+- [ ] At slot 55, when the ring comes back round to list 7
+  > No: every block reads every list, starting from its own slot. D's list is read at
+  > slot 44 like all the others.
+- [ ] At slot 45: A must be in the history before anything waiting for it can go
+  > No: unlocking happens inside the block. A goes now, its package is done, and that
+  > frees D at once.
+- [x] At slot 44, right after A
+  > Yes: in `enqueue_and_unlock_simple-2` both go at slot 44, in one round. Service
+  > 1729 accumulates 2 digests, and nobody is left waiting.
+
+**A new report at slot 44 depends only on package A, which accumulated three blocks ago. What happens to it?**
+
+- [x] It goes in this block: the history says A is done
+  > Yes: step 1 crosses off every dependency the history ξ already holds. With nothing
+  > left to wait for, the unlocking loop lets it go at once.
+- [ ] It waits in list 8 until A is accumulated again
+  > No: A won't come again, and needn't. ξ remembers what accumulated in the last E
+  > blocks, and A is there.
+- [ ] It's thrown away: A has gone, so the dependency can never be met
+  > No: a dependency that's already met is the best kind. It's crossed off, not held
+  > against the report.
+
+**D waits in list 7 from slot 43, and A never comes. What happens at the block at slot 55?**
+
+- [ ] D keeps waiting until A comes, however long that takes
+  > No: the queue holds one epoch. A report that has waited a whole one is given up.
+- [x] D is read one last time, then given up
+  > Yes: 55 mod 12 = 7 again. The ring is read from list 7 first, but A still isn't
+  > done, so D can't go, and list 7 becomes block 55's new waiters.
+- [ ] D accumulates anyway: an epoch is long enough to wait
+  > No: a report never goes without its dependencies. Waiting doesn't earn it a pass.
+:::
+
 ## What you have
 
 Reports that wait for each other, unlocked in the right order, and a queue and history

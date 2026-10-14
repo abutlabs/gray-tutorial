@@ -16,7 +16,8 @@ when any of these holds:
 3. **The validator set changed size**: |κ| ≠ |κ′|. Every pending report goes. The Gray
    Paper only says such reports "can be viewed as having timed out early". A likely
    reason: each report's data was cut into one piece per validator ([lesson 3.3](../03-work-and-reports/03-a-work-report.md)), and a
-   set of another size no longer matches its pieces.
+   set of another size no longer matches its pieces. [Lesson 12.4](../12-guarantees/04-bad-guarantees.md) meets the rule behind it:
+   a new report's shard count must equal the number of validators.
 
 Otherwise p stays, and waits another block.
 
@@ -334,6 +335,53 @@ takes two smaller steps. Both are fine. One pass is a little faster; two steps a
 easier to test one at a time.
 
 </details>
+
+## Check your understanding
+
+::: check
+**A report was registered at slot 7, and nobody assures it. At which slot does its core let go?**
+
+- [ ] 11
+  > No: 11 < 7 + 5. At slot 11 it may still wait.
+- [x] 12
+  > Yes: 12 ≥ 7 + 5 = 12. U is 5 slots, and at 12 they're up.
+- [ ] 13
+  > No: the rule is "at least registered slot + U", not "more than". 12 already
+  > counts.
+
+**In `assurances_for_stale_report-1`, the report from slot 7 gets all 6 assurances at slot 12, the slot it times out. What happens?**
+
+- [x] It becomes available, and its core lets go
+  > Yes: 𝐑 counts the assurances on the cores before any clearing. The vector reports
+  > it, and its core empties either way.
+- [ ] It's dropped as timed out, and the assurances are wasted
+  > No: the timeout only decides whether the core keeps it. It doesn't stop it becoming
+  > available.
+- [ ] It earns five more slots on its core
+  > No: assurances never reset the clock. A report leaves its core at its timeout at
+  > the latest.
+
+**In `val_set_size_change_clears_pending_reports-1`, κ goes from 6 validators to 3. Core 1's report was registered one slot ago, with no assurances. What happens to it?**
+
+- [ ] It stays: it has only waited one slot
+  > No: |κ| ≠ |κ′| clears every pending report, however new.
+- [ ] It stays, and now needs more than two thirds of 3
+  > No: it doesn't get to wait at all. A resize sweeps the cores.
+- [x] It's dropped: the Gray Paper calls it "timed out early"
+  > Yes: likely because its data was cut into one piece per validator of the old set,
+  > and a set of another size no longer matches its pieces.
+
+**Why does a pending report time out at all?**
+
+- [x] A core holds one report at a time, so one that never became available would block it forever
+  > Yes: after U slots the core lets go, and new work can take it.
+- [ ] To punish guarantors whose reports are slow
+  > No: nobody is punished here. The report is just dropped. Offenders only come from
+  > disputes.
+- [ ] Old reports can't be accumulated
+  > No: what's accumulated is what became available. The timeout is about freeing the
+  > core.
+:::
 
 ## What you have
 

@@ -43,6 +43,10 @@ faults together keep one more:
    invalid. If it's judged good after all, that someone was wrong, and at least one fault
    must name the report. (`not_enough_faults`)
 
+There's no rule the other way round: a bad verdict needs no culprits in the same block.
+The Gray Paper lets offenders be named in that block or in later ones, so
+`progress_with_bad_verdict_without_culprits-1` is accepted.
+
 The Gray Paper writes rule 6 as a double ⇔: r ∈ ψ′_B ⇔ r ∉ ψ′_G ⇔ v. All three are true
 together or false together, so a fault on a wonky report (neither bad nor good) fails it
 too. A culprit is a guarantor, a fault an auditor, which is where the vectors' names
@@ -437,6 +441,54 @@ one more fact: a report is never judged both good and bad. Both ways, a fault on
 report is refused.
 
 </details>
+
+## Check your understanding
+
+::: check
+**A fault names a report this block judged wonky. Is the block accepted?**
+
+- [ ] Yes: wonky means nobody can tell, so any vote is fine
+  > No: and for the same reason no vote can be *against* the verdict. A fault must
+  > contradict one.
+- [x] No, `fault_verdict_wrong`: a wonky report is neither bad nor good, so the ⇔ fails
+  > Yes: r ∈ ψ′_B is false and r ∉ ψ′_G is true, so the three can't all agree, whatever
+  > the vote.
+- [ ] Yes, as long as its signature checks out
+  > No: evidence alone isn't enough. The vote must also contradict the verdict.
+
+**A report is judged good. Why must at least one fault name it?**
+
+- [x] A dispute only starts when someone calls a report invalid, and the good verdict proves them wrong
+  > Yes: rule 8, `not_enough_faults`. Whoever started the trial voted against the
+  > verdict.
+- [ ] Faults are how a report gets into ψ's good set
+  > No: the verdict files the report ([lesson 10.1](./01-votes-and-verdicts.md)). A fault names a validator.
+- [ ] A good verdict punishes the report's guarantors
+  > No: they vouched for a good report and did nothing wrong. Culprits are for bad
+  > reports.
+
+**In `progress_with_bad_verdict_without_culprits-1`, a report is judged bad and no culprit is named. What happens?**
+
+- [ ] Refused: a bad report must have guarantors to punish
+  > No: no rule asks culprits for a bad verdict. Only a good verdict needs something,
+  > a fault.
+- [x] Accepted: the report joins the bad set, and the offenders mark is empty
+  > Yes: the vector accepts it, with `offenders_mark` `[]`. The culprits can come in a
+  > later block.
+- [ ] Refused, `not_enough_faults`
+  > No: that rule is for good verdicts. This one is bad.
+
+**A culprit names a key already in ψ_O. What happens?**
+
+- [x] The block is refused, `offender_already_reported`
+  > Yes: rule 3. Nobody already punished can be accused again.
+- [ ] It's fine: ψ_O is a set, so the key just isn't added twice
+  > No: the rules refuse the accusation before ψ_O is touched. An offender is named
+  > once.
+- [ ] Refused, `bad_signature`: an offender's key can't sign
+  > No: the culprit carries its own key, and its signature checks against that key.
+  > It's ψ_O that sinks it.
+:::
 
 ## What you have
 

@@ -9,8 +9,8 @@ vector, tiny and full.
 ## New words
 
 - **Validator statistics.** A tally of each validator's work: blocks made, tickets and
-  preimages put into blocks (and the preimages' bytes), reports guaranteed, assurances
-  made. *Example:* validator 1: 1 block, 2 tickets, 3 preimages of 51 bytes, 1 guarantee,
+  preimages put into blocks (and the preimages' bytes), guarantees (the blocks it signed a
+  guarantee in, once a block however many it signed), assurances made. *Example:* validator 1: 1 block, 2 tickets, 3 preimages of 51 bytes, 1 guarantee,
   0 assurances.
 - **Author.** The validator that made a block; the header names it by its index.
   *Example:* `author_index: 1`.
@@ -425,6 +425,59 @@ The same page-turn, under the Gray Paper's own word: the tally in progress is th
 at a time, with a small function for each.
 
 </details>
+
+## Check your understanding
+
+::: check
+**The first block of a new epoch carries an assurance from validator 0. Which tally gets it?**
+
+- [ ] The fresh one, since the block is in the new epoch
+  > No: assurances count before the page turns, so they never reach the fresh tally.
+- [x] The one that just closed, now the last epoch's
+  > Yes: assurances count first, then the page turns. They stay with the epoch the block's
+  > parent was in.
+- [ ] Neither: an epoch's first block drops its assurances
+  > No: the test finds validator 0's assurances one higher in the closed tally.
+
+**Same block: its author, validator 1, made it. Where does its block count?**
+
+- [x] In the fresh tally: blocks 1
+  > Yes: the author's block, tickets and preimages are counted after the page turns, so
+  > they open the new epoch's tally.
+- [ ] In the tally that just closed, next to the assurances
+  > No: only the assurances count before the page turns.
+- [ ] In both
+  > No: every piece of work counts once, in one tally.
+
+**A block has two guarantees, one signed by validators 0 and 1, the other by 1 and 2. How many does validator 1 gain?**
+
+- [ ] 2, one for each guarantee it signed
+  > No: the reporters are a set. Each validator is in it once, however many guarantees
+  > it signed.
+- [x] 1
+  > Yes: it's a reporter of this block, and every reporter gets one more guarantee.
+- [ ] 0: only the author's guarantees count
+  > No: every reporter counts, author or not.
+
+**A new epoch begins. What happens to the last epoch's tally from before?**
+
+- [ ] It's added into the new last epoch's tally
+  > No: nothing is added up across epochs. There are only ever two tallies.
+- [x] It's forgotten: the tally in progress takes its place, and a fresh one begins
+  > Yes: π_V becomes π_L, and the old π_L goes.
+- [ ] JAM pays the validators from it, then clears it
+  > No: JAM pays nobody. Whoever pays validators reads the tallies.
+
+**Why do the tallies leave out auditing and voting on finality?**
+
+- [x] They happen off the chain, so the chain can't see them for itself
+  > Yes: blocks, tickets, preimages, guarantees and assurances are all in blocks. Auditing
+  > and finality votes aren't.
+- [ ] They're counted under assurances
+  > No: an assurance says only that a validator holds its piece of a core's data.
+- [ ] JAM pays for them itself
+  > No: JAM pays nobody, for anything.
+:::
 
 ## What you have
 

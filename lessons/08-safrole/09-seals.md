@@ -30,6 +30,9 @@ after this block ([lesson 8.4](./04-the-lotterys-winners.md)), and H_A the autho
    X_E ⌢ 𝒴(H_S) (X_E is "jam_entropy").
 
 η′₃ is the entropy as it was three epochs ago: fixed long before the epoch's tickets.
+It is the very value the tickets were entered with. They were entered last epoch, against
+η′₂ ([lesson 8.7](./07-entering-tickets.md)); at the epoch change the history moved along one place, so that η′₂ is
+η′₃ now.
 
 Notice the order: H_V comes before H_S in the header, so the seal signs the entropy source
 too. Change one bit of H_V and the seal fails first.
@@ -365,6 +368,54 @@ official fuzzer in which "author 5 claims slot 1, which F assigns to validator 0
 identity check in step 2, catching a stranger.
 
 </details>
+
+## Check your understanding
+
+::: check
+**Most `safrole` trace headers are 297 bytes. How many of them does the seal sign, and why?**
+
+- [x] 201: everything but the seal, the last 96 bytes
+  > Yes: ℰ_U(H) is the header without its seal. A signature can't sign itself.
+- [ ] 297: the whole header
+  > No: the seal is part of the header, and it can't sign its own bytes before they exist.
+- [ ] 105: everything but the seal and the entropy source
+  > No: the entropy source comes before the seal, so the seal signs it too.
+  > 297 − 96 − 96 = 105 would leave it out.
+
+**In a ticket-sealed slot, how does the seal prove its author holds the winning ticket?**
+
+- [ ] The seal carries the ticket's ring proof
+  > No: a seal is 96 bytes, and a ring proof 784.
+- [x] The seal's output must equal the ticket's id, and only the same key on the same input gives that output
+  > Yes: the seal is made for the input the ticket was. Only the validator whose key made
+  > the ticket can make a seal whose 𝒴 is its id.
+- [ ] The ticket records which validator entered it
+  > No: tickets are anonymous; that's what the ring proof is for. Nothing says who holds
+  > one until the seal shows it.
+
+**Flip one bit of a block's entropy source. Which check fails?**
+
+- [ ] The entropy source's own check: `bad_entropy_source`
+  > No: that check comes second. The seal signs the header, entropy source included, so
+  > the seal fails first.
+- [x] The seal: `bad_seal`
+  > Yes: H_V sits before H_S in the header, inside ℰ_U(H). Change it, and the seal no
+  > longer matches what was signed.
+- [ ] Neither: the entropy source is only randomness, so any bytes will do
+  > No: it must be the author's signature too, on X_E ⌢ the seal's output, and the seal
+  > covers it.
+
+**In a fallback slot, validator 5 makes a perfectly good seal with its own key, but F gave the slot to validator 0. What happens?**
+
+- [x] Refused, `bad_seal`: the slot's key in γ′_S must be the author's
+  > Yes: that check needs no cryptography at all. The official fuzzer sent lasair just
+  > such a block: "author 5 claims slot 1, which F assigns to validator 0".
+- [ ] Accepted: the signature checks out
+  > No: a good signature only shows who signed. What matters is whether that validator
+  > may seal this slot.
+- [ ] Accepted, but its randomness doesn't count
+  > No: a block is valid or it isn't. This one isn't.
+:::
 
 ## What you have
 

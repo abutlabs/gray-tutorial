@@ -509,6 +509,57 @@ R listens to.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Core 0's assigner is service 1. In one round, the manager gives core 0 to service 5, and service 1 gives it to service 7. Who has it after the round?**
+
+- [ ] Service 7: service 1 holds core 0, so it decides
+  > No: the holder's own choice counts only where the manager left the privilege
+  > alone.
+- [ ] Whichever of the two has the higher id, because its run comes last
+  > No: the order doesn't matter. Every run starts from the same privileges, and the
+  > merge decides afterwards.
+- [x] Service 5
+  > Yes: R(1, 5, 7) = 5. The manager changed it, so the manager's choice wins.
+
+**Same round, core 1: the manager leaves it with service 1, and service 1 gives it to service 7. Who has core 1 after?**
+
+- [x] Service 7
+  > Yes: R(1, 1, 7) = 7. The manager's run still says 1, the holder at the start, so
+  > the holder's own change goes through.
+- [ ] Service 1: the manager's run says 1, and the manager always wins
+  > No: the manager wins only where it changed something. Leaving core 1 with
+  > service 1 is no change.
+- [ ] Service 1: a privilege can't change hands while the manager is running
+  > No: both runs happen side by side from the same start. The merge takes the
+  > holder's change when the manager made none.
+
+**In round 1, service 1 gives core 0 to service 7, and service 7 calls `assign` for core 0 in the same round. What does 7 get?**
+
+- [ ] `OK`: core 0 is its now
+  > No: not in this round. Service 7's run started from the round's privileges, where
+  > service 1 holds core 0.
+- [x] `HUH`: it holds core 0 only from the next round on
+  > Yes: the merge happens after the round, and the next round starts from it. Until
+  > then, no run sees another's change.
+- [ ] `OK`, but only if 7 runs after 1
+  > No: services in a round go in order of id, but none sees another's changes,
+  > whatever the order.
+
+**After a round, where can core 0's new authorizer queue come from?**
+
+- [ ] The manager's run, which wins over everyone's
+  > No: R decides who holds a privilege. The queue itself comes only from the core's
+  > assigner, never from the manager as manager.
+- [ ] The run of core 0's new assigner
+  > No: the new assigner didn't hold core 0 during this round, so its `assign` got
+  > `HUH`.
+- [x] The run of core 0's assigner at the round's start, if it set one
+  > Yes: in `assign_from_non_assigner-3`, service 0 held core 0 and set its 80 hashes,
+  > and the block keeps them.
+:::
+
 ## What you have
 
 Privileges that survive the round they're changed in, settled the Gray Paper's way: the

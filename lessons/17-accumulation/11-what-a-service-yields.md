@@ -786,6 +786,52 @@ service must break on the hash.
 
 </details>
 
+## Check your understanding
+
+::: check
+**All but one of the accumulate vectors so far have 32 zero bytes as their output root. Why?**
+
+- [ ] Keccak of nothing is 32 zero bytes
+  > No: Keccak of no bytes is a real hash, `0xc5d24601…`. The zeros are M_B's rule for
+  > an empty list.
+- [x] Nobody yielded, and M_B of no items is the zero hash
+  > Yes: with no yields θ′ is empty, and M_B of nothing is 32 zero bytes, by
+  > definition.
+- [ ] Those vectors don't check the root
+  > No: every vector has the root as its `output`, and `checkBlock` compares it.
+
+**A run calls `yield` with hash H, then halts with a 32-byte output O. What does it yield?**
+
+- [ ] H, because the `yield` call is the explicit one
+  > No: a halt whose output is 32 bytes wins, whatever `yield` said.
+- [ ] Both: two outputs for one run
+  > No: a run has one yield at most. Even a second `yield` would replace the first.
+- [x] O
+  > Yes: a halt whose output is 32 bytes yields that output.
+
+**Why does M_B hash a single item, when two items are joined as they are?**
+
+- [x] So that the root is always a hash
+  > Yes: N gives a single item back as it is. Without the extra hash, one 36-byte
+  > output would be its own "root", and not a hash at all.
+- [ ] A single item is too short to be safe
+  > No: length has nothing to do with it. The point is the shape: the root must be a
+  > 32-byte hash.
+- [ ] To build roots the way Ethereum does
+  > No: Keccak is Ethereum's hash, but the single-item rule is about the root always
+  > being a hash.
+
+**θ′ is sorted by service, then by hash. When can two outputs have the same service?**
+
+- [ ] When a service calls `yield` twice in one run
+  > No: the second replaces the first. One run, one yield at most.
+- [x] When a service accumulates in two rounds, and yields in each
+  > Yes: each round collects its own pairs, so a service can yield twice in a block.
+  > The tie on the service then breaks on the hash.
+- [ ] Never: a service yields once in a block
+  > No: once in a run. A service that runs in two rounds runs twice.
+:::
+
 ## What you have
 
 Yields, collapsed like everything else a run leaves, gathered per block, sorted, and

@@ -6,8 +6,9 @@ of it in the Gray Paper's order. It starts with the plan: which piece is made fr
 and an order to run them in.
 
 By the end of this part your client imports real blocks: the whole state read and written,
-every step of Υ in order, and all eight official block-import traces, 800 blocks, chained
-from genesis with every state root right and the bad blocks refused.
+every step of Υ in order, and the first 100 blocks of all eight official block-import
+traces, 800 blocks, chained from genesis with every state root right, and the bad blocks
+refused.
 
 **Builds on** [Part 3 · Work and reports](../03-work-and-reports/index.md), [Part 4 ·
 Blocks](../04-blocks/index.md), [Part 5 · Hashing and

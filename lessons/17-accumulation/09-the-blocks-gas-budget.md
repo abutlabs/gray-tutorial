@@ -39,7 +39,8 @@ the budget is sized for the busiest block guarantees allow. Reports unlocked fro
 can push past it, and then the rounds share the work out.
 
 Here's the vector that needs it. Its two reports ask for 19,800,000 + 200,000 and 2,000,000
-gas. The first takes the whole 20M, so the second waits for round 2. And the order matters:
+gas. (That first one is twice G_A, more than a guaranteed report may ask for: the vector
+breaks the limit on purpose, to force a second round.) The first takes the whole 20M, so the second waits for round 2. And the order matters:
 round 1 ejects service 2, round 2 creates a service 2 again. Squeezed into one round, both
 would happen in the same run of service 0, which ends with *a* service 2 in its accounts,
 just as the round began. [Lesson 17.7](./07-ejecting-a-service.md)'s merge looks at which ids are there, not at what they
@@ -477,6 +478,53 @@ records an old bug (lasair#87): the first round once left the free gas out of `f
 and so took reports the Gray Paper defers. Your `spent` starts with it.
 
 </details>
+
+## Check your understanding
+
+::: check
+**On tiny, G_T is 20,000,000 and G_A is 10,000,000. If the always-accumulate services had 5,000,000 gas between them, what would the block's budget be?**
+
+- [ ] 20,000,000: G_T is the block's limit
+  > No: the budget is the bigger of two numbers, and here the other one is bigger:
+  > 10M × 2 + 5M = 25M.
+- [x] 25,000,000
+  > Yes: max(20M, 10M × 2 cores + 5M) = 25M. Every core's G_A, and the free gas on top,
+  > must fit.
+- [ ] 45,000,000
+  > No: the two are compared, not added. The budget is max(20M, 25M).
+
+**Four reports can go, asking for 6M, 9M, 7M and 2M gas, in that order. The budget is 20M, with nothing else to pay for. What does round 1 take?**
+
+- [ ] The 6M, 9M and 2M: they make 17M, so skip the 7M
+  > No: a round never skips ahead. The first report that doesn't fit waits, and so
+  > does everything after it, even the 2M that would fit.
+- [ ] All four: the budget is checked once the block is done
+  > No: it's checked before each round. All four make 24M, over the 20M.
+- [x] The 6M and the 9M
+  > Yes: 6 + 9 = 15M fits; 15 + 7 = 22M doesn't. So the 7M and the 2M wait for the
+  > next round.
+
+**Round 1 had a 20M budget, used 350,000 gas, and sent no transfers. Reports are left over. What is round 2's budget?**
+
+- [ ] 20M again: each round gets the whole budget
+  > No: the budget is for all the rounds together. What round 1 spent is gone.
+- [x] 19,650,000
+  > Yes: g\* = 20M + 0 (the new transfers' gas) − 0.35M (what round 1 used).
+- [ ] 350,000: what round 1 used is what round 2 may use
+  > No: it's the other way round. Round 2 gets what round 1 didn't use.
+
+**`recreate_service_ejected_in_earlier_round-1` ends with a newborn service 2, created at slot 43. Why a new one, not the old?**
+
+- [ ] Service 0 ejects and creates in one run, and the creation comes last
+  > No: in one run the old service 2 would survive: the id is there before and after,
+  > so the merge sees no change ([lesson 17.8](./08-creating-a-service.md)).
+- [x] The eject ran in round 1, and the creation in round 2
+  > Yes: round 1's merge removed service 2. Round 2 started without it, so its new
+  > service 2 joined the accounts.
+- [ ] A new service always replaces an old one with the same id
+  > No: inside one round it's the other way, and the old one stays. Only a round
+  > between the two makes the difference.
+:::
 
 ## What you have
 

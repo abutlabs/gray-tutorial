@@ -498,6 +498,57 @@ against the state keeps it short.
 
 </details>
 
+## Check your understanding
+
+::: check
+**What stops someone providing the wrong data for a request?**
+
+- [ ] Validators compare the data with the original
+  > No: there is no original to compare with. The service only ever had a hash and a
+  > length.
+- [x] The request is found by the data's own hash and length, so other bytes find no request
+  > Yes: the key is `requestKey(s, H(data), length)`. Different bytes hash differently,
+  > land on a key nobody asked under, and aren't providable.
+- [ ] The service checks the data the next time it runs
+  > No: the chain checks it before the service sees it. Y lets in only data whose hash and
+  > length match a waiting request.
+
+**At block 8 the chain wrote a request's history as `0x0108000000`. What does it say?**
+
+- [ ] Service 1 asked for 8 bytes
+  > No: the service and the length are in the request's key. Its value is only the
+  > history, a list of slots.
+- [x] `[8]`: the data was provided at slot 8
+  > Yes: `01` is the list's length, a compact natural, and `08 00 00 00` is slot 8 as a
+  > u32.
+- [ ] Still waiting, since slot 8
+  > No: waiting is `[]`, the single byte `0x00`, which is what the stub left. One slot in
+  > the list means provided.
+
+**A request's history is `[3, 40]`. What happened?**
+
+- [x] The data was provided at slot 3, and forgotten at slot 40
+  > Yes: two slots means provided, then forgotten. A third would say when it became
+  > available again.
+- [ ] It was asked for at slot 3, and provided at slot 40
+  > No: asking leaves the history empty, `[]`. The first slot in the list is when the data
+  > arrived.
+- [ ] The data was provided twice, at 3 and at 40
+  > No: data is welcome only while the history is `[]`. After slot 3 it was `[3]`, so a
+  > second copy wasn't providable. The 40 is when it was forgotten.
+
+**A block brings a preimage for a request whose history is already `[5]`. What does the Gray Paper say?**
+
+- [ ] The data is stored again, and the history becomes this block's slot
+  > No: only a waiting request, `[]`, is providable. `[5]` has its data already.
+- [ ] The preimage is skipped, and the rest of the block goes on
+  > No: that's what your client does, the simple road. The Gray Paper lets a preimage pass
+  > unused only when accumulation in this same block made it unneeded.
+- [x] The block is invalid: every preimage in it must be waited for in the state before it
+  > Yes: Y is checked against the state before the block. Your client skips such a
+  > preimage for now; the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) adds the refusal, `preimage_unneeded`.
+:::
+
 ## What you have
 
 Your client can hand services the data they asked for: checked by its hash, stored under

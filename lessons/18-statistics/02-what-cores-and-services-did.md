@@ -579,6 +579,57 @@ only have integers. Try it: 3 segments, (195 + 63) / 64 = 4.
 
 </details>
 
+## Check your understanding
+
+::: check
+**A validator's tally lasts an epoch. How long does a core's or a service's last?**
+
+- [ ] An epoch too, with a last epoch's copy
+  > No: only the validators get two tallies that last an epoch.
+- [x] One block: the next block starts again from zero
+  > Yes: the Gray Paper tracks these "only on a per-block basis". Nothing carries over.
+- [ ] For ever, adding up block after block
+  > No: each block's cards are only that block's work.
+
+**A report with a 12345-byte bundle and 3 exported segments becomes available. What does its core's data load go up by?**
+
+- [ ] 12345 + 3 × 4104 = 24657
+  > No: that leaves out the proof page. Every 64 segments, or part of 64, add one more.
+- [ ] 12345: segments are kept by whoever imports them
+  > No: the validators keep the segments available too, so they count.
+- [x] 12345 + 4 × 4104 = 28761
+  > Yes: ⌈3 × 65/64⌉ = ⌈3.046875⌉ = 4: the 3 segments and one proof page.
+
+**In `some_assurances-1`, 4 of the 6 validators assure core 1. What is on core 1's card?**
+
+- [x] Popularity 4, and a data load of 0
+  > Yes: popularity counts every assurance naming the core. But availability needs more
+  > than two thirds of 6, at least 5, so nothing became available, and there's no load.
+- [ ] Popularity 0, because its report didn't become available
+  > No: popularity counts assurances, whether or not there are enough of them.
+- [ ] Its report's data load, since 4 validators already hold it
+  > No: the load counts only reports that became available in this block.
+
+**A block brings two reports, one for each core, both for service 42, using 821 and 697 gas. What does service 42's card say?**
+
+- [ ] 821 gas: one card for the first report
+  > No: a service's card adds up its work from every report in the block.
+- [x] 2 digests refined, using 1518 gas
+  > Yes: 821 + 697 = 1518. Each core's card has its own report's gas; the service's has
+  > both.
+- [ ] Two cards, one for each core
+  > No: one card per service. The services that took part form a set, so 42 is in it once.
+
+**Service 7 has a preimage provided in this block, but no reports and no accumulation. Does it get a card?**
+
+- [ ] No: only services that accumulate get one
+  > No: any one of the three is enough: work, provisions or accumulation.
+- [ ] Yes, carried over from the block before, with one more preimage
+  > No: nothing carries over. The card is this block's alone.
+- [x] Yes: 1 preimage provided and its bytes, and zeros for the rest
+  > Yes: a service gets a card if it appears in at least one of the three.
+:::
+
 ## What you have
 
 All three scorecards: each validator's for the epoch ([lesson 18.1](./01-who-did-what.md)), and each core's

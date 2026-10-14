@@ -279,6 +279,56 @@ red.
 
 </details>
 
+## Check your understanding
+
+::: check
+**The state before block 12 of the `safrole` trace says τ is slot 11. Why not 12?**
+
+- [ ] The state lags a slot behind, and catches up later
+  > No: it's exactly right. τ is the slot of the most recent block, and in this state
+  > block 12 hasn't happened yet.
+- [x] τ is the slot of the most recent block, and before block 12 that's block 11
+  > Yes: after a block, the time is that block's slot. So the state before block n holds
+  > block n − 1's slot: here, 11.
+- [ ] Slots count from 0 and blocks from 1, so block 12 is in slot 11
+  > No: block 12 is in slot 12; its header says so. The 11 is the block before it.
+
+**κ's value is 2,017 bytes on tiny. Where does that come from?**
+
+- [x] A length byte, `06`, then six validator keys of 336 bytes each
+  > Yes: 1 + 6 × 336 = 2,017. Each key is Bandersnatch (32), Ed25519 (32), BLS (144) and
+  > metadata (128).
+- [ ] A `01` saying κ is there, then six validator keys
+  > No: κ isn't optional, so there's no there-or-not byte. The first byte is `06`, how many
+  > validators follow.
+- [ ] Six validators' Bandersnatch and Ed25519 keys, as in an epoch mark
+  > No: those are 64 bytes a validator, 6 × 64 = 384 in all. The state keeps all four
+  > parts of each key, 336 bytes.
+
+**The test checks real assurances against keys read from κ. Which key, and where is it in each validator's 336 bytes?**
+
+- [ ] The Bandersnatch key, bytes 0 to 31
+  > No: Bandersnatch is for sealing blocks and the ticket lottery. Assurances are signed
+  > with Ed25519.
+- [ ] The BLS key, bytes 64 to 207
+  > No: BLS is for signatures that can be combined into one. An assurance is a plain
+  > Ed25519 signature.
+- [x] The Ed25519 key, bytes 32 to 63
+  > Yes: it comes second, after the 32-byte Bandersnatch key. Read the wrong 32 bytes,
+  > as swapping two fields of `ValidatorKey` does, and every assurance fails.
+
+**Block 12 of the `safrole` trace starts an epoch. What must its epoch mark's `entropy` be?**
+
+- [ ] η₀ after block 12, stirred with the block's own randomness
+  > No: the mark carries η₀ as it stood *before* its block, the value in the state the
+  > block starts from.
+- [ ] η₃, the oldest of the four
+  > No: the mark carries η₀ and η₁, as `entropy` and `tickets_entropy`.
+- [x] η₀ in the state before block 12, `0xcf7f084e…`
+  > Yes: the epoch mark carries η₀ and η₁ as they stood before its block. `bin/read-state.ts`
+  > printed that η₀, and the trace's epoch mark holds the same hash.
+:::
+
 ## What you have
 
 Your client can read the state: find any component by its key, decode it with the codecs

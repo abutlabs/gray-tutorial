@@ -328,7 +328,9 @@ export function designate(m: Machine, s: number, powers: Powers, cores: number):
 ```
 
 `powers.now.privileges` is the run's own copy, so a `bless` earlier in the same run counts:
-a service that blesses itself as the delegator may then designate.
+a service that blesses itself as the delegator may then designate. It gets `OK`, but its
+keys count only if it was already the delegator when the round started: the merge takes
+ι′ from that service's run alone.
 
 **Replace in** `src/host.ts`
 
@@ -804,6 +806,54 @@ also names the paper's pull request (558) expected to make the vectors' rule the
 one.
 
 </details>
+
+## Check your understanding
+
+::: check
+**In `bless_from_non_manager-1`, service 1, the delegator but not the manager, blesses service 2 as the delegator. The manager leaves the delegator alone. Who is the delegator after?**
+
+- [ ] Service 1: only the manager may bless
+  > No: that's Gray Paper 0.8.0's text, but the vectors follow the later change:
+  > anyone may call `bless`, and the merge decides what counts.
+- [x] Service 2
+  > Yes: R(1, 1, 2) = 2. The manager made no change, so the holder's own choice goes
+  > through.
+- [ ] Service 0, the manager
+  > No: the manager's run left the delegator at 1, and leaving it is no change.
+
+**Suppose service 1's `bless` also lists new always-accumulate services. What does the list look like after the round?**
+
+- [ ] The new list: in the vectors, anyone may bless
+  > No: anyone may call it, but the always-accumulate services come from the
+  > manager's run alone.
+- [x] The old list: only a manager's `bless` changes it
+  > Yes: χ_Z after the round is what the manager's run left. Service 1 isn't the
+  > manager, so its list counts for nothing.
+- [ ] The old and the new lists, merged
+  > No: the lists aren't merged. It's the manager's list, whole.
+
+**On tiny, with 2 cores, service 0, the delegator, designates 3 validators. What does it get?**
+
+- [x] `HUH`
+  > Yes: tiny allows only 6: multiples of 3, from 6 up to 3 × 2 cores. 3 isn't one
+  > of them.
+- [ ] `OK`: 3 is a multiple of 3
+  > No: it's also below 6, the fewest the chain allows.
+- [ ] A panic
+  > No: only keys it can't read make it panic. A count the chain doesn't allow is
+  > `HUH`.
+
+**At the round's start, service 1 is the delegator. In one run, service 0, the manager, blesses itself as the delegator, then designates 6 validators. Service 1 designates nothing. Do service 0's 6 become ι′?**
+
+- [ ] Yes: its `designate` answered `OK`
+  > No: `OK` only says its own run allowed it, because its `bless` came first. The
+  > merge decides what counts.
+- [x] No: ι′ comes only from the run of the delegator at the round's start
+  > Yes: that's service 1, which chose nothing, so ι stays as it was. By R, service 0
+  > is the delegator from the next round on, and may designate then.
+- [ ] No: `designate` answers `HUH`, as service 0 isn't the delegator
+  > No: in its own run it is, since its `bless` came first. It gets `OK`.
+:::
 
 ## What you have
 

@@ -274,6 +274,55 @@ when debugging, it can print the message before saying WHAT.
 
 </details>
 
+## Check your understanding
+
+::: check
+**The program reaches `ecalli 0`. What happens next?**
+
+- [ ] It jumps to a routine inside the program that works out the gas
+  > No: the program can't see its own gas. The host is the client running it, outside the
+  > program, and only the host can answer.
+- [x] The machine stops, the host answers by changing the gas, registers or memory, and the machine carries on after the `ecalli`
+  > Yes: that's Ψ_H. The machine stops still on the `ecalli`, so carrying on means stepping
+  > past it, to the return in the test.
+- [ ] The machine halts for good, with the answer as the program's result
+  > No: halting is one way a host call can end, but `gas` says carry on. In the test, the
+  > return after the `ecalli` still runs.
+
+**The test program starts with 1,000 gas and asks `gas`. Why is φ₇ 852, not 900?**
+
+- [ ] The host reads the gas before paying for the question
+  > No: a host call's price is taken before anything else. φ₇ is the gas after paying 48.
+- [ ] Asking costs 148
+  > No: `gas` costs 48. The other 100 isn't the host call's at all.
+- [x] The block's 100 is paid first, then the question's 48: 1,000 − 100 − 48 = 852
+  > Yes: the `ecalli` and the return are one basic block, paid for as it starts. Then the
+  > host call takes its own 48, and φ₇ reports what's left.
+
+**A program makes host call 99, which nobody knows. What does it get?**
+
+- [ ] A panic: the machine stops
+  > No: an unknown host call isn't a reason to stop. The machine carries on, a little
+  > poorer.
+- [x] φ₇ = WHAT, for 1,000 gas, and the machine carries on
+  > Yes: with 2,000 gas, the block takes 100 and WHAT 1,000, leaving 900, and the program
+  > halts normally after.
+- [ ] φ₇ = NONE
+  > No: NONE, 2^64 − 1, is "no such item", from a host call that exists. "No such host
+  > call" is WHAT, 2^64 − 2.
+
+**With 147 gas, the program asks `gas`. Why does it run out, with φ₇ still 0?**
+
+- [x] The block leaves 47, and asking costs 48, taken first: out of gas, and no answer
+  > Yes: once the charge leaves the gas below zero, nothing else happens. φ₇ is never
+  > written.
+- [ ] The host answers first and is paid after, so the answer is lost
+  > No: the host is paid first, always. There never was an answer.
+- [ ] φ₇ = 0 is the host's way of saying "no gas left"
+  > No: φ₇ was 0 before the call too. It's the gas counter that dips below zero, to say by
+  > how much it ran out.
+:::
+
 ## What you have
 
 A machine that can ask, and a host that answers. One question so far: how much gas is

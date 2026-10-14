@@ -268,6 +268,41 @@ every account into the context, which keeps it to one `Map` lookup.
 
 </details>
 
+## Check your understanding
+
+::: check
+**`write` can only change the service's own storage. Why may `lookup` read another service's preimages?**
+
+- [x] Preimages are public by nature: anyone holding the data could check it against its hash
+  > Yes: there's nothing secret to protect. In `lookup_foreign_preimage`, service 0 reads
+  > another service's preimage and matches the vector.
+- [ ] Reading is cheaper than writing, so it's allowed more freely
+  > No: price has nothing to do with it. What matters is that preimages are no secret.
+- [ ] It can't: a lookup in another service's preimages always gets NONE
+  > No: φ₇ names whose preimages to look in, any service. NONE means that service, or
+  > that preimage, isn't there.
+
+**The test asks for up to 100 bytes, and "hello, JAM" is 10. Why does it cost 600 + 25?**
+
+- [ ] 248 gas per KiB of the 10 bytes found, rounded up
+  > No: that would be ⌈2,480 / 1,024⌉ = 3. The price is set before the preimage is even
+  > found.
+- [x] 248 gas per KiB of the 100 bytes asked for, rounded up: ⌈24,800 / 1,024⌉ = 25
+  > Yes: like `fetch`, `lookup` charges for what's asked for, φ₁₁, first.
+- [ ] A flat 25 for reading the hash from memory
+  > No: the 25 grows with the bytes asked for. The flat part is the 600.
+
+**The hash is readable, but the service keeps no preimage for it. What happens?**
+
+- [ ] A panic
+  > No: `lookup` panics only when the 32-byte hash can't be read from memory.
+- [ ] φ₇ = WHAT
+  > No: WHAT means "no such host call", and accumulation's host knows `lookup`.
+- [x] φ₇ = NONE, and the machine carries on
+  > Yes: no such preimage is an ordinary answer, as the test's "nobody provided this"
+  > shows.
+:::
+
 ## What you have
 
 Services that can read any preimage on the chain, and ten services in nine official

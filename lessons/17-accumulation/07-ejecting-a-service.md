@@ -392,6 +392,54 @@ that the second try finds nobody.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Service 1's code hash is 32 zero bytes. What does that say?**
+
+- [ ] It has been ejected already
+  > No: an ejected service isn't in the state at all. Service 1 is still there,
+  > waiting.
+- [x] It has named service 0 as its ejector
+  > Yes: its code hash is ℰ₃₂(0), service 0's id in 32 bytes, all zeros. Only
+  > service 0 may eject it.
+- [ ] Its code is empty
+  > No: empty code hashes to something else (Blake2b of nothing starts `0x0e5751c0`).
+  > These 32 bytes are an id, not the hash of any code.
+
+**Service 1 forgot its last preimage at slot 10. On tiny, where D is 32, service 0 tries to eject it at slot 42. What happens?**
+
+- [ ] `OK`: 32 slots have passed
+  > No: it needs more than D slots. 10 < 42 − 32 is false: one slot short.
+- [x] `HUH`: it was forgotten too recently
+  > Yes: the forget has to be more than 32 slots back. At slot 43 it is, and the eject
+  > goes.
+- [ ] `WHO`: service 1 isn't ready to go
+  > No: `WHO` means no such service, or one that didn't name this ejector. Service 1
+  > named service 0, so the answer is `HUH`.
+
+**In `work_for_ejected_service-2`, service 0 ejects service 2. Each had 227,714. How much does service 0 have afterwards?**
+
+- [x] 455,428
+  > Yes: the ejected service's balance goes to its ejector: 227,714 + 227,714.
+- [ ] 227,714: service 2's balance goes with it
+  > No: nothing is thrown away. The balance is passed on to the ejector.
+- [ ] 227,714: service 2's balance goes to the service that created it
+  > No: the ejector gets it, the service 2 named in its code hash, whoever created it.
+
+**Service 0 ejects service 2 in round 1. Service 5 runs in the same round, and its copy of the accounts still has service 2. After the round?**
+
+- [ ] Service 2 is still there: service 5's copy has it
+  > No: service 5 did nothing to service 2. Its copy just started from the round's
+  > accounts, like every run's.
+- [ ] It depends on which of the two runs went last
+  > No: the order doesn't matter. The round puts every run's accounts together
+  > afterwards.
+- [x] Service 2 is gone
+  > Yes: any account some run removed is removed, whatever the other copies say:
+  > (d ∪ n) \ m, with 2 in m.
+:::
+
 ## What you have
 
 Services that can leave: ejected by the service they named, their balance passed on, and

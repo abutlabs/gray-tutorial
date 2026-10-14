@@ -480,6 +480,56 @@ trap again: from 2^63 up, an `int64` looks negative. A `bigint` has neither prob
 
 </details>
 
+## Check your understanding
+
+::: check
+**Service 0 sends service 1 a hundred, the gift. When does service 1's balance grow?**
+
+- [ ] At once, when `transfer` answers `OK`
+  > No: only the sender's balance changes then. In the test, service 1 still has its
+  > 1,000 right after the call.
+- [x] In a later round of the same block, when service 1 accumulates
+  > Yes: the money leaves service 0 now and arrives in the next round:
+  > [lesson 17.4](./04-rounds.md) delivers it.
+- [ ] In the next block
+  > No: it doesn't wait that long. A transfer arrives in the block it was sent in, a
+  > round later.
+
+**The gift carries 80,000 gas, for service 1 to handle it with. Who pays that gas?**
+
+- [x] Service 0, out of its own run's gas, when it sends the gift
+  > Yes: the call costs 575, plus the transfer's gas. Service 0's 255,437 gas includes
+  > the 80,000.
+- [ ] Service 1, out of the gas of its own digests
+  > No: service 1 has no digests in that block. The transfer brings its own gas.
+- [ ] Service 1's balance, when the gift arrives
+  > No: gas and balance are different things. The gas was paid in gas, by the sender,
+  > up front.
+
+**Service 0 sends service 1 thirty, then panics, with no checkpoint since. What's left of the transfer?**
+
+- [ ] Service 1 still gets 30: money once sent can't be called back
+  > No: nothing was delivered yet, and the panic undoes the sending. The list of
+  > transfers is part of what a checkpoint keeps.
+- [ ] The 30 is gone from service 0, but never arrives
+  > No: the balance change is undone too. Service 0's account goes back to the last
+  > checkpoint's, the 30 included.
+- [x] Nothing: it never happened, the money included
+  > Yes: a panic keeps only what the last checkpoint kept, and both the transfer and
+  > the balance change came after it.
+
+**In the test, service 0 has 1,000 and must keep 170. It sends 900, with 25 gas, to a service that asks for at least 20. What does it get?**
+
+- [ ] `OK`: 1,000 is more than 900
+  > No: having the money isn't enough. Paying must leave at least the minimum balance,
+  > and 1,000 − 900 = 100 is below 170.
+- [ ] `LOW`
+  > No: `LOW` is about the gas, and 25 is above the 20 the receiver asks for.
+- [x] `CASH`
+  > Yes: 100 would be left, below its 170. Nothing is sent, and the refusal costs just
+  > the 575.
+:::
+
 ## What you have
 
 Services that pay each other: the money leaves at once, a failure takes it back, and eight

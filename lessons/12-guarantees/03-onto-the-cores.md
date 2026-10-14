@@ -231,6 +231,48 @@ noticed: the adapter only counts the reported packages.
 
 </details>
 
+## Check your understanding
+
+::: check
+**In a block at slot 14, a guarantee made at slot 10 puts its report on core 0. What does core 0 hold now?**
+
+- [x] The whole guarantee, registered at slot 14
+  > Yes: a pending report is the guarantee and τ′, this block's slot.
+- [ ] The report, registered at slot 10, when the guarantee was made
+  > No: the registered slot is the block's, 14, not the guarantee's own slot.
+- [ ] Only the report's hash
+  > No: the core holds the whole guarantee, report and signatures.
+
+**That report never gets assured. At which slot does it time out?**
+
+- [ ] 15: the next block's assurances are its only chance
+  > No: it may wait several blocks for its assurances.
+- [x] 19
+  > Yes: 19 ≥ 14 + 5, U = 5 slots after it was registered ([lesson 11.2](../11-assurances/02-timeouts.md)).
+- [ ] 20
+  > No: off by one. At 19, the slot is already at least 14 + 5.
+
+**In `high_work_report_gas-1`, core 0 gets package `0x63c0…` and core 1 gets `0x3165…`. In what order are the reported packages listed?**
+
+- [ ] `0x63c0…`, then `0x3165…`, in core order
+  > No: the reported packages are a dictionary, and a dictionary is sorted by key.
+- [x] `0x3165…`, then `0x63c0…`, sorted by package hash
+  > Yes: the key is the package hash. Cores go in core order, packages in hash order.
+- [ ] Sorted by exports root
+  > No: the exports root is the value, not the key. Here both are `0x5c9dca80…`
+  > anyway.
+
+**Core 0's report becomes available in this block. Can a guarantee in the same block put a new report on core 0?**
+
+- [x] Yes: the assurances free the core first, and the guarantees use what's free
+  > Yes: ρ′ is made from ρ‡, the cores after the assurances have done their clearing.
+- [ ] No: a freed core stays empty until the next block
+  > No: the guarantees come after the assurances in the same block, so they see the
+  > core free.
+- [ ] Yes, and it would even if the old report were still waiting
+  > No: a core takes a report only when it's free. A waiting report keeps it.
+:::
+
 ## What you have
 
 Guarantors dealt, signatures checked, reporters counted, and every good report seated

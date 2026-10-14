@@ -356,6 +356,55 @@ your table matches on names.
 
 </details>
 
+## Check your understanding
+
+::: check
+**`add_64 r2 = r0 + r1` needs 2 decode slots, and `add_64 r0 = r0 + r1` only 1. Why?**
+
+- [ ] r0 is a special register, cheaper to use
+  > No: any register would do. What matters is whether the result overwrites one of the
+  > inputs.
+- [x] The second writes a register it also reads
+  > Yes: that's 𝔓(1, 2). Picture a CPU whose add always overwrites an input: aiming at a
+  > third register takes an extra copy first.
+- [ ] The second does less work, so it takes fewer cycles
+  > No: both take 1 cycle. Only the decode slots differ.
+
+**A `branch_eq` whose target is a `trap` costs 1 cycle, not 20. Why?**
+
+- [ ] A trap ends the program, so the rest is free
+  > No: the price is the branch's own, and it's charged whether the branch jumps or not.
+- [x] A branch to a trap is usually a check that should never fail, so a CPU would guess it right
+  > Yes: 𝔟 is 1 if either way the branch can go starts with `trap` or `unlikely`, and 20
+  > otherwise.
+- [ ] Branches backwards are cheaper
+  > No: direction doesn't come into it, only what's at the two places it can go: the
+  > target and the next instruction.
+
+**Why does `cmov_iz` count as reading the register it writes?**
+
+- [x] When the condition fails it keeps the old value, so that value is an input
+  > Yes: a `cmov` may leave its destination as it was, so š lists the destination among
+  > the registers it reads.
+- [ ] Every instruction reads the register it writes
+  > No: `add_64 r2 = r0 + r1` reads only r0 and r1. That's why it needs 2 decode slots.
+- [ ] Only on a run where the move happens
+  > No: š and ř come from the instruction's row, not from what happens when it runs. A
+  > `cmov` reads its destination every time.
+
+**The cycles of the block at 92078 add up to 91. Is 91 what the block costs?**
+
+- [ ] Yes: a block costs the sum of its cycles
+  > No: a CPU doesn't run one instruction at a time. The model has four store units, so
+  > the three stores can run at once.
+- [x] No: the CPU runs instructions side by side, so it costs far less
+  > Yes: [lesson 15.10](./10-the-pipeline.md) builds that CPU, and the three 25-cycle
+  > stores run together instead of one after another.
+- [ ] No: it costs more, because `move_reg` can't really be free
+  > No: `move_reg`'s 0 is its row in the table, already in the 91. And the real cost is
+  > lower than 91, not higher.
+:::
+
 ## What you have
 
 A price for every instruction the PVM knows. A price list doesn't say what a block costs,

@@ -294,6 +294,51 @@ key; with a handful of offenders, that's just as quick as your `Set`.
 
 </details>
 
+## Check your understanding
+
+::: check
+**At a new epoch, which set becomes κ′, the active validators?**
+
+- [ ] ι, the staging set
+  > No: ι is two steps away. It moves into pending, minus offenders, and is active only an
+  > epoch later.
+- [x] γ_P, the pending set
+  > Yes: κ′ = γ_P. Pending means "active from the next epoch", and the next epoch has just
+  > begun.
+- [ ] κ itself: the active set stays until a dispute removes it
+  > No: validators serve an epoch at a time. κ moves on to λ, the previous set.
+
+**And what happens to ι at the new epoch?**
+
+- [ ] It moves on to λ, closing the circle
+  > No: the sets aren't a circle. λ′ is the old κ, and the old λ is dropped.
+- [x] It stays as it is: only a privileged service changes it
+  > Yes: a copy of it, minus offenders, becomes γ′_P, but ι itself is untouched. In the
+  > vector, staging reads `cab2 ab00 4418 8b8c ad93 f30a` before and after.
+- [ ] It's emptied, ready for new validators
+  > No: nothing empties it. If the privileged service does nothing, the same validators
+  > come round again.
+
+**`ab00` is an offender in ι. Why does it arrive in pending as `0000`, in its old place, instead of being taken out?**
+
+- [x] So everyone else keeps their place in the list, and nobody can sign with a zero key
+  > Yes: Φ swaps its 336 bytes for zeros. The list stays six long, every other validator
+  > keeps its position, and the key in `ab00`'s place is useless.
+- [ ] It is taken out; `0000` is just how `bin/rotation.ts` shows a gap
+  > No: the key is really there, 336 zero bytes, and pending still holds six.
+- [ ] So that what it signed in earlier epochs stops checking out
+  > No: Φ only touches the new pending set. `ab00` is still in κ′ and λ′, where it was.
+
+**Why keep λ, last epoch's validators?**
+
+- [ ] They stand by, ready to step in if active validators go offline
+  > No: nothing in Safrole calls them back. They're kept for checking.
+- [ ] The next ring root is made from them
+  > No: the ring root is made for the new pending set, γ′_P.
+- [x] Work they signed last epoch still needs checking, and that takes their keys
+  > Yes: λ is "last epoch's, still needed to check what they signed".
+:::
+
 ## What you have
 
 Validator sets that change hands at every epoch, with cheaters left at the door. The new set has to seal the

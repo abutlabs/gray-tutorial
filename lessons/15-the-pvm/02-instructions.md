@@ -465,6 +465,52 @@ runs, where yours works out the target straight away.
 
 </details>
 
+## Check your understanding
+
+::: check
+**In the napkin program, `load_imm r1` carries the one-byte immediate `ff`. What lands in r1?**
+
+- [ ] 255
+  > No: that's `ff` read unsigned. Immediates are sign-extended: a set top bit means
+  > negative.
+- [x] 2^64 − 1, which is −1
+  > Yes: `ff`'s top bit is 1, so the seven missing bytes fill with `ff`:
+  > 0xffffffffffffffff, −1 read as signed.
+- [ ] 0xff00000000000000
+  > No: the byte stays at the bottom, as the lowest byte. Sign extension fills the bytes
+  > *above* it.
+
+**The `jump` at byte 6 has the offset `fd`. Where does it land?**
+
+- [ ] 259: 6 + 253
+  > No: offsets are signed. `fd` is −3, not 253.
+- [ ] 5: three back from the next instruction, at 8
+  > No: an offset counts from the jump's own opcode, ı, not from the next instruction.
+- [x] 3, the `add_64`
+  > Yes: 6 + (−3) = 3, and 3 starts an instruction, as every target must.
+
+**How does the PVM know that `load_imm`'s immediate is one byte long?**
+
+- [ ] A length byte comes in front of it
+  > No: no length is written down anywhere.
+- [ ] Every immediate is 4 bytes
+  > No: an immediate takes 0 to 4 bytes. Four here would swallow the start of the
+  > `add_64`.
+- [x] The bitmask says the next instruction starts at 3
+  > Yes: so skip(0) is 2, one byte for the register and one left for the immediate. An
+  > instruction ends where the next begins.
+
+**`add_64` is the bytes `200, 0x21, 0x03`. Which register gets the sum?**
+
+- [ ] r12, because `0x21` is 33, more than 12
+  > No: `0x21` holds two registers, four bits each: 1 in the low half, 2 in the high half.
+- [x] r3
+  > Yes: the halves of `0x21` are the inputs, r1 and r2, and the third byte, `0x03`, is
+  > the register written: r3 = r1 + r2.
+- [ ] r1, the first one named
+  > No: with three registers, the first two are the inputs. `add_64` writes the third.
+:::
+
 ## What you have
 
 A disassembler: any JAM service's code, read instruction by instruction, every

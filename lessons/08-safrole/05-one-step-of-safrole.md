@@ -333,6 +333,54 @@ vectors handed you that output as `input.entropy`. The line after it is your
 
 </details>
 
+## Check your understanding
+
+::: check
+**A new epoch, and no full lottery. Do the fallback keys use η and κ from before this block's changes, or after?**
+
+- [ ] Before: η₂ and κ, as the block found them
+  > No: F(η′₂, κ′) asks for the values after. The old κ is the set leaving active duty; it
+  > would seat last epoch's validators.
+- [x] After: η′₂ and κ′, once the entropy has moved along and the validators rotated
+  > Yes: that's why step 4 comes after steps 2 and 3. `entropy[2]` and `validators.active`
+  > are the new values.
+- [ ] It makes no difference: η₂ and η′₂ are always the same
+  > No: at a new epoch the history moves along, and η′₂ is the old η₁.
+
+**What does the epoch mark carry?**
+
+- [ ] η′₀ and η′₁ from after the block, and κ′'s keys
+  > No: the entropy is η₀ and η₁ as they were. The validators are γ′_P, the next epoch's.
+- [x] η₀ and η₁ as they were, and the Bandersnatch and Ed25519 keys of γ′_P
+  > Yes: γ′_P is the newly pending set, active from the next epoch, and two keys each are
+  > all the mark holds.
+- [ ] η₀ and η₁ as they were, and all four parts of κ′'s keys
+  > No: just two keys a validator, and of γ′_P, the next epoch's, not of the validators
+  > taking over now.
+
+**The first block of a new epoch brings no tickets. What is γ′_A?**
+
+- [x] Empty: a new epoch starts a new lottery
+  > Yes: the old tickets have done their job, sealing this epoch if the lottery filled. The
+  > next lottery starts from nothing.
+- [ ] The old γ_A, since its winners still have slots to seal
+  > No: if they won, they're copied into γ′_S first, outside in. γ_A is free to start
+  > again.
+- [ ] The old γ_A, minus the tickets that won
+  > No: every old ticket goes. Losers from last epoch's lottery don't carry over.
+
+**A block in the middle of an epoch, with no tickets. What changes?**
+
+- [ ] τ, η₀, and the sealers, which are worked out again every block
+  > No: γ_S changes only at a new epoch. In the middle of one, neither branch of step 4
+  > runs.
+- [ ] Nothing: Safrole only acts when an epoch begins
+  > No: every block moves the time on and stirs η₀.
+- [x] τ becomes the block's slot, and η₀ is stirred; everything else stays
+  > Yes: `enact-epoch-change-with-no-tickets-1` is one such block. The time moves on, η₀
+  > stirs, and nothing else does.
+:::
+
 ## What you have
 
 Safrole, end to end, for every block that brings no tickets: the whole state after it, and

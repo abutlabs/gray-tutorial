@@ -38,7 +38,8 @@ validators and randomness.
 
 **Which applies?** A guarantee carries the slot it was made at. If that slot is in the
 same rotation as the block (⌊τ′/R⌋ = ⌊t/R⌋), its signers must be assigned by M,
-otherwise by M\*. A guarantee made just before a rotation still counts in the next.
+otherwise by M\*. A guarantee made just before a rotation still counts in the next: the work takes time to
+refine and get into a block, and a rotation in between shouldn't throw it away.
 
 Try it below, on tiny, with the validators and entropy of the reports vector
 `report_prev_rotation-1`, whose block is at slot 14. Slide the slot through the epoch:
@@ -370,6 +371,54 @@ guarantor, when it makes guarantees itself, use this one function. A client that
 guarantees and a client that makes them had better deal the same hand.
 
 </details>
+
+## Check your understanding
+
+::: check
+**Why are the guarantors dealt out by a shuffle?**
+
+- [x] So nobody can pick their core, or their friends to share it
+  > Yes: the shuffle runs on entropy nobody could steer, so nobody chooses who
+  > guarantees what.
+- [ ] Without it, some cores would get no guarantors
+  > No: the seats `0 0 0 1 1 1` already give every core three. The shuffle only changes
+  > who sits where.
+- [ ] So each validator guarantees every core within one slot
+  > No: a validator has one core at a time, for a whole rotation of R slots.
+
+**On tiny (R = 4, E = 12), a block is at slot 14. How many times has everyone moved on one core since the epoch began?**
+
+- [ ] 3, since ⌊14/4⌋ = 3
+  > No: that's the rotation counted from slot 0, as `bin/guarantors.ts` prints it. The
+  > moves restart every epoch.
+- [x] 0: slot 14 is slot 2 of its epoch, and ⌊2/4⌋ = 0
+  > Yes: P rotates by ⌊(t mod E)/R⌋. Slot 14 is still in its epoch's first rotation.
+- [ ] 2, since slot 14 is 2 slots into its epoch
+  > No: 2 counts slots, not rotations. A move comes every 4 slots.
+
+**In `report_prev_rotation-1`, the block is at slot 14 and the guarantee was made at slot 10. Which assignment checks its signers?**
+
+- [ ] M, this rotation's: what counts is the block
+  > No: ⌊14/4⌋ = 3 and ⌊10/4⌋ = 2, two different rotations. The guarantee answers
+  > to M\*.
+- [ ] M\*, dealt from κ′ with η′₂
+  > No: that's for a last rotation in this epoch. 14 − 4 = 10 is in epoch 0, the
+  > previous one.
+- [x] M\*, dealt from λ′ with η′₃
+  > Yes: slot 10 was in the previous epoch, so its own validators and randomness. Its
+  > signers 1, 2 and 5 were all on core 0 then.
+
+**Why does a guarantee from the last rotation still count?**
+
+- [x] Its signers are checked against the core they held when they signed
+  > Yes: doing the work and reaching a block takes time. A guarantee made just before
+  > a rotation still counts in the next.
+- [ ] Guarantors keep their old core for an extra rotation
+  > No: everyone moves on every R slots. M\* seats nobody; it only checks guarantees
+  > made in the last rotation.
+- [ ] Any guarantee from this epoch counts
+  > No: only this rotation or the one before. M\* covers just the rotation before.
+:::
 
 ## What you have
 

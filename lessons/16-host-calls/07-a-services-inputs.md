@@ -357,6 +357,50 @@ one field at a time.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Why does every operand start with a 0?**
+
+- [ ] It's the operand's length
+  > No: it's the same 0 in front of every operand, whatever its size.
+- [x] It says "operand": a service's inputs can also be transfers, which start with a 1
+  > Yes: one byte tells the service which kind of input follows. Without it, the
+  > vectors' services panic on their very first input.
+- [ ] It's the digest's number in its report
+  > No: a report's second digest gives an operand that starts with 0 too.
+
+**In `same_round_storage_isolation-1`, service 1729 runs on 200,000 gas. Where does that come from?**
+
+- [ ] Its free gas as an always-accumulate service
+  > No: that vector gives no service free gas. Its `always_acc` list is empty.
+- [x] The gas of its one digest: free gas, none here, plus each digest's gas
+  > Yes: one report names 1729, with 200,000 gas. That's all of it.
+- [ ] A fixed amount every accumulation gets
+  > No: in `always_accumulate-1`, the same service runs on 100,000, all free gas, with no
+  > reports at all.
+
+**A report has two digests for service 42 and one for service 7. How many operands does 42 get from it?**
+
+- [ ] One: one operand per report
+  > No: an operand is one digest's result, so it's one per digest.
+- [ ] Three: all the report's digests
+  > No: service 7's digest goes to service 7.
+- [x] Two: one per digest naming 42, each also carrying the report's package, exports root, authorizer and trace
+  > Yes: the report's parts are shared by both, and each digest adds its own payload hash,
+  > gas and result.
+
+**1729 and 1730 accumulate in the same round. 1729 writes "last". Does 1730 see it?**
+
+- [x] No: each starts from the same accounts, with its own X and Y
+  > Yes: 1730 ends with only its own "fread" key, as the vector says.
+- [ ] Yes: 1729's write is in the state before 1730 runs
+  > No: in the same round, neither sees the other's changes.
+- [ ] Only if 1729 made a checkpoint first
+  > No: a checkpoint is about one service's own run. It never shares anything with
+  > another service.
+:::
+
 ## What you have
 
 A service's inputs, built from a block's reports, and eight services in seven official

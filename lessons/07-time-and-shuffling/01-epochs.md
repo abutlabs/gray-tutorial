@@ -294,6 +294,55 @@ with one `slice`. Both work; notice which one you'd rather check at 2 a.m.
 
 </details>
 
+## Check your understanding
+
+::: check
+**On full, E is 600. Which epoch and phase is slot 1,234?**
+
+- [ ] Epoch 102, phase 10
+  > No: that divides by 12, tiny's E. On full, 1,234 = 2 × 600 + 34.
+- [x] Epoch 2, phase 34
+  > Yes: ⌊1234 / 600⌋ = 2, and 1234 mod 600 = 34. Epochs 0 and 1 took slots 0 to 1,199.
+- [ ] Epoch 3, phase 34
+  > No: epochs count from 0, like phases. Slots 0 to 599 are epoch 0, so 1,234 is in
+  > epoch 2.
+
+**On tiny, a block at slot 13 comes straight after one at slot 11. Does it start a new epoch?**
+
+- [ ] No: only a block at phase 0, slot 12 here, starts an epoch
+  > No: there was no block at slot 12, and a slot can be empty. The rule compares epochs,
+  > not phases.
+- [ ] Only if its header carries an epoch mark
+  > No: it's the other way round. The block carries an epoch mark *because* it starts a new
+  > epoch, and the test checks that the two always agree.
+- [x] Yes: its epoch, 1, is greater than the epoch of the block before it, 0
+  > Yes: e′ = ⌊13 / 12⌋ = 1 and e = ⌊11 / 12⌋ = 0. It carries the epoch mark, and the
+  > entropy history moves along.
+
+**At a new epoch, what happens to η₃?**
+
+- [ ] It comes round to η₀, so the four values go in a circle
+  > No: η₀ is the accumulator, stirred by every block. Nothing old comes back into it.
+- [x] It's forgotten: η′₃ is the old η₂
+  > Yes: everything moves along one, η₀ to η₁, η₁ to η₂, η₂ to η₃, and the oldest drops
+  > off the end.
+- [ ] Nothing: η₁, η₂ and η₃ only change inside an epoch
+  > No: it's the reverse. Inside an epoch they stay as they are; at a new epoch they move
+  > along.
+
+**Why keep η₁, η₂ and η₃ at all, when η₀ is the freshest randomness?**
+
+- [ ] Older randomness has been stirred more times, so it's more random
+  > No: η₁ is η₀ as it stood at the end of last epoch. It has been stirred *fewer* times
+  > than today's η₀, not more.
+- [ ] In case η₀ is lost
+  > No: η₀ is in the state like everything else, and every node keeps it. Nothing needs a
+  > backup.
+- [x] Some decisions need randomness nobody could steer when they were set up, and a finished epoch's is fixed
+  > Yes: η₀ changes with every block, so its value depends on who made the latest ones.
+  > The ticket lottery and the block sealers lean on the old, settled values.
+:::
+
 ## What you have
 
 Your client knows what epoch it is, where in the epoch it is, and what has to change when

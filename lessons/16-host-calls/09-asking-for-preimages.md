@@ -25,6 +25,8 @@ Then:
 - **`solicit`** (24, 2,193 gas) asks. A new request starts as []; one that's been forgotten,
   [x, y], is asked for again: [x, y, t]. Anything else is HUH. A request takes deposit
   ([lesson 14.2](../14-services/02-the-service-account.md): 2 items, and 81 + z bytes), so if the balance can't cover it: FULL.
+  Asking again for a forgotten one costs nothing more: [x, y] never left the footprint, so
+  its deposit is already counted.
 - **`forget`** (25, 3,250 gas) gives up. A request never provided, [], goes, and so does one
   forgotten more than D slots ago, [x, y] with y < t − D: the request and the preimage, and
   the deposit with them. One that's provided, [x], is marked forgotten now: [x, t]. One asked
@@ -454,6 +456,51 @@ says HUH and carry on. lasair's registers are signed 64-bit integers, so it comp
 with `unsigned_compare`; your `bigint` values just compare.
 
 </details>
+
+## Check your understanding
+
+::: check
+**Service 0 solicits a 100-byte preimage at slot 7. What is the request's history now?**
+
+- [x] [], asked for and not provided, and the footprint grows by 2 items and 81 + 100 bytes
+  > Yes: a new request has no slots. The deposit is paid from the moment it's asked for.
+- [ ] [7]
+  > No: [7] would mean provided at slot 7. Asking isn't providing.
+- [ ] The preimage itself, 100 bytes
+  > No: nothing is provided yet. A block will provide it later, if someone sends it.
+
+**A request is [3], provided at slot 3. The service forgets it at slot 9. What happens?**
+
+- [ ] It goes, preimage and all
+  > No: only a request never provided, or one forgotten long ago, goes. A provided one is
+  > first marked forgotten.
+- [x] It becomes [3, 9], and `query` gives φ₇ = 2 + 3 × 2^32 and φ₈ = 9
+  > Yes: provided at 3, forgotten at 9. `query` packs the count, 2, with the first slot
+  > above it, and the second slot in φ₈.
+- [ ] HUH: a provided preimage can't be forgotten
+  > No: it can. HUH is for a request in no state to be forgotten, like one forgotten too
+  > recently.
+
+**A request is [3, 9]. On tiny, where D is 32, the service forgets it again at slot 40. What happens?**
+
+- [x] HUH: it was forgotten at 9, and 9 isn't more than 32 slots before 40
+  > Yes: it goes only if y < t − D, and 40 − 32 = 8. At slot 42, 9 < 10, and it would go.
+- [ ] It goes, with its preimage and its deposit
+  > No: not yet. A forgotten preimage has to wait more than D slots first.
+- [ ] It becomes [3, 9, 40]
+  > No: that's `solicit`, asking for it again.
+
+**`solicit` gets a length of 2^32, and a hash it can't read. What happens?**
+
+- [ ] A panic, because the hash can't be read
+  > No: the length is checked first, as the Gray Paper orders it, and it never gets to
+  > the hash.
+- [x] φ₇ = HUH, and the machine carries on
+  > Yes: no preimage is 2^32 bytes long. Checking the hash first would panic where the
+  > Gray Paper says HUH.
+- [ ] FULL: no balance could pay for 2^32 bytes
+  > No: the deposit is never worked out. The length alone is HUH.
+:::
 
 ## What you have
 

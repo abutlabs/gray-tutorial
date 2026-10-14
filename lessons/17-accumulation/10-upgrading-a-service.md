@@ -276,6 +276,53 @@ and that's the one that counts. Comments don't fail tests.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Service 0 calls `upgrade` partway through its run. Which code runs for the rest of that run?**
+
+- [ ] The new code, from the next instruction
+  > No: the machine already has the old code loaded. `upgrade` only changes the hash
+  > in the account.
+- [x] The old code; the new one from the next run
+  > Yes: code is found by its hash when a run starts. This run carries on, and the
+  > next one looks for `0xc0f2…`.
+- [ ] None: the run stops at the upgrade
+  > No: φ₇ = `OK`, and it carries on. Service 0 uses exactly the vector's 139,939 gas.
+
+**Why does `upgrade` need no privilege, and never refuse?**
+
+- [x] A service may change only its own code, so it may always do so
+  > Yes: nobody else is touched. The one way it can fail is a hash it can't read, and
+  > that's a panic.
+- [ ] The chain checks the new code first, so nothing can go wrong
+  > No: the chain checks nothing. The new hash needn't even have code behind it.
+- [ ] It does need one: only the manager may upgrade
+  > No: any service may upgrade itself. None of the five privileges is about a
+  > service's own code.
+
+**A service upgrades to a hash whose preimage it doesn't hold. What happens at its next run?**
+
+- [ ] Its old code keeps running until the new code arrives
+  > No: the old hash is gone from its account. The next run looks only for the new
+  > one.
+- [ ] Nothing changed: the upgrade was refused with `HUH`
+  > No: `upgrade` never refuses. It answered `OK` and changed the hash.
+- [x] It can't run at all until it gets that preimage
+  > Yes: no preimage under its code hash means no code. Asking for the new code
+  > first, with `solicit`, is the service's job.
+
+**Service 0 upgrades, then panics before any checkpoint. Which code hash does it end with?**
+
+- [x] The old one
+  > Yes: the code hash is part of the service's account, and a panic takes the
+  > accounts back to the last checkpoint, from before the upgrade.
+- [ ] The new one: an upgrade can't be undone
+  > No: it's undone like any other change the run made to its account.
+- [ ] None: it's left with no code hash at all
+  > No: a panic restores the checkpoint's account whole, code hash included.
+:::
+
 ## What you have
 
 A service that can rewrite itself. Fifty-six official vectors pass as whole blocks. A

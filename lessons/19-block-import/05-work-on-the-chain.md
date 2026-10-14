@@ -279,6 +279,54 @@ is the same.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Block 1 of `storage_light` is a good block, yet your client refused it with `bad_state_root`. Why?**
+
+- [ ] The trace was made with an older Gray Paper
+  > No: the traces are 0.8.0, as your client is. The mistake was your client's.
+- [x] It checked the report's anchor against β, where the newest block's root is still zeros
+  > Yes: the report was anchored on the parent block. β doesn't know the parent's
+  > state root yet; β†, with the root from this header, does.
+- [ ] The report's anchor block was too old to be checked
+  > No: the anchor was the parent, the newest block there is. That's exactly the one
+  > whose root β is missing.
+
+**Why is the newest block's state root zeros in β?**
+
+- [ ] Zeros mean that block was empty
+  > No: every block gets zeros there when it's recorded, empty or not.
+- [ ] β keeps only header hashes, never roots
+  > No: every other block in β has its root. Only the newest one's is missing.
+- [x] Nobody knew it until the next block named it, as `parent_state_root`
+  > Yes: a block's state root is only known once the block is imported. The next
+  > block's header names it, and β† fills it in.
+
+**[Lesson 12.5](../12-guarantees/05-bad-reports.md)'s report vectors all passed. Why didn't they catch this?**
+
+- [x] They hand over a history whose roots are all known
+  > Yes: with every root filled in already, β and β† are the same. Only a real chain
+  > has a newest block with its root still zeros.
+- [ ] They have no reports with an anchor
+  > No: every report has a context with an anchor. The vectors' anchors just never
+  > hit a missing root.
+- [ ] Report checks aren't part of the state transition
+  > No: they are, in §11. A bad report refuses the block.
+
+**After block 6, ξ held the right packages in another order, and the root was wrong. Why does the order matter?**
+
+- [ ] The order says which package accumulated first, and the state must remember it
+  > No: ξ holds a set for each slot. It says which packages accumulated in it, not in
+  > what order.
+- [x] A set has no order, but bytes do, so every client writes it one way: sorted
+  > Yes: the root fingerprints the bytes. Two clients writing the same set in two
+  > orders get two roots, so Appendix D says sorted.
+- [ ] Sorted lists are quicker to search
+  > No: speed has nothing to do with it. The point is that everyone writes the same
+  > bytes.
+:::
+
 ## What you have
 
 Υ on blocks with work: four more traces, 400 blocks, every root right. Two families are

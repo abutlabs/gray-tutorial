@@ -415,6 +415,55 @@ read. `logand … 0xFFFFFFFFL` is the `mod 2^32`.
 
 </details>
 
+## Check your understanding
+
+::: check
+**`SUM` adds 10 + 9 + … + 1 into r2. What happens if you delete its `fallthrough`?**
+
+- [ ] Nothing changes: `fallthrough` does no work
+  > No: it does no arithmetic, but it ends a basic block, so that the loop's first
+  > instruction starts one.
+- [x] The loop runs once, r2 reaches 10, and the branch back panics
+  > Yes: the loop now starts at 5, right after a `load_imm`, which ends no block. The
+  > branch's target starts no basic block, so the machine panics.
+- [ ] The loop never ends
+  > No: the branch can't go back even once. It's checked, and fails, the first time it
+  > runs.
+
+**`add_imm_64 r3 = r3 + (−1)` adds the immediate 2^64 − 1 to 10. Why does r3 become 9?**
+
+- [x] Registers hold 64 bits, so 10 + 2^64 − 1 wraps round to 9
+  > Yes: the sum is 2^64 + 9, and only the 64 bits below 2^64 are kept. Adding all ones
+  > takes 1 away.
+- [ ] The PVM spots the minus sign and subtracts instead
+  > No: `add_imm_64` only ever adds. The wrap-around at 2^64 is what makes the add work
+  > out as taking 1 away.
+- [ ] The sum overflowed, and the PVM put the old value back, less one
+  > No: overflow is never an error on the PVM, and nothing is put back. Arithmetic simply
+  > wraps around at 2^64.
+
+**Why does `SUM` stop with halt when it jumps through r0?**
+
+- [ ] `jump_ind` always ends the program
+  > No: through any other address it goes via the jump table. With r0 = 8 and no table,
+  > the test's machine panics.
+- [x] r0 holds 2^32 − 2^16, the halt address
+  > Yes: the test starts r0 there, as a real program's start does, so returning from the
+  > outermost function stops the machine well.
+- [ ] It's the last instruction in the code
+  > No: the machine stops because of where it jumps, not where the code ends. Past the end
+  > the code reads as zeros, which is `trap`: a panic.
+
+**A branch is not taken. Must its target still start a basic block?**
+
+- [ ] No: only the place it actually goes is checked
+  > No: the Gray Paper checks both places, whichever way the branch goes.
+- [ ] Only if the target is behind it
+  > No: direction doesn't come into it. A forward target is checked just the same.
+- [x] Yes: the target and the next instruction must both start basic blocks
+  > Yes: a branch with a bad target panics even on a run where it wouldn't jump.
+:::
+
 ## What you have
 
 A running PVM: registers, an instruction counter, seventeen instructions, basic blocks,

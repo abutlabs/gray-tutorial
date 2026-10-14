@@ -294,6 +294,51 @@ read more than one way, and checking that the readings agree.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Which verdicts take a report off its core?**
+
+- [ ] Only bad ones
+  > No: wonky too. Nobody can tell if the report is right, so it has no business
+  > waiting on a core.
+- [x] Bad or wonky
+  > Yes: ρ† empties every core whose report was judged bad or wonky in this block.
+- [ ] Any verdict: a challenged report is suspect
+  > No: a good verdict leaves its report where it is.
+
+**A verdict names its report only by hash. How does your client find the core that holds it?**
+
+- [ ] The verdict carries the core's index
+  > No: a verdict is a report hash, an age and votes. No core.
+- [x] It hashes each pending report, H(ℰ(report)), and compares
+  > Yes: the same hash [lesson 5.2](../05-hashing-and-signatures/02-the-extrinsic-hash.md) put in the extrinsic hash. A match empties that core.
+- [ ] It looks the hash up in ψ's bad set
+  > No: ψ's sets hold report hashes, not cores. They say what was judged, not where it
+  > sits.
+
+**In `progress_invalidates_avail_assignments-1` on tiny, core 0's report is judged bad and core 1's good. What do the cores hold after?**
+
+- [x] Core 0 nothing, core 1 its report
+  > Yes: "1 of 2 cores keep their reports". The bad one leaves, the good one stays.
+- [ ] Nothing on either: a trial clears the core whatever the outcome
+  > No: only bad and wonky clear it. A report judged good stays.
+- [ ] Both reports: clearing waits for the assurances
+  > No: the disputes clear the cores first, ρ†. The assurances then work from what's
+  > left.
+
+**In one block, in what order do the cores change?**
+
+- [ ] Guarantees, then assurances, then disputes
+  > No: the guarantees come last, so they can use the cores the other two have just
+  > freed.
+- [ ] Assurances, then disputes, then guarantees
+  > No: then a report judged bad in this block could still be made available first.
+- [x] Disputes (ρ†), then assurances (ρ‡), then guarantees (ρ′)
+  > Yes: condemned reports leave first, then available and timed-out ones, then new
+  > reports take the free cores.
+:::
+
 ## What you have
 
 Your client holds the whole trial of an honest block. It checks every vote, files the

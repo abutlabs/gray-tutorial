@@ -415,6 +415,50 @@ waits for everything cheaper.
 
 </details>
 
+## Check your understanding
+
+::: check
+**One assurance in a block sets the bit for a core with nothing on it. What happens?**
+
+- [ ] That bit is ignored, and the rest of the block counts
+  > No: one broken assurance sinks the block. Nothing in it counts.
+- [x] The whole block is refused, `core_not_engaged`, and the state stays as it was
+  > Yes: rule 4. There's no data on an empty core to hold, so the bit can't be true.
+- [ ] The assurance counts for that core once a report arrives
+  > No: nothing carries over. An assurance only counts in its own block.
+
+**An assurance is anchored on the block two back, not the parent. What happens?**
+
+- [ ] Fine: any of the last eight blocks will do
+  > No: that's a guarantee's anchor, in [lesson 9.2](../09-recent-history/02-recent-blocks.md). An assurance's anchor must be the
+  > parent.
+- [ ] Fine, as long as its bits are for cores with reports
+  > No: every rule must hold. The anchor rule alone refuses the block.
+- [x] The block is refused, `bad_attestation_parent`
+  > Yes: rule 1. Its anchor must be H_P, the block this one is built on.
+
+**On tiny, a block's assurances come from validators 2, 1 and 6, in that order. Which error do the vectors give?**
+
+- [ ] `not_sorted_or_unique_assurers`: 2 before 1
+  > No: the list is out of order, but the vectors name an index past the end first.
+- [x] `bad_validator_index`: 6 isn't below |κ| = 6
+  > Yes: there's no validator 6 among 6. The Gray Paper's own type makes it not even an
+  > assurance.
+- [ ] `bad_signature`: there's no key for validator 6
+  > No: the signatures are checked last. The index rule catches 6 well before.
+
+**Why does this client check the signatures last?**
+
+- [x] A signature is far slower to check than two numbers are to compare
+  > Yes: it's worth checking only once everything cheap has passed.
+- [ ] The Gray Paper says to
+  > No: the Gray Paper says which rules hold, not which to check first. The order is
+  > the client's choice.
+- [ ] So a block with a bad anchor and a bad signature gets `bad_signature`
+  > No: the other way round. With signatures last, that block gets
+  > `bad_attestation_parent`.
+:::
+
 ## What you have
 
 Assurances that are checked, not trusted: five rules, and every official assurances

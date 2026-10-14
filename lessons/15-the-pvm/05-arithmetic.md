@@ -464,6 +464,51 @@ one half of the job free.
 
 </details>
 
+## Check your understanding
+
+::: check
+**`add_32` of 2^31 − 1 and 1. What lands in the register?**
+
+- [ ] 0x0000000080000000, 2^31
+  > No: those are the right low 32 bits, but a 32-bit result is sign-extended to 64. Its
+  > top bit is 1, so the upper half fills with `ff`.
+- [x] 0xffffffff80000000, −2^31
+  > Yes: the low 32 bits are `80000000`, negative as a signed 32-bit number, so the 32
+  > bits above become `ffffffff`.
+- [ ] 0, because the sum overflowed 32 bits
+  > No: 2^31 still fits in 32 bits; it only reaches the sign bit. Wrapping to 0 takes
+  > 2^32.
+
+**`add_64` of 2^64 − 1 and 2?**
+
+- [ ] 2^64 + 1
+  > No: a register holds 64 bits, and 2^64 + 1 needs 65.
+- [ ] A panic: the sum overflowed
+  > No: overflow is never an error on the PVM. Everything is modulo 2^64.
+- [x] 1
+  > Yes: 2^64 + 1, modulo 2^64, is 1. The count rolls over like a car's odometer.
+
+**`div_u_64` divides 5 by 0. What happens?**
+
+- [x] The answer is 2^64 − 1, all ones, and the program carries on
+  > Yes: the Gray Paper gives division by zero an answer instead of a crash. The
+  > remainder by 0, `rem_u_64`, gives back the 5.
+- [ ] The machine panics
+  > No: no arithmetic instruction panics. Division by zero has its answer in the table.
+- [ ] The answer is 0
+  > No: the Gray Paper picks all ones, 0xffffffffffffffff, not 0.
+
+**`div_s_64` of −7 and 2?**
+
+- [ ] −4
+  > No: that rounds down. Signed division rounds towards zero.
+- [x] −3, and the remainder, `rem_s_64`, is −1
+  > Yes: −3.5 towards zero is −3, and the remainder keeps the dividend's sign:
+  > −7 = 2 × (−3) + (−1).
+- [ ] A huge positive number, since −7 is 2^64 − 7 in the register
+  > No: that's how `div_u_64` reads it. The `_s` reads both inputs as signed first.
+:::
+
 ## What you have
 
 All 72 arithmetic and logic instructions, in both widths, every corner of the Gray

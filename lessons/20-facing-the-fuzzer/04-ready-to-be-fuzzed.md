@@ -267,6 +267,64 @@ program into a small one; yours needs no compiler, since Node runs TypeScript as
 
 </details>
 
+## Check your understanding
+
+::: check
+**With `JAM_FUZZ` set but no `JAM_FUZZ_SPEC`, why does the target refuse to start?**
+
+- [ ] Node can't run the target without it
+  > No: without `JAM_FUZZ`, the target runs fine with none of the variables.
+- [x] Guessing tiny for a full session would get every block wrong, so nothing missing is guessed
+  > Yes: the protocol says to refuse. A target that stops at once shows the mistake
+  > straight away, not as a wrong root later.
+- [ ] To save memory until the fuzzer is ready
+  > No: memory has nothing to do with it. The target can't know which network's sizes
+  > to use.
+
+**Why does the target set its socket's permissions to `0666`?**
+
+- [ ] To make the socket a program that can be run
+  > No: `0666` has no permission to run in it. It's read and write, for everyone.
+- [ ] So that only the target can write to it
+  > No: it's the other way round. Everyone on the computer may use it.
+- [x] The fuzzer may run as a different user from the target
+  > Yes: without it, a fuzzer running as another user couldn't connect.
+
+**The fuzzer disconnects. What must the target do?**
+
+- [ ] Exit, so the fuzzer can start a fresh one
+  > No: the protocol asks for one session after another, without a restart.
+- [x] Keep listening, and start the next session fresh
+  > Yes: each connection gets a new session, with its own handshake and its own
+  > Initialize.
+- [ ] Keep the last session's states for the next one
+  > No: a new session starts with nothing kept. Its Initialize gives the state to
+  > start from.
+
+**What does the Docker image give the fuzzer?**
+
+- [ ] Your source code, to read and check
+  > No: the fuzzer never reads code. It starts the image and talks to it over the
+  > socket.
+- [x] Your target with everything it needs, started the same way on any machine
+  > Yes: an image for `linux/amd64`, set up by the `JAM_FUZZ_*` variables, with
+  > nothing typed on a command line.
+- [ ] A faster client
+  > No: it runs the same code. Packaging is about how it starts, not how fast it
+  > runs.
+
+**1,406 of the 1,428 vectors pass. Why aren't the twelve erasure vectors a gap in your block importer?**
+
+- [x] Erasure coding is how validators share a work-package's data, and importing blocks never uses it
+  > Yes: they're not run because your client has no erasure coding, and a block
+  > importer doesn't need any.
+- [ ] They pass, but the board doesn't count them
+  > No: they're not run at all. The board says "not run yet".
+- [ ] They're too slow to run, so the board skips them
+  > No: speed isn't why. Your client has no erasure coding at all, so there's
+  > nothing to run them with.
+:::
+
 ## What you have
 
 A JAM block importer, built from an empty folder. It passes 1,406 of the 1,428 official

@@ -258,6 +258,55 @@ whole-number spellings of the same fraction. Pick the one you can check in your 
 
 </details>
 
+## Check your understanding
+
+::: check
+**Validator 3's assurance has core 0's bit set. What does that say?**
+
+- [ ] Core 0's report is correct
+  > No: an assurance says nothing about whether the work is right. That's for the
+  > disputes of [Part 10](../10-disputes/index.md).
+- [x] Validator 3 holds its piece of core 0's data
+  > Yes: one bit per core, 1 meaning "I hold my share of this core's data".
+- [ ] Validator 3 guaranteed core 0's report
+  > No: guaranteeing is vouching for the work. Assuring is only holding a piece of its
+  > data.
+
+**On tiny, a core's report has 4 of the 6 validators' assurances. Is it available?**
+
+- [ ] Yes: 4 is two thirds of 6
+  > No: two thirds isn't enough. It takes *more* than two thirds: 3 × 4 = 12 is not
+  > greater than 2 × 6 = 12.
+- [ ] Yes: a majority holds the data
+  > No: half plus one isn't the line. More than two thirds is.
+- [x] Not yet: it needs 5 or more
+  > Yes: 3 × 5 = 15 > 12. In `some_assurances-1`, core 0 has 5 and becomes
+  > available, core 1 has 4 and waits.
+
+**On full, an assurance's bitfield starts `05 01`. Which cores does it hold?**
+
+- [x] Cores 0, 2 and 8
+  > Yes: least significant bit first. `05` is `0000 0101`, bits 0 and 2. `01` is byte
+  > 1's lowest bit, core 8.
+- [ ] Cores 5, 7 and 15
+  > No: that reads each byte's bits from the left, as the trie of [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md) does.
+  > Bitfields go the other way.
+- [ ] Cores 5 and 1
+  > No: the bytes aren't core numbers. Each byte is 8 cores' bits.
+
+**On full, `some_assurances-1` gives its cores 683 and 682 assurances, alternately. Why those counts?**
+
+- [x] They sit either side of the line, so a client using "at least two thirds" is caught
+  > Yes: 3 × 682 = 2,046 = 2 × 1,023 exactly: two thirds, not more. A `>=` would make
+  > it available.
+- [ ] Any counts would test the rule as well
+  > No: counts far from the line pass with `>` and `>=` alike. Only the edge tells them
+  > apart.
+- [ ] 683 is as many as a core can get, like a verdict's 683 votes
+  > No: a verdict carries 683 votes, but any validator may assure. A core can get all
+  > 1,023.
+:::
+
 ## What you have
 
 Your client can read a bitfield the right way round, count assurances per core, and say

@@ -4,8 +4,9 @@ The last two traces come from the conformance fuzzer's own service: work-package
 random work, and in `fuzzy`, a few blocks that must be refused. An importer that takes a
 bad block is as wrong as one that refuses a good one. This lesson runs them, finds one
 last difference from the traces, in an out-of-gas rule [lesson 16.3](../16-host-calls/03-growing-the-heap.md) kept as the Gray Paper
-wrote it, and ends with your client importing all eight traces, 800 blocks, chained, and
-refusing exactly the three it should. That's a block importer: JAM's first milestone.
+wrote it, and ends with your client importing the first 100 blocks of all eight traces,
+800 blocks, chained, and refusing exactly the three bad ones among them; the scoreboard
+checks all 1,000 steps, one at a time, and all seven bad blocks. That's a block importer: JAM's first milestone.
 
 ## New words
 
@@ -394,11 +395,73 @@ Paper 0.8.0 says otherwise, and the vectors follow the paper's next version.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Why is an importer that takes a bad block as wrong as one that refuses a good one?**
+
+- [ ] It isn't: taking a block is the safe mistake
+  > No: taking it changes the state, its slot at the least. From then on, your
+  > client's root is not the chain's.
+- [ ] A bad block changes nothing, so taking it does no harm
+  > No: only refusing it changes nothing. Taken, block 37 would move τ, and the root
+  > after it would no longer be `0xe9a2c0ff…`.
+- [x] Either way, your client's state is no longer everyone else's
+  > Yes: every client must reach the same state. A wrong yes and a wrong no both
+  > leave your client on a state nobody else has.
+
+**`fuzzy` blocks 37, 38 and 39 are refused. What state does block 40 go into?**
+
+- [x] The state after block 36, as if the three never came
+  > Yes: the root after blocks 36, 37, 38 and 39 is `0xe9a2c0ff…` every time. Block 40
+  > builds on block 36.
+- [ ] The state after block 39, with the three bad blocks' slots counted
+  > No: a refused block moves nothing, not even τ. There's no state after block 39
+  > but the one after block 36.
+- [ ] Genesis: after a refusal, the import starts again
+  > No: a refusal leaves the state as it was, and the chain carries on from there.
+
+**At `fuzzy` block 31, your client said a service used 1,545,786 gas; the trace says all 2,000,000. Why?**
+
+- [ ] Your client's machine ran different instructions
+  > No: every instruction ran the same. Only the rule for running out of gas while
+  > growing the heap differed.
+- [x] Growing its heap cost more gas than it had left, and the vectors spend all of it then
+  > Yes: Gray Paper 0.8.0 leaves the gas as it was. The vectors follow a later change,
+  > pull request 533: the gas is spent, as for any host call that runs out.
+- [ ] The trace counts each service's gas limit, not the gas it used
+  > No: the service really used it all. Running out of gas spends every drop.
+
+**Why did a difference in gas show up in the state root at all?**
+
+- [ ] The gas left is kept in the service's account
+  > No: an account keeps its balance, not gas. Gas is only for the run.
+- [x] The statistics, C(13), record the gas each service used
+  > Yes: π_S keeps each service's gas, and the root covers every byte of it. That's
+  > why the component that differed was C(13).
+- [ ] Every block's header carries the gas it used
+  > No: the header has no gas in it. The difference was in the state, in the
+  > statistics.
+
+**The scoreboard runs a worker thread per processor. Why does it sort the results before printing?**
+
+- [ ] Workers may get a vector's answer wrong if it isn't sorted
+  > No: each worker runs its vector whole, alone. Sorting changes the printing, not
+  > the answers.
+- [x] Threads finish in any order, and the board should read the same every run
+  > Yes: a quick vector on one thread can finish before a slow one handed out
+  > earlier. Sorted, the board is the same as before.
+- [ ] The traces must be imported in order, block 1 first
+  > No: each trace step goes into the trace's own state before it, so the steps
+  > don't depend on each other.
+:::
+
 ## What you have
 
-A JAM block importer. All eight official block-import traces, 800 blocks, each imported
-into the state your client made from the one before, every state root right; the bad
-blocks refused, the state left as it was. On the scoreboard, 1,406 of the 1,428 official
+A JAM block importer. The first 100 blocks of all eight official block-import traces, 800
+blocks, each imported into the state your client made from the one before, every state
+root right; on the scoreboard all 1,000 steps, one at a time; and every bad block refused,
+the state left as it was. On the scoreboard, 1,406 of the 1,428 official
 vectors pass whole, safrole's proofs and ring roots included. The ten preimages refusals
 are the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md)'s
 to add; the other twelve are erasure coding, which validators use to share a

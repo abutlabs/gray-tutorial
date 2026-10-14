@@ -576,6 +576,67 @@ entries; it has no second kind of account to tell apart.
 
 </details>
 
+## Check your understanding
+
+::: check
+**A host call wants service 0's value under storage key `hello`. How does it find it among 154 entries?**
+
+- [ ] It reads every entry until it finds the one for `hello`
+  > No: it couldn't tell which one that is, since a hash can't be turned back into
+  > `hello`. And it doesn't need to.
+- [x] It works out the state key from 0 and `hello`, and looks that key up
+  > Yes: the value is at C(0, ℰ₄(2^32 − 1) ⌢ `hello`). Knowing s and k is knowing
+  > where the entry is.
+- [ ] It can't: storage can only be found in a test vector's account
+  > No: that was the problem this lesson solves. From s and k, the call works out
+  > where the value is.
+
+**Why does a storage key get ℰ₄(2^32 − 1) in front of it, and a preimage's hash ℰ₄(2^32 − 2)?**
+
+- [ ] They're the value's length
+  > No: a request puts its length there. Storage and preimages put a fixed marker.
+- [ ] They're the service's id
+  > No: the id goes in separately, woven into bytes 0, 2, 4 and 6 of the state key.
+- [x] They keep the kinds apart, so the same 32 bytes as a storage key and as a preimage's hash land on different entries
+  > Yes: the marker is hashed along with what follows it, so the two state keys come
+  > out different.
+
+**`read` asks for `hello` in service 7's storage. Why must it tell the helper whose storage?**
+
+- [x] The owner's id is part of every state key
+  > Yes: `hello` is at `00 a5 00 6f …` for service 0 and `07 a5 00 6f …` for service
+  > 7. Only byte 0, the id's lowest byte, differs.
+- [ ] It needn't: a storage key lands on the same entry for every service
+  > No: the id is woven into the state key, so the same `hello` lands on a different
+  > entry for each service.
+- [ ] To check that service 7 lets other services read it
+  > No: `read` may read any service's storage. The id is needed to find the entry,
+  > not to ask permission.
+
+**Service 0's request for a preimage has the history [5, 9]. What bytes does its entry keep?**
+
+- [ ] `05 09`
+  > No: each slot takes four bytes, and the count comes first.
+- [ ] `05 00 00 00 09 00 00 00`
+  > No: the slots are right, but the count is missing. Without it, a reader can't
+  > tell how many slots there are.
+- [x] `02 05 00 00 00 09 00 00 00`
+  > Yes: how many slots, `02`, then each slot in four bytes, low byte first. The
+  > helpers decode and encode it, so the host calls see [5, 9].
+
+**Every accumulate vector still passes after the host calls switch to the helpers. What does that show?**
+
+- [ ] That services run right on accounts from the state
+  > No: the vectors' accounts aren't from the state. Whether those run right is
+  > [lesson 19.4](./04-importing-a-block.md)'s test, on real blocks.
+- [x] That the switch changed where things are looked up, not what any call does
+  > Yes: the vectors' accounts are found where they always were. A refactor should
+  > leave every result as it was, and the vectors show it did.
+- [ ] Nothing: the accumulate vectors never make host calls
+  > No: their services' code calls the host as it runs, and those calls now go
+  > through the helpers.
+:::
+
 ## What you have
 
 Host calls that work on both kinds of account: the test vectors', and the state's. With

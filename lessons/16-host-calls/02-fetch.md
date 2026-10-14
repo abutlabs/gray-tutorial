@@ -381,6 +381,50 @@ sizes, and were 134 bytes long.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Why would a service call `fetch` with φ₉ = 0, asking for no bytes at all?**
+
+- [ ] To see if the item exists without paying for it
+  > No: it still pays. Item 0 costs a flat 390, however many bytes are asked for.
+- [x] To learn the item's length: φ₇ is the whole length, 122 for item 0, so it can ask again with room for it
+  > Yes: service 1729 does just that. Its first `fetch` learns 122, its second copies the
+  > 122 bytes.
+- [ ] To clear the memory at φ₇
+  > No: nothing is written. The test reads that byte afterwards, and it's still 0.
+
+**Item 1, the entropy, is 32 sevens. With φ₈ = 30 and φ₉ = 10, what happens?**
+
+- [ ] 10 bytes are copied: 2 sevens, then 8 zeros
+  > No: copying stops at the item's end. From byte 30 there are only 2 bytes left, and the
+  > byte after them in memory isn't touched.
+- [ ] φ₇ = 2, the number of bytes copied
+  > No: φ₇ is the item's whole length, however much of it was copied.
+- [x] 2 sevens are copied, and φ₇ = 32
+  > Yes: at most 10 bytes from byte 30, but only 2 exist. φ₇ says the whole item is 32.
+
+**During accumulation, a service asks `fetch` for item 7, a work-package. What does it get?**
+
+- [x] φ₇ = NONE: accumulation offers only items 0, 1, 14 and 15
+  > Yes: the host call exists, but this invocation has no such item. Refinement is where a
+  > work-package can be fetched.
+- [ ] φ₇ = WHAT
+  > No: WHAT means "no such host call", and accumulation's host knows `fetch`.
+- [ ] A panic
+  > No: `fetch` panics only when the memory at φ₇ isn't writable, like 0x50000 in the
+  > test. A missing item is an ordinary answer.
+
+**Service 1729 asks for item 14, all its inputs, and gets φ₇ = 1. Why 1?**
+
+- [ ] It has one input
+  > No: it has none. One input would be at least its length byte plus the input itself.
+- [x] Item 14 is a sequence with its length in front, so no inputs is just one byte, `00`
+  > Yes: the length, 0, encoded in one byte, and nothing after it.
+- [ ] 1 means the call worked
+  > No: `fetch`'s φ₇ is a length. OK, "it worked", is 0, and `fetch` doesn't use it.
+:::
+
 ## What you have
 
 A host that answers two questions, gas and fetch, and a real service that runs to a clean

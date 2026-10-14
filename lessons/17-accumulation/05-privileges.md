@@ -601,6 +601,53 @@ right now. Same answers; your way is shorter to read.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Who may set core 0's authorizer queue with `assign`?**
+
+- [ ] The manager, since it may change every privilege
+  > No: the manager changes who holds the privileges, with `bless`. `assign` itself
+  > answers `HUH` to anyone but the core's assigner.
+- [x] Core 0's assigner, and only it
+  > Yes: χ_A holds one assigner for each core. It sets the 80 hashes, and may hand the
+  > right on in the same call.
+- [ ] The delegator
+  > No: the delegator chooses the next validators' keys. Authorizers are the
+  > assigner's business.
+
+**In `assign_from_non_assigner-1`, service 1 calls `assign` for core 0, which service 0 holds. What happens?**
+
+- [ ] Service 1's run panics, and everything it did is undone
+  > No: a refusal is an answer, not a failure. Only an unreadable queue makes `assign`
+  > panic.
+- [x] It gets `HUH`, nothing changes, and its code carries on
+  > Yes: its code expects that, carries on, and uses exactly the vector's 1,305,017
+  > gas.
+- [ ] It gets `CORE`: core 0 isn't its core
+  > No: `CORE` means there's no such core. Tiny has cores 0 and 1, so core 0 exists.
+
+**Service 0 hands core 0 to service 1, then panics before any checkpoint. Who holds core 0?**
+
+- [x] Service 0, still
+  > Yes: the privileges are part of what a run can change, like the accounts. A panic
+  > goes back to the last checkpoint's, where service 0 holds core 0.
+- [ ] Service 1: a privilege, once handed over, can't be taken back
+  > No: nothing is handed over until the run ends well. A failure undoes it.
+- [ ] Nobody: a failed hand-over leaves the core without an assigner
+  > No: the panic restores the checkpoint's privileges whole, assigners and all.
+
+**Straight after handing core 0 to service 1, service 0 calls `assign` for core 0 again, in the same run. What does it get?**
+
+- [ ] `OK`: it was core 0's assigner when its run started
+  > No: `assign` checks the run's privileges as they are now, and they already say
+  > service 1.
+- [ ] `WHO`
+  > No: `WHO` means the next assigner, φ₉, is too big to be a service id.
+- [x] `HUH`
+  > Yes: it's no longer core 0's assigner. It gave that away a moment ago.
+:::
+
 ## What you have
 
 A record of who holds which privilege, and the first privileged call: a core's assigner

@@ -364,6 +364,50 @@ each signer's key up in the offenders list, where your client spots the blank th
 
 </details>
 
+## Check your understanding
+
+::: check
+**On tiny (R = 4), a block is at slot 13. Which guarantee slots are accepted?**
+
+- [ ] 12 and 13: this rotation only
+  > No: the last rotation counts too, slots 8 to 11.
+- [x] 8 to 13
+  > Yes: R(⌊13/4⌋ − 1) = 8 ≤ slot ≤ 13. This rotation or the last, and not the future.
+- [ ] 9 to 13: no more than R slots back
+  > No: rotations count whole. Slot 8 is in the last rotation, 8 to 11, so it counts.
+- [ ] 8 to 15: the whole of this rotation and the last
+  > No: a guarantee can't come from after its block. Slots 14 and 15 are
+  > `future_report_slot`.
+
+**On full, κ′ has shrunk to 6 validators. A guarantee for core 340 cites a slot in the last rotation, when core 340 was active. What happens?**
+
+- [ ] Accepted: the last rotation's assignment applies, and core 340 was active then
+  > No: the Gray Paper spells this out. The core must be active *now*.
+- [x] Refused, `bad_core_index`: an active core is below |κ′|/3 = 2
+  > Yes: 6 validators keep only cores 0 and 1 active, whatever the slot cited.
+- [ ] Refused, `wrong_assignment`
+  > No: it never gets that far. Rule 2, the core, comes first.
+
+**Why must a report's erasure shards be exactly |κ′|?**
+
+- [x] Its data is cut into one piece per validator, for each to hold and assure
+  > Yes: on tiny, 6 pieces for 6 validators. Another count wouldn't match the
+  > validators assuring it.
+- [ ] It's how many guarantors sign
+  > No: two or three sign. Every validator holds a piece.
+- [ ] It's how many cores there are
+  > No: cores and validators differ. Tiny has 2 cores and 6 validators.
+
+**In `wrong_assignment-1`, κ′'s validator 2 signs a real signature for core 0 this rotation, but it's assigned to core 1. What happens?**
+
+- [ ] Accepted: the signature is real
+  > No: a real signature from the wrong guarantor still doesn't count.
+- [ ] Refused, `bad_signature`
+  > No: the signature checks out. It's the seat that's wrong.
+- [x] Refused, `wrong_assignment`
+  > Yes: rule 9. Every signer must be assigned to the report's core.
+:::
+
 ## What you have
 
 Guarantees that are checked, not trusted: thirteen rules, and every reports vector's

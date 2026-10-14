@@ -360,6 +360,54 @@ writes a `compare_u64` for the `_u` branches, while your `bigint` values are uns
 
 </details>
 
+## Check your understanding
+
+::: check
+**r0 holds −1, all 64 bits set, and r1 holds 1. Does `branch_lt_u r0, r1` jump?**
+
+- [ ] Yes: −1 is less than 1
+  > No: that's `branch_lt_s`. Read unsigned, the same bits are 2^64 − 1, the biggest
+  > number there is.
+- [x] No: read unsigned, r0 is 2^64 − 1, which isn't less than 1
+  > Yes: same bits, two readings. `branch_lt_s` jumps on these registers, and
+  > `branch_lt_u` falls through.
+- [ ] It panics: a register can't hold −1
+  > No: it can, as 64 set bits. Whether they mean −1 or 2^64 − 1 is up to the instruction
+  > reading them.
+
+**Why do `branch_eq` and `branch_ne` have no `_u` and `_s` twins?**
+
+- [x] Equal bits are equal however you read them
+  > Yes: signed or unsigned changes which of two different numbers is bigger. It can't
+  > change whether they're the same.
+- [ ] Equality only makes sense for unsigned numbers
+  > No: −1 equals −1 just as well. Both readings always agree on equality, so one
+  > instruction is enough.
+
+**In `withCall`, `load_imm_jump` leaves 2 in r0. What is that 2?**
+
+- [ ] Byte 2 of the code
+  > No: byte 2 is in the middle of the call itself. The way back is an address for the
+  > jump table, not a place in the code.
+- [x] Jump-table address 2: the table's first entry, byte 4, just after the call
+  > Yes: addresses go (index + 1) · 2, so 2 is entry 0, which holds 4. The function
+  > returns with `jump_ind` through r0 and lands there.
+- [ ] Which function is being called
+  > No: where the function is comes from ν_Y, and the call jumps there, to 6. r0 holds
+  > the way *back*.
+
+**There's a `branch_le_u_imm`, but no `branch_le_u` with two registers. How does a program ask "is r0 ≤ r1?" in one instruction?**
+
+- [ ] With `branch_le_u_imm`, putting r1 in its immediate
+  > No: an immediate is a constant written in the code. It can't hold whatever r1 happens
+  > to be when the program runs.
+- [ ] With `branch_lt_u`, then `branch_eq`
+  > No: that's two instructions, and the question asks for one.
+- [x] With `branch_ge_u`, the registers swapped: r1 ≥ r0
+  > Yes: r0 ≤ r1 is the same question as r1 ≥ r0. The immediate branches need all ten,
+  > because the immediate always sits on the right.
+:::
+
 ## What you have
 
 Every branch, and calls both ways. Your machine now runs every instruction but eleven:

@@ -213,6 +213,51 @@ once you install `minifuzz`.
 
 </details>
 
+## Check your understanding
+
+::: check
+**What is a session?**
+
+- [ ] One block, sent and answered
+  > No: a session holds many blocks. A trace's 100 can go in one.
+- [ ] Everything since the target started
+  > No: a target serves one session after another, and each starts fresh, with its
+  > own handshake and Initialize.
+- [x] One connection, from handshake to goodbye: one Initialize, then as many blocks as the fuzzer sends
+  > Yes: your fuzzer's session is a handshake, genesis, then a trace's 100 blocks.
+
+**Your fuzzer sends `fuzzy` block 37. What answer passes?**
+
+- [x] An Error, whatever reason it gives
+  > Yes: the trace refuses the block, and doesn't say why. Any Error agrees with it.
+- [ ] The root after block 36, since the state stays as it was
+  > No: the state does stay as it was, but a refused block gets an Error, not a root.
+- [ ] Only an Error saying `bad_code_hash`
+  > No: the trace names no rule, so your fuzzer can't hold the target to one. A
+  > client that checks in another order could name another.
+
+**On the first wrong answer, why does the fuzzer send GetState?**
+
+- [ ] To reset the target to the state before the block
+  > No: GetState only asks. It changes nothing.
+- [x] To see the target's state at that block, and find which entries differ
+  > Yes: a root says only that something is wrong. The entries say where.
+- [ ] To give the target a second try at the block
+  > No: it asks for a state, by a header's hash, not for another import.
+
+**Your fuzzer and your target encode with the same codec. What mistake can't that catch?**
+
+- [ ] A wrong state root
+  > No: every root is checked against the trace's, which your code didn't make.
+- [ ] A block refused that should import
+  > No: the trace says which blocks it refuses, and your fuzzer checks each answer
+  > against it.
+- [x] A codec mistake both sides share
+  > Yes: if your codec writes a field wrongly, your fuzzer writes it the same wrong
+  > way, and your target reads it back fine. A fuzzer with a codec of its own, as
+  > lasair's sessions have, would catch it.
+:::
+
 ## What you have
 
 A target that has been through a fuzzer's session, over a real socket, on the hardest

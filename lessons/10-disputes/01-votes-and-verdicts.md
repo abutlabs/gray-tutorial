@@ -366,6 +366,50 @@ part of a rule the vectors never exercise is a part you have to read the Gray Pa
 
 </details>
 
+## Check your understanding
+
+::: check
+**On tiny, 6 judges. A verdict's 5 votes include 2 that say valid. What is the report?**
+
+- [ ] Bad, since most votes say invalid
+  > No: bad needs zero valid votes. A majority against isn't enough.
+- [x] Wonky
+  > Yes: 2 is ⌊6/3⌋, a third of the judges, the wonky row. Nobody can tell.
+- [ ] Refused: 2 isn't a split the table has
+  > No: 2 is exactly the wonky split. 3 valid would be refused.
+
+**On full, why does a good verdict need exactly 683 valid votes?**
+
+- [x] It's ⌊2 · 1,023/3⌋ + 1 = 682 + 1: more than two thirds of the 1,023 judges
+  > Yes: two thirds plus one. And since a verdict carries exactly that many votes, good
+  > means every vote in it says valid.
+- [ ] It's two thirds of 1,023, rounded up
+  > No: two thirds of 1,023 is exactly 682. 683 is one more.
+- [ ] Every one of the 1,023 validators must say valid
+  > No: a verdict carries only 683 votes, not 1,023.
+
+**A verdict's age is the epoch before this one. Whose keys check its votes, and how many judges count?**
+
+- [ ] κ's, since κ is the validator set now
+  > No: K picks κ only when the age is this epoch. Otherwise it's λ.
+- [ ] λ's keys, but the count is always against V
+  > No: the count is against |K|, the judges' own number. The validator set can change
+  > size between epochs.
+- [x] λ's keys, and the count is against λ's size
+  > Yes: the judges are λ, so two thirds plus one of λ, and λ's keys sign the votes.
+
+**Why does a vote sign `jam_valid` or `jam_invalid` before the report's hash, not the hash alone?**
+
+- [ ] A longer message makes the signature harder to forge
+  > No: an Ed25519 signature is 64 bytes, and as strong, whatever it signs.
+- [x] So a "valid" signature can't be passed off as an "invalid" one
+  > Yes: the prefix is part of the message. Same judge, same report, but the two votes
+  > sign different bytes.
+- [ ] To say which epoch the vote was cast in
+  > No: the epoch is the verdict's age, a separate field. The prefix says only which way
+  > the vote went.
+:::
+
 ## What you have
 
 A court clerk: every vote's signature checked against the right judges, every verdict

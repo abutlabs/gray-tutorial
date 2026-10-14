@@ -382,6 +382,50 @@ holds so far. It will hold more.
 
 </details>
 
+## Check your understanding
+
+::: check
+**A service writes a key, then runs out of gas. It never made a checkpoint. What does it leave?**
+
+- [x] Nothing it did: running out of gas keeps Y, still the state it started from
+  > Yes: the collapse treats out of gas just like a panic. Only a halt keeps X.
+- [ ] The write: running out of gas isn't the service's fault, so its work is kept
+  > No: whatever the reason, a service that didn't halt didn't finish, and its unfinished
+  > work goes.
+- [ ] The write: it went straight into the chain's state
+  > No: every host call changes X, a copy. The chain only gets whichever of X and Y
+  > survives at the end.
+
+**It writes "last", calls `checkpoint`, writes `"ast"`, then panics. Which keys are left?**
+
+- [ ] None
+  > No: the checkpoint copied X into Y, with "last" in it.
+- [x] "last" only
+  > Yes: Y has "last" from the checkpoint. `"ast"` was only ever in X, and a panic throws X
+  > away.
+- [ ] Both
+  > No: that's what a halt would keep. A panic keeps Y.
+
+**The same run, but at the end it halts instead. Which keys are left?**
+
+- [ ] "last" only, as the checkpoint said
+  > No: a checkpoint only matters if the service fails. A halt keeps X, everything.
+- [ ] None
+  > No: a halt keeps every change the service made.
+- [x] Both, "last" and `"ast"`
+  > Yes: X has both writes, and a halt keeps X.
+
+**Why must Y be a true copy, not the same accounts shared with X?**
+
+- [x] Otherwise a write after the checkpoint would change Y too, and a panic couldn't undo it
+  > Yes: a copy of the `Map` alone shares each account's storage. `"ast"` would land in both,
+  > and survive the panic.
+- [ ] A true copy takes less memory
+  > No: it takes more. Correctness is the reason.
+- [ ] Y is what gets written to the chain, so it needs its own memory
+  > No: only one of X and Y survives, and which one depends on how the service stops.
+:::
+
 ## What you have
 
 A whole accumulation, Ψ_A, that keeps what a service does when it succeeds, and falls

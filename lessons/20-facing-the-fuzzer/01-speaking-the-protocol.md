@@ -118,7 +118,7 @@ The README's PeerInfo example, byte by byte:
 ```text
 00                      kind 0: PeerInfo
 01                      fuzz_version 1, a u8
-02 00 00 00             fuzz_features 2, a u32: bit 2, forks
+02 00 00 00             fuzz_features 2, a u32: the forks flag
 00 07 00                jam_version 0.7.0: three u8s
 00 01 19                app_version 0.1.25 (0x19 is 25)
 06 66 75 7a 7a 65 72    app_name: its length, 6, then "fuzzer" in UTF-8
@@ -296,6 +296,62 @@ version string just below this comment in lasair's file is a long changelog, and
 read: most of its entries are a bug the fuzzer found that no test vector had.
 
 </details>
+
+## Check your understanding
+
+::: check
+**What does the conformance fuzzer know of your client?**
+
+- [ ] Its tests: it runs them and reads the results
+  > No: it never sees your tests. It makes blocks of its own.
+- [x] Only what it answers over the socket
+  > Yes: it's a black box to the fuzzer. A block goes in, a root or an Error comes
+  > out, and the fuzzer compares the root with its own.
+- [ ] Its state, which the fuzzer reads straight from its memory
+  > No: it can't reach inside. When it wants a state, it asks for one, with GetState.
+
+**A StateRoot message goes on the socket as `21 00 00 00`, then 33 bytes. Why 33, for a 32-byte root?**
+
+- [ ] The length counts its own four bytes too
+  > No: then it would say 37. The length counts only the message after it.
+- [x] One byte for the kind, `02`, then the 32-byte root
+  > Yes: every message starts with its kind. 1 + 32 = 33, and 33 is `0x21`, written
+  > little end first.
+- [ ] A state root is 33 bytes long in the fuzzer's protocol
+  > No: a root is 32 bytes, here as everywhere. The extra byte is the kind.
+
+**Why does every message go on the socket with its length in front?**
+
+- [ ] So the reader can check that no byte was damaged
+  > No: a length can't tell a changed byte from the right one. It only says how many
+  > bytes to wait for.
+- [ ] The JAM codec needs it to read a block
+  > No: your codec has read blocks since [Part 4](../04-blocks/index.md), with no length in front.
+- [x] A socket hands over bytes in pieces of any size, so the reader must know where each message ends
+  > Yes: the third test feeds two messages in three bytes at a time. With the length,
+  > `readFrames` waits until all of one message is there.
+
+**In the README's PeerInfo, `app_name` is `06 66 75 7a 7a 65 72`. What is the `06`?**
+
+- [x] The name's length: "fuzzer" is six bytes
+  > Yes: a blob has its length in front, then its bytes. `66 75 7a 7a 65 72` is
+  > "fuzzer" in UTF-8.
+- [ ] The message's kind
+  > No: the kind is the very first byte, `00` for PeerInfo. No message starts with 6.
+- [ ] The app's version
+  > No: that's the three bytes just before, `00 01 19`, version 0.1.25.
+
+**Why can't your 0.8.0 codec read the protocol's recorded example sessions?**
+
+- [ ] The protocol's messages changed in 0.8.0
+  > No: the README's three examples don't change between versions, and your codec
+  > reads them byte for byte.
+- [ ] They're compressed
+  > No: they're plain JAM-codec bytes, the same as any message.
+- [x] They're for Gray Paper 0.7.0 and 0.7.2, whose blocks are laid out a little differently
+  > Yes: the envelope is the same, but a block inside is in the older layout. So the
+  > tests make Initialize and ImportBlock from the 0.8.0 traces instead.
+:::
 
 ## What you have
 

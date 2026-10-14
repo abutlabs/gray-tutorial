@@ -274,6 +274,60 @@ carries the old η₁.)
 
 </details>
 
+## Check your understanding
+
+::: check
+**How is slot i's fallback sealer chosen?**
+
+- [ ] In turn: validator i mod 6, on tiny
+  > No: then every validator would get two of tiny's 12 slots. In the vector, validator 1
+  > gets five.
+- [x] Hash η′₂ with ℰ₄(i), read the first four bytes as a number, and take that validator of κ′, counted round
+  > Yes: one hash per slot, a fresh draw each time, from values fixed before the epoch
+  > began.
+- [ ] By the ticket lottery, best tickets first
+  > No: the fallback is for when the lottery didn't fill the epoch. It needs no tickets at
+  > all.
+
+**Why does F use η′₂, and not η₀?**
+
+- [ ] η₀ isn't kept in the state
+  > No: it is, in C(6), with the other three.
+- [ ] η₂ has been stirred the most, so it's the most random
+  > No: η′₂ stopped being stirred two epochs back. η₀ has been stirred more.
+- [x] η′₂ was fixed before the epoch began, so nobody could have steered it
+  > Yes: η₀ changes with every block, so it depends on who made the latest ones. η′₂, like
+  > κ′, was settled before anyone could aim at a slot.
+
+**In `enact-epoch-change-with-no-tickets-4`, validator 1 seals 5 of the 12 slots, and validators 2, 3 and 4 one each. Why so uneven?**
+
+- [x] Each slot is a fresh draw, so some validators get lucky
+  > Yes: that's what picking by hash does. Nobody is guaranteed a turn.
+- [ ] Validator 1 has more at stake, so it gets more slots
+  > No: F looks at nothing but the hash and the list. Every validator has the same chance
+  > at every slot.
+- [ ] It's a bug: each validator should get two of the twelve
+  > No: the vector agrees with your client, slot for slot. Nothing in F evens things out.
+
+**At a new epoch, F picks from κ′. Which set of the state before the block is that?**
+
+- [ ] κ, the validators active until now
+  > No: κ′ is the *new* active set. The old κ moves on to λ.
+- [x] γ_P, the pending set, which has just become active
+  > Yes: κ′ = γ_P ([lesson 8.2](./02-rotating-the-validators.md)). That's why `bin/sealers.ts` reads `pre_state.gamma_k`.
+- [ ] γ′_P, the set the epoch mark announces
+  > No: that set is for the epoch after. lasair once picked from it, and test data with
+  > identical sets hid the bug.
+
+**Is the fallback secret, as the lottery is?**
+
+- [ ] Yes: nobody learns who seals a slot until its block arrives
+  > No: that's the lottery, with its secret tickets. The fallback has no secrets.
+- [x] No: every node can work it out, but nobody could have steered it
+  > Yes: η′₂ and κ′ are in the state, so any node can run F. What it gives up is secrecy,
+  > not fairness.
+:::
+
 ## What you have
 
 A Plan B for every epoch: sealers chosen by hash from the new validators, the same on

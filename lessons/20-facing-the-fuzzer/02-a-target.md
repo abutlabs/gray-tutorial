@@ -440,6 +440,52 @@ leaves to [HARDENING.md](https://github.com/abutlabs/the-gray-tutor/blob/main/HA
 
 </details>
 
+## Check your understanding
+
+::: check
+**Why must a target keep more than one state?**
+
+- [ ] To undo a refused block
+  > No: a refused block changes nothing, so there's nothing to undo.
+- [x] Several blocks may be built on the same parent, so it must import onto any state it has made
+  > Yes: the fuzzer sends a few broken versions of a block before the real one, each
+  > on the same parent. Each needs that parent's state, not the newest.
+- [ ] So GetState can answer for every block of the session
+  > No: it keeps only 32 states. Forks are one block deep, so that's plenty.
+
+**Why can't the state transition check, alone, that a lookup anchor is one of the chain's blocks?**
+
+- [x] β remembers only eight blocks, and an anchor can be up to L = 24 slots old on tiny
+  > Yes: the state hasn't kept the blocks to check against. So the target keeps the
+  > last L blocks itself, the ancestry.
+- [ ] An anchor is a hash, and a hash can't be checked
+  > No: it's checked the easy way, by finding a block with that hash and slot in the
+  > ancestry.
+- [ ] The Gray Paper makes the check optional
+  > No: §11 asks for it. The protocol says to skip it only when the ancestry feature
+  > is off, since then the target has nothing to check against.
+
+**The fuzzer offers features 1 (ancestry); your target offers 1 | 2 = 3. What does the session use?**
+
+- [ ] 3: everything either side can do
+  > No: that's OR. A feature only works if both sides do it.
+- [x] 1: ancestry only
+  > Yes: 1 AND 3 = 1. The fuzzer doesn't do forks, so the session doesn't.
+- [ ] 2: forks only
+  > No: the fuzzer didn't offer forks. 2 is the bit only your target has.
+
+**The fuzzer sends a broken block, and the target answers with an Error. What happens to the states it keeps?**
+
+- [ ] The parent's state is dropped, since a bad block was built on it
+  > No: the parent is still good, and the real block will need it next.
+- [x] Nothing: no new state is kept, and the parent's is still there
+  > Yes: a refused block changes nothing. The next block on the same parent imports
+  > as if the broken one never came.
+- [ ] The session ends, and the fuzzer must start a new one
+  > No: an Error is an answer like any other, and the session goes on to the next
+  > message.
+:::
+
 ## What you have
 
 A fuzz target: the handshake, a state from Initialize, blocks imported onto any state it

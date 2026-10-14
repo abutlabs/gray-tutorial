@@ -29,7 +29,9 @@ All three are in the [glossary](../glossary.md). (*Round* itself is from [lesson
    sent to runs once, all from the same accounts, as in any round. Its transfers come
    first among its inputs, then any operands; its gas is all of their gas added up.
 3. **The money comes first.** Before a receiver's code runs, the amounts go into its
-   balance. That happens even if it has no code at all, and then nothing else does.
+   balance. That happens even if it has no code at all, and then nothing else does. And
+   it stays even if the receiver's code then panics: a panic undoes what the run did, and
+   the money was there before the run began.
 4. **Again and again.** Round 2's transfers make round 3, and so on, until a round
    sends nothing.
 5. **The statistics count every round.** G adds up each service's gas over all the
@@ -465,6 +467,55 @@ first pass leaves out: what's left, plus the new transfers' gas, minus what the 
 used.
 
 </details>
+
+## Check your understanding
+
+::: check
+**Why does the gift's block take two rounds?**
+
+- [ ] Two services accumulate, and each needs a round of its own
+  > No: one round can run many services. In `same_round_storage_isolation-1`, two ran
+  > side by side in one.
+- [x] Round 1 sends a transfer, round 2 delivers it, and round 2 sends nothing
+  > Yes: a transfer arrives in the round after it was sent. Service 1 runs in round 2
+  > with the gift and sends nothing, so there's no round 3.
+- [ ] Service 0 used up round 1's gas
+  > No: it used 255,437 of tiny's 20,000,000. The second round is for the transfer
+  > alone.
+
+**Service 1 receives the 100, then its code panics, with no checkpoint. Does it keep the 100?**
+
+- [ ] No: a panic undoes everything, as it undid the sending in [lesson 17.3](./03-sending-a-transfer.md)
+  > No: a panic undoes what the run itself did. The money went in before service 1's
+  > code ran, so it's part of the state the run started from.
+- [ ] No: the money goes back to service 0
+  > No: nothing goes back. Service 0 paid in round 1, and its run is over.
+- [x] Yes: the money arrives before the code runs
+  > Yes: the amounts go into the balance first, and both the run and its checkpoint
+  > start from there. The money would arrive even with no code at all.
+
+**After the block, service 1's statistics are (0, 1, 61,711). Does its last-accumulation slot change?**
+
+- [x] Yes: a service that only received a transfer still counts
+  > Yes: no digests, one transfer, 61,711 gas in round 2. S(s) isn't (0, 0, 0), so
+  > service 1 gets this block's slot.
+- [ ] No: it accumulated no digests, so it didn't really accumulate
+  > No: receiving a transfer is accumulating too. T counts the transfers, and any
+  > S(s) that isn't (0, 0, 0) sets the slot.
+- [ ] Only if the transfer brought more gas than it used
+  > No: leftover gas doesn't come into it. What counts is that S(s) isn't (0, 0, 0).
+
+**Why is Δ+ sure to stop?**
+
+- [ ] A service may send only one transfer in a block
+  > No: a run may send as many as it can pay for.
+- [ ] The Gray Paper allows at most three rounds
+  > No: there's no fixed number of rounds. Δ+ stops when a round sends nothing.
+- [x] Each later round has less gas than the one before
+  > Yes: after round 1, a service has only the gas its transfers brought, and every
+  > transfer it sends on costs at least 575 of that. The gas shrinks, so the
+  > transfers must stop.
+:::
 
 ## What you have
 

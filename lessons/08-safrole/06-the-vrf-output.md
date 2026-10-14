@@ -301,6 +301,52 @@ named above. lasair asks its Rust library for the same hash
 
 </details>
 
+## Check your understanding
+
+::: check
+**How does your client get 𝒴(H_V) from the 96-byte entropy source?**
+
+- [ ] It takes the first 32 bytes, as they are
+  > No: those 32 bytes are the output point. 𝒴 is a hash of it.
+- [x] SHA-512 of the suite's name, a 3, the first 32 bytes and a 0, cut to 32 bytes
+  > Yes: RFC 9381's output hash. The 3 and the 0 make sure it can't be mistaken for any
+  > other hash of the same bytes.
+- [ ] Blake2b of all 96 bytes
+  > No: Blake2b is JAM's usual hash, but a VRF's output follows its own suite: SHA-512, of
+  > the output point only.
+
+**Your client now reads every block's VRF output. Does that mean it checks the signatures?**
+
+- [ ] Yes: a forged signature would give the wrong output
+  > No: anyone can write any 32 bytes into a header, and your client hashes them without
+  > question. Checking needs the curve's arithmetic.
+- [x] No: reading the output takes the block's word; checking waits for [lesson 8.9](./09-seals.md)
+  > Yes: that's fine for the official traces, where every block is honest, and not for a
+  > stranger's block.
+
+**Blocks 2 and 3 of the `safrole` trace have the same entropy source, byte for byte. Why?**
+
+- [ ] One block was replayed, and the chain should have refused it
+  > No: they're two different blocks, at slots 2 and 3, and both are accepted.
+- [x] The same validator made both for the same input, and a VRF's output depends only on the key and the input
+  > Yes: in a fallback epoch the input is the same for every block a validator seals, so
+  > validator 3's randomness is the same twice.
+- [ ] η₀ didn't change between the two blocks
+  > No: it did, `0x8087a00e…` to `0x6599553b…`, because each block hashes the output in
+  > with the η₀ before it. η₀ isn't part of the VRF's input.
+
+**What is a ticket's id, and why can't a validator just give itself a low one?**
+
+- [ ] A number the validator draws at random, which it reports honestly
+  > No: honesty can't be checked. If validators chose their own ids, a cheat would always
+  > pick a low one.
+- [ ] The hash of the validator's key and the attempt
+  > No: then anyone could work out every validator's ids, and see who holds each winning
+  > ticket. The lottery would have no secrets.
+- [x] 𝒴 of its ring proof: a VRF output, which no validator can choose
+  > Yes: the same 𝒴 as the entropy source's. Lower is better, but nobody can aim low.
+:::
+
 ## What you have
 
 The VRF output of any signature, with nothing but SHA-512: ticket ids, and η′ for every

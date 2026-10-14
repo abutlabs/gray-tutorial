@@ -322,6 +322,58 @@ your fresh copy for each service.
 
 </details>
 
+## Check your understanding
+
+::: check
+**In `same_round_storage_isolation-1`, services 1729 and 1730 accumulate in one round. Can 1730 read the key 1729 writes?**
+
+- [ ] Yes: 1729 has the lower id, so it runs first, and 1730 sees its write
+  > No: the order makes no difference. Each service gets its own fresh copy of the
+  > accounts as they were before the round, so neither sees what the other writes.
+- [x] No: both start from the accounts as they were before the round
+  > Yes: that's what a round is. Each keeps its own account as its run leaves it, and
+  > the round puts those together afterwards: 1729 with its key, 1730 with its own.
+- [ ] Only once 1729 has halted and its write is saved
+  > No: the runs' accounts are put together after the whole round, too late for
+  > 1730's run, which started from the same accounts as 1729's.
+
+**In `same_code_different_services-1`, service 1730 has a digest but no code to run. What do its statistics say?**
+
+- [ ] Nothing: it ran nothing, so it gets no statistics
+  > No: a digest counts even when nothing runs. 1730 accumulated one, so it gets
+  > statistics, and its last-accumulation slot becomes 43, the block's.
+- [ ] Nothing: the block is invalid, with a digest for a service that has no code
+  > No: the block is fine. A service whose code's preimage isn't there simply runs
+  > nothing.
+- [x] One digest, no transfers, 0 gas
+  > Yes: (1, 0, 0). It used no gas because nothing ran, but its digest still counts,
+  > and its last-accumulation slot becomes 43.
+
+**Which of a block's newly available reports does step 1 accumulate straight away?**
+
+- [x] Those with no prerequisites and no segment-root lookups
+  > Yes: a report with either kind of dependency must wait for other work to go first.
+  > It waits in a queue: [lesson 17.2](./02-waiting-reports.md).
+- [ ] All of them, in the order they became available
+  > No: a report that names a prerequisite waits until that package has been
+  > accumulated. Several vectors pass here only because those reports are left alone.
+- [ ] Those whose service has enough balance to pay for the gas
+  > No: balance doesn't come into it. What decides is whether the report depends on
+  > other work.
+
+**`always_accumulate-1` has no reports at all. Does service 1729, an always-accumulate service, run?**
+
+- [ ] No: with no digest, it has nothing to do
+  > No: an always-accumulate service runs every block, digests or not. That's its
+  > privilege.
+- [x] Yes, on its free gas
+  > Yes: it has 100,000 free gas, uses 16,417 of it, and gets the statistics (0, 0,
+  > 16,417) and slot 43.
+- [ ] Yes, but free gas only tops up its digests' gas, so with none it uses 0
+  > No: free gas is gas in its own right. 1729 runs on its 100,000 with no digest at
+  > all.
+:::
+
 ## What you have
 
 A whole block's accumulation, in its simplest form, matching 29 official vectors on every

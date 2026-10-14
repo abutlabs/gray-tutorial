@@ -269,6 +269,50 @@ with no shifts, no masks and no special case.
 
 </details>
 
+## Check your understanding
+
+::: check
+**`leading_zero_bits_64` of 0x1f0 is 55. Why is `leading_zero_bits_32` 23?**
+
+- [x] The `_32` form sees only the low 32 bits: 32 − 9 = 23
+  > Yes: 0x1f0's highest 1 is bit 8, so 9 bits are in use. 64 − 9 = 55, and 32 − 9 = 23.
+- [ ] It counts the zeros at the bottom instead
+  > No: that's `trailing_zero_bits`, 4 here. Both `leading` forms count the zeros above
+  > the highest 1.
+- [ ] 55 doesn't fit in 32 bits, so it wraps
+  > No: 55 fits with room to spare. The upper 32 bits, all zeros, simply aren't looked at.
+
+**`sign_extend_8` of 0x1f0?**
+
+- [ ] 496
+  > No: that's the whole value, 0x1f0. `sign_extend_8` takes only the lowest byte.
+- [ ] 240
+  > No: that's the lowest byte, 0xf0, read unsigned. `sign_extend_8` reads it signed.
+- [x] −16
+  > Yes: 0xf0's top bit is 1, so signed it's 240 − 256 = −16, written into the register
+  > as 0xfffffffffffffff0.
+
+**`trailing_zero_bits_64` of 0?**
+
+- [ ] 0
+  > No: 0 would mean bit 0 is a 1. Zero has no 1 anywhere.
+- [x] 64
+  > Yes: there's no 1 to stop at, so every bit counts: 64, or 32 for the `_32` form.
+- [ ] A panic: there's no lowest 1 to find
+  > No: the count is defined for zero. Your code needs no special case for it either: its
+  > string of bits is all 0s.
+
+**`reverse_bytes` of 0x0102030405060708?**
+
+- [ ] 0x8070605040302010
+  > No: that reverses the hex digits, which swaps the halves of each byte too. Bytes move
+  > whole.
+- [x] 0x0807060504030201
+  > Yes: the 8 bytes turned round, first to last, each byte unchanged.
+- [ ] 0x10e060a020c04080
+  > No: that reverses all 64 bits. `reverse_bytes` moves bytes, so `08` stays `08`.
+:::
+
 ## What you have
 
 Every instruction in the Gray Paper's tables, bar one: `ecalli`, the door out of the

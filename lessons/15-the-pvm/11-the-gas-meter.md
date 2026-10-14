@@ -279,6 +279,54 @@ meter prices the block starting at ı: the simple road in the note above.
 
 </details>
 
+## Check your understanding
+
+::: check
+**A `jump` to itself costs 15 a lap, and the machine starts with 100 gas. How does it end?**
+
+- [ ] It loops forever: it's one block, so it's paid for once
+  > No: a jump back to the start of a block pays for it again. That's how a loop pays
+  > every lap.
+- [ ] oog with 0 left: the last lap takes the final 10
+  > No: a block is paid for in full or not at all. 10 can't buy part of a 15-gas lap.
+- [x] oog after six laps, with 10 left
+  > Yes: 6 × 15 = 90, and 10 isn't enough for a seventh lap. The gas stays at 10.
+
+**A block, `load_imm r2, 7` then `trap`, costs 2, and the machine has 1 gas. What happens?**
+
+- [ ] The `load_imm` runs, and the machine runs out at the `trap`
+  > No: the whole block is paid for on the way in. Without 2 gas, not one instruction of
+  > it runs.
+- [x] oog straight away: r2 stays 0, and the gas stays 1
+  > Yes: nothing changes when a block can't be paid for. With 2 gas, both run: r2 = 7,
+  > then the `trap` panics with 0 gas left.
+- [ ] The gas goes to −1, and the machine panics
+  > No: gas never goes below 0. The meter refuses before it charges.
+
+**On 100 gas, the bootstrap service reaches a block that costs 73 with 32 left. Why not run as much of the block as 32 buys?**
+
+- [x] A block is paid for in full on the way in, or not entered at all
+  > Yes: the machine stops oog at 121410, the block's start, with all 32 still there.
+- [ ] The 32 is kept back for the host call
+  > No: nothing is set aside. The meter only compares the gas left with the block's
+  > price.
+- [ ] It does run part of the block, and stops when the 32 runs out
+  > No: no instruction of a block runs before the whole block is paid for. That's the
+  > rule.
+
+**The machine stops at an `ecalli` in the middle of a block, and the host answers. Does the rest of that block cost anything?**
+
+- [ ] Yes: each time the machine starts again, it pays for its block
+  > No: the flag goes off only after a terminator that carries on, and `ecalli` isn't a
+  > terminator.
+- [x] No: the block was paid for on the way in, and `ecalli` doesn't end it
+  > Yes: the paid flag stays on through the host call, so the rest of the block is
+  > already paid for.
+- [ ] No: a host call makes everything after it free
+  > No: only the rest of this block, already paid for. The next block pays as usual, and
+  > the `ecalli`'s own 100 cycles were in this block's price, 102.
+:::
+
 ## What you have
 
 A complete PVM: every instruction, memory, a real program's setup, host calls as a way

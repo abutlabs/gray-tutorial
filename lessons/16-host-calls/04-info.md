@@ -26,6 +26,10 @@ whose: a service id, or 2^64 − 1 for the service itself. The record goes out a
 It costs 703, and then it works exactly like `fetch`, only one register along: φ₈ is the
 address, φ₉ the first byte wanted, φ₁₀ how many. No such service: NONE.
 
+NONE is 2^64 − 1 too, the same number that means "the service itself" going in. Which one
+it is depends only on the direction: in φ₇ on the way in, it asks about yourself; in φ₇ on
+the way out, it says there's no such service.
+
 Accumulation's F hands `info` two things: X's service id, and the accounts as the context X
 holds them. So accumulation needs a little bundle of its own: which service is running,
 the accounts, the code, the entropy and the inputs.
@@ -344,6 +348,53 @@ items and bytes in the middle of an accumulation, the cached value is out of dat
 out on the spot, as both clients do here, it can't go stale.
 
 </details>
+
+## Check your understanding
+
+::: check
+**A service calls `info` with φ₇ = 2^64 − 1. Whose record does it get?**
+
+- [ ] Nobody's: 2^64 − 1 is NONE
+  > No: NONE is what the host writes back for "no such item". Going in, the same number
+  > means "myself".
+- [x] Its own
+  > Yes: the test asks with 2^64 − 1 and gets service 0's record, its code hash of nines
+  > first.
+- [ ] The newest service in the accounts
+  > No: a service is named by its id. 2^64 − 1 stands for the one asking.
+
+**The made-up record keeps 2 items in 50 bytes, with no gratis storage. Why is its a_t 170?**
+
+- [ ] The record stores 170
+  > No: the record doesn't keep a_t at all. `info` works it out.
+- [x] 100 to exist, 10 for each of its 2 items, 1 for each of its 50 bytes: 100 + 20 + 50
+  > Yes: the minimum balance, worked out from the footprint, and written as bytes 40 to 47
+  > of the 96.
+- [ ] It's the balance, 1,000, less what the items cost
+  > No: a_t doesn't depend on the balance. It's what the service must keep, whatever it
+  > has.
+
+**Why is a_t worked out on the spot, not kept with the record?**
+
+- [x] A `write` in the middle of an accumulation changes the items and bytes, so a kept copy would go stale
+  > Yes: lasair's accounts carry a cached copy, and its comment says why `info` mustn't
+  > use it.
+- [ ] Keeping it would make the 96 bytes longer
+  > No: the 96 bytes include a_t either way. The question is only where its value comes
+  > from.
+- [ ] Working it out costs less gas
+  > No: `info` costs a flat 703 either way.
+
+**A service asks `info` about service 42, which doesn't exist. What happens?**
+
+- [ ] A panic
+  > No: `info` panics only when it can't write to the memory at φ₈.
+- [ ] 96 zero bytes are written
+  > No: nothing is written at all.
+- [x] φ₇ = NONE, and the machine carries on
+  > Yes: no such service is an ordinary answer, and the service decides what to do with
+  > it.
+:::
 
 ## What you have
 

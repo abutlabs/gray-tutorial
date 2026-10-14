@@ -347,6 +347,53 @@ back. Same order, a different way to see it. Try a few slots by hand: both give 
 
 </details>
 
+## Check your understanding
+
+::: check
+**Twelve winners, sorted from t0, the best, to t11. Which ticket seals slot 3 of the next epoch?**
+
+- [ ] t3
+  > No: that's sorted order. Z goes outside in: t0, t11, t1, t10, and so on.
+- [x] t10
+  > Yes: slot 0 gets t0, slot 1 t11, slot 2 t1, slot 3 t10. Even slots count up from the
+  > front, odd ones down from the back.
+- [ ] t1
+  > No: t1 is slot 2's. Slot 3 takes the next one from the back, t10.
+
+**Tiny's lottery is full. A block at slot 3 is followed by one at slot 11, in the same epoch. Does the slot-11 block carry the tickets mark?**
+
+- [x] Yes: it's the block that crosses phase 10, since m = 3 < Y ≤ m′ = 11
+  > Yes: there was no block at slot 10, and none is needed. The mark goes in the first
+  > block to reach Y. That's `publish-tickets-with-mark-4`.
+- [ ] No: only a block at exactly phase 10 can carry it
+  > No: slots can be empty. The rule is m < Y ≤ m′, and a jump from 3 to 11 meets it.
+- [ ] No: the lottery closed at phase 10, so slot 11 is too late
+  > No: the mark announces the close, in the first block after it. Only a block whose
+  > previous block was already at Y or past it is too late.
+
+**Two tickets' ids start `0x00e5` and `0xff0a`. Which is better?**
+
+- [ ] `0xff0a`, the higher
+  > No: lower is better. `0xff0a…` was ticket 11, the worst of the twelve winners.
+- [x] `0x00e5`, the lower
+  > Yes: γ_A keeps its tickets sorted by id, lowest first, and ticket 0, `0x00e5…`, took
+  > slot 0.
+- [ ] Neither: ids are random, so they don't rank
+  > No: an id is random when it's made, but then it's a number, and the lottery keeps the
+  > lowest. Chance decides who gets a low one, not whether low wins.
+
+**The lottery fills up, but the chain then skips a whole epoch. Who seals the epoch it lands in?**
+
+- [ ] The winners, outside in, as usual
+  > No: they won slots in the epoch straight after theirs, e′ = e + 1, and that epoch went
+  > by without a block.
+- [ ] Nobody, until the next lottery
+  > No: JAM never leaves a slot unclaimed. That's what the fallback is for.
+- [x] The fallback keys
+  > Yes: the winners need e′ = e + 1. Any other new epoch is sealed by
+  > [lesson 8.3](./03-the-fallback-sealers.md)'s fallback.
+:::
+
 ## What you have
 
 The lottery's endgame: closing on time, announcing the winners, and seating them, outside

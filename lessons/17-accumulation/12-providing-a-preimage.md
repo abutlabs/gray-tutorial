@@ -540,6 +540,53 @@ needs none. The request becomes `[input.ai_slot]`, the block's slot.
 
 </details>
 
+## Check your understanding
+
+::: check
+**In `provide_preimage-1`, service 0 provides the 8 bytes "preimage" to itself, and gets `HUH`. Why?**
+
+- [ ] A service can't provide a preimage to itself
+  > No: it can. φ₇ = 2^64 − 1 means "this service", and the lesson's first test does
+  > just that.
+- [x] It never asked for those bytes
+  > Yes: `provide` hands over only what a service asked for and still waits for: a
+  > request that reads `[]`.
+- [ ] 8 bytes is too short to be a preimage
+  > No: any length below 2^32 will do. The same 8 bytes reach 1729 in the next vector.
+
+**In `provide_preimage-2`, service 0 provides them to service 1729, which asked. When does 1729 have them?**
+
+- [ ] As soon as `provide` answers `OK`
+  > No: nothing is delivered then. The provision only joins the run's 𝐩.
+- [ ] In a later block, through the preimages extrinsic
+  > No: that's the other way in, and it isn't needed here.
+- [x] At the end of the round, after the accounts are merged
+  > Yes: then 1729's preimage is stored, and its request reads `[44]`, this block's
+  > slot.
+
+**Why does a provision wait for the end of the round?**
+
+- [x] It changes an account the giver doesn't own
+  > Yes: every run starts from the same accounts. Delivering afterwards keeps the runs
+  > independent, as with transfers.
+- [ ] So the giver can take it back if it changes its mind
+  > No: there's no taking back. Only a panic or running out of gas drops a provision,
+  > and only one made since the last checkpoint.
+- [ ] Because `provide` is paid for at the end of the round
+  > No: its gas, 3,980 plus 2,264 for every 1,024 bytes, is charged at the call.
+
+**Services 0 and 5 both provide the same 8 bytes to 1729, in the same round. What happens?**
+
+- [ ] Service 5 gets `HUH`, because service 0 provided them already
+  > No: neither run sees the other's provisions. `HUH` is for one run providing the
+  > same thing twice.
+- [x] Both get `OK`, and 1729 stores the bytes once
+  > Yes: both runs see 1729 still waiting. At delivery the first is stored, the
+  > request reads `[44]`, and the second, no longer awaited, is dropped.
+- [ ] 1729 gets two copies
+  > No: a preimage is stored once, under its hash. The extra one is dropped quietly.
+:::
+
 ## What you have
 
 Preimages handed from service to service, kept or dropped by a checkpoint, and delivered

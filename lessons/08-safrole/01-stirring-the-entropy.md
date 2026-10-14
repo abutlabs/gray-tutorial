@@ -277,6 +277,54 @@ header and computes Y itself, with a Bandersnatch library. Your client will too,
 
 </details>
 
+## Check your understanding
+
+::: check
+**η′₀ = H(η₀ ⌢ Y(H_V)). Why can't a block's author steer what goes into η?**
+
+- [ ] The author doesn't know η₀ when it makes the block
+  > No: η₀ is in the state, which every node knows. The author knows it as well as anyone.
+- [x] Y(H_V) is a VRF output: for the author's key and its input, it comes out one way only
+  > Yes: the author makes the signature but can't pick its output, and everyone can check
+  > it was made honestly.
+- [ ] The hash H scrambles whatever the author puts in
+  > No: a hash gives the same result for the same input. An author free to choose the
+  > input could try one after another until it liked the result. The VRF takes that choice
+  > away.
+
+**In a block that doesn't start an epoch, which parts of η change?**
+
+- [x] Only η₀
+  > Yes: every block stirs its VRF output into η₀. η₁ to η₃ move only at a new epoch.
+- [ ] All four, each moving along one
+  > No: that's a new epoch. In `publish-tickets-no-mark-2.json`, with no new epoch, only η₀
+  > changes.
+- [ ] None: entropy changes only at a new epoch
+  > No: every block stirs η₀. That's what keeps it fresh.
+
+**In `skip-epochs-1`, tiny jumps from slot 10 to slot 46, over two whole epochs. How far does the history move?**
+
+- [ ] Three places, one for each epoch boundary crossed
+  > No: the Gray Paper only asks *whether* a new epoch began. Slot 10 is in epoch 0 and
+  > slot 46 in epoch 3, so one did, and the history moves once.
+- [ ] Not at all: slot 46 isn't the first slot of an epoch
+  > No: the rule compares epochs, not phases. Epoch 3 is greater than epoch 0.
+- [x] One place, as at any new epoch
+  > Yes: η′₁ is the old η₀, η′₂ the old η₁, η′₃ the old η₂, once. Your η′ matches the
+  > vector's.
+
+**A vector's `output` is an `err`. What does its block do to the state?**
+
+- [ ] It stirs η₀ anyway, since every block does
+  > No: a refused block isn't part of the chain, so nothing in it counts, its randomness
+  > included.
+- [x] Nothing: a refused block changes nothing
+  > Yes: its `post_state` is its `pre_state`, exactly. That's why the test can skip it for
+  > now.
+- [ ] Everything except the part that broke a rule
+  > No: a block is taken whole or not at all.
+:::
+
 ## What you have
 
 The randomness at the heart of Safrole: stirred every block, set aside every epoch. A new epoch moves more than entropy:

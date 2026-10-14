@@ -406,6 +406,53 @@ values, as it did against the test vectors.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Why must the whole state be written back byte for byte, not just nearly right?**
+
+- [ ] Every block changes every component
+  > No: many stay as they were. A block with no disputes leaves ψ as it was. Those
+  > components still have to be written exactly.
+- [x] The state root fingerprints every byte, so one wrong byte gives another root
+  > Yes: the root is the whole state in 32 bytes. One byte off anywhere, and your
+  > client's root is no longer the chain's.
+- [ ] Only the components a service reads need to be exact
+  > No: the root covers all sixteen components and every account's entries, read or
+  > not.
+
+**Before block 50 of `storage`, the state has 171 entries. Where does 171 come from?**
+
+- [ ] The state has 171 components
+  > No: it has sixteen, C(1) to C(16).
+- [ ] 154 storage values, then 17 preimages
+  > No: from the state alone, a storage value can't be told from a preimage. The 154
+  > are service 0's entries, of whatever kind.
+- [x] Sixteen components, service 0's record, and the 154 entries it keeps
+  > Yes: 16 + 1 + 154 = 171. The second test checks exactly that: nothing left over.
+
+**An entry's key is mostly a hash. How does your client know which service it belongs to?**
+
+- [ ] The entries come right after their service's record
+  > No: the entries can come in any order. The owner is found from each key itself.
+- [x] The service's id, ℰ₄(s), is woven into bytes 0, 2, 4 and 6 of the key
+  > Yes: those four bytes are the id as it is, not hashed. The hash fills the rest.
+- [ ] It hashes every service's id and looks for a match
+  > No: no hashing is needed. The id sits in the key in plain bytes.
+
+**χ_Z holds service 5 with gas 100, and service 2 with gas 50. In what order are they written?**
+
+- [ ] Service 5 first, if it was added first
+  > No: a dictionary has no order of its own, so the order it was built in mustn't
+  > change its bytes.
+- [ ] Smallest gas first
+  > No: a dictionary is sorted by its key, and here the key is the service id, not the
+  > gas.
+- [x] The count, 2, then service 2, then service 5
+  > Yes: `02`, then `02 00 00 00` and its gas, then `05 00 00 00` and its gas. Every
+  > client writes the same bytes, so every client gets the same root.
+:::
+
 ## What you have
 
 The whole state, read and written, byte for byte, for every trace. Its accounts keep

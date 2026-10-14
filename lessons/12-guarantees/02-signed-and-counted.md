@@ -316,6 +316,41 @@ whole set.
 
 </details>
 
+## Check your understanding
+
+::: check
+**A guarantee's signature is on `jam_guarantee` ⌢ H(report), the same message a culprit carries. Why?**
+
+- [ ] Coincidence: two messages that happen to look alike
+  > No: it's the same message on purpose, with the same `jam_guarantee` prefix.
+- [x] Signing a guarantee is signing the evidence that convicts you if the report turns out bad
+  > Yes: the signature that puts a report on a core is exactly what [lesson 10.2](../10-disputes/02-culprits-and-faults.md) checks
+  > in a culprit.
+- [ ] After a bad verdict, the guarantors re-sign it as a confession
+  > No: nobody re-signs anything. The culprit's evidence is the guarantee's own
+  > signature, from before.
+
+**In `different_core_same_guarantors-1`, the same three validators sign guarantees for core 0 and core 1. How many reporters does 𝐆 hold?**
+
+- [ ] 6, one per signature
+  > No: 𝐆 is a set. Each key goes in once, however many guarantees it signed.
+- [ ] 2, one per guarantee
+  > No: 𝐆 counts validators, not guarantees.
+- [x] 3
+  > Yes: six signatures, three keys. One guarantee is from this rotation, one from the
+  > last, when they sat on the other core.
+
+**In `banned_validator_guarantee-1`, an offender signs a guarantee with its real key. Why can't the signature check out?**
+
+- [x] Φ has zeroed the offender's key in the assignment, so there's no key to check it against
+  > Yes: its key prints as `0x00000000…`. Banned means banned, and the guarantee sinks.
+- [ ] An offender's signatures are removed from the block
+  > No: the signature is still in the block. It's the key it would check against that's
+  > gone.
+- [ ] It does check out, but the report is refused for being bad
+  > No: this report was never judged. The signature fails because the key is all zeros.
+:::
+
 ## What you have
 
 Guarantees you can trust: every signature real, every signer the right guarantor, no

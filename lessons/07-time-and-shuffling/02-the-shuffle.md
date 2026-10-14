@@ -400,6 +400,63 @@ last item into the gap exactly as yours does: `work.(index) <- work.(remaining -
 
 </details>
 
+## Check your understanding
+
+::: check
+**Shuffling `a b c d` with 1, 1, 0, 0: once b is picked, why is what's left `a d c`, not `a c d`?**
+
+- [x] The last item, d, moves into b's gap
+  > Yes: step 2 of F. The gap is filled from the end, so nothing else moves.
+- [ ] What's left is shuffled again after every pick
+  > No: nothing is shuffled again. Only one item moves: the last, into the gap.
+- [ ] Which item fills the gap is random
+  > No: nothing in F is random by itself. All the randomness is in the numbers, and the
+  > same numbers give the same picks on every node.
+
+**Why does JAM shuffle with numbers from a hash everyone shares, not each node's own random numbers?**
+
+- [ ] A hash is more random than a computer's random numbers
+  > No: how random isn't the point. A node's own random numbers would be different on
+  > every node.
+- [ ] So nobody can work out the deal before the others
+  > No: anyone with the hash can work it out, and every node does. What matters is that
+  > they all get the same answer.
+- [x] Every node must deal the same hand, and a shared hash gives them all the same numbers
+  > Yes: random, so nobody can arrange their seat, and yet the same everywhere, so every
+  > node agrees who may do what.
+
+**Close the gap with `splice` instead, and the letters come out b, c, a, d. What's wrong with that?**
+
+- [ ] It isn't a fair shuffle any more
+  > No: it's still perfectly fair. Every order is as likely as before.
+- [x] It's fair, but it isn't JAM's shuffle, and every node must agree to the last detail
+  > Yes: the same numbers deal a different hand, b c a d instead of b d a c. A node
+  > dealing that hand would disagree with all the others.
+- [ ] Nothing: the vectors accept any fair shuffle
+  > No: each vector gives one exact order, and both tests go red.
+
+**A shuffle of 20 items. How many Blake2b hashes does Q need for its numbers?**
+
+- [ ] 20: one hash for each number
+  > No: one 32-byte hash holds eight 4-byte numbers. (Your `numbersFromHash` does hash 20
+  > times, but makes only three different hashes.)
+- [x] 3: h with ℰ₄(0), with ℰ₄(1), and with ℰ₄(2)
+  > Yes: each hash gives eight numbers. Two cover 16, and a third gives the last four, with
+  > four to spare.
+- [ ] 1: one hash is enough for any shuffle
+  > No: one hash holds only eight numbers, and a shuffle of 20 items takes 20.
+
+**In `bin/shuffle.ts`'s third pick, 1702679006 mod 6 = 2, yet the item picked is 6, not 2. Why?**
+
+- [ ] Item 2 was picked already, so F takes the next one along
+  > No: F never looks for a next one. Index 2 holds whatever filled its gap.
+- [x] The first two picks moved 7 and then 6 into their gaps, so 6 now sits at index 2
+  > Yes: 1 goes and 7 fills index 1; 2 goes and 6 fills index 2. What's left is
+  > 0 7 6 3 4 5.
+- [ ] The number is too big, so it wraps round
+  > No: `mod 6` already did the wrapping, giving 2. The question is what sits at index 2.
+:::
+
 ## What you have
 
 A shuffle every node agrees on: give it a list and a hash, and every JAM client in the

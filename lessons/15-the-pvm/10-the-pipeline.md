@@ -353,6 +353,52 @@ blocks, the two give the same cost every time.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Four independent loads cost 25, the same as one. Why does a fifth make it 50?**
+
+- [ ] Every load after the fourth costs double
+  > No: every load takes 25 cycles. The fifth just can't start until one is done.
+- [x] The CPU has 4 load units, so the fifth waits for one to come free
+  > Yes: four start together and finish 25 cycles later. The fifth starts then, and takes
+  > 25 more.
+- [ ] The reorder buffer holds only 4 instructions
+  > No: it holds 32. It's the units that run out.
+
+**`r2 = [r1]`, then `r3 = [r2]`, costs 50. Why not 25, as two loads side by side?**
+
+- [x] The second load's address is the first load's answer, so it waits for it
+  > Yes: it reads r2, which the first load is still making. It starts only once that one
+  > has finished its 25 cycles.
+- [ ] Two loads always take turns
+  > No: four independent loads run side by side, for 25. It's the shared register that
+  > makes these two wait.
+- [ ] They might read the same memory, so they mustn't overlap
+  > No: the model never looks at addresses, only at registers and units.
+
+**`r2 = [r1]`, `move_reg r5 = r2`, `r3 = [r5]` costs 50 too. What does `move_reg` change?**
+
+- [ ] It adds a cycle for the copy
+  > No: `move_reg` never enters the reorder buffer, and costs nothing.
+- [ ] Nothing, so the third load runs beside the first
+  > No: then the block would cost 25. The third load waits.
+- [x] It costs nothing, but the third load still waits for the first
+  > Yes: the front end notes that whatever makes r2 now makes r5 too, so a read of r5
+  > waits on the first load. 25 + 25 = 50.
+
+**In the real block, the 15-cycle call finishes at cycle 18. Why isn't the block done then?**
+
+- [ ] The CPU must decode where the call goes first
+  > No: decoding stops at the block's terminator, which is the call. Nothing beyond it is
+  > decoded.
+- [x] Instructions retire in order, and the stores ahead of the call are still running
+  > Yes: the three stores run from cycle 3 to 28. The call can't retire before them, so
+  > everything retires at 29, and 29 − 3 = 26 gas.
+- [ ] The call takes 15 more cycles to come back
+  > No: its 15 cycles are over at 18. It's waiting on the stores, not on itself.
+:::
+
 ## What you have
 
 A price for every basic block, worked out the Gray Paper's way. One piece of gas is left:

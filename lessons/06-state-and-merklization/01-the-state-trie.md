@@ -508,6 +508,58 @@ three cases off like the Gray Paper's own definition.
 
 </details>
 
+## Check your understanding
+
+::: check
+**Change one value anywhere in the state, say τ's 4 bytes. Why does the root change?**
+
+- [ ] The whole trie is rebuilt, and a rebuilt trie gets a new root
+  > No: only the hashes on τ's path are worked out again. Every other subtrie keeps its
+  > hash, and the branches above reuse it as it is.
+- [x] Its leaf's hash changes, so its branch's does, and so on up the path to the root
+  > Yes: a branch holds the hashes of the two subtries below it. A new hash at the bottom
+  > makes a new branch above it, all the way up, and the root is the last of them.
+- [ ] It doesn't: a value that small sits inside its leaf, not behind a hash
+  > No: inside the leaf is exactly why it shows. New bytes in the leaf give the leaf a new
+  > hash. Inline or hashed, the change reaches the root.
+
+**τ's value is 4 bytes; service 0's code is 159,322. What do their leaves hold?**
+
+- [ ] τ's 4 bytes; the code is split over many leaves
+  > No: one entry is always one leaf, and every leaf is 64 bytes. The code doesn't fit, so
+  > it doesn't go in at all.
+- [ ] Each holds its value's hash, so that every leaf is the same size
+  > No: only values over 32 bytes are hashed. One of 32 bytes or less goes in as it is, and
+  > the leaf's first byte says how long it is.
+- [x] τ's leaf holds the 4 bytes themselves; the code's holds its 32-byte hash
+  > Yes: small things inline, big things by fingerprint. `bin/state.ts` says so: "4-byte
+  > value, in the leaf", "159322-byte value, hashed".
+
+**In the little trie of `0x01`, `0x40` and `0xff`, why is `0xff` a leaf straight under the root, and the other two a level deeper?**
+
+- [x] It's the only key whose first bit is 1, so one bit already sets it apart
+  > Yes: `0xff` is `1111 1111`, and the others start with 0. `0x01` (`00…`) and `0x40`
+  > (`01…`) need their second bit to part ways.
+- [ ] It's the biggest key, and the biggest goes nearest the root
+  > No: bits decide, not size. A key `0x80`, `1000 0000`, alone on the 1 side, would sit
+  > there just the same.
+- [ ] The trie keeps itself balanced: one key on one side, two on the other
+  > No: a trie doesn't balance. In the real state, `0xff` is alone on the 1 side and the
+  > other 20 keys share the 0 side, some as deep as 11.
+
+**Two clients work out the same 32-byte root for their states. What do they know?**
+
+- [ ] They hold the same number of entries
+  > No: they know far more. The root covers every key and every value, not just how many
+  > there are.
+- [x] Their states are the same: every key, and every value
+  > Yes: a different byte anywhere gives a different root. That's why one hash in the
+  > header, `parent_state_root`, is enough to check a whole state.
+- [ ] They have the same keys, though the values may differ
+  > No: the values are in the leaves too, inline or as a hash. A different value means a
+  > different leaf, and a different root.
+:::
+
 ## What you have
 
 The function every JAM node runs after every block: the state root, matching the official

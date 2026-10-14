@@ -289,6 +289,59 @@ every branch too, since it compares the account as it would be, whatever the wri
 
 </details>
 
+## Check your understanding
+
+::: check
+**Service 0 writes "last" → 1, 2, 3, and its footprint grows by 41 bytes. Why 41, for 7 bytes of data?**
+
+- [ ] Every entry takes 41 bytes, whatever its size
+  > No: a 1,000-byte value under "last" counts 34 + 4 + 1,000.
+- [x] A flat 34 for the bookkeeping around each entry, plus the key's 4 bytes and the value's 3
+  > Yes: 34 + 4 + 3 = 41, and one more item. The deposit grows with both.
+- [ ] 41 is what the write cost in gas
+  > No: gas and footprint are different things. The write cost 2,442 + 14 + 1 gas; the
+  > footprint is what the service must hold deposit for, for as long as it keeps the entry.
+
+**With a balance of 1,000, writing 1,000 bytes under "last" gets FULL. Why?**
+
+- [ ] A value can be at most 1 KiB
+  > No: there's no such limit here. What decides it is the deposit.
+- [x] a_t would be 100 + 10 × 3 + (50 + 34 + 4 + 1,000) = 1,218, more than the balance
+  > Yes: the account as it would be after the write can't afford itself, so nothing is
+  > written.
+- [ ] The write ran out of gas
+  > No: it had 10,000 gas, and paid. FULL is an answer in φ₇, not a way of stopping.
+
+**After that FULL, what has changed?**
+
+- [x] Only the gas: the write was paid for, and the storage and footprint are as they were
+  > Yes: the charge comes first, before the check. Then nothing is committed.
+- [ ] Nothing at all, gas included
+  > No: every host call pays first, whatever its answer turns out to be.
+- [ ] The machine has stopped
+  > No: FULL isn't a crash. The machine carries on, and the service reads φ₇ and decides
+  > what to do.
+
+**"last" holds 1, 2, 3. The service writes "last" with an empty value. What is φ₇?**
+
+- [ ] NONE, because the key is gone now
+  > No: φ₇ tells what was there *before*. NONE would mean there was nothing.
+- [ ] 0, the new value's length
+  > No: there is no new value. An empty one means delete.
+- [x] 3, the old value's length, and the key is deleted
+  > Yes: the test's eraser gets 3, and the storage is empty after.
+
+**Whose storage can a service change with `write`?**
+
+- [ ] Any service's, named in φ₇
+  > No: `write` has no register for whose. Its φ₇ is the key's address.
+- [x] Only its own, though `read` can look in any service's
+  > Yes: `read`'s φ₇ names a service (2^64 − 1 for itself). `write` always changes the
+  > service's own.
+- [ ] Only its own, and `read` only reads its own too
+  > No: `read` takes a service in φ₇, so it can look in another's storage.
+:::
+
 ## What you have
 
 Services that can remember things between accumulations, and pay for what they keep. But

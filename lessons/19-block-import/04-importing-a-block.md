@@ -717,6 +717,68 @@ together once, at the end.
 
 </details>
 
+## Check your understanding
+
+::: check
+**A header's `parent_state_root` is checked against the root of which state?**
+
+- [x] The state before the block, the one it's being imported into
+  > Yes: its parent block left that state, and the header names its root. A header
+  > naming another root is refused with `bad_parent_state_root`.
+- [ ] The state after the block
+  > No: that state records this header's hash, in β′. A header can't carry the root
+  > of a state made from its own hash.
+- [ ] The genesis state
+  > No: only block 1 builds on genesis. Every later block names the state its own
+  > parent left.
+
+**Disputes and Safrole run fine, then the guarantees refuse the block. What state does Υ give back?**
+
+- [ ] The state with the disputes and Safrole applied, up to where it stopped
+  > No: a block is valid only if every rule holds. There is no half a block.
+- [ ] The state with only the slot moved on
+  > No: the slot is part of the block too. A refused block doesn't move τ.
+- [x] None: the block is refused whole, and the state stays as it was
+  > Yes: Υ stops at the first refusal and returns the reason. The entries it was
+  > given are untouched.
+
+**The traces name no errors. How does a test know the trace refuses a block?**
+
+- [ ] The block's header carries a flag saying it's bad
+  > No: a bad block looks like any other. That's the point: your client has to find
+  > what's wrong.
+- [x] The trace's state root after the block is its root before it
+  > Yes: a good block always changes the state. Its slot must be later than τ, and
+  > τ′ is its slot, so the root moves.
+- [ ] Its extrinsic is empty
+  > No: all 100 `fallback` blocks have empty extrinsics, and every one imports.
+
+**Why does Υ judge the disputes before it runs Safrole?**
+
+- [ ] The Gray Paper's list puts disputes first
+  > No: the list puts γ′ third and ψ′ seventh. The order comes from what's made from
+  > what.
+- [x] Safrole is made from ψ′: the offenders it finds are kept out
+  > Yes: γ′ ≺ (…, ψ′). The offenders the disputes convict are left out of the next
+  > validator keys, and of the guarantor assignments too.
+- [ ] Disputes are the cheapest step, so they weed out bad blocks fastest
+  > No: cost doesn't decide the order. The header checks go first, since nothing
+  > else is worth checking for a block that isn't the next one. The disputes go next
+  > because Safrole needs them.
+
+**`bin/import.ts` imports each block into the state your client made, not the trace's. Why is that the harder test?**
+
+- [ ] It runs more blocks
+  > No: both run a trace's 100 blocks. The difference is which state each block goes
+  > into.
+- [x] A wrong byte anywhere carries on, and every root after it would be wrong
+  > Yes: from the first state on, nothing comes from the trace but its blocks. All
+  > 100 roots matching means every state your client made was right.
+- [ ] It checks every byte of every state, where the test only checks the root
+  > No: both check only the root. The root is the whole state in 32 bytes, so that's
+  > every byte anyway.
+:::
+
 ## What you have
 
 Υ, on real blocks: the `fallback` and `safrole` traces, 200 blocks, each root exactly the

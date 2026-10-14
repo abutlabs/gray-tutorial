@@ -339,6 +339,47 @@ name comes from reading the vectors' error list, not from a vector that proved i
 
 </details>
 
+## Check your understanding
+
+::: check
+**In `progress_with_verdicts-5` on tiny, a verdict's 5 votes include 1 valid. What happens?**
+
+- [ ] The report is wonky: neither all nor none
+  > No: wonky is exactly ⌊6/3⌋ = 2 valid votes, not any count in between.
+- [x] The whole block is refused, `bad_vote_split`
+  > Yes: 1 is not 5, 0 or 2, so the split means nothing, and rule 7 sinks the block.
+- [ ] The report is bad: nearly everyone said invalid
+  > No: bad needs zero valid votes. One judge said valid.
+
+**On full, `progress_with_verdicts_from_resized_previous_set-2` has λ of 6 validators and κ of 1,023. Its verdict, aged this epoch, carries 5 votes. Why is it refused?**
+
+- [ ] It isn't: 5 votes is right for 6 validators
+  > No: it would be, if its judges were λ. Its age is this epoch, so they're κ.
+- [x] Its judges are κ, so it needs 683 votes, and 5 is far short: `bad_votes_count`
+  > Yes: ⌊2 · 1,023/3⌋ + 1 = 683. The count is against the judges the age picks.
+- [ ] Its age is too old: `bad_judgement_age`
+  > No: this epoch is always a fine age. It's the count that's wrong.
+
+**A block in epoch 3 carries a verdict of age 1. What happens?**
+
+- [x] Refused, `bad_judgement_age`: only epochs 3 and 2 will do
+  > Yes: rule 3. A verdict's votes must come from this epoch or the last.
+- [ ] Judged by λ, like any age that isn't this epoch
+  > No: K's "otherwise" is meant for the epoch before. Rule 3 refuses anything older
+  > first.
+- [ ] Judged by epoch 1's validators
+  > No: the state keeps only κ and λ. Epoch 1's validators are long gone.
+
+**A report already in ψ's good set is put on trial again. What happens?**
+
+- [ ] The new verdict replaces the old one
+  > No: a verdict is recorded for good. Nothing replaces it.
+- [ ] It's allowed, if the new verdict agrees with the old
+  > No: agreeing or not, the report was judged before. That alone refuses it.
+- [x] The block is refused, `already_judged`
+  > Yes: rule 2. A report in the good, bad or wonky set can't be judged again.
+:::
+
 ## What you have
 
 Verdicts that are checked, not trusted: seven rules, and every disputes vector's verdicts

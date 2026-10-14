@@ -362,6 +362,56 @@ same `history` vectors. OCaml's `match` makes the binary counter almost a poem.
 
 </details>
 
+## Check your understanding
+
+::: check
+**The belt holds 5 items: a mountain of 4 and a mountain of 1, `● · ●`. What does a sixth item do?**
+
+- [ ] It becomes a second mountain of 1, next to the first
+  > No: place 0 is taken, and two mountains of one size never sit side by side. The new
+  > item merges with the mountain there.
+- [x] It merges with the mountain of 1, and the merged mountain of 2 rests in the empty place 1
+  > Yes: H(peak ⌢ item) carries to place 1, finds it empty, and stops. The belt is
+  > `· ● ●`, 110 read right to left: 6.
+- [ ] It merges with the mountain of 4
+  > No: the carry starts at place 0 and climbs one place at a time. A mountain of 4 only
+  > merges with another mountain of 4.
+
+**`bin/history.ts` prints the belt `● · · · ● ●`. How many items are in it?**
+
+- [ ] 3, one per mountain
+  > No: a mountain in place i holds 2^i items. These three hold 1, 16 and 32.
+- [ ] 35
+  > No: that reads the dots left to right, as 100011. The belt puts the smallest
+  > mountain first, so read it right to left.
+- [x] 49
+  > Yes: right to left it's 110001, 32 + 16 + 1 = 49. One accumulation root for each
+  > block so far, and the newest block in that history is slot 49.
+
+**A belt of exactly 4 items has one peak. What is its super-peak?**
+
+- [x] That peak, unchanged
+  > Yes: M_R of a single peak is the peak itself. `$peak` only comes in when there are
+  > two or more.
+- [ ] H(`peak` ⌢ the peak)
+  > No: that prefix joins a fold of the earlier peaks to the last one. With one peak
+  > there's nothing to join.
+- [ ] 32 zero bytes
+  > No: zeros are for a belt with no peaks at all. This one has a mountain over all 4
+  > items.
+
+**Why does the belt hash with Keccak-256, not Blake2b like the rest of JAM?**
+
+- [ ] Keccak-256 is faster
+  > No: speed isn't the reason. §7 gives one: "to maximize compatibility with legacy
+  > systems".
+- [x] A bridge on Ethereum can check the belt with a hash it already has built in
+  > Yes: Keccak-256 is Ethereum's own hash. The belt is there for other chains to read,
+  > so it speaks their hash.
+- [ ] Blake2b can't hash two 32-byte peaks together
+  > No: Blake2b hashes any bytes. [Lesson 6.1](../06-state-and-merklization/01-the-state-trie.md)'s trie hashes pairs of hashes with it.
+:::
+
 ## What you have
 
 A Merkle mountain belt, the commitment JAM keeps for bridges, appended to in a handful of

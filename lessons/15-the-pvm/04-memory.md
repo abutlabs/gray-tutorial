@@ -368,6 +368,52 @@ address is part of the answer.
 
 </details>
 
+## Check your understanding
+
+::: check
+**`store_ind_u64` writes r2 = 0x1122334455667780 at 0x20000. Then `load_ind_i8` reads one byte from 0x20000 into r4. What is r4?**
+
+- [ ] 0x11
+  > No: memory is little-endian, so the byte at 0x20000 is the lowest one, `80`. The
+  > `11` lands last, at 0x20007.
+- [ ] 0x80, which is 128
+  > No: that's `load_ind_u8`. The `i` means signed, and `80` has its top bit set.
+- [x] 0xffffffffffffff80, which is −128
+  > Yes: the lowest byte, `80`, is stored first. Read as signed it's −128, and its sign
+  > bit fills the seven bytes above it with `ff`.
+
+**A load from 0x30005, where there is no page. How does the machine stop?**
+
+- [ ] With a fault at 0x30005
+  > No: a fault names the page, not the byte: 0x30005 rounded down to a multiple of
+  > 4,096.
+- [x] With a fault at 0x30000, still on the load
+  > Yes: the start of the missing page. ı stays on the load, so whoever runs the machine
+  > could add the page and carry on.
+- [ ] With a panic
+  > No: a panic is for an address below 2^16, 0x10000. 0x30005 is above it.
+
+**And a load from 0x0100, where there's no page either?**
+
+- [ ] A fault at 0x0000
+  > No: nothing may live in the first 64 kB, so there's no page anyone could add.
+- [x] A panic
+  > Yes: 0x0100 is below 2^16. A near-null pointer is always a crash.
+- [ ] r1 gets 0
+  > No: missing memory doesn't read as zeros. The machine stops, and r1 keeps what it had.
+
+**`store_imm_u8` tries to write 42 at 0x10000, a read-only page. What happens?**
+
+- [ ] 42 is written, and then the machine faults
+  > No: the check comes first. If any byte can't be written, the machine stops and
+  > changes *nothing*.
+- [x] A fault at 0x10000, and the byte is still 0
+  > Yes: the page isn't writable, so nothing is written, and the fault names the page.
+- [ ] A panic, and the byte is still 0
+  > No: 0x10000 is 2^16 exactly. A panic is only for addresses *below* 2^16, so this is
+  > a fault.
+:::
+
 ## What you have
 
 Memory with pages and permissions, and every load and store: the PVM can now hold real
