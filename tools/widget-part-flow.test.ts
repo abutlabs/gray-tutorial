@@ -7,7 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { AVAILABILITY_TIMEOUT, AVAILABLE, EPOCH_LENGTH, FLOWS, JAM_COMMON_ERA, LESSON_PATHS, RECENT_BLOCKS, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, shuffle } from "../.vitepress/theme/part-flow.ts";
+import { AVAILABILITY_TIMEOUT, AVAILABLE, EPOCH_LENGTH, FLOWS, JAM_COMMON_ERA, LESSON_PATHS, POOL_SIZE, QUEUE_SIZE, RECENT_BLOCKS, ROTATION_PERIOD, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, shuffle } from "../.vitepress/theme/part-flow.ts";
 import { bytesFor, isAvailable, needed } from "../.vitepress/theme/bitfield.ts";
 import { encodeFixed, spacedHex, toHex } from "../.vitepress/theme/bytes.ts";
 import { compact } from "../.vitepress/theme/compact.ts";
@@ -180,4 +180,25 @@ test("Part 11's threshold, timeout and five rules are its lessons'", () => {
   const rules = [...textOf("11.3").matchAll(/\d\. \*\*([^*]+)\.\*\*/g)].map((m) => m[1].toLowerCase());
   assert.deepEqual(rules.slice(0, 5), ["anchored on the parent", "from a real validator", "one per validator, in order", "only cores with something on them", "signed"]);
   assert.ok(textOf("11.3").includes("five rules"));
+});
+
+test("Part 12's rotation and rules are its lessons'", () => {
+  for (const [name, r] of Object.entries(ROTATION_PERIOD)) {
+    assert.match(lessonCode("12.1"), new RegExp(`export const ${name.toUpperCase()}: Config = \\{[\\s\\S]*?rotation_period: ${r},`), `${name}: R = ${r}`);
+  }
+  assert.ok(textOf("12.1").includes("*Example:* 6 validators keep 2 cores active."));
+  assert.ok(textOf("12.4").includes("thirteen rules"));
+  assert.ok(textOf("12.5").includes("fourteen checks") && textOf("12.5").includes("All 62 refusals in the reports vectors"));
+});
+
+test("Part 13's pool and queue are 13.1's", () => {
+  const code = lessonCode("13.1");
+  assert.match(code, new RegExp(`export const POOL_SIZE = ${POOL_SIZE};`));
+  assert.match(code, new RegExp(`export const QUEUE_SIZE = ${QUEUE_SIZE};`));
+  assert.match(code, /queues\[core\]\[slot % QUEUE_SIZE\][\s\S]*\[\.\.\.left, next\]\.slice\(-POOL_SIZE\)/);
+  assert.ok(textOf("13.1").includes("99 real blocks"));
+});
+
+test("Part 14's preimages are 14.1's", () => {
+  assert.ok(textOf("14.1").includes("67 times over"));
 });

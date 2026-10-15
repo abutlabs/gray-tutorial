@@ -74,6 +74,14 @@ export const LESSON_PATHS: Record<string, string> = {
   "11.1": "11-assurances/01-available",
   "11.2": "11-assurances/02-timeouts",
   "11.3": "11-assurances/03-bad-assurances",
+  "12.1": "12-guarantees/01-who-guarantees-what",
+  "12.2": "12-guarantees/02-signed-and-counted",
+  "12.3": "12-guarantees/03-onto-the-cores",
+  "12.4": "12-guarantees/04-bad-guarantees",
+  "12.5": "12-guarantees/05-bad-reports",
+  "13.1": "13-authorization/01-the-authorizer-pools",
+  "14.1": "14-services/01-providing-preimages",
+  "14.2": "14-services/02-the-service-account",
 };
 
 const SLOT = 5n; // a timeslot, as the lessons first meet one
@@ -105,6 +113,10 @@ export function outsideIn<T>(items: T[]): T[] {
 export const RECENT_BLOCKS = 8;
 /** U: the slots a report may wait on its core to become available (11.2). */
 export const AVAILABILITY_TIMEOUT = 5;
+/** R, the slots between guarantor rotations (12.1), and the authorizer pool and queue sizes (13.1). */
+export const ROTATION_PERIOD = { tiny: 4, full: 10 };
+export const POOL_SIZE = 8;
+export const QUEUE_SIZE = 80;
 /** Tiny's validators, for the vote and assurance counts. */
 const V = 6;
 /** C(i), a state component's key (6.2): the byte i, then 30 zeros, as hex. */
@@ -808,6 +820,158 @@ export const FLOWS: Flow[] = [
         says: "Five rules: anchored on the parent, from a real validator, one per validator in order, bits only for cores with something on them, and signed. Break one, and the block is refused.",
         example: "every assurances vector, tiny and full, passes whole",
         lessons: ["11.3"],
+      },
+    },
+  },
+  {
+    part: 12,
+    rows: [["validators"], ["deal"], ["assignment"], ["sign"], ["guarantee"], ["check"], ["reporters", "seat"], ["refuse"]],
+    walk: ["validators", "deal", "assignment", "sign", "guarantee", "check", "reporters", "seat", "refuse"],
+    cards: {
+      validators: {
+        kind: "thing",
+        name: "The validators and the entropy",
+        says: "This epoch's validators, and randomness nobody could steer, from Parts 7 and 8.",
+        lessons: ["12.1"],
+      },
+      deal: {
+        kind: "step",
+        name: "Deal guarantors to cores",
+        says: `Shuffle the validators with the entropy, three to a core. Every R slots, everyone moves on to the next core.`,
+        example: `tiny: ${V} validators keep ${V / 3} cores, R = ${ROTATION_PERIOD.tiny} slots; full: R = ${ROTATION_PERIOD.full}`,
+        lessons: ["12.1"],
+      },
+      assignment: {
+        kind: "thing",
+        name: "Who guarantees what",
+        says: "For each validator, the core it may vouch for, in this rotation and in the last.",
+        lessons: ["12.1"],
+      },
+      sign: {
+        kind: "step",
+        name: "Guarantee a report",
+        says: "Two or three of a core's guarantors run a package and sign its report: Part 3's journey, on the network.",
+        lessons: [],
+        elsewhere: "the core's guarantors, on the network",
+      },
+      guarantee: {
+        kind: "thing",
+        name: "A guarantee",
+        says: "A report and its guarantors' signatures, in a block's extrinsic.",
+        lessons: ["12.2"],
+      },
+      check: {
+        kind: "step",
+        name: "Check the signatures",
+        says: "Every signature must be real, every signer assigned to that core, and no offender's word is taken.",
+        lessons: ["12.2"],
+      },
+      reporters: {
+        kind: "thing",
+        name: "The reporters",
+        says: "Every validator who signed a guarantee in the block, each counted once, for the statistics in Part 18.",
+        lessons: ["12.2"],
+      },
+      seat: {
+        kind: "step",
+        name: "Put reports on their cores",
+        says: "Each good report takes its free core, and its package is noted for the recent history.",
+        lessons: ["12.3"],
+      },
+      refuse: {
+        kind: "step",
+        name: "Refuse a bad guarantee",
+        says: "Thirteen rules for the guarantees, fourteen for the reports inside them. Break one, and the block is refused whole.",
+        example: "all 62 refusals in the reports vectors",
+        lessons: ["12.4", "12.5"],
+      },
+    },
+  },
+  {
+    part: 13,
+    rows: [["queue", "used"], ["step"], ["pool"]],
+    walk: ["queue", "used", "step", "pool"],
+    cards: {
+      queue: {
+        kind: "thing",
+        name: "A core's queue",
+        says: `ϕ[c]: exactly ${QUEUE_SIZE} authorizer hashes, waiting their turn. Only a privileged service can change it.`,
+        lessons: ["13.1"],
+      },
+      used: {
+        kind: "thing",
+        name: "The authorizers reports used",
+        says: "Each report a block guarantees names the authorizer that let its package onto the core.",
+        fields: ["core", "auth_hash"],
+        record: "13.1 UsedAuthorizer",
+        lessons: ["13.1"],
+      },
+      step: {
+        kind: "step",
+        name: "One in, one out",
+        says: `Every block: take out the authorizer a report used, add the queue's entry for this slot, and keep the newest ${POOL_SIZE}.`,
+        example: `slot 85 takes the queue's entry 85 mod ${QUEUE_SIZE} = ${85 % QUEUE_SIZE}`,
+        lessons: ["13.1"],
+      },
+      pool: {
+        kind: "thing",
+        name: "A core's pool",
+        says: `α[c]: at most ${POOL_SIZE} authorizers the core accepts right now. A report's authorizer must be in its core's pool (lesson 12.4 checks it).`,
+        example: "kept moving on 99 real blocks",
+        lessons: ["13.1"],
+      },
+    },
+  },
+  {
+    part: 14,
+    rows: [["request", "provide"], ["preimage"], ["check"], ["store"], ["account"], ["read"]],
+    walk: ["request", "provide", "preimage", "check", "store", "account", "read"],
+    cards: {
+      request: {
+        kind: "thing",
+        name: "A request",
+        says: "A service asks for some data by its hash and its length, and the state remembers the request.",
+        lessons: ["14.1"],
+      },
+      provide: {
+        kind: "step",
+        name: "Bring the data",
+        says: "Someone who has the data puts it in a block's preimages, from lesson 4.1.",
+        lessons: [],
+        elsewhere: "whoever has the data, in a block",
+      },
+      preimage: {
+        kind: "thing",
+        name: "A preimage",
+        says: "The data itself, with the id of the service that asked for it.",
+        lessons: ["14.1"],
+      },
+      check: {
+        kind: "step",
+        name: "Check it by its hash",
+        says: "Its hash and length must match a request still open: asked for, and not yet provided.",
+        lessons: ["14.1"],
+      },
+      store: {
+        kind: "step",
+        name: "Store it, and close the request",
+        says: "File the data under its key, and mark the request done with this slot.",
+        example: "the same as the real chain did, 67 times over",
+        lessons: ["14.1"],
+      },
+      account: {
+        kind: "thing",
+        name: "A service account",
+        says: "What the state keeps for each service: its code's hash, its balance, its gas minimums, and how much it stores.",
+        fields: ["version", "code_hash", "balance", "min_item_gas", "min_memo_gas", "bytes", "deposit_offset", "items", "creation_slot", "last_accumulation_slot", "parent_service"],
+        record: "14.2 ServiceInfo",
+        lessons: ["14.2"],
+      },
+      read: {
+        kind: "step",
+        name: "Read it, and check it adds up",
+        says: "Read any service's account from the state, and check that what it keeps matches its footprint, and that its balance covers the deposit.",
+        lessons: ["14.2"],
       },
     },
   },
