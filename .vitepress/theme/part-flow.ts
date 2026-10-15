@@ -25,6 +25,8 @@ export type Flow = { part: number; rows: string[][]; walk: string[]; cards: Reco
 
 /** Where each lesson the flows name is, under the site's base (checked against the lesson files). */
 export const LESSON_PATHS: Record<string, string> = {
+  "0.3": "00-start/03-watch-your-client",
+  "0.4": "00-start/04-the-jam-clock",
   "1.1": "01-bytes-and-numbers/01-bytes-and-hex",
   "1.2": "01-bytes-and-numbers/02-numbers",
   "2.1": "02-codec/01-fixed-width-integers",
@@ -44,12 +46,70 @@ export const LESSON_PATHS: Record<string, string> = {
   "4.5": "04-blocks/05-maybe-and-exactly-n",
   "4.6": "04-blocks/06-the-header",
   "4.7": "04-blocks/07-the-block",
+  "5.1": "05-hashing-and-signatures/01-hashes",
+  "5.2": "05-hashing-and-signatures/02-the-extrinsic-hash",
+  "5.3": "05-hashing-and-signatures/03-signatures",
 };
 
 const SLOT = 5n; // a timeslot, as the lessons first meet one
+/** The JAM Common Era, 2025-01-01 12:00 UTC, in seconds since 1970 (0.4), and a slot's length. */
+export const JAM_COMMON_ERA = Date.UTC(2025, 0, 1, 12) / 1000;
+export const SLOT_SECONDS = 6;
+const slotAt = (iso: string) => Math.floor((Date.parse(iso) / 1000 - JAM_COMMON_ERA) / SLOT_SECONDS);
+/** An assurance's signed message starts with these ASCII bytes (5.3, X_A in the GP). */
+export const AVAILABLE = "jam_available";
 const BIG = 2n ** 64n - 70n; // 1.2's number that a float can't hold
 
 export const FLOWS: Flow[] = [
+  {
+    part: 0,
+    rows: [["now"], ["slotAt"], ["slot", "tests"], ["report"], ["stack"]],
+    walk: ["now", "slotAt", "slot", "tests", "report", "stack"],
+    cards: {
+      now: {
+        kind: "thing",
+        name: "The time now",
+        says: "Your computer's clock: a date and a time, to the millisecond.",
+        example: "1 January 2025 at 1 pm UTC: an hour after the JAM Common Era began",
+        lessons: ["0.4"],
+      },
+      slotAt: {
+        kind: "step",
+        name: "slotAt",
+        says: `Count the seconds since the JAM Common Era, 2025-01-01 at 12:00 UTC, and divide by ${SLOT_SECONDS}. JAM's clock ticks once every ${SLOT_SECONDS} seconds.`,
+        example: `6 seconds in → slot ${slotAt("2025-01-01T12:00:06Z")}, an hour in → slot ${slotAt("2025-01-01T13:00:00Z")}`,
+        lessons: ["0.4"],
+      },
+      slot: {
+        kind: "thing",
+        name: "A timeslot",
+        says: "JAM's own time: which 6-second tick it is. Every block names the slot it was made in.",
+        example: `an hour in: slot ${slotAt("2025-01-01T13:00:00Z")}`,
+        lessons: ["0.4"],
+      },
+      tests: {
+        kind: "thing",
+        name: "Tests",
+        says: "Small programs that check one thing each. Write the test first, watch it fail, then write the code that makes it pass.",
+        example: "slot 0 is the first six seconds of the JAM Common Era",
+        lessons: ["0.4"],
+      },
+      report: {
+        kind: "step",
+        name: "Report a run",
+        says: "Every run, a program or npm test, sends what it did as events and what it measured as numbers, in one go at the end.",
+        example: `{"step":"hello","message":"my JAM client is alive"}`,
+        lessons: ["0.3"],
+      },
+      stack: {
+        kind: "step",
+        name: "Keep it, and show it",
+        says: "Loki keeps the events, the Pushgateway and Prometheus keep the numbers, and Grafana draws both, run after run.",
+        lessons: [],
+        elsewhere: "the observability stack, which lesson 0.2 starts in Docker",
+      },
+    },
+  },
   {
     part: 1,
     rows: [["hex", "number"], ["fromHex", "exact"], ["bytes", "kept"], ["codec"]],
@@ -293,6 +353,68 @@ export const FLOWS: Flow[] = [
         says: "Decode a whole block, at either size, and show every byte of it. Checking that the block is valid comes in Part 5.",
         example: "all 30 codec vectors pass whole",
         lessons: ["4.7"],
+      },
+    },
+  },
+  {
+    part: 5,
+    rows: [["header"], ["hash"], ["link"], ["extrinsic"], ["exthash"], ["sign"], ["assurance"], ["verify"]],
+    walk: ["header", "hash", "link", "extrinsic", "exthash", "sign", "assurance", "verify"],
+    cards: {
+      header: {
+        kind: "thing",
+        name: "A block's header",
+        says: "The cover page from Part 4, from a chain of 100 real blocks in a test trace.",
+        lessons: ["5.1"],
+      },
+      hash: {
+        kind: "step",
+        name: "Hash it: blake2b-256",
+        says: "Encode the header, and boil its bytes down to a 32-byte fingerprint. Change one bit of the header and the fingerprint changes completely.",
+        example: "H(ℰ(header)): 32 bytes",
+        lessons: ["5.1"],
+      },
+      link: {
+        kind: "step",
+        name: "Check the link",
+        says: "The next block's header names its parent by exactly that hash. If they match, the two blocks are a chain.",
+        example: "block 2's parent is the hash of block 1's header",
+        lessons: ["5.1"],
+      },
+      extrinsic: {
+        kind: "thing",
+        name: "The block's extrinsic",
+        says: "Everything the block brings in. Its header promises it by hash, before anyone has looked inside.",
+        lessons: ["5.2"],
+      },
+      exthash: {
+        kind: "step",
+        name: "Check the extrinsic hash",
+        says: "Hash each of the five lists, then hash those hashes together. The result must be the header's extrinsic_hash.",
+        example: "100 of 100 extrinsics match their headers",
+        lessons: ["5.2"],
+      },
+      sign: {
+        kind: "step",
+        name: "Sign",
+        says: `A validator signs with its secret key. What it signs starts with a few letters naming the job, ${AVAILABLE}, so a signature for one job can't pass for another.`,
+        lessons: [],
+        elsewhere: "each validator, with a secret key only it has",
+      },
+      assurance: {
+        kind: "thing",
+        name: "A signed assurance",
+        says: "A validator's word that it holds its piece of some cores' data, with its signature.",
+        fields: ["anchor", "bitfield", "validator_index", "signature"],
+        record: "4.2 Assurance",
+        lessons: ["5.3"],
+      },
+      verify: {
+        kind: "step",
+        name: "Check the signature: Ed25519",
+        says: "Put the validator's public key, the message and the signature together: either it was made with that validator's key, or it wasn't.",
+        example: `the message: the ${AVAILABLE.length} bytes of ${AVAILABLE}, then H(ℰ(anchor, bitfield))`,
+        lessons: ["5.3"],
       },
     },
   },

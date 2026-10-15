@@ -7,7 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { FLOWS, LESSON_PATHS, flowOf } from "../.vitepress/theme/part-flow.ts";
+import { AVAILABLE, FLOWS, JAM_COMMON_ERA, LESSON_PATHS, SLOT_SECONDS, flowOf } from "../.vitepress/theme/part-flow.ts";
 import { bytesFor } from "../.vitepress/theme/bitfield.ts";
 import { encodeFixed, spacedHex, toHex } from "../.vitepress/theme/bytes.ts";
 import { compact } from "../.vitepress/theme/compact.ts";
@@ -101,4 +101,25 @@ test("Part 4's sizes are 4.2's, and its block is 4.7's", () => {
   assert.ok(sizes.includes(`6 validators, 2 cores (an assurance is ${bytesFor(2)} byte)`), sizes);
   assert.ok(sizes.includes(`1023 validators, 341 cores (${bytesFor(341)} bytes)`), sizes);
   assert.ok(textOf("4.7").includes("every one of the 30 codec vectors passes whole"));
+});
+
+test("Part 0's clock is 0.4's, and its first report 0.3's", () => {
+  const code = lessonCode("0.4");
+  assert.match(code, new RegExp(`JAM_COMMON_ERA = ${JAM_COMMON_ERA.toLocaleString("en-US").replaceAll(",", "_")};`));
+  assert.match(code, new RegExp(`SLOT_SECONDS = ${SLOT_SECONDS};`));
+  // 0.4's tests: six seconds in is slot 1, an hour in slot 600
+  assert.match(code, /at\("2025-01-01T12:00:06Z"\);\s*assert\.equal\(sixSecondsIn, 1\)/);
+  assert.match(code, /at\("2025-01-01T13:00:00Z"\);\s*assert\.equal\(anHourIn, 600\)/);
+  assert.equal(card(0, "slotAt").example, "6 seconds in → slot 1, an hour in → slot 600");
+  assert.ok(code.includes(`test("${card(0, "tests").example}"`), "a test of 0.4's, by its name");
+  assert.ok(textOf("0.3").includes(card(0, "report").example!), "0.3's hello line");
+});
+
+test("Part 5's checks are its lessons': blake2b, 100 linked blocks, jam_available", () => {
+  assert.match(lessonCode("5.1"), /import \{ blake2b \} from "@noble\/hashes\/blake2\.js"/);
+  assert.match(lessonCode("5.1"), /blake2b\(data, \{ dkLen: 32 \}\)/);
+  assert.ok(textOf("5.2").includes("100 real blocks"));
+  assert.ok(textOf("5.2").includes(`${card(5, "exthash").example}.`), "5.2's check, as it prints");
+  assert.match(lessonCode("5.3"), new RegExp(`new TextEncoder\\(\\)\\.encode\\("${AVAILABLE}"\\)`));
+  assert.ok(textOf("5.3").includes(`the ${AVAILABLE.length} ASCII bytes of \`${AVAILABLE}\``));
 });

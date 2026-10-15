@@ -63,7 +63,8 @@ const step = (by: number) => go(flow.walk[(at.value + by + flow.walk.length) % f
 </template>
 
 <style scoped>
-.readout { display: block; min-height: 236px; }
+/* the shared .widget .readout is a row of tiles; this one is a card of lines */
+.part-flow .readout { display: block; min-height: 236px; }
 .title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 17px; }
 .kind { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--vp-c-text-2); }
 .kind.step { color: var(--vp-c-brand-1); }
@@ -97,7 +98,7 @@ const step = (by: number) => go(flow.walk[(at.value + by + flow.walk.length) % f
 .key.step { border-radius: 999px; color: var(--vp-c-brand-1); }
 .key.elsewhere { border-radius: 999px; border-style: dashed; }
 @media (max-width: 640px) {
-  .readout { min-height: 330px; }
+  .part-flow .readout { min-height: 330px; }
   .card { min-width: 0; flex: 1 1 40%; }
 }
 </style>
