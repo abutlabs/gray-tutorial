@@ -384,14 +384,15 @@ for (const { folder, names } of folders()) {
   if (!family) continue; // not run yet
   row.run = true;
   for (const name of names) {
+    let why: string | null = null; // null: it passed
     try {
       family.check(name);
-      row.passed++;
     } catch (e) {
-      const why = (e as Error).message.split("\n")[0];
-      row.failures.push(`${name}: ${why}`);
-      run.event("failed", { vector: name, why });
+      why = (e as Error).message.split("\n")[0];
     }
+    if (why === null) row.passed++;
+    else row.failures.push(`${name}: ${why}`);
+    run.event("vector", { family: rowOf(folder), vector: name, passed: why === null, why });
   }
 }
 
@@ -417,7 +418,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 The scoreboard walks every folder of `vectors/`, gives each vector to the family that
 fills its folder, and counts. A folder no family fills is *not run yet*. A check that
 throws is a vector that failed, and the first line of its message says why; the board
-shows three per family. `tiny` and `full` folders share a row.
+shows three per family. `tiny` and `full` folders share a row. Every vector it runs is also
+a `vector` event for Grafana: its family, its name, whether it passed, and why not.
 
 **Run**
 
@@ -472,9 +474,15 @@ page](../scoreboard.md) lists every one of those milestones.
 Grafana keeps the board too, on a dashboard of its own, *8 · Official vectors*, in the bar
 at the top of every dashboard. Its *Each family (last run)* panel is the board you just
 printed; the rest of the dashboard keeps every run, so you can watch the count climb
-lesson by lesson, and lists every vector that failed, with why.
+lesson by lesson.
 
 ![The Each family panel: codec with 4 of 30 passed, every other family not run yet, with how many vectors each holds](./images/06-each-family-last-run.png)
+
+Below it, the *Every vector (last run)* panel drills into the board: one row for each
+vector the run ran, failures first, each with why. The funnel in a column's header filters
+it, to one family, or to the failures only.
+
+![The Every vector panel: the codec vectors that failed come first, each with why: no codec for that structure yet](./images/06-every-vector-last-run.png)
 
 <details>
 <summary>lasair: <code>encode_refinement_context</code></summary>

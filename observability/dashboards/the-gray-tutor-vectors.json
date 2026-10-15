@@ -189,7 +189,7 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "Your client's scoreboard: every official test vector, run whole by `node bin/scoreboard.ts`. A vector passes only if your client's answer is all of the vector's. Every run lands here, from lesson 2.6's first board (4 of 1,428) on; the tutorial's *Scoreboard* page lists the lessons where a family crosses the line. Pick a scoreboard run in the *run* menu to see its board; *All* shows the latest, and every failure."
+    "content": "Your client's scoreboard: every official test vector, run whole by `node bin/scoreboard.ts`. A vector passes only if your client's answer is all of the vector's. Every run lands here, from lesson 2.6's first board (4 of 1,428) on; the tutorial's *Scoreboard* page lists the lessons where a family crosses the line. *Every vector* lists each vector the run ran, passed or failed, and why: filter its *family* or *result* column to drill in. Pick a scoreboard run in the *run* menu to see its board; *All* shows the latest, and every failure."
    }
   },
   {
@@ -552,6 +552,175 @@
    }
   },
   {
+   "id": 51,
+   "type": "table",
+   "title": "Every vector (last run)",
+   "description": "Each vector the latest scoreboard ran, and whether it passed whole; a failure says why. Filter a column (the funnel in its header) to drill into one family, or into the failures. Pick a run in the run menu to see that run's.",
+   "datasource": {
+    "type": "loki",
+    "uid": "loki"
+   },
+   "targets": [
+    {
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"vector\"",
+     "refId": "A",
+     "queryType": "range",
+     "maxLines": 5000
+    }
+   ],
+   "transformations": [
+    {
+     "id": "extractFields",
+     "options": {
+      "source": "labels",
+      "format": "json",
+      "keepTime": false,
+      "replace": false
+     }
+    },
+    {
+     "id": "sortBy",
+     "options": {
+      "sort": [
+       {
+        "field": "Time",
+        "desc": false
+       }
+      ]
+     }
+    },
+    {
+     "id": "groupBy",
+     "options": {
+      "fields": {
+       "family": {
+        "operation": "groupby",
+        "aggregations": []
+       },
+       "vector": {
+        "operation": "groupby",
+        "aggregations": []
+       },
+       "passed": {
+        "operation": "aggregate",
+        "aggregations": [
+         "last"
+        ]
+       },
+       "why": {
+        "operation": "aggregate",
+        "aggregations": [
+         "last"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "id": "sortBy",
+     "options": {
+      "sort": [
+       {
+        "field": "vector",
+        "desc": false
+       }
+      ]
+     }
+    },
+    {
+     "id": "organize",
+     "options": {
+      "indexByName": {
+       "family": 0,
+       "vector": 1,
+       "passed (last)": 2,
+       "why (last)": 3
+      },
+      "renameByName": {
+       "passed (last)": "result",
+       "why (last)": "why"
+      }
+     }
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "align": "auto",
+      "filterable": true
+     }
+    },
+    "overrides": [
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "family"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 150
+       }
+      ]
+     },
+     {
+      "matcher": {
+       "id": "byName",
+       "options": "result"
+      },
+      "properties": [
+       {
+        "id": "custom.width",
+        "value": 110
+       },
+       {
+        "id": "custom.cellOptions",
+        "value": {
+         "type": "color-text"
+        }
+       },
+       {
+        "id": "mappings",
+        "value": [
+         {
+          "type": "value",
+          "options": {
+           "true": {
+            "text": "✔ passed",
+            "color": "green",
+            "index": 0
+           },
+           "false": {
+            "text": "✘ failed",
+            "color": "red",
+            "index": 1
+           }
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "options": {
+    "showHeader": true,
+    "cellHeight": "sm",
+    "sortBy": [
+     {
+      "displayName": "result",
+      "desc": false
+     }
+    ]
+   },
+   "gridPos": {
+    "x": 0,
+    "y": 31,
+    "w": 24,
+    "h": 18
+   }
+  },
+  {
    "id": 50,
    "type": "logs",
    "title": "Vectors that failed",
@@ -562,7 +731,7 @@
    },
    "targets": [
     {
-     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"failed\" | line_format \"FAIL  {{.vector}}  {{.why}}\"",
+     "expr": "{job=\"the_gray_tutor\", client=\"$client\", kind=\"scoreboard\", run_id=~\"$run_id\"} | json | step=\"vector\" | passed=\"false\" | line_format \"FAIL  {{.vector}}  {{.why}}\"",
      "refId": "A",
      "queryType": "range"
     }
@@ -576,7 +745,7 @@
    },
    "gridPos": {
     "x": 0,
-    "y": 31,
+    "y": 49,
     "w": 24,
     "h": 8
    }

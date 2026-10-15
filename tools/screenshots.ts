@@ -23,6 +23,7 @@ const SHOTS: Shot[] = [
   { lesson: "1.1", panel: "Failed tests", nth: 2 },
   { lesson: "2.2", panel: "Failed tests", nth: 2 },
   { lesson: "2.6", panel: "Each family (last run)" },
+  { lesson: "2.6", panel: "Every vector (last run)" },
   { lesson: "2.7", panel: "Decode trace" },
   { lesson: "3.2", panel: "Failed tests", nth: 2 },
   { lesson: "4.7", panel: "Decode trace" },

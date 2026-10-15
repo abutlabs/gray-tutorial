@@ -15,7 +15,7 @@ each, and a family your client can't run yet is *not run yet*. A vector that fai
 why: the first part of it that differs.
 
 Grafana keeps the board as well, on the *8 · Official vectors* dashboard: the latest board,
-the climb from run to run, and every vector that failed.
+the climb from run to run, and every vector the board ran, passed or failed, and why.
 
 ## Milestones
 

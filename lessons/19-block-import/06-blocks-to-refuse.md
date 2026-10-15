@@ -297,12 +297,9 @@ const results = await runAll(jobs, availableParallelism());
 results.sort((a, b) => a.name.localeCompare(b.name)); // threads finish in any order
 for (const { folder, name, why } of results) {
   const row = rows.get(rowOf(folder))!;
-  if (why === null) {
-    row.passed++;
-  } else {
-    row.failures.push(`${name}: ${why}`);
-    run.event("failed", { vector: name, why });
-  }
+  if (why === null) row.passed++;
+  else row.failures.push(`${name}: ${why}`);
+  run.event("vector", { family: rowOf(folder), vector: name, passed: why === null, why });
 }
 
 const n = (x: number) => x.toLocaleString("en-US"); // 1,428

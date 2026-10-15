@@ -16,7 +16,8 @@
     "epub": "node tools/need-node.mjs && EPUB=1 vitepress build",
     "test": "node tools/need-node.mjs && node --test \"tools/*.test.ts\"",
     "typecheck": "tsc -p tools",
-    "check": "node tools/need-node.mjs && npm run typecheck && npm test && npm run site:build"
+    "check": "node tools/need-node.mjs && npm run typecheck && npm test && npm run site:build",
+    "scoreboard": "node client/bin/scoreboard.ts"
   },
   "devDependencies": {
     "@noble/curves": "2.4.0",
