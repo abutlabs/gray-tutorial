@@ -337,7 +337,7 @@
    "id": 6,
    "type": "stat",
    "title": "Vectors passing (last run)",
-   "description": "How many official test vectors passed whole in the latest node bin/scoreboard.ts; the 8 · Official vectors dashboard has the whole board.",
+   "description": "How many official test vectors passed whole in the latest npm run scoreboard; the 8 · Official vectors dashboard has the whole board.",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"

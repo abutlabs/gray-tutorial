@@ -240,7 +240,7 @@ disagree:
 // Checks the disputes of every disputes test vector of one size against the rules (the
 // verdicts', then the culprits' and faults'), and shows each verdict next to the vector's:
 // accepted, or the first rule broken.
-// Usage: node bin/check-disputes.ts [tiny or full], tiny if not given
+// Usage: npm run check-disputes [tiny or full], tiny if not given
 
 import { readdirSync, readFileSync } from "node:fs";
 import { DisputesExtrinsic } from "../src/block.ts";
@@ -272,7 +272,7 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/check-disputes.ts
+npm run check-disputes
 ```
 
 ```text
@@ -309,7 +309,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 Twenty-nine vectors and not one "the vector says": your client's disputes agree with all
-of them. `node bin/check-disputes.ts full` says the same of the full ones (give it a
+of them. `npm run check-disputes full` says the same of the full ones (give it a
 minute). The *Dispute checks* panel, on **4 · Checks**, keeps the list.
 
 ![Dispute checks panel](./images/05-dispute-checks.png)
@@ -387,7 +387,7 @@ from here: about 20 seconds, nearly all of it checking signatures.
 
 ```sh
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

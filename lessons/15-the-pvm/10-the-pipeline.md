@@ -267,7 +267,7 @@ reported 443 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Runs a real basic block through the model CPU, the one the bootstrap service's
 // accumulation jumps to first, and draws its reorder buffer cycle by cycle.
-// Usage: node bin/pipeline.ts
+// Usage: npm run pipeline
 
 import { readFileSync } from "node:fs";
 import { fromHex } from "../src/bytes.ts";
@@ -305,7 +305,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/pipeline.ts
+npm pkg set scripts.pipeline="node bin/pipeline.ts"
+npm run pipeline
 ```
 
 ```text

@@ -253,7 +253,7 @@ host, all agreeing with the vectors at once.
 ```ts
 // Accumulates every service a test vector's block asks for, each with its share of the
 // reports, and compares the gas each one used and the storage it left with the vector's.
-// Usage: node bin/accumulate.ts [vector], same_round_storage_isolation-1 if not given
+// Usage: npm run accumulate [vector], same_round_storage_isolation-1 if not given
 
 import { readFileSync } from "node:fs";
 import { serviceInputs } from "../src/accumulate.ts";
@@ -314,7 +314,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/accumulate.ts
+npm pkg set scripts.accumulate="node bin/accumulate.ts"
+npm run accumulate
 ```
 
 ```text

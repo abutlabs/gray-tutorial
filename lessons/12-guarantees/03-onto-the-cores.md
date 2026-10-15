@@ -153,8 +153,8 @@ package `0x63c0…` before `0x3165…`, and the dictionary wants them the other 
 ```ts
 // Puts the guaranteed reports of a reports test vector onto their cores, and lists the
 // packages the block reports, sorted by hash.
-// Usage: node bin/placed.ts <vector.json>, e.g.
-//        node bin/placed.ts ../vectors/stf/reports/tiny/high_work_report_gas-1.json
+// Usage: npm run placed <vector.json>, e.g.
+//        npm run placed ../vectors/stf/reports/tiny/high_work_report_gas-1.json
 
 import { readFileSync } from "node:fs";
 import { GuaranteesExtrinsic } from "../src/block.ts";
@@ -192,7 +192,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/placed.ts ../vectors/stf/reports/tiny/high_work_report_gas-1.json
+npm pkg set scripts.placed="node bin/placed.ts"
+npm run placed ../vectors/stf/reports/tiny/high_work_report_gas-1.json
 ```
 
 ```text

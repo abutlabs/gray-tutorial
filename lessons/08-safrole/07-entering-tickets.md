@@ -316,8 +316,8 @@ reported 83 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=
 ```ts
 // Runs one block of Safrole from a safrole test vector, tickets and all, tells what
 // happened (or why the block is refused), and checks the result against the vector.
-// Usage: node bin/safrole.ts <vector.json>, e.g.
-//        node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
+// Usage: npm run safrole <vector.json>, e.g.
+//        npm run safrole ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
 
 import { readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
@@ -369,8 +369,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/safrole.ts ../vectors/stf/safrole/tiny/publish-tickets-no-mark-2.json
-node bin/safrole.ts ../vectors/stf/safrole/tiny/publish-tickets-no-mark-4.json
+npm run safrole ../vectors/stf/safrole/tiny/publish-tickets-no-mark-2.json
+npm run safrole ../vectors/stf/safrole/tiny/publish-tickets-no-mark-4.json
 ```
 
 ```text

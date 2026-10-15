@@ -254,8 +254,8 @@ that should keep its report kept it.
 ```ts
 // Shows what happens to each core's pending report in an assurances test vector: it
 // became available, it timed out, the validator set resized, or it stays.
-// Usage: node bin/release.ts <vector.json>, for example:
-//   node bin/release.ts ../vectors/stf/assurances/tiny/no_assurances_with_stale_report-1.json
+// Usage: npm run release <vector.json>, for example:
+//   npm run release ../vectors/stf/assurances/tiny/no_assurances_with_stale_report-1.json
 
 import { readFileSync } from "node:fs";
 import { AVAILABILITY_TIMEOUT, availableCores } from "../src/assurances.ts";
@@ -291,7 +291,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/release.ts ../vectors/stf/assurances/tiny/no_assurances_with_stale_report-1.json
+npm pkg set scripts.release="node bin/release.ts"
+npm run release ../vectors/stf/assurances/tiny/no_assurances_with_stale_report-1.json
 ```
 
 ```text

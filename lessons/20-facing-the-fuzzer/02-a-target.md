@@ -346,7 +346,7 @@ And the socket around it:
 ```ts
 // Your client as a fuzz target: listens on a Unix socket, and answers the conformance
 // fuzzer's messages (fuzz-proto), one session after another, until stopped (Ctrl+C).
-// Usage: node bin/target.ts [socket], /tmp/jam_target.sock if not given
+// Usage: npm run target [socket], /tmp/jam_target.sock if not given
 
 import { existsSync, rmSync } from "node:fs";
 import { createServer } from "node:net";

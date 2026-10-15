@@ -540,7 +540,7 @@ would be wrong.
 // Imports a whole block-import trace, block after block, each into the state your client
 // made from the one before: from the trace's first state on, nothing else is taken from
 // the trace but its blocks. Each state root is shown next to the trace's.
-// Usage: node bin/import.ts [family], "storage_light" if not given
+// Usage: npm run import [family], "storage_light" if not given
 
 import { Block } from "../src/block.ts";
 import { fromHex, toHex } from "../src/bytes.ts";
@@ -588,7 +588,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/import.ts safrole
+npm pkg set scripts.import="node bin/import.ts"
+npm run import safrole
 ```
 
 ```text
@@ -652,7 +653,7 @@ export const FAMILIES: Family[] = [
 
 ```sh
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

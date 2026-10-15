@@ -1,8 +1,8 @@
 // A Run's output, as the lesson shows it: a ```text block right after the Run block, as
 // the Rust Book shows every run's output. verify checks it against the real run:
 //
-//   - its lines are the real output's lines, in order and one after another (blank lines
-//     and npm's warnings aside), from the first line to the last;
+//   - its lines are the real output's lines, in order and one after another (blank lines,
+//     npm's warnings and npm run's echo of the script aside), from the first line to the last;
 //   - a line "..." (at its start) marks a cut: any lines may come there (also at the
 //     start or the end);
 //   - "…" inside a line stands for anything (a slot number, a hash that changes);
@@ -30,8 +30,10 @@ export function normalize(line: string): string {
 
 /** Why the shown output isn't the real one, or null if it is. */
 export function checkOutput(shown: string, real: string): string | null {
-  // blank lines don't count, nor npm's warnings, which come from each machine's npm settings
-  const kept = (l: string) => l.trim() !== "" && !l.startsWith("npm warn ");
+  // blank lines don't count, nor npm's warnings, which come from each machine's npm settings,
+  // nor npm run's echo of the script ("> decode", "> node bin/decode.ts ..."): the Run block
+  // shows the command already, so a lesson may leave the echo out
+  const kept = (l: string) => l.trim() !== "" && !l.startsWith("npm warn ") && !/^> \S/.test(l);
   const have = real.split("\n").map(normalize).filter(kept);
   const want = shown.split("\n").map(normalize).filter(kept);
   let at = 0;

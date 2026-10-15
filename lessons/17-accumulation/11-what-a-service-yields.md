@@ -670,7 +670,7 @@ yielded) and the new one.
 // Accumulates a test vector's block the way Part 17 does so far, and shows the queue (what
 // waited, which packages went, what still waits), the rounds it took and the outputs and
 // their root; then each service next to the vector: its digests, transfers in, and gas.
-// Usage: node bin/accumulate.ts [vector], enqueue_and_unlock_simple-2 if not given
+// Usage: npm run accumulate [vector], enqueue_and_unlock_simple-2 if not given
 
 import { readFileSync } from "node:fs";
 import { accumulateBlock, accumulationStateFromJson, outputsRoot } from "../src/accumulate.ts";
@@ -732,7 +732,7 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/accumulate.ts ../vectors/stf/accumulate/tiny/work_for_ejected_service-3.json
+npm run accumulate ../vectors/stf/accumulate/tiny/work_for_ejected_service-3.json
 ```
 
 ```text

@@ -202,8 +202,8 @@ and λ hold the same six throughout.)
 
 ```ts
 // Reads three components of the state before a trace's block: τ, η and κ.
-// Usage: node bin/read-state.ts <trace.json>, e.g.
-//        node bin/read-state.ts ../vectors/traces/safrole/00000012.json
+// Usage: npm run read-state <trace.json>, e.g.
+//        npm run read-state ../vectors/traces/safrole/00000012.json
 
 import { readFileSync } from "node:fs";
 import { fromHex, toHex } from "../src/bytes.ts";
@@ -239,7 +239,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/read-state.ts ../vectors/traces/safrole/00000012.json
+npm pkg set scripts.read-state="node bin/read-state.ts"
+npm run read-state ../vectors/traces/safrole/00000012.json
 ```
 
 ```text

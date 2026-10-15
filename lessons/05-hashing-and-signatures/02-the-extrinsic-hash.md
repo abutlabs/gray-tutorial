@@ -210,7 +210,7 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/chain.ts preimages
+npm run chain preimages
 ```
 
 ```text
@@ -220,8 +220,8 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 The *Chain* panel now ends each block's line with `extrinsic matches: true`. Try the
-others too: `node bin/chain.ts safrole`, `node bin/chain.ts storage`, and plain
-`node bin/chain.ts` for `fallback`.
+others too: `npm run chain safrole`, `npm run chain storage`, and plain
+`npm run chain` for `fallback`.
 
 ![Chain panel](./images/02-chain.png)
 
@@ -241,7 +241,7 @@ to
     encode(PreimagesExtrinsic, extrinsic.preimages),
 ```
 
-and run `node bin/chain.ts preimages` again. 73 of 100 extrinsics match: the 27 blocks
+and run `npm run chain preimages` again. 73 of 100 extrinsics match: the 27 blocks
 that carry a preimage now break their promise, and every block without one is fine,
 because an empty list encodes the same way under both rules. The links still hold: the
 headers didn't change, only your idea of what they promise. Put the line back, and the

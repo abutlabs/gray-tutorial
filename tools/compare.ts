@@ -12,7 +12,7 @@ import { spawnSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { lessonsThrough, ROOT } from "./lessons.ts";
-import { applyStep } from "./tangle.ts";
+import { applyScripts, applyStep } from "./tangle.ts";
 
 const dirFlag = process.argv.indexOf("--dir");
 const CLIENT = join(ROOT, dirFlag > 0 ? process.argv[dirFlag + 1] : "client");
@@ -36,7 +36,10 @@ try {
 rmSync(EXPECTED, { recursive: true, force: true });
 mkdirSync(EXPECTED);
 for (const lesson of lessons) {
-  for (const step of lesson.steps) if (step.kind === "file") applyStep(EXPECTED, step);
+  for (const step of lesson.steps) {
+    if (step.kind === "file") applyStep(EXPECTED, step);
+    else applyScripts(EXPECTED, step.command); // npm pkg set: verify runs it, compare writes it
+  }
 }
 
 if (write) {

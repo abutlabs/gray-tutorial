@@ -375,6 +375,43 @@ test("every program up to 1.2 has a debug configuration, named for its lesson", 
   assert.deepEqual(named.sort(), programs.sort());
 });
 
+// Every program runs through npm (0.3): a lesson that writes bin/NAME.ts gives it the script
+// NAME, `npm pkg set scripts.NAME="node bin/NAME.ts"`, in the first Run block that runs it,
+// and a Run block runs `npm run NAME`, never `node bin/` itself. A package.json the reader
+// rewrites keeps every script given so far.
+test("every program has its npm script, given before it first runs, and runs through it", () => {
+  const programs = new Set<string>();
+  const given: string[] = [];
+  const problems: string[] = [];
+  for (const lesson of parts.flatMap((p) => p.lessons)) {
+    for (const s of lesson.steps) {
+      if (s.kind === "file") {
+        const made = /^bin\/([a-z-]+)\.ts$/.exec(s.path);
+        if (made && s.op === "new") programs.add(made[1]);
+        if (s.path === "package.json") {
+          const scripts = Object.keys(JSON.parse(s.code).scripts ?? {}).filter((n) => programs.has(n));
+          if (scripts.join() !== given.join()) problems.push(`${lesson.id}: package.json's scripts should be ${given.join(", ")}`);
+        }
+        continue;
+      }
+      if (/\bnode bin\//.test(s.command.replace(/^npm pkg set .*$/gm, ""))) problems.push(`${lesson.id}: runs node bin/ (npm run it)`);
+      for (const line of s.command.split("\n")) {
+        const set = /^npm pkg set scripts\.([a-z-]+)="node bin\/([a-z-]+)\.ts"$/.exec(line);
+        if (set) {
+          if (set[1] !== set[2]) problems.push(`${lesson.id}: script ${set[1]} runs bin/${set[2]}.ts`);
+          if (given.includes(set[1])) problems.push(`${lesson.id}: ${set[1]} has its script already`);
+          given.push(set[1]);
+        }
+        for (const [, name] of line.matchAll(/\bnpm run ([a-z][a-z-]*)/g)) {
+          if (programs.has(name) && !given.includes(name)) problems.push(`${lesson.id}: npm run ${name} before its script`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(problems, []);
+  assert.deepEqual([...programs].filter((p) => !given.includes(p)), [], "programs never given a script");
+});
+
 // The scoreboard (lesson 2.6, scoreboard.md): a lesson where a vector family crosses the
 // line ends with a section that runs it, The scoreboard, and a Milestone note; the page
 // lists those lessons in order, each with the count its board ends with. A lesson that
@@ -387,7 +424,7 @@ test("every scoreboard milestone is on the scoreboard page, with the count its b
   const problems: string[] = [];
   for (const lesson of parts.flatMap((p) => p.lessons)) {
     const text = readFileSync(join(LESSONS, lesson.file), "utf8");
-    const boards = lesson.steps.filter((s) => s.kind === "run" && /^node bin\/scoreboard\.ts$/m.test(s.command));
+    const boards = lesson.steps.filter((s) => s.kind === "run" && /^npm run scoreboard$/m.test(s.command));
     const families = lesson.steps.some((s) => s.kind === "file" && s.path === "test/families.ts" &&
       /^export const FAMILIES\b/m.test(s.code));
     if (boards.length === 0) {

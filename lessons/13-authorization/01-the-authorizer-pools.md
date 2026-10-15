@@ -304,8 +304,8 @@ reported 390 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Shows each core's authorizer pool before and after the block of an authorizations test
 // vector: which authorizer left, which joined. Each authorizer as its first 4 hex digits.
-// Usage: node bin/pools.ts <vector.json>, e.g.
-//        node bin/pools.ts ../vectors/stf/authorizations/tiny/progress_authorizations-2.json
+// Usage: npm run pools <vector.json>, e.g.
+//        npm run pools ../vectors/stf/authorizations/tiny/progress_authorizations-2.json
 
 import { readFileSync } from "node:fs";
 import { AuthPools, AuthQueues, nextPools, QUEUE_SIZE, UsedAuthorizer } from "../src/authorization.ts";
@@ -342,7 +342,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/pools.ts ../vectors/stf/authorizations/tiny/progress_authorizations-2.json
+npm pkg set scripts.pools="node bin/pools.ts"
+npm run pools ../vectors/stf/authorizations/tiny/progress_authorizations-2.json
 ```
 
 ```text
@@ -476,7 +477,7 @@ test("α′ through 99 real blocks, with the authorizers their own guarantees us
 ```sh
 npm test
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

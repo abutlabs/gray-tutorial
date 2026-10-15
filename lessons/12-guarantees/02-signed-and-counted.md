@@ -226,8 +226,8 @@ reported 198 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Checks the signatures on every guarantee of a reports test vector and lists the
 // reporters: everyone who signed, once each.
-// Usage: node bin/reporters.ts <vector.json>, e.g.
-//        node bin/reporters.ts ../vectors/stf/reports/tiny/multiple_reports-1.json
+// Usage: npm run reporters <vector.json>, e.g.
+//        npm run reporters ../vectors/stf/reports/tiny/multiple_reports-1.json
 
 import { readFileSync } from "node:fs";
 import { GuaranteesExtrinsic } from "../src/block.ts";
@@ -274,7 +274,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/reporters.ts ../vectors/stf/reports/tiny/different_core_same_guarantors-1.json
+npm pkg set scripts.reporters="node bin/reporters.ts"
+npm run reporters ../vectors/stf/reports/tiny/different_core_same_guarantors-1.json
 ```
 
 ```text

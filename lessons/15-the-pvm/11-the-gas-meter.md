@@ -186,7 +186,7 @@ reported 446 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Runs the bootstrap service from accumulation's entry point with a gas budget, and shows
 // each basic block it pays for on the way to its first host call. Then again, short.
-// Usage: node bin/gas.ts
+// Usage: npm run gas
 
 import { readFileSync } from "node:fs";
 import { fromHex } from "../src/bytes.ts";
@@ -235,7 +235,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/gas.ts
+npm pkg set scripts.gas="node bin/gas.ts"
+npm run gas
 ```
 
 ```text

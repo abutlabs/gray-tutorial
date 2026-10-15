@@ -187,8 +187,8 @@ order: 4 on tiny, 49 on full.
 ```ts
 // Counts, core by core, how many validators of an assurances test vector hold each pending
 // report's data, and which reports become available.
-// Usage: node bin/available.ts <vector.json>, e.g.
-//        node bin/available.ts ../vectors/stf/assurances/tiny/some_assurances-1.json
+// Usage: npm run available <vector.json>, e.g.
+//        npm run available ../vectors/stf/assurances/tiny/some_assurances-1.json
 
 import { readFileSync } from "node:fs";
 import { assuredCount } from "../src/assurances.ts";
@@ -223,7 +223,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/available.ts ../vectors/stf/assurances/tiny/some_assurances-1.json
+npm pkg set scripts.available="node bin/available.ts"
+npm run available ../vectors/stf/assurances/tiny/some_assurances-1.json
 ```
 
 ```text

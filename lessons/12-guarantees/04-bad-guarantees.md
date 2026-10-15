@@ -277,7 +277,7 @@ reported 293 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Checks the guarantees of every reports test vector of one size against the rules, and
 // shows what the rules say next to what the vector says.
-// Usage: node bin/check-guarantees.ts [tiny or full], tiny if not given
+// Usage: npm run check-guarantees [tiny or full], tiny if not given
 
 import { readdirSync, readFileSync } from "node:fs";
 import { GuaranteesExtrinsic } from "../src/block.ts";
@@ -314,7 +314,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/check-guarantees.ts
+npm pkg set scripts.check-guarantees="node bin/check-guarantees.ts"
+npm run check-guarantees
 ```
 
 ```text
@@ -338,7 +339,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 Wherever the rules refuse a guarantee, the vector agrees. Where the guarantees pass but the
 vector refuses the block, the reason is in the report itself: [lesson 12.5](./05-bad-reports.md)'s job. The full
 vectors have four that tiny can't have, where the validator set has shrunk from 1,023 to
-6. `node bin/check-guarantees.ts full` shows two refused: a guarantee for core 340,
+6. `npm run check-guarantees full` shows two refused: a guarantee for core 340,
 active last rotation but not now (`bad_core_index`), and one signed this rotation by
 validators 16, 450 and 1014, when only 6 exist (`bad_validator_index`). And two
 accepted: one from the last rotation, signed by validators 24, 578 and 603 of the old

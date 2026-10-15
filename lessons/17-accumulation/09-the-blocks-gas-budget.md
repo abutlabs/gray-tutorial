@@ -381,7 +381,7 @@ reported 571 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 // Accumulates a test vector's block the way Part 17 does so far, and shows the queue (what
 // waited, which packages went, what still waits) and the rounds it took; then each service
 // next to the vector: the digests it accumulated, the transfers it received, its gas.
-// Usage: node bin/accumulate.ts [vector], enqueue_and_unlock_simple-2 if not given
+// Usage: npm run accumulate [vector], enqueue_and_unlock_simple-2 if not given
 
 import { readFileSync } from "node:fs";
 import { accumulateBlock, accumulationStateFromJson } from "../src/accumulate.ts";
@@ -436,7 +436,7 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/accumulate.ts ../vectors/stf/accumulate/tiny/recreate_service_ejected_in_earlier_round-1.json
+npm run accumulate ../vectors/stf/accumulate/tiny/recreate_service_ejected_in_earlier_round-1.json
 ```
 
 ```text

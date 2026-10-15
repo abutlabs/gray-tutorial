@@ -33,6 +33,12 @@ test("npm's warnings don't count: they come from each machine's npm settings", (
   assert.equal(checkOutput("...\nfound 0 vulnerabilities", "added 1 package\nfound 0 vulnerabilities\nnpm warn Unknown env config"), null);
 });
 
+test("npm run's echo of the script doesn't count: the Run block shows the command already", () => {
+  const real = "\n> decode\n> node bin/decode.ts work_item x.bin\n\n   0..4      service    0x04030201";
+  assert.equal(checkOutput("   0..4      service    0x04030201", real), null);
+  assert.equal(checkOutput("> decode\n> node bin/decode.ts work_item x.bin\n   0..4      service    0x04030201", real), null);
+});
+
 test("an indented ... is output to match, not a cut (Node prints some in its diffs)", () => {
   assert.equal(checkOutput("a\n  ...\nb", "a\n  ...\nb"), null);
   assert.match(checkOutput("a\n  ...\nb", "a\nx\nb")!, /expected here/);

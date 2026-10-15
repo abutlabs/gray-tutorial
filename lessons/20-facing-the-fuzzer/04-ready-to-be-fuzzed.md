@@ -35,7 +35,7 @@ Both are in the [glossary](../glossary.md).
 ```ts
 // Your client as a fuzz target: listens on a Unix socket, and answers the conformance
 // fuzzer's messages (fuzz-proto), one session after another, until stopped (Ctrl+C).
-// Usage: node bin/target.ts [socket], /tmp/jam_target.sock if not given; or, as the
+// Usage: npm run target [socket], /tmp/jam_target.sock if not given; or, as the
 // official fuzzer starts it, with JAM_FUZZ, JAM_FUZZ_SPEC, JAM_FUZZ_DATA_PATH and
 // JAM_FUZZ_SOCK_PATH set, and no arguments.
 
@@ -119,7 +119,8 @@ another user than your target.
 **Run, expect it to fail**
 
 ```sh
-JAM_FUZZ=1 node bin/target.ts
+npm pkg set scripts.target="node bin/target.ts"
+JAM_FUZZ=1 npm run target
 ```
 
 ```text
@@ -130,8 +131,8 @@ refusing to start: JAM_FUZZ_SPEC, JAM_FUZZ_DATA_PATH, JAM_FUZZ_SOCK_PATH not set
 
 ```sh
 mkdir -p /tmp/jam
-JAM_FUZZ=1 JAM_FUZZ_SPEC=tiny JAM_FUZZ_DATA_PATH=/tmp/jam JAM_FUZZ_SOCK_PATH=/tmp/jam/fuzz.sock node bin/target.ts > /dev/null 2>&1 &
-node bin/fuzz.ts safrole /tmp/jam/fuzz.sock
+JAM_FUZZ=1 JAM_FUZZ_SPEC=tiny JAM_FUZZ_DATA_PATH=/tmp/jam JAM_FUZZ_SOCK_PATH=/tmp/jam/fuzz.sock npm run target > /dev/null 2>&1 &
+npm run fuzz safrole /tmp/jam/fuzz.sock
 kill $!
 ```
 
@@ -196,7 +197,7 @@ One last look at the board, with everything your client does:
 **Run**
 
 ```sh
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

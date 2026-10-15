@@ -170,8 +170,8 @@ evidence and in the right place.
 ```ts
 // Shows the offenders in a disputes test vector: each culprit (a guarantor of a bad report)
 // and each fault (a vote against the verdict), and whether the evidence is real.
-// Usage: node bin/offenders.ts <vector.json>, e.g.
-//        node bin/offenders.ts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
+// Usage: npm run offenders <vector.json>, e.g.
+//        npm run offenders ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
 
 import { readFileSync } from "node:fs";
 import { DisputesExtrinsic } from "../src/block.ts";
@@ -206,7 +206,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/offenders.ts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
+npm pkg set scripts.offenders="node bin/offenders.ts"
+npm run offenders ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
 ```
 
 ```text

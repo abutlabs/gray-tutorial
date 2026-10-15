@@ -291,7 +291,7 @@ reported 455 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 // Runs a real service's accumulation with your client's host, and shows every host call it
 // makes and the answer it gets. The service, 1729, comes from the accumulate test vector
 // always_accumulate-1, with the 100,000 gas the vector gives it.
-// Usage: node bin/host.ts
+// Usage: npm run host
 
 import { readFileSync } from "node:fs";
 import { fromHex } from "../src/bytes.ts";
@@ -339,7 +339,7 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/host.ts
+npm run host
 ```
 
 ```text

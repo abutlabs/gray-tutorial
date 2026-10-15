@@ -34,7 +34,7 @@ The protocol's *Workflow*, as your fuzzer does it:
 // A small fuzzer of your own: plays the conformance fuzzer's part (fuzz-proto) with a
 // block-import trace, against a target. It starts bin/target.ts itself, unless given the
 // socket of a target already running. Each state root is checked against the trace's.
-// Usage: node bin/fuzz.ts [family] [socket], "fallback" and a fresh target if not given
+// Usage: npm run fuzz [family] [socket], "fallback" and a fresh target if not given
 
 import { spawn } from "node:child_process";
 import type { Socket } from "node:net";
@@ -169,7 +169,8 @@ may not be listening yet.
 **Run**
 
 ```sh
-node bin/fuzz.ts fuzzy
+npm pkg set scripts.fuzz="node bin/fuzz.ts"
+npm run fuzz fuzzy
 ```
 
 ```text

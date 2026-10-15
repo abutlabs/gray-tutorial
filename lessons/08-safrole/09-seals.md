@@ -289,7 +289,7 @@ reported 87 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=
 ```ts
 // Checks the seal and entropy source of real blocks: the first blocks of a block-import
 // trace, each against the author's key, the slot's entry in γ′_S, and η′₃.
-// Usage: node bin/seals.ts [family] [from] [to], blocks 46 to 50 of "safrole" if not given
+// Usage: npm run seals [family] [from] [to], blocks 46 to 50 of "safrole" if not given
 
 import { Block } from "../src/block.ts";
 import { toHex } from "../src/bytes.ts";
@@ -321,7 +321,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/seals.ts
+npm pkg set scripts.seals="node bin/seals.ts"
+npm run seals
 ```
 
 ```text

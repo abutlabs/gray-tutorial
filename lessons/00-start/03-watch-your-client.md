@@ -22,6 +22,8 @@ and every test run from then on reports itself.
   sends them to the stack. *Example:* `test/grafana.ts`, later in this lesson.
 - **Grafana.** The dashboards where your client's runs show up. *Example:* the page a
   `reported to Grafana` link opens.
+- **Script.** A command with a name, kept in `package.json`, that `npm run` runs.
+  *Example:* `npm run hello` runs `node bin/hello.ts`.
 
 ## Two kinds of signal
 
@@ -134,15 +136,28 @@ if (link) console.log(`reported to Grafana: ${link}`);
 The file is a module, so it can `await` at the top level: Node waits for the report
 before it exits.
 
+`node bin/hello.ts` would run it. Give it a *script* instead, a name in `package.json`
+that npm runs for you, the way `npm run typecheck` runs `tsc -p .`. `npm pkg set` writes
+the line into `package.json`, and `npm run hello` runs it:
+
 **Run**
 
 ```sh
-node bin/hello.ts
+npm pkg set scripts.hello="node bin/hello.ts"
+npm run hello
 ```
 
 ```text
+> hello
+> node bin/hello.ts
+
 reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=hello-1791724085683
 ```
+
+npm first echoes the script's name and the command it stands for, then runs it. Every
+program from here on gets its script the same way, the first time you run it, and the
+lessons leave npm's echo out of their output. Words after the name go on to the program:
+`npm run now 3`, in [the next lesson](./04-the-jam-clock.md), runs `node bin/now.ts 3`.
 
 Open the link. In *Everything your client reported* there it is:
 `{"step":"hello","message":"my JAM client is alive"}`. Your client's first words. Frame
@@ -193,7 +208,8 @@ produces it, and each `yield` writes text to the terminal. This one yields a sin
 at the very end. Its name doesn't end in `.test.ts`, so the runner never mistakes it for
 a test.
 
-Plug it into `npm test`, next to the usual output (`spec`):
+Plug it into `npm test`, next to the usual output (`spec`). The rest of `package.json` is
+as it was, `hello` included:
 
 **Rewrite** `package.json`
 
@@ -204,7 +220,8 @@ Plug it into `npm test`, next to the usual output (`spec`):
   "type": "module",
   "scripts": {
     "test": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./test/grafana.ts --test-reporter-destination=stdout \"test/**/*.test.ts\"",
-    "typecheck": "tsc -p ."
+    "typecheck": "tsc -p .",
+    "hello": "node bin/hello.ts"
   },
   "devDependencies": {
     "@types/node": "26.6.4",
@@ -293,7 +310,7 @@ def push(cli, job, run_id, net, snapshot):
   > Yes: the events go to Loki and the numbers to the Pushgateway in one go. The id lets
   > Grafana show one run on its own.
 
-**The stack is down, and you run `node bin/hello.ts`. What happens?**
+**The stack is down, and you run `npm run hello`. What happens?**
 
 - [ ] The program crashes with a connection error
   > No: `report` catches the error, prints one line, and returns `null`.

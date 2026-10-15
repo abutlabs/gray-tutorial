@@ -16,7 +16,7 @@ import { albertFor, type Face, type Moment } from "./theme/albert.ts";
 
 type Albert = { face: Face; quip: string };
 
-const SCOREBOARD = /\bbin\/scoreboard\.ts\b/;
+const SCOREBOARD = /^npm run scoreboard$/m;
 const BREAK_IT = /^Break it\b/;
 
 /** Albert, as a link to where he's introduced, from a page at `relativePath`. The paths are

@@ -239,7 +239,7 @@ reported 515 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Accumulates a test vector's block the way lesson 17.1 does, and shows what each service
 // did next to what the vector says: its digests, the gas it used, its storage.
-// Usage: node bin/accumulate.ts [vector], same_round_storage_isolation-1 if not given
+// Usage: npm run accumulate [vector], same_round_storage_isolation-1 if not given
 
 import { readFileSync } from "node:fs";
 import { accumulateBlock } from "../src/accumulate.ts";
@@ -282,7 +282,7 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/accumulate.ts
+npm run accumulate
 ```
 
 ```text
@@ -297,7 +297,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 Two services in one round, each writing its own key, each using exactly the vector's gas.
-Try `node bin/accumulate.ts ../vectors/stf/accumulate/tiny/same_code_different_services-1.json`:
+Try `npm run accumulate ../vectors/stf/accumulate/tiny/same_code_different_services-1.json`:
 service 1730 has a digest but no code of its own, so it shows 1 digest and 0 gas, just as
 the vector does. The *Accumulate* panel, on the **7 · Accumulation and import** dashboard (where all of
 [Part 17](./index.md)'s panels are), lines the services up.

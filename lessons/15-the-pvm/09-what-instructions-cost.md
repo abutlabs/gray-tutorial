@@ -274,7 +274,7 @@ reported 437 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Shows the cost sheet of a real basic block: the one the bootstrap service's accumulation
 // jumps to first. Each instruction's cycles, decode slots and execution units.
-// Usage: node bin/costs.ts
+// Usage: npm run costs
 
 import { readFileSync } from "node:fs";
 import { fromHex } from "../src/bytes.ts";
@@ -315,7 +315,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/costs.ts
+npm pkg set scripts.costs="node bin/costs.ts"
+npm run costs
 ```
 
 ```text

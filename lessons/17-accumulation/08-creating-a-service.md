@@ -341,7 +341,7 @@ reported 569 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 **Run**
 
 ```sh
-node bin/host.ts ../vectors/stf/accumulate/tiny/create_service-1.json 0
+npm run host ../vectors/stf/accumulate/tiny/create_service-1.json 0
 ```
 
 ```text
@@ -366,7 +366,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 
 Service 0, the registrar, creates service 5 (its choice of id), then sends it 500 as an
 endowment. The new service has no code to run yet, so in round 2 it just receives the money:
-`node bin/accumulate.ts` on the same vector shows it with one transfer and no gas.
+`npm run accumulate` on the same vector shows it with one transfer and no gas.
 
 <details>
 <summary>lasair: <code>check</code>, in <code>lib/pvm_host.ml</code></summary>

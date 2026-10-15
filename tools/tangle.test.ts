@@ -1,9 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { applyStep } from "./tangle.ts";
+import { applyScripts, applyStep } from "./tangle.ts";
 import type { FileOp } from "./lessons.ts";
 
 function run(start: string | null, op: FileOp, code: string): string {
@@ -116,4 +117,14 @@ test("replace needs a declaration of that name", () => {
 
 test("an import must be one line", () => {
   assert.throws(() => run(file, "add", `import {\n  b,\n} from "./a.ts";\n\nconst q = 1;`), /one line/);
+});
+
+test("a Run block's npm pkg set writes package.json as npm itself does", () => {
+  const start = JSON.stringify({ name: "c", private: true, scripts: { test: "node --test" }, devDependencies: { typescript: "7.0.2" } }, null, 2) + "\n";
+  const command = 'npm run typecheck\nnpm pkg set scripts.hello="node bin/hello.ts"\nnpm pkg set scripts.now="node bin/now.ts"';
+  const [ours, npms] = [mkdtempSync(join(tmpdir(), "tangle-")), mkdtempSync(join(tmpdir(), "tangle-"))];
+  for (const dir of [ours, npms]) writeFileSync(join(dir, "package.json"), start);
+  applyScripts(ours, command);
+  for (const line of command.split("\n").filter((l) => l.startsWith("npm pkg set"))) execSync(line, { cwd: npms, stdio: "ignore" });
+  assert.equal(readFileSync(join(ours, "package.json"), "utf8"), readFileSync(join(npms, "package.json"), "utf8"));
 });

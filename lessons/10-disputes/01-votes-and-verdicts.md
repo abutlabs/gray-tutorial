@@ -290,8 +290,8 @@ reported 96 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=
 ```ts
 // Shows each verdict in a disputes test vector: whose judges voted, how they voted, whether
 // every vote is really theirs, and what the verdict decides.
-// Usage: node bin/verdicts.ts <vector.json>, e.g.
-//        node bin/verdicts.ts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
+// Usage: npm run verdicts <vector.json>, e.g.
+//        npm run verdicts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
 
 import { readFileSync } from "node:fs";
 import { DisputesExtrinsic } from "../src/block.ts";
@@ -326,7 +326,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/verdicts.ts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
+npm pkg set scripts.verdicts="node bin/verdicts.ts"
+npm run verdicts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
 ```
 
 ```text

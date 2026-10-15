@@ -263,7 +263,7 @@ Eight official vectors, tiny and full: every validator's tallies, before and aft
 ```ts
 // Moves the validators' tallies on by one block, as a statistics test vector sets it up,
 // and shows what changed for whom.
-// Usage: node bin/statistics.ts [vector], stats_with_epoch_change-1 (tiny) if not given
+// Usage: npm run statistics [vector], stats_with_epoch_change-1 (tiny) if not given
 
 import { readFileSync } from "node:fs";
 import { Extrinsic } from "../src/block.ts";
@@ -304,7 +304,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/statistics.ts
+npm pkg set scripts.statistics="node bin/statistics.ts"
+npm run statistics
 ```
 
 ```text
@@ -356,7 +357,7 @@ export const FAMILIES: Family[] = [
 
 ```sh
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

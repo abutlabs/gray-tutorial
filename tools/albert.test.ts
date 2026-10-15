@@ -38,7 +38,7 @@ function perches(file: string, text: string): Perch[] {
     if (t.type !== "fence" || !t.meta?.albert) continue;
     const label = tokens[i - 2]?.content ?? "";
     const kind = label === "**Run, expect it to fail**" ? "fails"
-      : label === "**Run**" && t.content.includes("bin/scoreboard.ts") ? "scoreboard"
+      : label === "**Run**" && /^npm run scoreboard$/m.test(t.content) ? "scoreboard"
       : /^Break it\b/.test(heading) ? "break" : undefined;
     assert.ok(kind, `${file}: Albert on a block he shouldn't be on (${label || t.content.slice(0, 40)})`);
     found.push({ kind, face: t.meta.albert.face });

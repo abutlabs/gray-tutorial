@@ -28,7 +28,7 @@ code, and hunt down your first bug.
 - **Breakpoint.** A line where the debugger pauses the program. *Example:* the red dot
   left of line 12 in `src/time.ts`.
 - **Command-line argument.** A word you type after a program's name, which the program
-  reads from `process.argv`. *Example:* the `3` in `node bin/now.ts 3`.
+  reads from `process.argv`. *Example:* the `3` in `npm run now 3`.
 
 ## What the Gray Paper says
 
@@ -285,7 +285,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/now.ts
+npm pkg set scripts.now="node bin/now.ts"
+npm run now
 ```
 
 ```text
@@ -307,7 +308,7 @@ wait for each slot to begin, then report it.
 
 ```ts
 // The JAM clock: prints each timeslot as it begins, and reports it to the observability
-// stack. `node bin/now.ts 3` keeps time for three slots; with no number, until Ctrl+C.
+// stack. `npm run now 3` keeps time for three slots; with no number, until Ctrl+C.
 
 import { setTimeout as sleep } from "node:timers/promises";
 import { Run } from "../src/obs.ts";
@@ -335,7 +336,7 @@ function untilSlot(slot: number): number {
 Three things are new:
 
 - **How long to run.** `process.argv[2]` is the first *command-line argument*, the word
-  after the file's name. `node bin/now.ts 3` means three slots. With no number, `slots`
+  after the file's name. `npm run now 3` means three slots. With no number, `slots`
   is `Infinity`, and the loop never ends.
 - **Waiting.** `sleep` is Node's `setTimeout` in a form you can `await`. `untilSlot` works
   out how long until a slot begins: the slot's first second, counted from the JAM Common
@@ -347,7 +348,7 @@ Three things are new:
 **Run**
 
 ```sh
-node bin/now.ts 3
+npm run now 3
 ```
 
 ```text
@@ -362,7 +363,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 Three slots, one after the other: the first at once, the next two six seconds apart,
 each as its slot begins. Every slot is a run of its own, with its own link.
 
-Now start the clock for real, with no number: `node bin/now.ts`. On the dashboard, set
+Now start the clock for real, with no number: `npm run now`. On the dashboard, set
 the refresh (top right) to 5s and watch *JAM timeslot (last reported)* tick up by one
 every six seconds, with each slot's event arriving in *Everything your client reported*.
 The panel runs a few seconds behind your terminal, and now and then skips a slot: the

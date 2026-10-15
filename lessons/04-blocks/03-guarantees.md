@@ -117,7 +117,7 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 **Run**
 
 ```sh
-node bin/decode.ts guarantees_extrinsic ../vectors/codec/tiny/guarantees_extrinsic.bin
+npm run decode guarantees_extrinsic ../vectors/codec/tiny/guarantees_extrinsic.bin
 ```
 
 ```text

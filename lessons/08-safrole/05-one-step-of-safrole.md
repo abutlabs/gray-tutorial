@@ -248,8 +248,8 @@ over all bring tickets.
 ```ts
 // Runs one block of Safrole from a safrole test vector (one whose block brings no tickets),
 // tells what happened, and checks the result against the vector.
-// Usage: node bin/safrole.ts <vector.json>, e.g.
-//        node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
+// Usage: npm run safrole <vector.json>, e.g.
+//        npm run safrole ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
 
 import { readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
@@ -293,7 +293,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
+npm pkg set scripts.safrole="node bin/safrole.ts"
+npm run safrole ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
 ```
 
 ```text

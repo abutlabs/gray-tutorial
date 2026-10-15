@@ -535,7 +535,7 @@ used above the line it's written on.
 **Run**
 
 ```sh
-node bin/host.ts ../vectors/stf/accumulate/tiny/assign_from_non_assigner-3.json 0
+npm run host ../vectors/stf/accumulate/tiny/assign_from_non_assigner-3.json 0
 ```
 
 ```text
@@ -553,7 +553,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 **Run**
 
 ```sh
-node bin/host.ts ../vectors/stf/accumulate/tiny/assign_from_non_assigner-1.json 1
+npm run host ../vectors/stf/accumulate/tiny/assign_from_non_assigner-1.json 1
 ```
 
 ```text

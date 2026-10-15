@@ -294,7 +294,7 @@ when the two disagree:
 // Checks the guarantees and reports of every reports test vector of one size against the
 // rules (the guarantees' first, then the reports'), and shows each verdict next to the
 // vector's: accepted, or the first rule broken.
-// Usage: node bin/check-guarantees.ts [tiny or full], tiny if not given
+// Usage: npm run check-guarantees [tiny or full], tiny if not given
 
 import { readdirSync, readFileSync } from "node:fs";
 import { GuaranteesExtrinsic } from "../src/block.ts";
@@ -343,7 +343,7 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/check-guarantees.ts
+npm run check-guarantees
 ```
 
 ```text
@@ -365,7 +365,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 Forty-four vectors, and not one "the vector says": your client's reports step agrees with
-all of them. `node bin/check-guarantees.ts full` says the same of the full ones. The
+all of them. `npm run check-guarantees full` says the same of the full ones. The
 *Guarantee checks* panel, on **4 · Checks**, keeps the list.
 
 ![Guarantee checks panel](./images/05-guarantee-checks.png)
@@ -458,7 +458,7 @@ export const FAMILIES: Family[] = [
 
 ```sh
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

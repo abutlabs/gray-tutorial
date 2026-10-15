@@ -370,8 +370,8 @@ reported 401 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Disassembles a stretch of a service's code from the state before a trace's block: each
 // instruction's place, name, registers, immediates and jump target.
-// Usage: node bin/disassemble.ts <trace.json> [from, 0 unless you say] [how many, 12], e.g.
-//        node bin/disassemble.ts ../vectors/traces/fallback/00000001.json 80282
+// Usage: npm run disassemble <trace.json> [from, 0 unless you say] [how many, 12], e.g.
+//        npm run disassemble ../vectors/traces/fallback/00000001.json 80282
 
 import { readFileSync } from "node:fs";
 import { fromHex } from "../src/bytes.ts";
@@ -417,7 +417,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/disassemble.ts ../vectors/traces/fallback/00000001.json 0 4
+npm pkg set scripts.disassemble="node bin/disassemble.ts"
+npm run disassemble ../vectors/traces/fallback/00000001.json 0 4
 ```
 
 ```text
@@ -430,7 +431,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 
 The very first two instructions are jumps, and that's no accident: the PVM starts
 *refine* at byte 0 and *accumulate* at byte 5 (App. B; §9 just numbers them 0 and 1). They're the code's two
-front doors. Follow the first one, `node bin/disassemble.ts
+front doors. Follow the first one, `npm run disassemble
 ../vectors/traces/fallback/00000001.json 80282`, and you're reading the start of a
 function: `add_imm_64 r1, r1, -752` makes room on the stack (r1 is the stack pointer),
 and `store_ind_u64 r0, r1, 744` saves the return address (r0) there. Then [lesson 15.1](./01-the-program-blob.md)'s

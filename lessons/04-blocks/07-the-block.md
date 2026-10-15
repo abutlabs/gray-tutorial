@@ -111,7 +111,7 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 **Run**
 
 ```sh
-node bin/decode.ts block ../vectors/codec/tiny/block.bin
+npm run decode block ../vectors/codec/tiny/block.bin
 ```
 
 ```text
@@ -187,7 +187,7 @@ const configOf = (name: string): Config => (name.includes("/full/") ? FULL : TIN
 
 ```sh
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

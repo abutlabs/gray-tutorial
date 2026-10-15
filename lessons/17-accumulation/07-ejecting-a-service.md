@@ -352,7 +352,7 @@ No new program: `bin/host.ts` already names every call.
 **Run**
 
 ```sh
-node bin/host.ts ../vectors/stf/accumulate/tiny/work_for_ejected_service-2.json 0
+npm run host ../vectors/stf/accumulate/tiny/work_for_ejected_service-2.json 0
 ```
 
 ```text
@@ -369,7 +369,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 
 Service 0 ejects service 2 (`OK`), using exactly the vector's gas. The *Host calls* panel,
 on **7 · Accumulation and import**,
-has the call by name, and `node bin/accumulate.ts` on the same vector shows the block.
+has the call by name, and `npm run accumulate` on the same vector shows the block.
 
 ![Host calls panel](./images/07-host-calls.png)
 

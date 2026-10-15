@@ -113,7 +113,7 @@ const CODECS: Record<string, Codec<unknown>> = {
 **Run**
 
 ```sh
-node bin/decode.ts work_package ../vectors/codec/tiny/work_package.bin
+npm run decode work_package ../vectors/codec/tiny/work_package.bin
 ```
 
 ```text

@@ -492,8 +492,8 @@ reported 581 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 **Run**
 
 ```sh
-node bin/host.ts ../vectors/stf/accumulate/tiny/provide_preimage-1.json 0
-node bin/host.ts ../vectors/stf/accumulate/tiny/provide_preimage-2.json 0
+npm run host ../vectors/stf/accumulate/tiny/provide_preimage-1.json 0
+npm run host ../vectors/stf/accumulate/tiny/provide_preimage-2.json 0
 ```
 
 ```text

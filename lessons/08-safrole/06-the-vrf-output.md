@@ -206,7 +206,7 @@ reported 81 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=
 ```ts
 // Reads the VRF output of real blocks' entropy sources, and stirs it into η₀: the first
 // blocks of a block-import trace, each next to the η₀ the trace's next state holds.
-// Usage: node bin/vrf.ts [family] [blocks], the first 5 blocks of "safrole" if not given
+// Usage: npm run vrf [family] [blocks], the first 5 blocks of "safrole" if not given
 
 import { vrfOutput } from "../src/bandersnatch.ts";
 import { Block } from "../src/block.ts";
@@ -241,7 +241,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/vrf.ts
+npm pkg set scripts.vrf="node bin/vrf.ts"
+npm run vrf
 ```
 
 ```text

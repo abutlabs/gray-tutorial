@@ -238,8 +238,8 @@ shifting everything after the gap.) Put the two lines back.
 ```ts
 // Shuffles the numbers 0 to n − 1 with a hash, as the shuffle vectors do, and shows each
 // pick on the way.
-// Usage: node bin/shuffle.ts <how many> <hash>, e.g.
-//        node bin/shuffle.ts 8 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+// Usage: npm run shuffle <how many> <hash>, e.g.
+//        npm run shuffle 8 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 
 import { fromHex } from "../src/bytes.ts";
 import { Run } from "../src/obs.ts";
@@ -266,7 +266,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/shuffle.ts 8 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+npm pkg set scripts.shuffle="node bin/shuffle.ts"
+npm run shuffle 8 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ```
 
 ```text
@@ -342,7 +343,7 @@ test("the shuffle vectors: 0 to 341 items, shuffled by a hash", () =>
 ```sh
 npm test
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

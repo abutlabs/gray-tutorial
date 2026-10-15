@@ -425,7 +425,7 @@ storage, requests, items and bytes, all as the vectors leave them.
 **Run**
 
 ```sh
-node bin/accumulate.ts ../vectors/stf/accumulate/tiny/preimage_len_bound-1.json
+npm run accumulate ../vectors/stf/accumulate/tiny/preimage_len_bound-1.json
 ```
 
 ```text

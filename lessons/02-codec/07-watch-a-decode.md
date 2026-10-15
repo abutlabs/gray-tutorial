@@ -262,8 +262,8 @@ out and may swap it for another. Bytes become hex; everything else passes throug
 
 ```ts
 // Decodes a structure's bytes and shows, field by field, which bytes became what.
-// Usage: node bin/decode.ts <structure> <file.bin>, e.g.
-//        node bin/decode.ts work_item ../vectors/codec/tiny/work_item.bin
+// Usage: npm run decode <structure> <file.bin>, e.g.
+//        npm run decode work_item ../vectors/codec/tiny/work_item.bin
 
 import { readFileSync } from "node:fs";
 import { toHex } from "../src/bytes.ts";
@@ -281,7 +281,7 @@ const CODECS: Record<string, Codec<unknown>> = {
 const [name, file] = process.argv.slice(2);
 const codec = CODECS[name];
 if (!codec || !file) {
-  throw new Error(`usage: node bin/decode.ts <${Object.keys(CODECS).join("|")}> <file.bin>`);
+  throw new Error(`usage: npm run decode <${Object.keys(CODECS).join("|")}> <file.bin>`);
 }
 
 const bytes = new Uint8Array(readFileSync(file));
@@ -302,7 +302,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/decode.ts work_item ../vectors/codec/tiny/work_item.bin
+npm pkg set scripts.decode="node bin/decode.ts"
+npm run decode work_item ../vectors/codec/tiny/work_item.bin
 ```
 
 ```text
@@ -335,6 +336,12 @@ the bits `0b10000000`. On the **1 · Basics** dashboard,
 *Decode trace* shows the same list for the run.
 
 ![Decode trace panel](./images/07-decode-trace.png)
+
+> [!NOTE]
+> A script can carry its words too. A run you repeat after every change, like this one,
+> can have a name of its own: `npm pkg set scripts.decode-work-item="node bin/decode.ts
+> work_item ../vectors/codec/tiny/work_item.bin"`, and then `npm run decode-work-item`
+> runs it. The lessons keep one script per program, and give it the words each time.
 
 ## Break it again
 

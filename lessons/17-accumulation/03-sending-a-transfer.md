@@ -379,7 +379,7 @@ reported 534 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 // Runs a real service's accumulation, Ψ_A, and shows every host call it makes, the answer
 // it gets, and the transfers it sends. The service, its inputs and its gas come from an
 // accumulate test vector: service 1729 of always_accumulate-1 if you don't say.
-// Usage: node bin/host.ts [vector] [service]
+// Usage: npm run host [vector] [service]
 
 import { readFileSync } from "node:fs";
 import { serviceInputs } from "../src/accumulate.ts";
@@ -437,7 +437,7 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/host.ts ../vectors/stf/accumulate/tiny/transfer_for_live_service-1.json 0
+npm run host ../vectors/stf/accumulate/tiny/transfer_for_live_service-1.json 0
 ```
 
 ```text

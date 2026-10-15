@@ -141,7 +141,7 @@ The three refusals, as the trace has them, and every other root right.
 **Run**
 
 ```sh
-node bin/import.ts fuzzy
+npm run import fuzzy
 ```
 
 ```text
@@ -228,7 +228,7 @@ the same as before; threads finish in any order, so the results are sorted first
 // The scoreboard: every official test vector, run whole by the family your client has for
 // it, and counted. A vector passes only if your client's answer is all of the vector's.
 // The vectors run side by side, a worker thread per processor (test/family-worker.ts).
-// Usage: node bin/scoreboard.ts
+// Usage: npm run scoreboard
 
 import { readdirSync } from "node:fs";
 import { availableParallelism } from "node:os";
@@ -329,7 +329,7 @@ Everything else, the folders, the rows and the board, is as it was.
 
 ```sh
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text
@@ -367,7 +367,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 Under a minute on a laptop with ten processors, and every trace family whole, the seven
-bad blocks in `fuzzy` and `fuzzy_light` refused (`node bin/import.ts` stops at block 100,
+bad blocks in `fuzzy` and `fuzzy_light` refused (`npm run import` stops at block 100,
 so it never meets `fuzzy_light`'s four, from block 152 on).
 
 > [!TIP] Milestone

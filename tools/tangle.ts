@@ -48,6 +48,17 @@ export function applyStep(dir: string, step: FileStep): void {
   writeFileSync(path, lines.join("\n") + "\n");
 }
 
+/** The scripts a Run block gives with `npm pkg set` (0.3), written into package.json as npm
+ * writes them: for a tool that follows the lessons without running them (compare). */
+export function applyScripts(dir: string, command: string): void {
+  for (const [, name, script] of command.matchAll(/^npm pkg set scripts\.([a-z-]+)="([^"]*)"$/gm)) {
+    const path = join(dir, "package.json");
+    const pkg = JSON.parse(readFileSync(path, "utf8"));
+    pkg.scripts = { ...pkg.scripts, [name]: script };
+    writeFileSync(path, JSON.stringify(pkg, null, 2) + "\n");
+  }
+}
+
 const IMPORT = /^import\s/;
 const NAMED = /^import (type )?\{([^}]*)\} from ("[^"]+"|'[^']+');?$/;
 

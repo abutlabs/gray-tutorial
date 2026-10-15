@@ -193,7 +193,7 @@ reported 427 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Runs the ten bit-and-byte instructions on one number, on your PVM, and shows its bits and
 // every answer.
-// Usage: node bin/bits.ts [number], e.g. node bin/bits.ts 0xdeadbeef (0x1f0 if not given)
+// Usage: npm run bits [number], e.g. npm run bits 0xdeadbeef (0x1f0 if not given)
 
 import { Run } from "../src/obs.ts";
 import { opcodeInfo, signed } from "../src/pvm/instructions.ts";
@@ -221,7 +221,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/bits.ts
+npm pkg set scripts.bits="node bin/bits.ts"
+npm run bits
 ```
 
 ```text
@@ -243,7 +244,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 0x1f0 is five 1s with four 0s below them, and you can count each answer off the string
 of bits at the top. Look at the lowest byte, 0xf0: unsigned it's 240, signed it's −16, and
 `sign_extend_8` picks signed. `reverse_bytes` moves that 0xf0 from the bottom of the
-register to the top. Try `node bin/bits.ts 0xdeadbeef` and `node bin/bits.ts -1`. The
+register to the top. Try `npm run bits 0xdeadbeef` and `npm run bits -1`. The
 *Bits* panel, on **6 · The PVM**, keeps every run.
 
 ![Bits panel](./images/07-bits.png)

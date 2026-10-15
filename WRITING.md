@@ -33,9 +33,19 @@ theme's title. The scoreboard has a dashboard of its own, `the-gray-tutor-vector
 every panel a lesson names is on its Part's dashboard, the overview or the scoreboard's,
 and that all of them share one link bar and one pair of menus.
 
+## Programs run through npm
+
+Every program in `bin/` runs through a script of the same name: `bin/decode.ts` is
+`npm run decode`, its words after the name (`npm run decode work_item x.bin`). The lesson
+that writes a program gives it its script in the first Run block that runs it, with
+`npm pkg set scripts.decode="node bin/decode.ts"` (0.3 explains it, with `hello`); a
+`package.json` Rewrite keeps every script given so far. A Run block never runs
+`node bin/` itself. An Output block may leave out npm's echo of the script (`> decode`,
+`> node bin/decode.ts ...`); verify skips it. `tools/lessons.test.ts` checks all of this.
+
 ## The scoreboard
 
-`node bin/scoreboard.ts` (lesson 2.6) runs every official vector **whole** and counts what
+`npm run scoreboard` (lesson 2.6) runs every official vector **whole** and counts what
 passes: a vector passes only if the client's answer is all of the vector's (the state after
 and the output, or the same refusal), never because one piece of it matches. A family of
 vectors (a folder: `codec`, `stf/safrole`, `traces/fuzzy`) gets on the board through

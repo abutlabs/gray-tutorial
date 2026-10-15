@@ -229,7 +229,7 @@ Ten services in nine official vectors now match them.
 **Run**
 
 ```sh
-node bin/accumulate.ts ../vectors/stf/accumulate/tiny/lookup_foreign_preimage-1.json
+npm run accumulate ../vectors/stf/accumulate/tiny/lookup_foreign_preimage-1.json
 ```
 
 ```text

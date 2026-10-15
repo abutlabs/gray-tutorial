@@ -64,7 +64,24 @@ all together, in one go: when one fails it can't say which, so neither can your 
   "type": "module",
   "scripts": {
     "test": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./test/grafana.ts --test-reporter-destination=stdout \"test/**/*.test.ts\"",
-    "typecheck": "tsc -p ."
+    "typecheck": "tsc -p .",
+    "hello": "node bin/hello.ts",
+    "now": "node bin/now.ts",
+    "hexdump": "node bin/hexdump.ts",
+    "scoreboard": "node bin/scoreboard.ts",
+    "decode": "node bin/decode.ts",
+    "chain": "node bin/chain.ts",
+    "assurances": "node bin/assurances.ts",
+    "state": "node bin/state.ts",
+    "read-state": "node bin/read-state.ts",
+    "epochs": "node bin/epochs.ts",
+    "shuffle": "node bin/shuffle.ts",
+    "entropy": "node bin/entropy.ts",
+    "rotation": "node bin/rotation.ts",
+    "sealers": "node bin/sealers.ts",
+    "lottery": "node bin/lottery.ts",
+    "safrole": "node bin/safrole.ts",
+    "vrf": "node bin/vrf.ts"
   },
   "dependencies": {
     "@noble/curves": "2.4.0",
@@ -388,8 +405,8 @@ Every safrole vector passes now: 33 accepted blocks, ring roots and all, and 13 
 ```ts
 // Runs one block of Safrole from a safrole test vector, tickets and all, tells what
 // happened (or why the block is refused), and checks the result against the vector.
-// Usage: node bin/safrole.ts <vector.json>, e.g.
-//        node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
+// Usage: npm run safrole <vector.json>, e.g.
+//        npm run safrole ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
 
 import { readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
@@ -443,8 +460,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
-node bin/safrole.ts ../vectors/stf/safrole/tiny/publish-tickets-no-mark-5.json
+npm run safrole ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+npm run safrole ../vectors/stf/safrole/tiny/publish-tickets-no-mark-5.json
 ```
 
 ```text
@@ -558,7 +575,7 @@ of them at once. Every vector runs at its own size, `configOf` reading it from t
 
 ```sh
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

@@ -204,8 +204,8 @@ never how many.
 ```ts
 // Shows how one block changes η, from a safrole test vector: the accumulator stirred with
 // the block's VRF output, and the history moving along if a new epoch begins.
-// Usage: node bin/entropy.ts <vector.json>, e.g.
-//        node bin/entropy.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+// Usage: npm run entropy <vector.json>, e.g.
+//        npm run entropy ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
 
 import { readFileSync } from "node:fs";
 import { fromHex, toHex } from "../src/bytes.ts";
@@ -238,7 +238,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/entropy.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+npm pkg set scripts.entropy="node bin/entropy.ts"
+npm run entropy ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
 ```
 
 ```text

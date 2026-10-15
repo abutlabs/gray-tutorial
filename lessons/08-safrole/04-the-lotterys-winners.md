@@ -267,8 +267,8 @@ outside in.
 ```ts
 // Shows a lottery's result from a safrole test vector: if this block closes a full lottery,
 // which slot of the next epoch each winning ticket will seal, outside in.
-// Usage: node bin/lottery.ts <vector.json>, e.g.
-//        node bin/lottery.ts ../vectors/stf/safrole/tiny/publish-tickets-with-mark-4.json
+// Usage: npm run lottery <vector.json>, e.g.
+//        npm run lottery ../vectors/stf/safrole/tiny/publish-tickets-with-mark-4.json
 
 import { readFileSync } from "node:fs";
 import { TicketBody } from "../src/block.ts";
@@ -301,7 +301,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/lottery.ts ../vectors/stf/safrole/tiny/publish-tickets-with-mark-4.json
+npm pkg set scripts.lottery="node bin/lottery.ts"
+npm run lottery ../vectors/stf/safrole/tiny/publish-tickets-with-mark-4.json
 ```
 
 ```text

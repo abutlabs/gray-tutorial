@@ -60,7 +60,12 @@ library with no dependencies of its own.
   "type": "module",
   "scripts": {
     "test": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./test/grafana.ts --test-reporter-destination=stdout \"test/**/*.test.ts\"",
-    "typecheck": "tsc -p ."
+    "typecheck": "tsc -p .",
+    "hello": "node bin/hello.ts",
+    "now": "node bin/now.ts",
+    "hexdump": "node bin/hexdump.ts",
+    "scoreboard": "node bin/scoreboard.ts",
+    "decode": "node bin/decode.ts"
   },
   "dependencies": {
     "@noble/hashes": "2.4.0"
@@ -318,7 +323,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/chain.ts
+npm pkg set scripts.chain="node bin/chain.ts"
+npm run chain
 ```
 
 ```text

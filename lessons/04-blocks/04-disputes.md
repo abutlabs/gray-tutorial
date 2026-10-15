@@ -158,7 +158,7 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 **Run**
 
 ```sh
-node bin/decode.ts disputes_extrinsic ../vectors/codec/full/disputes_extrinsic.bin
+npm run decode disputes_extrinsic ../vectors/codec/full/disputes_extrinsic.bin
 ```
 
 ```text

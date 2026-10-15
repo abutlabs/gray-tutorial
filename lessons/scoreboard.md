@@ -4,7 +4,7 @@ Every JAM team checks its client against the same official test vectors, 1,428 o
 `vectors/`. From [lesson 2.6](./02-codec/06-the-first-test-vectors.md#the-scoreboard) on, your client keeps a tally of them too:
 
 ```sh
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 It runs every vector **whole**: your client's answer must be all of the vector's answer,

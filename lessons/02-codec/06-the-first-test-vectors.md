@@ -37,12 +37,12 @@ in hex will be handy for every vector from here on:
 
 ```ts
 // Prints the first bytes of a file in hex, 16 to a line.
-// Usage: node bin/hexdump.ts <file> [how many bytes, 64 if not given]
+// Usage: npm run hexdump <file> [how many bytes, 64 if not given]
 
 import { readFileSync } from "node:fs";
 
 const [file, count = "64"] = process.argv.slice(2);
-if (!file) throw new Error("usage: node bin/hexdump.ts <file> [count]");
+if (!file) throw new Error("usage: npm run hexdump <file> [count]");
 const bytes = readFileSync(file).subarray(0, Number(count));
 for (let i = 0; i < bytes.length; i += 16) {
   console.log([...bytes.subarray(i, i + 16)].map((b) => b.toString(16).padStart(2, "0")).join(" "));
@@ -56,8 +56,9 @@ which is exactly its first four fields: 4 + 32 + 8 + 8 bytes.
 **Run**
 
 ```sh
+npm pkg set scripts.hexdump="node bin/hexdump.ts"
 cat ../vectors/codec/tiny/work_item.json
-node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 52
+npm run hexdump ../vectors/codec/tiny/work_item.bin 52
 ```
 
 ```text
@@ -349,7 +350,7 @@ with a reason, `no codec for block yet`, instead of a crash.
 ```ts
 // The scoreboard: every official test vector, run whole by the family your client has for
 // it, and counted. A vector passes only if your client's answer is all of the vector's.
-// Usage: node bin/scoreboard.ts
+// Usage: npm run scoreboard
 
 import { readdirSync } from "node:fs";
 import { Run } from "../src/obs.ts";
@@ -424,8 +425,9 @@ a `vector` event for Grafana: its family, its name, whether it passed, and why n
 **Run**
 
 ```sh
+npm pkg set scripts.scoreboard="node bin/scoreboard.ts"
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text
@@ -522,7 +524,7 @@ Gray Paper 0.8.0, and lasair's type marks them so.
   > No: every value matches. `04 03 02 01` is the service, 16909060, and the next 32
   > bytes are the same `code_hash`.
 
-**In `node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 52`, what is the 52?**
+**In `npm run hexdump ../vectors/codec/tiny/work_item.bin 52`, what is the 52?**
 
 - [ ] The size of every work item
   > No: this one is 236 bytes, and an item with a longer payload is longer still.

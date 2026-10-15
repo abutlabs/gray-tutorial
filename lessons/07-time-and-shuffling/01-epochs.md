@@ -249,7 +249,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/epochs.ts
+npm pkg set scripts.epochs="node bin/epochs.ts"
+npm run epochs
 ```
 
 ```text

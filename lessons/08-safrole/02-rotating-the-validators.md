@@ -212,8 +212,8 @@ reported 73 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=
 ```ts
 // Shows the four validator sets before and after a block, from a safrole test vector, each
 // validator by the first four hex digits of its Ed25519 key.
-// Usage: node bin/rotation.ts <vector.json>, e.g.
-//        node bin/rotation.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
+// Usage: npm run rotation <vector.json>, e.g.
+//        npm run rotation ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
 
 import { readFileSync } from "node:fs";
 import { fromHex, toHex } from "../src/bytes.ts";
@@ -254,7 +254,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/rotation.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
+npm pkg set scripts.rotation="node bin/rotation.ts"
+npm run rotation ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
 ```
 
 ```text

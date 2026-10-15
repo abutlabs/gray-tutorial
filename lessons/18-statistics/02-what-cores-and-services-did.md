@@ -328,7 +328,7 @@ reported 636 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // One block's core and service activity, from a reports test vector (new work taken on) or
 // an assurances one (data now available), and what each core and service did.
-// Usage: node bin/activity.ts [vector], multiple_reports-1 (tiny) if not given
+// Usage: npm run activity [vector], multiple_reports-1 (tiny) if not given
 
 import { readFileSync } from "node:fs";
 import { Assurance } from "../src/block.ts";
@@ -373,7 +373,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/activity.ts
+npm pkg set scripts.activity="node bin/activity.ts"
+npm run activity
 ```
 
 ```text
@@ -390,7 +391,7 @@ card shows its own report's work. Service 42's card shows both reports' work add
 **Run**
 
 ```sh
-node bin/activity.ts ../vectors/stf/assurances/tiny/some_assurances-1.json
+npm run activity ../vectors/stf/assurances/tiny/some_assurances-1.json
 ```
 
 ```text
@@ -514,7 +515,7 @@ carries no assurances, so `coreStats` gets two empty lists, as in the tests abov
 
 ```sh
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

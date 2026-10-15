@@ -172,15 +172,15 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 // the vectors keep each size in its own folder, tiny/ or full/
 const codec = CODECS(file?.includes("/full/") ? FULL : TINY)[name];
 if (!codec || !file) {
-  throw new Error(`usage: node bin/decode.ts <${Object.keys(CODECS(TINY)).join("|")}> <file.bin>`);
+  throw new Error(`usage: npm run decode <${Object.keys(CODECS(TINY)).join("|")}> <file.bin>`);
 }
 ```
 
 **Run**
 
 ```sh
-node bin/decode.ts assurances_extrinsic ../vectors/codec/tiny/assurances_extrinsic.bin
-node bin/decode.ts assurances_extrinsic ../vectors/codec/full/assurances_extrinsic.bin
+npm run decode assurances_extrinsic ../vectors/codec/tiny/assurances_extrinsic.bin
+npm run decode assurances_extrinsic ../vectors/codec/full/assurances_extrinsic.bin
 ```
 
 ```text

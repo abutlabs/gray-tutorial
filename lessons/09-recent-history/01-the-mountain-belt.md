@@ -283,7 +283,7 @@ reported 90 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=
 ```ts
 // Grows a mountain belt one item at a time and shows its peaks after each append:
 // ● a mountain, · an empty place, smallest mountain first.
-// Usage: node bin/belt.ts [how many items, 16 unless you say]
+// Usage: npm run belt [how many items, 16 unless you say]
 
 import { appendToBelt, superPeak } from "../src/belt.ts";
 import type { Belt } from "../src/belt.ts";
@@ -308,7 +308,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/belt.ts
+npm pkg set scripts.belt="node bin/belt.ts"
+npm run belt
 ```
 
 ```text
@@ -335,7 +336,7 @@ Your hashes are these same ones: the items are fixed bytes, so only the link's r
 changes from run to run. Now read the dots from right to left: after 5, `● · ●` is 101, after 6 `· ● ●` is 110, after
 8 `· · · ●` is 1000. The belt *is* the count in binary, written backwards, smallest
 mountain first. Watch 7 → 8: three mountains merge into one, like 0111 + 1 = 1000. The
-*Belt* panel has every step; try `node bin/belt.ts 100`.
+*Belt* panel has every step; try `npm run belt 100`.
 
 ![Belt panel](./images/01-belt.png)
 

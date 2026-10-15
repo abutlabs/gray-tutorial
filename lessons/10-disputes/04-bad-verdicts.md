@@ -74,7 +74,7 @@ test("a split that's neither good, bad nor wonky is refused", () => {
 /**
  * Every tiny disputes vector, and the full ones tiny can't have (a resized λ). A full
  * verdict carries 683 signed votes, and checking every full vector takes the better part
- * of a minute; `node bin/check-disputes.ts full` does that whenever you like.
+ * of a minute; `npm run check-disputes full` does that whenever you like.
  */
 const VERDICT_VECTORS = [
   ...vectorFiles("stf/disputes/tiny").map((name) => ({ config: TINY, name })),
@@ -233,7 +233,7 @@ reported 133 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Checks the verdicts of every disputes test vector of one size against the rules, and
 // shows what the rules say next to what the vector says.
-// Usage: node bin/check-disputes.ts [tiny or full], tiny if not given
+// Usage: npm run check-disputes [tiny or full], tiny if not given
 
 import { readdirSync, readFileSync } from "node:fs";
 import { DisputesExtrinsic } from "../src/block.ts";
@@ -264,7 +264,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/check-disputes.ts
+npm pkg set scripts.check-disputes="node bin/check-disputes.ts"
+npm run check-disputes
 ```
 
 ```text
@@ -301,7 +302,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 Every line where the rules found a bad verdict agrees with the vector, and
-`node bin/check-disputes.ts full` says the same of the full vectors. The others show
+`npm run check-disputes full` says the same of the full vectors. The others show
 what's left for [lesson 10.5](./05-bad-culprits-and-faults.md): blocks whose verdicts are fine, refused for their culprits or
 faults. The *Dispute checks* panel, on the **4 · Checks** dashboard, keeps the list.
 

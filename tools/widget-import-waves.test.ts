@@ -31,7 +31,7 @@ test("the ≺ lines the lesson spells out are in the graph", () => {
 });
 
 test("the waves are the lesson's plan: bin/plan.ts's waves, step for step", () => {
-  const plan = text.slice(text.indexOf("node bin/plan.ts\n```"));
+  const plan = text.slice(text.indexOf("npm run plan\n```"));
   const printed: { makes: string[]; from: string[] }[][] = [];
   for (const line of plan.split("\n")) {
     if (/^wave \d+:$/.test(line)) printed.push([]);

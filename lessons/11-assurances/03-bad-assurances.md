@@ -231,7 +231,7 @@ reported 193 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Checks the assurances of every assurances test vector of one size against the rules, and
 // shows each verdict next to the vector's: accepted, or the rule it breaks.
-// Usage: node bin/check-assurances.ts [tiny or full], tiny if not given
+// Usage: npm run check-assurances [tiny or full], tiny if not given
 
 import { readdirSync, readFileSync } from "node:fs";
 import { assuranceError } from "../src/assurances.ts";
@@ -262,7 +262,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/check-assurances.ts
+npm pkg set scripts.check-assurances="node bin/check-assurances.ts"
+npm run check-assurances
 ```
 
 ```text
@@ -281,7 +282,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 Eleven vectors, eleven verdicts, and no "the vector says" anywhere: your rules and the
-vectors agree on every one. `node bin/check-assurances.ts full` does the same for the full
+vectors agree on every one. `npm run check-assurances full` does the same for the full
 vectors. The *Assurance checks* panel keeps the list.
 
 ![Assurance checks panel](./images/03-assurance-checks.png)
@@ -350,7 +351,7 @@ export const FAMILIES: Family[] = [
 
 ```sh
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

@@ -292,7 +292,7 @@ reported 407 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Runs two tiny programs on your PVM's memory: one stores 8 bytes and loads them back, the
 // other reaches for a page that isn't there.
-// Usage: node bin/memory.ts
+// Usage: npm run memory
 
 import { toHex } from "../src/bytes.ts";
 import { Run } from "../src/obs.ts";
@@ -329,7 +329,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/memory.ts
+npm pkg set scripts.memory="node bin/memory.ts"
+npm run memory
 ```
 
 ```text

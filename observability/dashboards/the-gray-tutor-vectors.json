@@ -189,14 +189,14 @@
    },
    "options": {
     "mode": "markdown",
-    "content": "Your client's scoreboard: every official test vector, run whole by `node bin/scoreboard.ts`. A vector passes only if your client's answer is all of the vector's. Every run lands here, from lesson 2.6's first board (4 of 1,428) on; the tutorial's *Scoreboard* page lists the lessons where a family crosses the line. *Every vector* lists each vector the run ran, passed or failed, and why: filter its *family* or *result* column to drill in. Pick a scoreboard run in the *run* menu to see its board; *All* shows the latest, and every failure."
+    "content": "Your client's scoreboard: every official test vector, run whole by `npm run scoreboard`. A vector passes only if your client's answer is all of the vector's. Every run lands here, from lesson 2.6's first board (4 of 1,428) on; the tutorial's *Scoreboard* page lists the lessons where a family crosses the line. *Every vector* lists each vector the run ran, passed or failed, and why: filter its *family* or *result* column to drill in. Pick a scoreboard run in the *run* menu to see its board; *All* shows the latest, and every failure."
    }
   },
   {
    "id": 1,
    "type": "stat",
    "title": "Vectors passing (last run)",
-   "description": "How many official vectors passed whole in the latest node bin/scoreboard.ts.",
+   "description": "How many official vectors passed whole in the latest npm run scoreboard.",
    "datasource": {
     "type": "prometheus",
     "uid": "prometheus"

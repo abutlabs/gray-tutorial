@@ -320,7 +320,7 @@ reported 642 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Reads a real state whole: each of its sixteen components, by the Gray Paper's letter,
 // with its size; then each service account, with how many entries it keeps.
-// Usage: node bin/whole-state.ts [family] [block], before block 50 of "storage" if not given
+// Usage: npm run whole-state [family] [block], before block 50 of "storage" if not given
 
 import { encode } from "../src/codec/codec.ts";
 import type { Codec } from "../src/codec/codec.ts";
@@ -355,7 +355,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/whole-state.ts
+npm pkg set scripts.whole-state="node bin/whole-state.ts"
+npm run whole-state
 ```
 
 ```text

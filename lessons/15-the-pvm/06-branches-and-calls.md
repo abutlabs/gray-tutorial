@@ -282,7 +282,7 @@ reported 422 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Runs every branch on your PVM with r0 = −1 and r1 = 1 (ν_X = 1 for the immediate ones),
 // and shows which of them jump: the same bits give different answers, unsigned and signed.
-// Usage: node bin/branches.ts
+// Usage: npm run branches
 
 import { Run } from "../src/obs.ts";
 import { opcodeInfo } from "../src/pvm/instructions.ts";
@@ -311,7 +311,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/branches.ts
+npm pkg set scripts.branches="node bin/branches.ts"
+npm run branches
 ```
 
 ```text

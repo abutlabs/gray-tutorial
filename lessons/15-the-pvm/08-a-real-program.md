@@ -272,7 +272,7 @@ reported 431 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 // Starts a real service: the bootstrap service, from the state before the first block of
 // the fallback trace. Y lays out its memory and registers, and the machine runs from
 // accumulation's entry point until the program calls the host.
-// Usage: node bin/start.ts
+// Usage: npm run start
 
 import { readFileSync } from "node:fs";
 import { fromHex } from "../src/bytes.ts";
@@ -337,7 +337,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/start.ts
+npm pkg set scripts.start="node bin/start.ts"
+npm run start
 ```
 
 ```text

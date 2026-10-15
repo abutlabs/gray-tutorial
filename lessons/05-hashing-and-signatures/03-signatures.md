@@ -69,7 +69,13 @@ Ed25519 is another job for a specialist. `@noble/curves` comes from the same aut
   "type": "module",
   "scripts": {
     "test": "node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./test/grafana.ts --test-reporter-destination=stdout \"test/**/*.test.ts\"",
-    "typecheck": "tsc -p ."
+    "typecheck": "tsc -p .",
+    "hello": "node bin/hello.ts",
+    "now": "node bin/now.ts",
+    "hexdump": "node bin/hexdump.ts",
+    "scoreboard": "node bin/scoreboard.ts",
+    "decode": "node bin/decode.ts",
+    "chain": "node bin/chain.ts"
   },
   "dependencies": {
     "@noble/curves": "2.4.0",
@@ -280,8 +286,8 @@ takes about a second: 1,023 signatures is real work, even for a fast library.
 ```ts
 // Checks the signature on every assurance in an assurances test vector, with the Ed25519
 // keys of the validators in the vector's state.
-// Usage: node bin/assurances.ts <vector.json>, e.g.
-//        node bin/assurances.ts ../vectors/stf/assurances/tiny/some_assurances-1.json
+// Usage: npm run assurances <vector.json>, e.g.
+//        npm run assurances ../vectors/stf/assurances/tiny/some_assurances-1.json
 
 import { readFileSync } from "node:fs";
 import { Assurance, assuranceSigned } from "../src/block.ts";
@@ -311,7 +317,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/assurances.ts ../vectors/stf/assurances/tiny/assurances_with_bad_signature-1.json
+npm pkg set scripts.assurances="node bin/assurances.ts"
+npm run assurances ../vectors/stf/assurances/tiny/assurances_with_bad_signature-1.json
 ```
 
 ```text

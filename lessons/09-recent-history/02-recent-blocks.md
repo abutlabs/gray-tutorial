@@ -290,8 +290,8 @@ reported 92 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=
 ```ts
 // Reads β from the state before a trace's block: the blocks the chain remembers, and its
 // belt of accumulation outputs.
-// Usage: node bin/history.ts <trace.json>, e.g.
-//        node bin/history.ts ../vectors/traces/preimages/00000050.json
+// Usage: npm run history <trace.json>, e.g.
+//        npm run history ../vectors/traces/preimages/00000050.json
 
 import { readFileSync } from "node:fs";
 import type { Bytes } from "../src/bytes.ts";
@@ -323,7 +323,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/history.ts ../vectors/traces/preimages/00000050.json
+npm pkg set scripts.history="node bin/history.ts"
+npm run history ../vectors/traces/preimages/00000050.json
 ```
 
 ```text
@@ -425,7 +426,7 @@ test("β in real states: the newest block remembered is the block before", () =>
 ```sh
 npm test
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

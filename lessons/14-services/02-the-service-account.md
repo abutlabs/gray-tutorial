@@ -222,8 +222,8 @@ reported 395 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Reads a service's account from the state before a trace's block: its record, its code,
 // and what it must keep in its balance for what it stores.
-// Usage: node bin/service.ts <trace.json> [service id, 0 unless you say], e.g.
-//        node bin/service.ts ../vectors/traces/storage/00000100.json
+// Usage: npm run service <trace.json> [service id, 0 unless you say], e.g.
+//        npm run service ../vectors/traces/storage/00000100.json
 
 import { readFileSync } from "node:fs";
 import { fromHex, toHex } from "../src/bytes.ts";
@@ -259,7 +259,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/service.ts ../vectors/traces/fallback/00000001.json
+npm pkg set scripts.service="node bin/service.ts"
+npm run service ../vectors/traces/fallback/00000001.json
 ```
 
 ```text

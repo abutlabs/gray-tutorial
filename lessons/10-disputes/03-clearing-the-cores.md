@@ -212,8 +212,8 @@ reported 101 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 
 ```ts
 // Shows which cores lose their pending report to the verdicts of a disputes test vector.
-// Usage: node bin/cores.ts <vector.json>, such as the vector that clears a core:
-//   node bin/cores.ts ../vectors/stf/disputes/tiny/progress_invalidates_avail_assignments-1.json
+// Usage: npm run cores <vector.json>, such as the vector that clears a core:
+//   npm run cores ../vectors/stf/disputes/tiny/progress_invalidates_avail_assignments-1.json
 
 import { readFileSync } from "node:fs";
 import { DisputesExtrinsic } from "../src/block.ts";
@@ -260,7 +260,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/cores.ts ../vectors/stf/disputes/tiny/progress_invalidates_avail_assignments-1.json
+npm pkg set scripts.cores="node bin/cores.ts"
+npm run cores ../vectors/stf/disputes/tiny/progress_invalidates_avail_assignments-1.json
 ```
 
 ```text

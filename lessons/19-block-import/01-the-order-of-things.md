@@ -259,7 +259,7 @@ reported 640 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Prints the plan of a block import: the Gray Paper's steps in waves, each with what it's
 // made from and the lesson that builds it.
-// Usage: node bin/plan.ts
+// Usage: npm run plan
 
 import { STEPS, waves } from "../src/import.ts";
 import { Run } from "../src/obs.ts";
@@ -281,7 +281,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/plan.ts
+npm pkg set scripts.plan="node bin/plan.ts"
+npm run plan
 ```
 
 ```text

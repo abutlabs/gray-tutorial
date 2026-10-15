@@ -271,8 +271,8 @@ for them.
 ```ts
 // Builds the trie of the state before a trace's block, shows where each entry lands and
 // what it is, and checks the root against the one the block's header promises.
-// Usage: node bin/state.ts <trace.json>, e.g.
-//        node bin/state.ts ../vectors/traces/fallback/00000001.json
+// Usage: npm run state <trace.json>, e.g.
+//        npm run state ../vectors/traces/fallback/00000001.json
 
 import { readFileSync } from "node:fs";
 import type { Bytes } from "../src/bytes.ts";
@@ -350,7 +350,7 @@ account.
 **Run**
 
 ```sh
-node bin/state.ts ../vectors/traces/fallback/00000001.json
+npm run state ../vectors/traces/fallback/00000001.json
 ```
 
 ```text

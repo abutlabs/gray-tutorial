@@ -321,7 +321,7 @@ The bin uses the block too, so it changes with it:
 ```ts
 // Accumulates a test vector's block the way Part 17 does so far, and shows the queue: what
 // waited, which packages went, what still waits; then each service next to the vector.
-// Usage: node bin/accumulate.ts [vector], enqueue_and_unlock_simple-2 if not given
+// Usage: npm run accumulate [vector], enqueue_and_unlock_simple-2 if not given
 
 import { readFileSync } from "node:fs";
 import { accumulateBlock, accumulationStateFromJson } from "../src/accumulate.ts";
@@ -389,7 +389,7 @@ statistic, the ready queue and the history.
 **Run**
 
 ```sh
-node bin/accumulate.ts
+npm run accumulate
 ```
 
 ```text
@@ -403,7 +403,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 
 A comes in, D was waiting for it, both go, nobody's left waiting, and service 1729's two
 digests use exactly the vector's gas. Try the chains:
-`node bin/accumulate.ts ../vectors/stf/accumulate/tiny/enqueue_and_unlock_chain-4.json`.
+`npm run accumulate ../vectors/stf/accumulate/tiny/enqueue_and_unlock_chain-4.json`.
 The *Accumulate* panel, on **7 · Accumulation and import**, shows each block's line, then its services.
 
 ![Accumulate panel](./images/02-accumulate.png)

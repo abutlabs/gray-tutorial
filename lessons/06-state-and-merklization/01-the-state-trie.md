@@ -292,8 +292,8 @@ reading 300 MB of JSON.
 ```ts
 // Builds the trie of the state before a trace's block, shows where each entry lands, and
 // checks the root against the one the block's header promises.
-// Usage: node bin/state.ts <trace.json>, e.g.
-//        node bin/state.ts ../vectors/traces/fallback/00000001.json
+// Usage: npm run state <trace.json>, e.g.
+//        npm run state ../vectors/traces/fallback/00000001.json
 
 import { readFileSync } from "node:fs";
 import type { Bytes } from "../src/bytes.ts";
@@ -328,7 +328,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/state.ts ../vectors/traces/fallback/00000001.json
+npm pkg set scripts.state="node bin/state.ts"
+npm run state ../vectors/traces/fallback/00000001.json
 ```
 
 ```text
@@ -440,7 +441,7 @@ test("each header promises the state before its block, by its root: 400 real sta
 ```sh
 npm test
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

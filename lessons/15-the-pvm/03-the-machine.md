@@ -328,7 +328,7 @@ once, r2 reaches 10, and then the branch back panics: its target, now 5, follows
 ```ts
 // Runs a hand-written program on your PVM, one step at a time: it adds 10 + 9 + … + 1 into
 // r2, then returns through r0, which halts the machine.
-// Usage: node bin/run.ts
+// Usage: npm run run
 
 import { decodeInstruction } from "../src/pvm/instructions.ts";
 import { HALT_ADDRESS, newMachine, step } from "../src/pvm/machine.ts";
@@ -368,7 +368,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/run.ts
+npm pkg set scripts.run="node bin/run.ts"
+npm run run
 ```
 
 ```text

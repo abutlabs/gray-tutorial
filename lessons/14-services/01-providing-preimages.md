@@ -306,8 +306,8 @@ reported 393 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Provides the preimages of a trace's block to the services that asked for them, and shows
 // each request's history before and after.
-// Usage: node bin/preimages.ts <trace.json>, e.g.
-//        node bin/preimages.ts ../vectors/traces/preimages/00000008.json
+// Usage: npm run preimages <trace.json>, e.g.
+//        npm run preimages ../vectors/traces/preimages/00000008.json
 
 import { readFileSync } from "node:fs";
 import { Block } from "../src/block.ts";
@@ -353,7 +353,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/preimages.ts ../vectors/traces/preimages/00000008.json
+npm pkg set scripts.preimages="node bin/preimages.ts"
+npm run preimages ../vectors/traces/preimages/00000008.json
 ```
 
 ```text
@@ -423,7 +424,7 @@ export const FAMILIES: Family[] = [
 
 ```sh
 npm run typecheck
-node bin/scoreboard.ts
+npm run scoreboard
 ```
 
 ```text

@@ -272,8 +272,8 @@ reported 196 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Shows who guarantees which core in a reports test vector, this rotation and the last,
 // and checks each guarantee's signers against the assignment it answers to.
-// Usage: node bin/guarantors.ts <vector.json>, e.g.
-//        node bin/guarantors.ts ../vectors/stf/reports/tiny/report_prev_rotation-1.json
+// Usage: npm run guarantors <vector.json>, e.g.
+//        npm run guarantors ../vectors/stf/reports/tiny/report_prev_rotation-1.json
 
 import { readFileSync } from "node:fs";
 import { GuaranteesExtrinsic } from "../src/block.ts";
@@ -325,7 +325,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/guarantors.ts ../vectors/stf/reports/tiny/report_prev_rotation-1.json
+npm pkg set scripts.guarantors="node bin/guarantors.ts"
+npm run guarantors ../vectors/stf/reports/tiny/report_prev_rotation-1.json
 ```
 
 ```text

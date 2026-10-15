@@ -280,7 +280,7 @@ run.event("stop", { exit: JSON.stringify(exit), gas: Number(machine.gas) });
 **Run**
 
 ```sh
-node bin/host.ts
+npm run host
 ```
 
 ```text

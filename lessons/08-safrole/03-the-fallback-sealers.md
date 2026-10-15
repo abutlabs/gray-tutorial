@@ -189,8 +189,8 @@ epoch is 600 slots.
 ```ts
 // Shows who seals each slot of the new epoch when a safrole test vector falls back to F:
 // every slot's key, and which validator of κ′ it belongs to.
-// Usage: node bin/sealers.ts <vector.json>, e.g.
-//        node bin/sealers.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+// Usage: npm run sealers <vector.json>, e.g.
+//        npm run sealers ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
 
 import { readFileSync } from "node:fs";
 import { fromHex, toHex } from "../src/bytes.ts";
@@ -222,7 +222,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/sealers.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+npm pkg set scripts.sealers="node bin/sealers.ts"
+npm run sealers ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
 ```
 
 ```text

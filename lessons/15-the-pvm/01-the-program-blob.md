@@ -225,8 +225,8 @@ reported 398 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Unpacks a service's code from the state before a trace's block, layer by layer: the
 // metadata, the standard program, and the PVM blob's jump table, code and bitmask.
-// Usage: node bin/program.ts <trace.json> [service id, 0 unless you say], e.g.
-//        node bin/program.ts ../vectors/traces/fallback/00000001.json
+// Usage: npm run program <trace.json> [service id, 0 unless you say], e.g.
+//        npm run program ../vectors/traces/fallback/00000001.json
 
 import { readFileSync } from "node:fs";
 import { fromHex } from "../src/bytes.ts";
@@ -276,7 +276,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/program.ts ../vectors/traces/fallback/00000001.json
+npm pkg set scripts.program="node bin/program.ts"
+npm run program ../vectors/traces/fallback/00000001.json
 ```
 
 ```text

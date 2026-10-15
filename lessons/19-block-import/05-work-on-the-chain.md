@@ -234,7 +234,7 @@ reported 646 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 **Run**
 
 ```sh
-node bin/import.ts storage_light
+npm run import storage_light
 ```
 
 ```text
@@ -249,7 +249,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 
 A hundred blocks with work, chained, every root right. The full `storage` and `preimages`
 traces, with six work-items to a report, take a minute or so each; try them too:
-`node bin/import.ts storage`.
+`npm run import storage`.
 
 <details>
 <summary>lasair: the same two fixes, in <code>conformance/stf_guarantees.ml</code></summary>

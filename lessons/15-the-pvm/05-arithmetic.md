@@ -381,7 +381,7 @@ reported 416 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 ```ts
 // Runs the arithmetic edge cases the Gray Paper spells out, each as one instruction on
 // your PVM, and shows the answers in hex and as signed numbers.
-// Usage: node bin/alu.ts
+// Usage: npm run alu
 
 import { Run } from "../src/obs.ts";
 import { decodeInstruction } from "../src/pvm/instructions.ts";
@@ -422,7 +422,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-node bin/alu.ts
+npm pkg set scripts.alu="node bin/alu.ts"
+npm run alu
 ```
 
 ```text

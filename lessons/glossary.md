@@ -40,6 +40,10 @@ anything. *Example:* `const slot: number = 42`. ([0.2](./00-start/02-set-up-the-
 **npm.** Node's tool for downloading libraries and running a project's scripts.
 *Example:* `npm test` runs every test. ([0.2](./00-start/02-set-up-the-project.md))
 
+**Script.** A command with a name, kept in `package.json`'s `scripts`, that `npm run`
+runs; words after the name go on to the command. *Example:* `npm run decode work_item
+x.bin` runs `node bin/decode.ts work_item x.bin`. ([0.3](./00-start/03-watch-your-client.md))
+
 **Test.** A small program that checks one thing your code should do, and fails loudly if
 it doesn't. This tutorial uses test-driven development: the test first, then the code.
 *Example:* "slot 0 is the first six seconds of the JAM Common Era".
@@ -55,7 +59,7 @@ way. *Example:* `codec`, `stf/safrole`, `traces/fallback`.
 ([2.6](./02-codec/06-the-first-test-vectors.md))
 
 **Scoreboard.** Your client's tally of every official test vector, each one run whole:
-your client's answer must be all of the vector's. `node bin/scoreboard.ts` prints it, and
+your client's answer must be all of the vector's. `npm run scoreboard` prints it, and
 Grafana's *8 · Official vectors* dashboard keeps it. *Example:* 4 of 1,428, the first time it runs.
 ([2.6](./02-codec/06-the-first-test-vectors.md))
 
@@ -87,7 +91,7 @@ rounds. ([0.4](./00-start/04-the-jam-clock.md))
 
 **Command-line argument.** A word you type after a program's name, which the program reads
 from `process.argv` (`process.argv[2]` is the first). *Example:* the `3` in
-`node bin/now.ts 3`. ([0.4](./00-start/04-the-jam-clock.md))
+`npm run now 3`. ([0.4](./00-start/04-the-jam-clock.md))
 
 **Reporter.** A plug-in for Node's test runner that receives every test's result; yours
 sends them to Grafana. *Example:* `test/grafana.ts`. ([0.3](./00-start/03-watch-your-client.md))
@@ -243,7 +247,7 @@ items of a package are a sequence. ([2.5](./02-codec/05-sequences-and-records.md
 *Example:* `seq(u8)` is a codec for lists of bytes. ([2.5](./02-codec/05-sequences-and-records.md))
 
 **Hex dump.** A file's bytes printed as hex, a few to a line, to read by eye. *Example:*
-`node bin/hexdump.ts work_item.bin` prints `04 03 02 01 70 a5 ...`.
+`npm run hexdump work_item.bin` prints `04 03 02 01 70 a5 ...`.
 ([2.6](./02-codec/06-the-first-test-vectors.md))
 
 **Round trip.** Decoding bytes, encoding the result, and getting the very same bytes back:
