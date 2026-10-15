@@ -25,6 +25,7 @@ export type Flow = { part: number; rows: string[][]; walk: string[]; cards: Reco
 
 /** Where each lesson the flows name is, under the site's base (checked against the lesson files). */
 export const LESSON_PATHS: Record<string, string> = {
+  "0.2": "00-start/02-set-up-the-project",
   "0.3": "00-start/03-watch-your-client",
   "0.4": "00-start/04-the-jam-clock",
   "1.1": "01-bytes-and-numbers/01-bytes-and-hex",
@@ -49,6 +50,20 @@ export const LESSON_PATHS: Record<string, string> = {
   "5.1": "05-hashing-and-signatures/01-hashes",
   "5.2": "05-hashing-and-signatures/02-the-extrinsic-hash",
   "5.3": "05-hashing-and-signatures/03-signatures",
+  "6.1": "06-state-and-merklization/01-the-state-trie",
+  "6.2": "06-state-and-merklization/02-state-keys",
+  "6.3": "06-state-and-merklization/03-reading-the-state",
+  "7.1": "07-time-and-shuffling/01-epochs",
+  "7.2": "07-time-and-shuffling/02-the-shuffle",
+  "8.1": "08-safrole/01-stirring-the-entropy",
+  "8.2": "08-safrole/02-rotating-the-validators",
+  "8.3": "08-safrole/03-the-fallback-sealers",
+  "8.4": "08-safrole/04-the-lotterys-winners",
+  "8.5": "08-safrole/05-one-step-of-safrole",
+  "8.6": "08-safrole/06-the-vrf-output",
+  "8.7": "08-safrole/07-entering-tickets",
+  "8.8": "08-safrole/08-the-ring-root",
+  "8.9": "08-safrole/09-seals",
 };
 
 const SLOT = 5n; // a timeslot, as the lessons first meet one
@@ -56,6 +71,28 @@ const SLOT = 5n; // a timeslot, as the lessons first meet one
 export const JAM_COMMON_ERA = Date.UTC(2025, 0, 1, 12) / 1000;
 export const SLOT_SECONDS = 6;
 const slotAt = (iso: string) => Math.floor((Date.parse(iso) / 1000 - JAM_COMMON_ERA) / SLOT_SECONDS);
+/** E, an epoch's length in slots: tiny and full (7.1). */
+export const EPOCH_LENGTH = { tiny: 12, full: 600 };
+/** F(s, r), the shuffle (7.2): take item r₀ of what's left, put the last in its place, again. */
+export function shuffle<T>(items: T[], numbers: number[]): T[] {
+  const left = [...items];
+  const out: T[] = [];
+  for (const r of numbers.slice(0, items.length)) {
+    const k = r % left.length;
+    out.push(left[k]);
+    left[k] = left[left.length - 1];
+    left.pop();
+  }
+  return out;
+}
+/** Z, outside in (8.4): the first, the last, the second, the second to last, and inwards. */
+export function outsideIn<T>(items: T[]): T[] {
+  const out: T[] = [];
+  for (let i = 0, j = items.length - 1; i <= j; i++, j--) out.push(...(i === j ? [items[i]] : [items[i], items[j]]));
+  return out;
+}
+/** C(i), a state component's key (6.2): the byte i, then 30 zeros, as hex. */
+export const componentKeyHex = (i: number): string => toHex([i, ...new Array<number>(30).fill(0)]);
 /** An assurance's signed message starts with these ASCII bytes (5.3, X_A in the GP). */
 export const AVAILABLE = "jam_available";
 const BIG = 2n ** 64n - 70n; // 1.2's number that a float can't hold
@@ -92,7 +129,7 @@ export const FLOWS: Flow[] = [
         name: "Tests",
         says: "Small programs that check one thing each. Write the test first, watch it fail, then write the code that makes it pass.",
         example: "slot 0 is the first six seconds of the JAM Common Era",
-        lessons: ["0.4"],
+        lessons: ["0.2", "0.4"],
       },
       report: {
         kind: "step",
@@ -415,6 +452,182 @@ export const FLOWS: Flow[] = [
         says: "Put the validator's public key, the message and the signature together: either it was made with that validator's key, or it wasn't.",
         example: `the message: the ${AVAILABLE.length} bytes of ${AVAILABLE}, then H(ℰ(anchor, bitfield))`,
         lessons: ["5.3"],
+      },
+    },
+  },
+  {
+    part: 6,
+    rows: [["state"], ["keys"], ["trie", "read"], ["root", "values"], ["check"]],
+    walk: ["state", "keys", "trie", "root", "check", "read", "values"],
+    cards: {
+      state: {
+        kind: "thing",
+        name: "The state",
+        says: "All of JAM's memory: the time, the entropy, the validators and the rest, plus every service's account and storage, as entries of a key and a value.",
+        example: "a real state: 16 components, an account, preimages, requests",
+        lessons: ["6.2"],
+      },
+      keys: {
+        kind: "step",
+        name: "File each entry under its key",
+        says: "Every entry has a 31-byte key. A component's key is its number, then zeros; a service's things weave the service id into theirs.",
+        example: `C(11), τ the time: ${componentKeyHex(11).slice(0, 4)} then 30 zero bytes`,
+        lessons: ["6.2"],
+      },
+      trie: {
+        kind: "step",
+        name: "Merklize: build the trie",
+        says: "Sort the entries by their keys' bits into a binary tree. Each entry becomes a 64-byte leaf, each fork a branch holding its two children's hashes, and each node is hashed.",
+        example: "a leaf: 64 bytes, with the value inside if it fits in 32",
+        lessons: ["6.1"],
+      },
+      root: {
+        kind: "thing",
+        name: "The state root",
+        says: "The top node's hash: one 32-byte fingerprint of the whole state. Change any byte anywhere, and the root changes.",
+        example: "the official trie vector's root, matched whole",
+        lessons: ["6.1"],
+      },
+      check: {
+        kind: "step",
+        name: "Check the header's parent_state_root",
+        says: "Every header names the state root after its parent block. Compute your own, and compare.",
+        lessons: ["6.1"],
+      },
+      read: {
+        kind: "step",
+        name: "Read a component",
+        says: "Look a component up by its key, and decode its bytes with the codecs you already have.",
+        lessons: ["6.3"],
+      },
+      values: {
+        kind: "thing",
+        name: "The time, the entropy, the validators",
+        says: "Three components, read back as values. A validator key is three keys for three jobs, and some metadata.",
+        example: "a validator key: 336 bytes",
+        fields: ["bandersnatch", "ed25519", "bls", "metadata"],
+        record: "6.3 ValidatorKey",
+        lessons: ["6.3"],
+      },
+    },
+  },
+  {
+    part: 7,
+    rows: [["slot"], ["epochOf"], ["epoch"], ["entropy"], ["numbers"], ["shuffle"], ["hand"]],
+    walk: ["slot", "epochOf", "epoch", "entropy", "numbers", "shuffle", "hand"],
+    cards: {
+      slot: {
+        kind: "thing",
+        name: "A timeslot",
+        says: "JAM's clock from Part 0: one tick every 6 seconds.",
+        example: "slot 25",
+        lessons: ["7.1"],
+      },
+      epochOf: {
+        kind: "step",
+        name: "Which epoch, and where in it",
+        says: `Divide the slot by E, the epoch's length: the whole part is the epoch, the remainder the phase. E is ${EPOCH_LENGTH.tiny} slots on tiny and ${EPOCH_LENGTH.full}, an hour, on full.`,
+        example: `tiny: slot 25 is epoch ${Math.floor(25 / EPOCH_LENGTH.tiny)}, phase ${25 % EPOCH_LENGTH.tiny}`,
+        lessons: ["7.1"],
+      },
+      epoch: {
+        kind: "thing",
+        name: "An epoch",
+        says: "JAM's slower hand. When a block starts a new epoch, the validators change and the entropy history moves along one place.",
+        example: `epoch ${Math.floor(25 / EPOCH_LENGTH.tiny)}, phase ${25 % EPOCH_LENGTH.tiny}`,
+        lessons: ["7.1"],
+      },
+      entropy: {
+        kind: "thing",
+        name: "A hash nobody could steer",
+        says: "32 bytes of randomness the whole chain agrees on. Part 8 makes it; here it's the seed for a shuffle.",
+        lessons: ["7.2"],
+      },
+      numbers: {
+        kind: "step",
+        name: "Q: numbers from the hash",
+        says: "Hash the seed together with ℰ₄(0), then ℰ₄(1), and so on. Each 32-byte hash that comes out is eight 4-byte numbers.",
+        lessons: ["7.2"],
+      },
+      shuffle: {
+        kind: "step",
+        name: "F: deal",
+        says: "Take the item each number points at among those left, put the last item in its place, and go again. The same hash deals the same hand, on every node.",
+        example: `a b c d with 1, 1, 0, 0 → ${shuffle(["a", "b", "c", "d"], [1, 1, 0, 0]).join(" ")}`,
+        lessons: ["7.2"],
+      },
+      hand: {
+        kind: "thing",
+        name: "The dealt hand",
+        says: "The list in an order every client agrees on. Lesson 12.1 uses it to deal guarantors to cores.",
+        example: "the shuffle vectors: 0 to 341 items",
+        lessons: ["7.2"],
+      },
+    },
+  },
+  {
+    part: 8,
+    rows: [["vrf", "enter"], ["stir", "tickets"], ["rotate", "lottery"], ["sealers", "seats"], ["seal"]],
+    walk: ["vrf", "stir", "rotate", "sealers", "enter", "tickets", "lottery", "seats", "seal"],
+    cards: {
+      vrf: {
+        kind: "thing",
+        name: "A VRF output",
+        says: "Randomness from the block author's signature: nobody could have picked it, and anyone can check it. SHA-512 is all it takes to read it.",
+        lessons: ["8.6"],
+      },
+      stir: {
+        kind: "step",
+        name: "Stir the entropy",
+        says: "Every block, hash the entropy together with the VRF output. At a new epoch, the last three epochs' entropy moves along one place.",
+        example: "η′₀ = H(η₀ ⌢ VRF output)",
+        lessons: ["8.1"],
+      },
+      rotate: {
+        kind: "step",
+        name: "Rotate the validators",
+        says: "At each new epoch the four validator sets move along: the queued set becomes pending, pending becomes active, and active becomes last epoch's. Convicted offenders are left out.",
+        example: "ι → γ_P → κ → λ",
+        lessons: ["8.2"],
+      },
+      sealers: {
+        kind: "thing",
+        name: "Fallback sealers",
+        says: "Plan B: if the lottery didn't fill every slot, each slot's author is picked by hash from the new validators, the same on every node.",
+        lessons: ["8.3"],
+      },
+      enter: {
+        kind: "step",
+        name: "Enter the lottery",
+        says: "A validator makes an anonymous ticket: proof that it is one of the validators, without saying which.",
+        lessons: [],
+        elsewhere: "each validator, with its own Bandersnatch key",
+      },
+      tickets: {
+        kind: "thing",
+        name: "Tickets",
+        says: "Lottery entries, each with an id and a ring proof checked against the epoch's ring root.",
+        lessons: ["8.7", "8.8"],
+      },
+      lottery: {
+        kind: "step",
+        name: "Run the lottery",
+        says: "Keep the best tickets, lowest ids first, at most one for each slot of an epoch, until the lottery closes.",
+        lessons: ["8.4"],
+      },
+      seats: {
+        kind: "step",
+        name: "Z: seat the winners",
+        says: "Outside in: the best ticket gets the first slot, the next best the last, and so on towards the middle. The block that closes a full lottery announces them in its header.",
+        example: `[1, 2, 3, 4, 5] → [${outsideIn([1, 2, 3, 4, 5]).join(", ")}]`,
+        lessons: ["8.4", "8.5"],
+      },
+      seal: {
+        kind: "step",
+        name: "Check every seal",
+        says: "Each block is sealed by its slot's author, a winner or a fallback sealer. Check that the seal and the entropy source are really theirs.",
+        example: "all 46 safrole vectors pass, whole",
+        lessons: ["8.8", "8.9"],
       },
     },
   },

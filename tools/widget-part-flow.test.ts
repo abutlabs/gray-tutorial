@@ -7,7 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { AVAILABLE, FLOWS, JAM_COMMON_ERA, LESSON_PATHS, SLOT_SECONDS, flowOf } from "../.vitepress/theme/part-flow.ts";
+import { AVAILABLE, EPOCH_LENGTH, FLOWS, JAM_COMMON_ERA, LESSON_PATHS, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, shuffle } from "../.vitepress/theme/part-flow.ts";
 import { bytesFor } from "../.vitepress/theme/bitfield.ts";
 import { encodeFixed, spacedHex, toHex } from "../.vitepress/theme/bytes.ts";
 import { compact } from "../.vitepress/theme/compact.ts";
@@ -56,6 +56,14 @@ test("a card names lessons in its own Part that build it, or says who takes the 
       }
       assert.equal(Boolean(c.fields), Boolean(c.record), `${where}: fields come with the record they're from`);
     }
+  }
+});
+
+test("every lesson that writes code is on its Part's flow", () => {
+  for (const f of FLOWS) {
+    const named = new Set(Object.values(f.cards).flatMap((c) => c.lessons));
+    const writes = lessons.filter((l) => l.id.split(".")[0] === String(f.part) && l.steps.some((s) => s.kind === "file"));
+    assert.deepEqual(writes.map((l) => l.id).filter((id) => !named.has(id)), [], `Part ${f.part}: lessons not on its flow`);
   }
 });
 
@@ -122,4 +130,33 @@ test("Part 5's checks are its lessons': blake2b, 100 linked blocks, jam_availabl
   assert.ok(textOf("5.2").includes(`${card(5, "exthash").example}.`), "5.2's check, as it prints");
   assert.match(lessonCode("5.3"), new RegExp(`new TextEncoder\\(\\)\\.encode\\("${AVAILABLE}"\\)`));
   assert.ok(textOf("5.3").includes(`the ${AVAILABLE.length} ASCII bytes of \`${AVAILABLE}\``));
+});
+
+test("Part 6's keys, trie and validator keys are its lessons'", () => {
+  assert.match(lessonCode("6.2"), new RegExp(`assert\\.equal\\(key, "${componentKeyHex(11).slice(0, 4)}" \\+ "00"\\.repeat\\(30\\)\\)`));
+  assert.ok(textOf("6.2").includes("| C(11) | τ | the time | 4 |"), "C(11) is τ");
+  assert.ok(lessonCode("6.2").includes(`test("${card(6, "state").example!.replace("a real state", "every key of a real state, named")}"`));
+  assert.match(lessonCode("6.1"), /A leaf node: 64 bytes holding the key, and the value itself if it fits in 32 bytes/);
+  assert.match(lessonCode("6.3"), /bandersnatch: fixedBytes\(32\)[\s\S]*ed25519: fixedBytes\(32\)[\s\S]*bls: fixedBytes\(144\)[\s\S]*metadata: fixedBytes\(128\)/);
+  assert.equal(32 + 32 + 144 + 128, Number(/(\d+) bytes/.exec(card(6, "values").example!)![1]));
+});
+
+test("Part 7's epochs and shuffle are its lessons'", () => {
+  for (const [name, e] of Object.entries(EPOCH_LENGTH)) {
+    assert.ok(lessonCode("8.4").includes(`name: "${name}"`) && new RegExp(`epoch_length: ${e},`).test(lessonCode("8.4")), `${name}: E = ${e}`);
+  }
+  assert.match(lessonCode("7.1"), /Math\.floor\(slot \/ config\.epoch_length\)[\s\S]*slot % config\.epoch_length/);
+  assert.deepEqual(shuffle(["a", "b", "c", "d"], [1, 1, 0, 0]), ["b", "d", "a", "c"]);
+  assert.ok(lessonCode("7.2").includes('assert.deepEqual(shuffled, ["b", "d", "a", "c"])'), "7.2's shuffle by hand");
+  assert.ok(lessonCode("7.2").includes(`test("${card(7, "hand").example!.replace(": ", ": ").replace("0 to 341 items", "0 to 341 items, shuffled by a hash")}"`));
+});
+
+test("Part 8's entropy, seating and vectors are its lessons'", () => {
+  assert.match(lessonCode("8.1"), /blake2b256\(concatBytes\(entropy\[0\], vrfOutput\)\)/);
+  assert.deepEqual(outsideIn([1, 2, 3, 4, 5]), [1, 5, 2, 4, 3]);
+  assert.deepEqual(outsideIn([1, 2, 3, 4]), [1, 4, 2, 3]);
+  assert.ok(lessonCode("8.4").includes("assert.deepEqual(odd, [1, 5, 2, 4, 3])"));
+  assert.ok(textOf("8.2").includes("ι the ones queued after that"), "8.2 names the sets");
+  assert.ok(textOf("8.6").includes("SHA-512"));
+  assert.ok(textOf("8.8").includes("All 46 safrole vectors pass, whole."));
 });
