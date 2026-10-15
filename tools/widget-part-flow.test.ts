@@ -7,7 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { AVAILABILITY_TIMEOUT, AVAILABLE, EPOCH_LENGTH, FLOWS, JAM_COMMON_ERA, LESSON_PATHS, POOL_SIZE, PVM, QUEUE_SIZE, RECENT_BLOCKS, ROTATION_PERIOD, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, shuffle } from "../.vitepress/theme/part-flow.ts";
+import { AVAILABILITY_TIMEOUT, AVAILABLE, EPOCH_LENGTH, FLOWS, FUZZ_MESSAGES, JAM_COMMON_ERA, LESSON_PATHS, POOL_SIZE, PVM, QUEUE_SIZE, RECENT_BLOCKS, ROTATION_PERIOD, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, shuffle } from "../.vitepress/theme/part-flow.ts";
 import { bytesFor, isAvailable, needed } from "../.vitepress/theme/bitfield.ts";
 import { encodeFixed, spacedHex, toHex } from "../.vitepress/theme/bytes.ts";
 import { compact } from "../.vitepress/theme/compact.ts";
@@ -27,13 +27,14 @@ function recordFields(lesson: string, name: string): string[] {
   return [...m[1].matchAll(/^\s+(\w+):/gm)].map((f) => f[1]);
 }
 
-test("a Part with a flow shows it on its opening page, once, and every flow is a Part's", () => {
+test("every Part opens with its flow, once, and every flow is a Part's", () => {
   for (const p of parts) {
     const index = readFileSync(join(LESSONS, p.dir, "index.md"), "utf8");
     const placed = [...index.matchAll(/<PartFlow :part="(\d+)" \/>/g)].map((m) => Number(m[1]));
-    const flow = flowOf(partOf(p.dir));
-    assert.deepEqual(placed, flow ? [flow.part] : [], `${p.dir}/index.md`);
+    assert.ok(flowOf(partOf(p.dir)), `Part ${partOf(p.dir)} has a flow`);
+    assert.deepEqual(placed, [partOf(p.dir)], `${p.dir}/index.md places it once`);
   }
+  assert.equal(FLOWS.length, parts.length, "a flow for each Part, and none for a Part that isn't");
   assert.equal(new Set(FLOWS.map((f) => f.part)).size, FLOWS.length, "one flow a Part");
 });
 
@@ -228,4 +229,23 @@ test("Part 17's rounds, merge and outputs are its lessons'", () => {
   assert.ok(textOf("17.11").includes("committed to with a Keccak Merkle root"));
   assert.ok(textOf("17.13").includes("whole blocks that match all 63 official accumulate vectors"));
   for (const call of ["bless", "designate"]) assert.ok(textOf("17.13").includes(`\`${call}\``), call);
+});
+
+test("Part 18's tallies are its lessons'", () => {
+  assert.ok(readFileSync(join(LESSONS, "18-statistics", "index.md"), "utf8").replace(/\s+/g, " ").includes("JAM itself pays nobody"));
+});
+
+test("Part 19's import is its lessons'", () => {
+  assert.ok(textOf("19.6").includes("The first 100 blocks of all eight official block-import traces, 800 blocks"));
+  assert.ok(textOf("19.6").includes("1,406 of the 1,428 official"));
+  for (const word of ["Wave.", "Dependency graph."]) assert.ok(textOf("19.1").includes(word), word);
+  assert.ok(textOf("19.4").includes(card(19, "checks").says.replace("Before anything else runs: ", "before anything else runs: ").replace(/\.$/, "")), "19.4's header checks");
+});
+
+test("Part 20's protocol and packaging are its lessons'", () => {
+  const code = lessonCode("20.1");
+  for (const m of FUZZ_MESSAGES) assert.ok(code.includes(`kind: "${m}"`), `20.1 speaks ${m}`);
+  assert.equal(new Set([...code.matchAll(/kind: "([a-z_]+)"/g)].map((m) => m[1])).size, FUZZ_MESSAGES.length, "and no other message");
+  assert.ok(textOf("20.3").includes("a handshake, genesis, a hundred blocks, three refused"));
+  for (const v of card(20, "image").example!.split(" ")) assert.ok(textOf("20.4").includes(v.split("=")[0]), v);
 });

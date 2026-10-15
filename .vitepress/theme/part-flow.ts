@@ -115,6 +115,18 @@ export const LESSON_PATHS: Record<string, string> = {
   "17.11": "17-accumulation/11-what-a-service-yields",
   "17.12": "17-accumulation/12-providing-a-preimage",
   "17.13": "17-accumulation/13-blessing-and-designating",
+  "18.1": "18-statistics/01-who-did-what",
+  "18.2": "18-statistics/02-what-cores-and-services-did",
+  "19.1": "19-block-import/01-the-order-of-things",
+  "19.2": "19-block-import/02-the-whole-state",
+  "19.3": "19-block-import/03-accounts-from-the-state",
+  "19.4": "19-block-import/04-importing-a-block",
+  "19.5": "19-block-import/05-work-on-the-chain",
+  "19.6": "19-block-import/06-blocks-to-refuse",
+  "20.1": "20-facing-the-fuzzer/01-speaking-the-protocol",
+  "20.2": "20-facing-the-fuzzer/02-a-target",
+  "20.3": "20-facing-the-fuzzer/03-a-session",
+  "20.4": "20-facing-the-fuzzer/04-ready-to-be-fuzzed",
 };
 
 const SLOT = 5n; // a timeslot, as the lessons first meet one
@@ -152,6 +164,8 @@ export const POOL_SIZE = 8;
 export const QUEUE_SIZE = 80;
 /** The PVM (Part 15): its registers, its page size, its arithmetic instructions, all its instructions. */
 export const PVM = { registers: 13, page: 4096, arithmetic: 72, instructions: 139 };
+/** The conformance fuzzer's messages (20.1), in the order a session meets them. */
+export const FUZZ_MESSAGES = ["peer_info", "initialize", "import_block", "state_root", "get_state", "state", "error"];
 /** Tiny's validators, for the vote and assurance counts. */
 const V = 6;
 /** C(i), a state component's key (6.2): the byte i, then 30 zeros, as hex. */
@@ -1213,6 +1227,172 @@ export const FLOWS: Flow[] = [
         says: "Every service's account, storage and privileges, as the block's work left them.",
         example: "all 63 official accumulate vectors pass, whole",
         lessons: ["17.13"],
+      },
+    },
+  },
+  {
+    part: 18,
+    rows: [["block"], ["tally"], ["validators", "cores", "services"], ["epoch", "pay"]],
+    walk: ["block", "tally", "validators", "cores", "services", "epoch", "pay"],
+    cards: {
+      block: {
+        kind: "thing",
+        name: "A block's work",
+        says: "Who made the block, the tickets and preimages in it, who guaranteed and assured what, and the work its reports carried and its services accumulated.",
+        lessons: ["18.1"],
+      },
+      tally: {
+        kind: "step",
+        name: "Keep score",
+        says: "Count it all up: for each validator, for each core and for each service.",
+        lessons: ["18.1", "18.2"],
+      },
+      validators: {
+        kind: "thing",
+        name: "Each validator's tally",
+        says: "What each validator did this epoch.",
+        fields: ["blocks", "tickets", "pre_images", "pre_images_size", "guarantees", "assurances"],
+        record: "18.1 ValidatorStats",
+        lessons: ["18.1"],
+      },
+      cores: {
+        kind: "thing",
+        name: "Each core's scorecard",
+        says: "What each core did in this block: the data it must keep available, how many assurances it got, and the work in its reports.",
+        fields: ["da_load", "popularity", "imports", "extrinsic_count", "extrinsic_size", "exports", "bundle_size", "gas_used"],
+        record: "18.2 CoreStats",
+        lessons: ["18.2"],
+      },
+      services: {
+        kind: "thing",
+        name: "Each service's scorecard",
+        says: "What each busy service did in this block: preimages it was given, the work refined for it, and what it accumulated.",
+        fields: ["provided_count", "provided_size", "refinement_count", "refinement_gas_used", "imports", "extrinsic_count", "extrinsic_size", "exports", "accumulate_count", "accumulate_transfer_count", "accumulate_gas_used"],
+        record: "18.2 ServiceStats",
+        lessons: ["18.2"],
+      },
+      epoch: {
+        kind: "step",
+        name: "Start a new epoch's tally",
+        says: "At a new epoch, this epoch's validator tallies become last epoch's, and the count starts again from zero.",
+        lessons: ["18.1"],
+      },
+      pay: {
+        kind: "step",
+        name: "Pay who earned it",
+        says: "JAM itself pays nobody. The tallies are there so that whoever does pay can see who earned it.",
+        lessons: [],
+        elsewhere: "whoever pays the validators, reading the tallies",
+      },
+    },
+  },
+  {
+    part: 19,
+    rows: [["before", "block"], ["plan"], ["checks"], ["run"], ["after"], ["root", "refuse"]],
+    walk: ["before", "block", "plan", "checks", "run", "after", "root", "refuse"],
+    cards: {
+      before: {
+        kind: "thing",
+        name: "The state before",
+        says: "The whole state at once, read from its keys and values into every component, accounts and all.",
+        lessons: ["19.2", "19.3"],
+      },
+      block: {
+        kind: "thing",
+        name: "The next block",
+        says: "A real block from an official trace, read with Part 4's codec.",
+        lessons: ["19.4"],
+      },
+      plan: {
+        kind: "step",
+        name: "Plan the import: Υ",
+        says: "Write down which value is made from which, and group the steps into waves whose ingredients are all ready.",
+        lessons: ["19.1"],
+      },
+      checks: {
+        kind: "step",
+        name: "Check the header first",
+        says: "Before anything else runs: its parent is the newest block the state remembers, its state root is the state's, its slot comes later, and its extrinsic hash is its extrinsic's.",
+        lessons: ["19.4"],
+      },
+      run: {
+        kind: "step",
+        name: "Run every step, in order",
+        says: "Safrole, disputes, assurances, guarantees, accumulation, statistics: every piece from Parts 5 to 18, in the Gray Paper's order.",
+        lessons: ["19.4", "19.5"],
+      },
+      after: {
+        kind: "thing",
+        name: "The state after",
+        says: "Every component written back as keys and values, ready for the next block.",
+        lessons: ["19.2", "19.5"],
+      },
+      root: {
+        kind: "step",
+        name: "Check the root, and go on",
+        says: "Its state root must be the trace's. Then import the next block onto the state your client just made.",
+        example: "the first 100 blocks of all eight traces: 800 blocks, every root right",
+        lessons: ["19.4", "19.6"],
+      },
+      refuse: {
+        kind: "step",
+        name: "Refuse a bad block",
+        says: "A block that breaks any rule is refused whole, and the state is left as it was.",
+        example: "1,406 of the 1,428 official vectors pass whole",
+        lessons: ["19.6"],
+      },
+    },
+  },
+  {
+    part: 20,
+    rows: [["fuzzer"], ["frames"], ["speak"], ["target"], ["answer"], ["session"], ["image"]],
+    walk: ["fuzzer", "frames", "speak", "target", "answer", "session", "image"],
+    cards: {
+      fuzzer: {
+        kind: "step",
+        name: "The fuzzer sends blocks",
+        says: "The conformance fuzzer makes blocks, breaks some on purpose, sends them to your client, and compares every state root it gets back.",
+        lessons: [],
+        elsewhere: "the official conformance fuzzer",
+      },
+      frames: {
+        kind: "thing",
+        name: "Frames on a socket",
+        says: "Messages on a Unix socket, a file two programs share, each with its length in front so the reader knows where it ends.",
+        lessons: ["20.1"],
+      },
+      speak: {
+        kind: "step",
+        name: "Read and write every message",
+        says: `The handshake, then a state to start from, blocks to import, roots to answer with, states to hand over, and errors.`,
+        example: FUZZ_MESSAGES.join(", "),
+        lessons: ["20.1"],
+      },
+      target: {
+        kind: "thing",
+        name: "A fuzz target",
+        says: "Your client, listening on the socket, keeping every state it makes so a block can be imported onto any of them.",
+        lessons: ["20.2"],
+      },
+      answer: {
+        kind: "step",
+        name: "Import and answer",
+        says: "Import each block onto the state the fuzzer names, and answer with the new root, or with an error for a block that must be refused.",
+        lessons: ["20.2"],
+      },
+      session: {
+        kind: "step",
+        name: "Run a session",
+        says: "A small fuzzer of your own, over a real socket: the handshake, genesis, then block after block.",
+        example: "the hardest trace: a hundred blocks, three refused",
+        lessons: ["20.3"],
+      },
+      image: {
+        kind: "thing",
+        name: "Ready to be fuzzed",
+        says: "Packaged the way the official fuzzer starts targets: a Docker image, set up by environment variables.",
+        example: "JAM_FUZZ=1 JAM_FUZZ_SPEC=tiny",
+        lessons: ["20.4"],
       },
     },
   },

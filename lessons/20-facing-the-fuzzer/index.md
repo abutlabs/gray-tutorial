@@ -16,6 +16,14 @@ Merklization](../06-state-and-merklization/index.md) and [Part 19 · Block
 import](../19-block-import/index.md), and on the foundations every part uses, [Parts 0 to
 2](../index.md#lessons).
 
+## At a glance
+
+The whole part on one map. Boxes are what your client holds, and rounded cards are the
+steps between them; a dashed card happens outside your client. Tap any card, or walk
+through them in order with *next*.
+
+<PartFlow :part="20" />
+
 **Starting here?** At the repo root, `npm run catch-up -- 19.6` makes your client the one
 this part starts from; [How to read it](../index.md#how-to-read-it) says more.
 
