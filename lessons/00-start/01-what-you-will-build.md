@@ -186,6 +186,10 @@ npm run compare -- 2.3
 npm run catch-up -- 2.3
 ```
 
+`compare` leaves out what changes nothing: spaces, blank lines, the newline at a file's
+end, and how your imports are grouped. A file with the same code in another order gets one
+line saying so. What's left is what your client does differently.
+
 `catch-up` backs your files up to `.backup/` first, so nothing is ever lost.
 
 ## Three house rules

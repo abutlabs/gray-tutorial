@@ -132,7 +132,7 @@ function declName(line: string): string | null {
 }
 
 /** The file's top-level blocks; a block's end leaves out the blank lines after it. */
-function blocks(lines: string[]): Block[] {
+export function blocks(lines: string[]): Block[] {
   const out: (Block & { commentOnly: boolean })[] = [];
   for (let i = 0; i < lines.length; i++) {
     const glued = i > 0 && lines[i - 1].trim() !== "";
