@@ -50,9 +50,11 @@ export function proseWords(markdown: string): Word[] {
   return words;
 }
 
+export const WORDS = join(ROOT, "tools", "words.txt");
+
 /** The JAM words: tools/words.txt, one a line, lower case; # starts a comment. */
 export function jamWords(): Set<string> {
-  const text = readFileSync(join(ROOT, "tools", "words.txt"), "utf8");
+  const text = readFileSync(WORDS, "utf8");
   return new Set(text.split("\n").map((l) => l.replace(/#.*/, "").trim()).filter(Boolean));
 }
 

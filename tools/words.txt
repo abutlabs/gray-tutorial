@@ -1,7 +1,7 @@
 # The JAM words the English dictionaries don't know (tools/spelling.ts): one a line, in
 # lower case, without plurals or 's (the spellcheck adds those), unless only the plural is
 # missing (extrinsic is English, extrinsics isn't). Keep it to words the lessons use:
-# tools/spelling.test.ts checks every word here is still needed.
+# tools/spelling.test.ts warns (without failing the build) about a word no longer needed.
 
 # JAM and the Gray Paper
 authorizer

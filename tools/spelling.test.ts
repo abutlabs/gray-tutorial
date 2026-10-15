@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { LESSONS } from "./lessons.ts";
-import { jamWords, misspellings, proseWords, speller } from "./spelling.ts";
+import { jamWords, misspellings, proseWords, speller, WORDS } from "./spelling.ts";
 
 const files = readdirSync(LESSONS, { recursive: true }).map(String).filter((f) => f.endsWith(".md")).sort();
 
@@ -42,7 +42,9 @@ test("every word of the lessons' prose is spelled right (or add a JAM word to to
   assert.deepEqual(misspellings(files), []);
 });
 
-test("every word in tools/words.txt is needed: no dictionary knows it, and a lesson uses it", () => {
+// A word the lessons stopped using is housekeeping, not a broken site: it warns (and, on
+// GitHub, annotates its line in tools/words.txt) rather than failing the build and the deploy.
+test("every word in tools/words.txt is needed: no dictionary knows it, and a lesson uses it", (t) => {
   const { english } = speller();
   const used = new Set<string>();
   for (const f of files) {
@@ -50,8 +52,16 @@ test("every word in tools/words.txt is needed: no dictionary knows it, and a les
       used.add(word.toLowerCase().replace(/'s$/, ""));
     }
   }
+  const list = readFileSync(WORDS, "utf8").split("\n");
   for (const w of jamWords()) {
-    assert.ok(!english(w), `${w}: the dictionaries know it, so tools/words.txt needn't`);
-    assert.ok(used.has(w) || used.has(`${w}s`) || used.has(`${w}es`), `${w}: no lesson uses it`);
+    const why = english(w) ? "the dictionaries know it"
+      : used.has(w) || used.has(`${w}s`) || used.has(`${w}es`) ? undefined
+      : "no lesson uses it";
+    if (!why) continue;
+    const message = `${w}: ${why}, so tools/words.txt needn't list it`;
+    t.diagnostic(`warning: ${message}`);
+    if (process.env.GITHUB_ACTIONS) {
+      console.log(`::warning file=tools/words.txt,line=${list.indexOf(w) + 1}::${message}`);
+    }
   }
 });
