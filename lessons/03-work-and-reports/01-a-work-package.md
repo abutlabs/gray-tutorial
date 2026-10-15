@@ -29,8 +29,11 @@ All three are in the [glossary](../glossary.md).
   (`auth_code_host`, a service, and `auth_code_hash`, which code in it), hands it a token
   (`authorization`) and its settings (`authorizer_config`).
 
-Running an authorizer is a guarantor's job, done before a package reaches any block.
-Block import never runs one, so neither will the client you build here. Today the package
+Running an authorizer is a guarantor's job. Guarantors are validators, two or three of them
+on each core at a time, that take a package in, run its authorizer and its items, and sign
+for the result ([Part 12](../12-guarantees/index.md) checks their signatures). All of that
+happens on the network, before a package reaches any block. Block import never runs an
+authorizer, so neither will the client you build here. Today the package
 is a shape to encode, and almost every piece of it is already in your client.
 
 Appendix C encodes it in this order: ℰ₄ of the code host, the code hash, the context,
