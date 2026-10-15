@@ -22,6 +22,8 @@ function go(to: string) {
   at.value = flow.walk.indexOf(to);
   seen.value = new Set([...seen.value, to]);
 }
+/** What goes before the i-th of n lessons: nothing, a comma, or "and" before the last. */
+const joiner = (i: number, n: number) => (i === 0 ? "" : i === n - 1 ? " and " : ", ");
 const step = (by: number) => go(flow.walk[(at.value + by + flow.walk.length) % flow.walk.length]);
 </script>
 
@@ -38,8 +40,8 @@ const step = (by: number) => go(flow.walk[(at.value + by + flow.walk.length) % f
       <p class="where">
         <template v-if="card.elsewhere">Not in your client: {{ card.elsewhere }}.</template>
         <template v-else>
-          Built in
-          <template v-for="(l, i) in card.lessons" :key="l">{{ i ? " and " : "" }}<a :href="withBase(`/${LESSON_PATHS[l]}`)">lesson {{ l }}</a></template>.
+          Built in {{ card.lessons.length > 1 ? "lessons" : "lesson" }}
+          <template v-for="(l, i) in card.lessons" :key="l">{{ joiner(i, card.lessons.length) }}<a :href="withBase(`/${LESSON_PATHS[l]}`)">{{ l }}</a></template>.
         </template>
       </p>
     </div>

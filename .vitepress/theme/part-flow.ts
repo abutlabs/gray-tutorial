@@ -82,6 +82,26 @@ export const LESSON_PATHS: Record<string, string> = {
   "13.1": "13-authorization/01-the-authorizer-pools",
   "14.1": "14-services/01-providing-preimages",
   "14.2": "14-services/02-the-service-account",
+  "15.1": "15-the-pvm/01-the-program-blob",
+  "15.2": "15-the-pvm/02-instructions",
+  "15.3": "15-the-pvm/03-the-machine",
+  "15.4": "15-the-pvm/04-memory",
+  "15.5": "15-the-pvm/05-arithmetic",
+  "15.6": "15-the-pvm/06-branches-and-calls",
+  "15.7": "15-the-pvm/07-bits-and-bytes",
+  "15.8": "15-the-pvm/08-a-real-program",
+  "15.9": "15-the-pvm/09-what-instructions-cost",
+  "15.10": "15-the-pvm/10-the-pipeline",
+  "15.11": "15-the-pvm/11-the-gas-meter",
+  "16.1": "16-host-calls/01-calling-the-host",
+  "16.2": "16-host-calls/02-fetch",
+  "16.3": "16-host-calls/03-growing-the-heap",
+  "16.4": "16-host-calls/04-info",
+  "16.5": "16-host-calls/05-storage",
+  "16.6": "16-host-calls/06-checkpoints",
+  "16.7": "16-host-calls/07-a-services-inputs",
+  "16.8": "16-host-calls/08-lookup",
+  "16.9": "16-host-calls/09-asking-for-preimages",
 };
 
 const SLOT = 5n; // a timeslot, as the lessons first meet one
@@ -117,6 +137,8 @@ export const AVAILABILITY_TIMEOUT = 5;
 export const ROTATION_PERIOD = { tiny: 4, full: 10 };
 export const POOL_SIZE = 8;
 export const QUEUE_SIZE = 80;
+/** The PVM (Part 15): its registers, its page size, its arithmetic instructions, all its instructions. */
+export const PVM = { registers: 13, page: 4096, arithmetic: 72, instructions: 139 };
 /** Tiny's validators, for the vote and assurance counts. */
 const V = 6;
 /** C(i), a state component's key (6.2): the byte i, then 30 zeros, as hex. */
@@ -972,6 +994,132 @@ export const FLOWS: Flow[] = [
         name: "Read it, and check it adds up",
         says: "Read any service's account from the state, and check that what it keeps matches its footprint, and that its balance covers the deposit.",
         lessons: ["14.2"],
+      },
+    },
+  },
+  {
+    part: 15,
+    rows: [["blob"], ["unpack"], ["program"], ["setup"], ["machine"], ["step", "price"], ["gas"], ["stop"]],
+    walk: ["blob", "unpack", "program", "setup", "machine", "step", "price", "gas", "stop"],
+    cards: {
+      blob: {
+        kind: "thing",
+        name: "A program blob",
+        says: "A service's code, as bytes: its metadata, how to lay out its memory, a jump table, the instructions, and a bitmask saying where each instruction starts.",
+        lessons: ["15.1"],
+      },
+      unpack: {
+        kind: "step",
+        name: "Unpack it, and disassemble",
+        says: "Take the blob apart, then read each instruction: its opcode, its name and its arguments.",
+        example: `${PVM.instructions} instructions in all`,
+        lessons: ["15.1", "15.2"],
+      },
+      program: {
+        kind: "thing",
+        name: "A program",
+        says: "Instructions, one after another, grouped into basic blocks: runs with one way in and one way out.",
+        lessons: ["15.2", "15.3"],
+      },
+      setup: {
+        kind: "step",
+        name: "Set it up",
+        says: "Lay the program out in memory, its data, a heap, a stack and its arguments, and set the registers it starts with.",
+        lessons: ["15.8"],
+      },
+      machine: {
+        kind: "thing",
+        name: "The machine",
+        says: `${PVM.registers} registers of 64 bits each, r0 to r12, an instruction counter, and 2^32 bytes of memory handed out in pages, each one readable, writable, or neither.`,
+        example: `${PVM.registers} registers, pages of ${PVM.page.toLocaleString("en-US")} bytes`,
+        lessons: ["15.3", "15.4"],
+      },
+      step: {
+        kind: "step",
+        name: "Run an instruction",
+        says: "Do what it says: arithmetic and logic, a load or a store, a branch or a call, counting and shuffling bits. Then on to the next.",
+        example: `${PVM.arithmetic} arithmetic and logic instructions`,
+        lessons: ["15.3", "15.4", "15.5", "15.6", "15.7"],
+      },
+      price: {
+        kind: "step",
+        name: "Price each block",
+        says: "Give every instruction a cost, then add a basic block's costs up the way a real CPU's pipeline would run them, side by side.",
+        lessons: ["15.9", "15.10"],
+      },
+      gas: {
+        kind: "step",
+        name: "Charge gas",
+        says: "Charge each basic block's price as the machine enters it. When the gas runs out, the machine stops.",
+        lessons: ["15.11"],
+      },
+      stop: {
+        kind: "thing",
+        name: "How it stops",
+        says: "A halt on purpose, a panic, a fault for touching memory it wasn't given, out of gas, or ecalli: a question for the host, which Part 16 answers.",
+        lessons: ["15.3", "15.4", "15.8", "15.11"],
+      },
+    },
+  },
+  {
+    part: 16,
+    rows: [["inputs"], ["run"], ["ecalli"], ["charge"], ["ask", "change"], ["resume"], ["collapse"], ["result"]],
+    walk: ["inputs", "run", "ecalli", "charge", "ask", "change", "resume", "collapse", "result"],
+    cards: {
+      inputs: {
+        kind: "thing",
+        name: "A service's inputs",
+        says: "What it has been given to accumulate: one operand for each of its work-digests in the block's reports.",
+        lessons: ["16.7"],
+      },
+      run: {
+        kind: "step",
+        name: "Run the service",
+        says: "Start its code on the PVM from Part 15, with its gas limit.",
+        lessons: ["16.6"],
+      },
+      ecalli: {
+        kind: "thing",
+        name: "A question for the host",
+        says: "The machine stops at ecalli: the program wants something it can't do inside its sealed box.",
+        lessons: ["16.1"],
+      },
+      charge: {
+        kind: "step",
+        name: "Charge for the call",
+        says: "Each host call costs gas, taken before anything else. If there isn't enough, the program is out of gas.",
+        lessons: ["16.1"],
+      },
+      ask: {
+        kind: "step",
+        name: "Answer a question",
+        says: "gas, fetch, info, read, lookup and query: how much gas is left, its inputs, an account, its own storage, a preimage, a request.",
+        lessons: ["16.1", "16.2", "16.4", "16.5", "16.8", "16.9"],
+      },
+      change: {
+        kind: "step",
+        name: "Make a change",
+        says: "grow_heap, write, solicit and forget: more memory, a stored value, asking for data or letting it go. Each change to storage is paid for with a deposit.",
+        lessons: ["16.3", "16.5", "16.9"],
+      },
+      resume: {
+        kind: "step",
+        name: "Resume",
+        says: "Put the answer in φ₇, the register r7, and carry on from the next instruction.",
+        lessons: ["16.1"],
+      },
+      collapse: {
+        kind: "step",
+        name: "Keep it, or roll it back",
+        says: "When the program stops, a halt keeps everything it did. A panic or running out of gas goes back to its last checkpoint.",
+        lessons: ["16.6"],
+      },
+      result: {
+        kind: "thing",
+        name: "An accumulation",
+        says: "The service's state after its turn, and the gas it used.",
+        example: "thirteen services in twelve official vectors, matching to the last unit of gas",
+        lessons: ["16.3", "16.6", "16.9"],
       },
     },
   },

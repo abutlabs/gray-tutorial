@@ -7,7 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { AVAILABILITY_TIMEOUT, AVAILABLE, EPOCH_LENGTH, FLOWS, JAM_COMMON_ERA, LESSON_PATHS, POOL_SIZE, QUEUE_SIZE, RECENT_BLOCKS, ROTATION_PERIOD, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, shuffle } from "../.vitepress/theme/part-flow.ts";
+import { AVAILABILITY_TIMEOUT, AVAILABLE, EPOCH_LENGTH, FLOWS, JAM_COMMON_ERA, LESSON_PATHS, POOL_SIZE, PVM, QUEUE_SIZE, RECENT_BLOCKS, ROTATION_PERIOD, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, shuffle } from "../.vitepress/theme/part-flow.ts";
 import { bytesFor, isAvailable, needed } from "../.vitepress/theme/bitfield.ts";
 import { encodeFixed, spacedHex, toHex } from "../.vitepress/theme/bytes.ts";
 import { compact } from "../.vitepress/theme/compact.ts";
@@ -201,4 +201,23 @@ test("Part 13's pool and queue are 13.1's", () => {
 
 test("Part 14's preimages are 14.1's", () => {
   assert.ok(textOf("14.1").includes("67 times over"));
+});
+
+test("Part 15's machine is its lessons'", () => {
+  const index = readFileSync(join(LESSONS, "15-the-pvm", "index.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(index.includes(`${PVM.instructions} instructions`), "the PVM's instructions");
+  assert.ok(textOf("15.3").includes(`One of the PVM's ${PVM.registers} little 64-bit boxes for numbers, named r0 to r12.`));
+  assert.ok(textOf("15.4").includes(`pages of ${PVM.page.toLocaleString("en-US")}`));
+  assert.ok(lessonCode("15.5").includes(`${PVM.arithmetic} of them`));
+});
+
+test("Part 16's host calls are its lessons'", () => {
+  const all = [16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 16.9].map((n) => textOf(String(n))).join(" ");
+  const calls = ["gas", "fetch", "info", "read", "lookup", "query", "grow_heap", "write", "solicit", "forget", "checkpoint"];
+  for (const c of calls) assert.ok(all.includes(`\`${c}\``), `${c} is a host call the lessons build`);
+  for (const c of calls.filter((c) => c !== "checkpoint")) {
+    assert.ok(card(16, "ask").says.includes(c) || card(16, "change").says.includes(c), `${c} is on the flow`);
+  }
+  assert.ok(textOf("16.6").includes("a halt keeps X; a panic or"));
+  assert.ok(textOf("16.9").includes("Thirteen services in twelve official vectors"));
 });
