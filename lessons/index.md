@@ -2,10 +2,9 @@
 
 We will build a TypeScript JAM client per the [Gray Paper](https://graypaper.com/) specifications, _from scratch_.
 
-The Gray Tutor is built for learnability and observability. AI could be considered at its core: _less truth, more trust_. That is why the solutions we build with AI need to keep the human in the loop. The Gray Tutor's purpose
-is to show that it is not only possible, but lowers the barrier of entry to complex systems while improving learning materials and observability beyond projects that are slower to adopt the technology.
+The Gray Tutor is a JAM blockchain client built for learning and observability. At its core, AI offers _less truth, more trust_. That is why the solutions we build with AI need to keep the human in the loop. The Gray Tutor exists to show that this is possible, and that AI-assisted development can be more transparent than development before AI. Our goal is to make JAM approachable for new protocol developers, one guided step at a time.
 
-By the end of this tutorial, your JAM client will be able to pass the official test vectors, _byte for byte_. Our goal is to make onboarding JAM protocol developers more approachable. Therefore we will build a guided JAM implementation from the ground up.
+By the end of this tutorial, your JAM client will be able to pass the official test vectors, _byte for byte_.
 
 Stuck on a word? Every JAM word, Gray Paper symbol and programming term is in the
 [glossary](./glossary.md).
