@@ -25,13 +25,18 @@ export function docText(html: string): string {
 /**
  * A page's text, ready for the one page: its ids prefixed with the page's, and every link to
  * a page on the one page (another page, or a heading on this one) turned into a link to its
- * place on the one page. Other links stay as they are. The snippets' eyes stay on the
- * website: the whole files they show would make the one page ten times the size.
+ * place on the one page. Other links stay as they are. A step shows its whole file, folded,
+ * as on the website; paper can't open a fold or tap an eye, so the folded lines, the eye and
+ * the snippet behind it stay on the website.
  */
 export function forOnePage(text: string, address: string, addresses: Set<string>, base: string): string {
   const id = sectionId(address);
   const pageUrl = new URL(base + address, "https://site.invalid");
-  const withoutEyes = text.replace(/<button type="button" class="eye"[\s\S]*?<\/button>/g, "");
+  const withoutEyes = text
+    .replace(/<button type="button" class="eye"[\s\S]*?<\/button>/g, "")
+    .replace(/<div class="[^"]*\bstep-only\b[^"]*">[\s\S]*?<\/pre><\/div>/g, "")
+    .replace(/<span class="folded" hidden>[^<]*<\/span>/g, "")
+    .replace(/<button type="button" class="unfold">([^<]*)<\/button>/g, "$1");
   const withIds = withoutEyes.replace(/ id="([^"]+)"/g, ` id="${id}--$1"`);
   return withIds.replace(/ href="([^"]*)"/g, (whole, href: string) => {
     if (href.startsWith("#")) return ` href="#${id}--${href.slice(1)}"`;

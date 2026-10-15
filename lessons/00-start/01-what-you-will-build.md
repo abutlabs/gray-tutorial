@@ -96,9 +96,10 @@ changes from run to run; times, durations and run ids will differ too, and so ma
 number in an error, by one or two, if your imports sit differently. Paths are inside
 `client/`. A code block with no label above it is for reading, unless the words around it
 say to type it and where, as the setup commands in [lesson 0.2](./02-set-up-the-project.md) do. On the
-website, a label is a link back to this list, and an **Add to** or **Replace in** block has
-an eye in its corner: tap it to see the whole file after that step, the lines it changed
-marked, and tap again to come back.
+website, a label is a link back to this list, and an **Add to** or **Replace in** block shows
+the whole file after that step: the lines the step adds or changes are highlighted, the rest
+dimmed, and a long stretch you haven't touched folds to a line such as *⋯ 42 unchanged
+lines*, which a tap opens. The eye in its corner shows just the step's lines, and back.
 
 ### Meet Albert {#albert}
 

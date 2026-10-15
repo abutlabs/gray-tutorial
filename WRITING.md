@@ -372,8 +372,9 @@ already has.
 
 So writing a lesson the usual way places him. He is for fun: the words never lean on him,
 since VS Code's preview and the e-book don't show him. An **Add to** or **Replace in** block
-gets an eye beside its copy button the same way, which swaps in the whole file after the
-step. A new face is drawn in `.vitepress/theme/albert.ts` from the logo's own parts, then
+is shown the same way as the whole file after the step, its lines highlighted and long
+unchanged runs folded, with an eye beside the copy button for the step's lines alone
+(`.vitepress/whole.ts`). A new face is drawn in `.vitepress/theme/albert.ts` from the logo's own parts, then
 `npm run diagrams`, and lesson 0.1's *Meet Albert* shows it (`tools/albert.test.ts`
 checks all of this). *Why:* a reader who sees the tongue knows the board climbed before
 reading a word, and a tutorial with a few jokes in it is easier to keep going with.

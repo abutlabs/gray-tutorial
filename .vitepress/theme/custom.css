@@ -100,8 +100,10 @@
 #picture-zoom::backdrop { background: rgba(0, 0, 0, 0.8); }
 #picture-zoom img { display: block; max-width: 96vw; max-height: 94vh; object-fit: contain; border-radius: 8px; }
 
-/* The eye on an Add to / Replace in snippet (theme/eye.ts): the whole file after it, in place,
-   its changed lines marked. Beside the copy button, but always on show: it's how to find it. */
+/* An Add to / Replace in step (../whole.ts, theme/eye.ts): the whole file after it, the
+   step's lines highlighted with a bar and the rest dimmed; long unchanged runs fold to a bar
+   that a tap opens. The eye, beside the copy button and always on show, swaps in the step
+   alone. */
 .vp-doc [class*="language-"] > button.eye {
   position: absolute; top: 12px; right: 56px; z-index: 3;
   display: flex; align-items: center; justify-content: center;
@@ -114,10 +116,18 @@
 .vp-doc [class*="language-"] > button.eye[aria-pressed="true"] { opacity: 1; }
 .vp-doc [class*="language-"] > button.eye:hover { border-color: var(--vp-code-copy-code-hover-border-color); color: var(--vp-c-brand-1); }
 .vp-doc [class*="language-"] > button.eye svg { width: 20px; height: 20px; }
-.vp-doc div.whole-file,
-.vp-doc div.showing-whole { display: none; }
-.vp-doc div.showing-whole + div.whole-file { display: block; margin-top: 0; border-top-left-radius: 0; }
-.vp-doc div.whole-file .line.highlighted { box-shadow: inset 3px 0 var(--vp-c-brand-1); }
+.vp-doc div.step-only,
+.vp-doc div.showing-step { display: none; }
+.vp-doc div.showing-step + div.step-only { display: block; }
+.vp-doc div.whole-step .line.highlighted { box-shadow: inset 3px 0 var(--vp-c-brand-1); }
+.vp-doc div.whole-step .line:not(.highlighted):not(.fold),
+.vp-doc div.whole-step .folded { opacity: 0.55; }
+.vp-doc div.whole-step .line.fold { display: inline-block; width: 100%; }
+.vp-doc div.whole-step button.unfold {
+  width: 100%; padding: 0; border: 0; border-radius: 4px; background: var(--vp-c-default-soft);
+  color: var(--vp-c-text-2); font: inherit; text-align: left; cursor: pointer;
+}
+.vp-doc div.whole-step button.unfold:hover { color: var(--vp-c-brand-1); }
 
 /* Albert (../albert.ts) perches on a code block's top right corner, feet on its edge, in the
    room the block's tab row leaves; with no tab above, the block makes that room itself. The
@@ -224,8 +234,8 @@
 html.concepts .vp-doc div[class*="language-"]:not(.language-text),
 html.concepts .vp-doc details.lasair { display: none; }
 html.concepts .vp-doc p.snippet-label.shown + div[class*="language-"] { display: block; }
-html.concepts .vp-doc p.snippet-label.shown + div.showing-whole { display: none; }
-html.concepts .vp-doc p.snippet-label.shown + div.showing-whole + div.whole-file { display: block; }
+html.concepts .vp-doc p.snippet-label.shown + div.showing-step { display: none; }
+html.concepts .vp-doc p.snippet-label.shown + div.showing-step + div.step-only { display: block; }
 html.concepts .vp-doc p.snippet-label:not(.output) { cursor: pointer; border-radius: 8px; opacity: 0.75; }
 html.concepts .vp-doc p.snippet-label:not(.output)::before { content: "▸ "; color: var(--vp-c-text-3); }
 html.concepts .vp-doc p.snippet-label.shown { opacity: 1; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }

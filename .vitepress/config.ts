@@ -2,7 +2,6 @@
 // buttons and dark mode. `npm run site` serves it at http://localhost:5173; GitHub Pages
 // serves it at https://abutlabs.github.io/the-gray-tutor/ (SITE_BASE, set by the workflow).
 
-import { join } from "node:path";
 import { defineConfig } from "vitepress";
 import type MarkdownIt from "markdown-it";
 import type { ShikiTransformer } from "shiki";
@@ -11,11 +10,12 @@ import { LEGEND, writeRedirects } from "./urls.ts";
 import { type PrintPage, writePrintPage } from "./print.ts";
 import { checkBlocks } from "./checks.ts";
 import { albert } from "./albert.ts";
-import { eyeButton, serveWholeFiles, wholeAddress, writeWholeFiles } from "./whole.ts";
+import { lineRanges, linesOf, stepView } from "./whole.ts";
 import { writeEpub } from "./epub.ts";
 import { KEY as CONCEPTS_KEY } from "./theme/concepts.ts";
 import { unitCodes } from "./units.ts";
 import { snippetNumbers, wholeFiles } from "../tools/snapshots.ts";
+import type { Snapshot } from "../tools/snapshots.ts";
 
 const parts = readParts();
 // every page in reading order, for the whole tutorial on one page (print.ts)
@@ -32,8 +32,8 @@ const printPages: PrintPage[] = [
   { address: "glossary", title: "Glossary", part: true },
   { address: "symbols", title: "Gray Paper symbols", part: true },
 ];
-// each Add to / Replace in snippet's whole file, worked out once, behind its eye (whole.ts;
-// restart `npm run site` to see a lesson's edits in them)
+// the whole file after each Add to / Replace in snippet, worked out once, shown in its place
+// (whole.ts; restart `npm run site` to see a lesson's edits in them)
 const whole = wholeFiles();
 // each file snippet's number in its lesson, for its anchor: #snippet-2 is the lesson's second
 const numbers = snippetNumbers();
@@ -59,15 +59,13 @@ export default defineConfig({
   // SVG: no script in the reader's browser, and print.html gets it too)
   markdown: {
     math: true,
-    config: (md) => { snippetLabels(md); eyeButtons(md); albert(md); textSymbols(md); unitCodes(md); checkBlocks(md); },
+    config: (md) => { snippetLabels(md); stepViews(md); albert(md); textSymbols(md); unitCodes(md); checkBlocks(md); },
     codeTransformers: [shellComments()],
   },
-  vite: { plugins: [serveWholeFiles(join(import.meta.dirname, "..", "lessons"), base, whole)] },
   // pages that moved keep their old address, as a page that sends the reader on; and the
   // whole tutorial on one page, print.html, for printing and reading offline
   buildEnd: async (site) => {
     writeRedirects(site.outDir, site.site.base);
-    await writeWholeFiles(site.outDir, site.srcDir, site.site.base, whole);
     writePrintPage(site.outDir, site.site.base, printPages);
     // the same pages as an e-book, the concepts edition, for an e-reader (epub.ts): only
     // when asked (npm run epub), so a release carries it, not every build
@@ -129,8 +127,8 @@ function textSymbols(md: MarkdownIt): void {
 // A label line above a code block ("**Add to** `src/x.ts`") becomes a tab on the block, and
 // its bold word a link to the list of labels in 0.1 (as the Book's Ferris icons link to theirs).
 // A ```text block right after a Run block is its output (tools/output.ts): it gets an Output tab.
-// An Add to / Replace in snippet has the whole file after it one click away, behind an eye
-// on the block (eyeButtons), as the Book's listings do.
+// An Add to / Replace in snippet is shown as the whole file after it, the step's lines
+// highlighted (stepViews).
 // Every file snippet is numbered in its lesson, with an anchor and a link to itself at the
 // end of its tab ("snippet 2", #snippet-2), as the Book numbers its listings.
 function snippetLabels(md: MarkdownIt): void {
@@ -173,7 +171,7 @@ function snippetLabels(md: MarkdownIt): void {
       }
       const snap = whole.get(at);
       if ((m[1] === "Add to" || m[1] === "Replace in") && snap) {
-        t[i + 3].meta = { ...t[i + 3].meta, eye: base + wholeAddress(at), path: snap.path };
+        t[i + 3].meta = { ...t[i + 3].meta, whole: snap };
       }
       if (m[1].startsWith("Run") && t[i + 4]?.type === "fence" && t[i + 4].info.trim() === "text") {
         const tab = new state.Token("html_block", "", 0);
@@ -184,15 +182,24 @@ function snippetLabels(md: MarkdownIt): void {
   });
 }
 
-// The eye on a snippet with a whole file: a tap fetches that file and swaps it in for the
-// snippet, and back (theme/eye.ts, whole.ts). Without a script, the snippet just stays.
-function eyeButtons(md: MarkdownIt): void {
+// An Add to / Replace in step as the whole file after it, folded where nothing changed, with
+// the snippet itself behind the eye (whole.ts, theme/eye.ts). Without a script, the whole
+// file shows, its folds closed.
+function stepViews(md: MarkdownIt): void {
   const fence = md.renderer.rules.fence!;
   md.renderer.rules.fence = (tokens, idx, options, env, self) => {
-    const html = fence(tokens, idx, options, env, self);
-    const { eye, path } = tokens[idx].meta ?? {};
-    if (!eye) return html;
-    return html.replace(/^<div class="([^"]*)">/, (_, classes) => `<div class="${classes} has-eye">${eyeButton(false, path, eye)}`);
+    const token = tokens[idx];
+    const snippet = fence(tokens, idx, options, env, self);
+    const snap: Snapshot | undefined = token.meta?.whole;
+    if (!snap) return snippet;
+    // the same fence again, as the whole file with the step's lines highlighted
+    const { content, info } = token;
+    const ranges = lineRanges([...snap.changed].map((k) => k + 1));
+    token.content = linesOf(snap).join("\n") + "\n";
+    token.info = ranges ? `${info.trim()}{${ranges}}` : info;
+    const whole = fence(tokens, idx, options, env, self);
+    Object.assign(token, { content, info });
+    return stepView(whole, snippet, snap);
   };
 }
 

@@ -37,8 +37,12 @@ test("on the one page, ids get the page's prefix and links to its pages stay on 
   ].join(""));
 });
 
-test("the snippets' eyes stay on the website", () => {
-  const eye = '<button type="button" class="eye" aria-pressed="false" title="t" aria-label="t" data-whole="/whole/x/1.html"><svg viewBox="0 0 24 24"><path d="M2 12"/></svg></button>';
-  const block = (inside: string) => `<div class="language-ts vp-adaptive-theme has-eye">${inside}<button title="Copy Code" class="copy"></button><pre><code>x</code></pre></div>`;
-  assert.equal(forOnePage(block(eye), "", new Set([""]), "/"), block(""));
+test("a step prints its whole file, folded; the eye, the snippet and the folded lines stay on the website", () => {
+  const eye = '<button type="button" class="eye" aria-pressed="false" title="t" aria-label="t"><svg viewBox="0 0 24 24"><path d="M2 12"/></svg></button>';
+  const fold = '<span class="line fold vp-copy-ignore"><button type="button" class="unfold">⋯ 9 unchanged lines</button></span><span class="folded" hidden>a\nb</span>';
+  const whole = `<div class="language-ts vp-adaptive-theme whole-step">${eye}<button title="Copy Code" class="copy"></button><pre><code>x\n${fold}\ny</code></pre></div>`;
+  const step = `<div class="language-ts vp-adaptive-theme step-only">${eye}<button title="Copy Code" class="copy"></button><pre><code>y</code></pre></div>`;
+  assert.equal(forOnePage(whole + step + "<p>after</p>", "", new Set([""]), "/"),
+    '<div class="language-ts vp-adaptive-theme whole-step"><button title="Copy Code" class="copy"></button><pre><code>x\n'
+    + '<span class="line fold vp-copy-ignore">⋯ 9 unchanged lines</span>\ny</code></pre></div><p>after</p>');
 });

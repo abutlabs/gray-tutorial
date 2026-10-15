@@ -10,7 +10,7 @@ import { applyStep } from "./tangle.ts";
 
 export interface Snapshot {
   path: string; // relative to client/
-  lines: string[]; // the whole file after the step
+  lines: string[]; // the whole file after the step, without the empty line after its last newline
   changed: Set<number>; // indexes into lines: what the step added or changed
 }
 
@@ -23,10 +23,10 @@ export function wholeFiles(): Map<string, Snapshot> {
       for (const step of lesson.steps) {
         if (step.kind !== "file") continue;
         const path = join(dir, step.path);
-        const before = existsSync(path) ? readFileSync(path, "utf8").split("\n") : [];
+        const before = existsSync(path) ? linesOf(readFileSync(path, "utf8")) : [];
         applyStep(dir, step);
         if (step.op !== "add" && step.op !== "replace") continue;
-        const lines = readFileSync(path, "utf8").split("\n");
+        const lines = linesOf(readFileSync(path, "utf8"));
         out.set(`${lesson.file}:${step.line}`, { path: step.path, lines, changed: changedLines(before, lines) });
       }
     }
@@ -35,6 +35,10 @@ export function wholeFiles(): Map<string, Snapshot> {
   }
   return out;
 }
+
+/** A file's lines. Its last newline ends the last line; it doesn't start an empty one, which
+ * the diff below could otherwise mark as changed instead of a blank line the step added. */
+const linesOf = (text: string): string[] => text.replace(/\n$/, "").split("\n");
 
 /**
  * Every file snippet's number in its lesson, by "<lesson file>:<label line>": 1, 2, 3... in
