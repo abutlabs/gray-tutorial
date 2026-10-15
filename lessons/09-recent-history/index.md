@@ -12,6 +12,14 @@ blocks, up to date block by block, with the mountain belt of accumulation output
 signatures](../05-hashing-and-signatures/index.md), and on the foundations every part
 uses, [Parts 0 to 2](../index.md#lessons).
 
+## At a glance
+
+The whole part on one map. Boxes are what your client holds, and rounded cards are the
+steps between them; a dashed card happens outside your client. Tap any card, or walk
+through them in order with *next*.
+
+<PartFlow :part="9" />
+
 **Starting here?** At the repo root, `npm run catch-up -- 8.9` makes your client the one
 this part starts from; [How to read it](../index.md#how-to-read-it) says more.
 

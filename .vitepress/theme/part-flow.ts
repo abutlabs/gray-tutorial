@@ -4,7 +4,7 @@
 // network) says who takes it. tools/widget-part-flow.test.ts checks every value, field and
 // lesson here against the lessons' own code.
 
-import { bytesFor } from "./bitfield.ts";
+import { bytesFor, needed } from "./bitfield.ts";
 import { encodeFixed, spacedHex, toHex } from "./bytes.ts";
 import { compact } from "./compact.ts";
 
@@ -64,6 +64,16 @@ export const LESSON_PATHS: Record<string, string> = {
   "8.7": "08-safrole/07-entering-tickets",
   "8.8": "08-safrole/08-the-ring-root",
   "8.9": "08-safrole/09-seals",
+  "9.1": "09-recent-history/01-the-mountain-belt",
+  "9.2": "09-recent-history/02-recent-blocks",
+  "10.1": "10-disputes/01-votes-and-verdicts",
+  "10.2": "10-disputes/02-culprits-and-faults",
+  "10.3": "10-disputes/03-clearing-the-cores",
+  "10.4": "10-disputes/04-bad-verdicts",
+  "10.5": "10-disputes/05-bad-culprits-and-faults",
+  "11.1": "11-assurances/01-available",
+  "11.2": "11-assurances/02-timeouts",
+  "11.3": "11-assurances/03-bad-assurances",
 };
 
 const SLOT = 5n; // a timeslot, as the lessons first meet one
@@ -91,6 +101,12 @@ export function outsideIn<T>(items: T[]): T[] {
   for (let i = 0, j = items.length - 1; i <= j; i++, j--) out.push(...(i === j ? [items[i]] : [items[i], items[j]]));
   return out;
 }
+/** β_H's length: the blocks the recent history remembers (9.2). */
+export const RECENT_BLOCKS = 8;
+/** U: the slots a report may wait on its core to become available (11.2). */
+export const AVAILABILITY_TIMEOUT = 5;
+/** Tiny's validators, for the vote and assurance counts. */
+const V = 6;
 /** C(i), a state component's key (6.2): the byte i, then 30 zeros, as hex. */
 export const componentKeyHex = (i: number): string => toHex([i, ...new Array<number>(30).fill(0)]);
 /** An assurance's signed message starts with these ASCII bytes (5.3, X_A in the GP). */
@@ -628,6 +644,170 @@ export const FLOWS: Flow[] = [
         says: "Each block is sealed by its slot's author, a winner or a fallback sealer. Check that the seal and the entropy source are really theirs.",
         example: "all 46 safrole vectors pass, whole",
         lessons: ["8.8", "8.9"],
+      },
+    },
+  },
+  {
+    part: 9,
+    rows: [["block"], ["append"], ["belt"], ["superpeak"], ["record"], ["recent"]],
+    walk: ["block", "append", "belt", "superpeak", "record", "recent"],
+    cards: {
+      block: {
+        kind: "thing",
+        name: "A new block",
+        says: "What the chain wants to remember of it: its header hash, the state root it builds on, the root of what it accumulated, its slot, and the work-packages it reported.",
+        fields: ["header_hash", "parent_state_root", "accumulate_root", "slot", "work_packages"],
+        record: "9.2 NewBlock",
+        lessons: ["9.2"],
+      },
+      append: {
+        kind: "step",
+        name: "Append to the belt",
+        says: "Add the block's accumulation root to the mountain belt. Like counting in binary, two mountains of one size merge into one of the next size, so a block costs only a handful of hashes.",
+        example: "Keccak-256, Ethereum's hash, so bridges can read it",
+        lessons: ["9.1"],
+      },
+      belt: {
+        kind: "thing",
+        name: "The mountain belt",
+        says: "A list of Merkle roots, one for each power of two, with a gap where there's no mountain of that size.",
+        lessons: ["9.1"],
+      },
+      superpeak: {
+        kind: "step",
+        name: "Fold it to a super-peak",
+        says: "Hash the peaks together into one 32-byte hash for the whole belt.",
+        lessons: ["9.1"],
+      },
+      record: {
+        kind: "step",
+        name: "Record the block",
+        says: `Fill in the state root left blank for the block before, add this block, and keep only the last ${RECENT_BLOCKS}.`,
+        example: `the last ${RECENT_BLOCKS} blocks`,
+        lessons: ["9.2"],
+      },
+      recent: {
+        kind: "thing",
+        name: "Recent history",
+        says: "The chain's short-term memory. Guarantors must anchor their work in one of these blocks, so it can't claim a chain that never was.",
+        fields: ["header_hash", "beefy_root", "state_root", "slot", "reported"],
+        record: "9.2 RecentBlock",
+        lessons: ["9.2"],
+      },
+    },
+  },
+  {
+    part: 10,
+    rows: [["report"], ["vote"], ["verdict"], ["count"], ["outcome"], ["offenders", "clear"], ["refuse"]],
+    walk: ["report", "vote", "verdict", "count", "outcome", "offenders", "clear", "refuse"],
+    cards: {
+      report: {
+        kind: "thing",
+        name: "A report under suspicion",
+        says: "A work-report that guarantors vouched for, but that may be wrong.",
+        lessons: ["10.1"],
+      },
+      vote: {
+        kind: "step",
+        name: "Judge it",
+        says: "Validators check the work again, and each signs a vote: valid, or invalid.",
+        lessons: [],
+        elsewhere: "the validators, who redo the work to judge it",
+      },
+      verdict: {
+        kind: "thing",
+        name: "A verdict",
+        says: "The report's hash and the judges' signed votes, brought to the chain in a block.",
+        lessons: ["10.1"],
+      },
+      count: {
+        kind: "step",
+        name: "Check and count the votes",
+        says: "Check each vote's signature against the right judges, and count the valid votes. Only three splits mean anything: all of them, none, or a third.",
+        example: `tiny, ${V} judges: ${needed(V)}, 0 or ${V / 3} valid votes`,
+        lessons: ["10.1"],
+      },
+      outcome: {
+        kind: "thing",
+        name: "Good, bad or wonky",
+        says: "The verdict, filed in ψ for good. A report judged bad or wonky can never come back.",
+        fields: ["good", "bad", "wonky", "offenders"],
+        record: "10.1 PastJudgements",
+        lessons: ["10.1"],
+      },
+      offenders: {
+        kind: "step",
+        name: "Name the offenders",
+        says: "Culprits vouched for a bad report, and faults voted against the verdict. With their own signatures as evidence, their keys go into ψ_O and the header's offenders mark.",
+        lessons: ["10.2"],
+      },
+      clear: {
+        kind: "step",
+        name: "Clear the cores",
+        says: "A report judged bad or wonky comes off its core, before it can do any harm.",
+        lessons: ["10.3"],
+      },
+      refuse: {
+        kind: "step",
+        name: "Refuse a broken trial",
+        says: "A block whose verdicts, culprits or faults break any rule is refused whole: seven rules for verdicts, more for the accusations.",
+        example: "all 60 disputes vectors pass, whole",
+        lessons: ["10.4", "10.5"],
+      },
+    },
+  },
+  {
+    part: 11,
+    rows: [["waiting"], ["assure"], ["assurances"], ["count"], ["available", "timeout"], ["refuse"]],
+    walk: ["waiting", "assure", "assurances", "count", "available", "timeout", "refuse"],
+    cards: {
+      waiting: {
+        kind: "thing",
+        name: "A report on its core",
+        says: "Work that guarantors vouched for, its data cut into pieces and spread among the validators.",
+        lessons: ["11.1"],
+      },
+      assure: {
+        kind: "step",
+        name: "Assure",
+        says: "Each validator checks which cores' pieces it holds, and signs one bit for each core: 1 if it holds its piece.",
+        lessons: [],
+        elsewhere: "each validator, every block",
+      },
+      assurances: {
+        kind: "thing",
+        name: "Assurances",
+        says: "Each one is a validator's bitfield and signature, made on top of the block's parent.",
+        fields: ["anchor", "bitfield", "validator_index", "signature"],
+        record: "4.2 Assurance",
+        lessons: ["11.1"],
+      },
+      count: {
+        kind: "step",
+        name: "Count each core",
+        says: "Count the validators that assure each core in this block. More than two thirds, and the report is available.",
+        example: `tiny: ${needed(V)} of ${V}`,
+        lessons: ["11.1"],
+      },
+      available: {
+        kind: "thing",
+        name: "An available report",
+        says: "Its data is safe, so JAM can act on it: off the core, on to accumulation (Part 17).",
+        lessons: ["11.1", "11.2"],
+      },
+      timeout: {
+        kind: "step",
+        name: "Time out",
+        says: `A report that isn't available within U = ${AVAILABILITY_TIMEOUT} slots of reaching its core is dropped, and the core is free again.`,
+        example: `registered at slot 7: out at slot ${7 + AVAILABILITY_TIMEOUT}`,
+        lessons: ["11.2"],
+      },
+      refuse: {
+        kind: "step",
+        name: "Refuse bad assurances",
+        says: "Five rules: anchored on the parent, from a real validator, one per validator in order, bits only for cores with something on them, and signed. Break one, and the block is refused.",
+        example: "every assurances vector, tiny and full, passes whole",
+        lessons: ["11.3"],
       },
     },
   },

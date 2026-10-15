@@ -7,8 +7,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { AVAILABLE, EPOCH_LENGTH, FLOWS, JAM_COMMON_ERA, LESSON_PATHS, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, shuffle } from "../.vitepress/theme/part-flow.ts";
-import { bytesFor } from "../.vitepress/theme/bitfield.ts";
+import { AVAILABILITY_TIMEOUT, AVAILABLE, EPOCH_LENGTH, FLOWS, JAM_COMMON_ERA, LESSON_PATHS, RECENT_BLOCKS, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, shuffle } from "../.vitepress/theme/part-flow.ts";
+import { bytesFor, isAvailable, needed } from "../.vitepress/theme/bitfield.ts";
 import { encodeFixed, spacedHex, toHex } from "../.vitepress/theme/bytes.ts";
 import { compact } from "../.vitepress/theme/compact.ts";
 import { LESSONS, lessonCode, lessonText, readLessons, readParts } from "./lessons.ts";
@@ -159,4 +159,25 @@ test("Part 8's entropy, seating and vectors are its lessons'", () => {
   assert.ok(textOf("8.2").includes("ι the ones queued after that"), "8.2 names the sets");
   assert.ok(textOf("8.6").includes("SHA-512"));
   assert.ok(textOf("8.8").includes("All 46 safrole vectors pass, whole."));
+});
+
+test("Part 9's belt and history are its lessons'", () => {
+  assert.match(lessonCode("9.2"), new RegExp(`export const RECENT_BLOCKS = ${RECENT_BLOCKS};`));
+  assert.match(lessonCode("9.1"), /export function keccak256\(/);
+  assert.ok(textOf("9.1").includes("Keccak-256.** Ethereum's hash function"));
+});
+
+test("Part 10's vote splits, rules and vectors are its lessons'", () => {
+  assert.ok(textOf("10.1").includes("*Example:* on tiny, 5, 0 or 2."));
+  assert.equal(card(10, "count").example, `tiny, 6 judges: ${needed(6)}, 0 or ${6 / 3} valid votes`);
+  assert.ok(textOf("10.4").includes("seven rules"));
+  assert.ok(textOf("10.5").includes("all 60 passing whole"));
+});
+
+test("Part 11's threshold, timeout and five rules are its lessons'", () => {
+  assert.match(lessonCode("11.2"), new RegExp(`export const AVAILABILITY_TIMEOUT = ${AVAILABILITY_TIMEOUT};`));
+  assert.ok(isAvailable(needed(6), 6) && !isAvailable(needed(6) - 1, 6), "tiny: 5 of 6 is more than two thirds, 4 isn't");
+  const rules = [...textOf("11.3").matchAll(/\d\. \*\*([^*]+)\.\*\*/g)].map((m) => m[1].toLowerCase());
+  assert.deepEqual(rules.slice(0, 5), ["anchored on the parent", "from a real validator", "one per validator, in order", "only cores with something on them", "signed"]);
+  assert.ok(textOf("11.3").includes("five rules"));
 });
