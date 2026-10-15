@@ -10,6 +10,14 @@ the work-report that binds them, byte for byte with the official vectors at both
 
 **Builds on** the foundations alone, [Parts 0 to 2](../index.md#lessons).
 
+## At a glance
+
+The whole part on one map. Boxes are what your client holds, and rounded cards are the
+steps between them; a dashed card happens outside your client. Tap any card, or walk
+through them in order with *next*.
+
+<PartFlow :part="3" />
+
 **Starting here?** At the repo root, `npm run catch-up -- 2.7` makes your client the one
 this part starts from; [How to read it](../index.md#how-to-read-it) says more.
 

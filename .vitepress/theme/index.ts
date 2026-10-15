@@ -39,6 +39,7 @@ import SignCheck from "./SignCheck.vue";
 import HeaderMap from "./HeaderMap.vue";
 import CheckYourself from "./CheckYourself.vue";
 import UnitText from "./UnitText.vue";
+import PartFlow from "./PartFlow.vue";
 import "./custom.css";
 
 export default {
@@ -47,6 +48,7 @@ export default {
   Layout: () => h(DefaultTheme.Layout, null, { "doc-before": () => h(ConceptsToggle) }),
   enhanceApp({ app, router }) {
     // the lessons' widgets, placed in a lesson as <HexByte /> and so on (WRITING.md, Interactive)
+    app.component("PartFlow", PartFlow); // every Part's opening page
     app.component("HexByte", HexByte); // 1.1
     app.component("BitsAndBytes", BitsAndBytes); // 1.1
     app.component("FixedWidth", FixedWidth); // 2.1

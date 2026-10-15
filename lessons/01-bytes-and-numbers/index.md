@@ -37,6 +37,14 @@ By the end of this part your client reads and writes bytes as hex, the way the t
 vectors write them, and keeps every number exact: `number` up to 32 bits, `bigint` for
 64.
 
+## At a glance
+
+The whole part on one map. Boxes are what your client holds, and rounded cards are the
+steps between them; a dashed card happens outside your client. Tap any card, or walk
+through them in order with *next*.
+
+<PartFlow :part="1" />
+
 **Starting here?** At the repo root, `npm run catch-up -- 0.4` makes your client the one
 this part starts from; [How to read it](../index.md#how-to-read-it) says more.
 
