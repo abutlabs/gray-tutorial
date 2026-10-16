@@ -11,7 +11,7 @@ import {
 } from "../.vitepress/theme/work-result.ts";
 import type { WorkResult } from "../.vitepress/theme/work-result.ts";
 import {
-  anotherFit, encodeShards, inverse, lettersOf, originalShards, P, rebuild, SIZES, valueAt, weights,
+  anotherFit, curveOf, curveRuns, curveText, encodeShards, heightAt, inverse, lettersOf, mod, originalShards, P, rebuild, SIZES, valueAt, weights, wraps,
 } from "../.vitepress/theme/shards.ts";
 import type { Shard } from "../.vitepress/theme/shards.ts";
 import { lessonText } from "./lessons.ts";
@@ -189,4 +189,35 @@ test("6 shards and any 3 on tiny, 1,023 and any 342 on full: the lesson's number
   const optimal = [6, 9, 15, 24, 33, 51, 54, 78, 105, 111, 159, 168, 225, 321, 339, 510, 681, 1023];
   for (let v = 6; v <= 1023; v++) assert.equal(originalShards(v) === v / 3 + 1, optimal.includes(v), `R(${v}) = ${originalShards(v)}`);
   assert.equal((1022 / originalShards(1022)).toFixed(1), "4.5", "and 1,022's rate is about 1:4.5");
+});
+
+test("the curve: “135” is y = 49 + 2x and shards 55, 57, 59; JAM bends; the drawing passes through every shard", () => {
+  const plain = REPORT.replace(/\s+/g, " ");
+  const m = lettersOf("135")!;
+  assert.deepEqual(m, [49, 51, 53]);
+  assert.match(plain, /"135": its bytes are 49, 51 and 53/);
+  assert.equal(curveText(curveOf(m)), "y = 49 + 2x");
+  assert.match(plain, /the straight line y = 49 \+ 2x/);
+  assert.deepEqual(encodeShards(m, SIZES.tiny).slice(3), [55, 57, 59]);
+  assert.match(plain, /at x = 3, 4 and 5: 55, 57 and 59/);
+  const jam = curveOf(lettersOf("JAM")!);
+  assert.equal(curveText(jam), "y = 74 − 19.5x + 10.5x²");
+  assert.match(plain, /Type JAM and the line bends into y = 74 − 19\.5x \+ 10\.5x²/);
+  for (const text of ["135", "JAM", "a~a", "~ ~", "\u0000ÿ\u0000"]) {
+    const message = lettersOf(text)!;
+    const curve = curveOf(message);
+    const shards = encodeShards(message, SIZES.tiny);
+    shards.forEach((y, x) => {
+      assert.equal(mod(heightAt(curve, x)), y, `${text}: the curve wrapped is shard ${x}`);
+      const near = curveRuns(curve, 5).flat().find(([cx]) => Math.abs(cx - x) < 1e-9);
+      assert.ok(near && Math.abs(near[1] - y) < 1e-6, `${text}: the drawing passes through shard ${x}`);
+    });
+    for (const w of wraps(curve, SIZES.tiny)) assert.ok(w.height < 0 || w.height > 256, `${text}: only a curve past 0 to 256 wraps`);
+    for (const run of curveRuns(curve, 5)) run.forEach(([, y]) => assert.ok(y >= 0 && y < P, `${text}: every drawn point is on the clock`));
+  }
+  assert.deepEqual(wraps(curveOf(lettersOf("a~a")!), SIZES.tiny).map((w) => [w.x, w.height, w.shard]), [[4, -135, 122], [5, -338, 176]]);
+  // with too few dots, the second curve goes through the same dots
+  const held: Shard[] = [{ x: 4, y: 57 }, { x: 5, y: 59 }];
+  const other = anotherFit(held, m, SIZES.tiny);
+  for (const h of held) assert.equal(mod(heightAt(curveOf(other), h.x)), h.y);
 });

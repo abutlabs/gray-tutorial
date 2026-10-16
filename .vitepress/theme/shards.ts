@@ -95,3 +95,50 @@ export function lettersOf(text: string): number[] | null {
   const codes = [...text].map((c) => c.codePointAt(0)!);
   return codes.every((c) => c < 256) ? codes : null;
 }
+
+/** The curve through a 3-letter message, y = a + b·x + c·x², as ordinary numbers: the one
+ *  through (0, m₀), (1, m₁), (2, m₂). c and b can be halves, but y at a whole x is whole. */
+export interface Curve { a: number; b: number; c: number }
+export function curveOf([m0, m1, m2]: number[]): Curve {
+  const c = (m2 - 2 * m1 + m0) / 2;
+  return { a: m0, b: m1 - m0 - c, c };
+}
+
+/** The curve's height at x, before any wrapping. */
+export const heightAt = ({ a, b, c }: Curve, x: number): number => a + b * x + c * x * x;
+
+/** The curve as a reader writes it: "y = 74 − 19.5x + 10.5x²", "y = 49 + 2x". */
+export function curveText({ a, b, c }: Curve): string {
+  const terms: string[] = [String(a)];
+  for (const [k, power] of [[b, "x"], [c, "x²"]] as const) {
+    if (k === 0) continue;
+    const size = Math.abs(k) === 1 ? "" : String(Math.abs(k));
+    terms.push(`${k < 0 ? "−" : "+"} ${size}${power}`);
+  }
+  return `y = ${terms.join(" ")}`.replace("y = 0 + ", "y = ").replace("y = 0 − ", "y = −");
+}
+
+/** Where the curve leaves 0 to 256 at a shard: counting mod 257 brings it back round, so
+ *  the shard is its height wrapped, as on a clock of 257 hours. */
+export function wraps(curve: Curve, n: number): { x: number; height: number; shard: number }[] {
+  return Array.from({ length: n }, (_, x) => ({ x, height: heightAt(curve, x), shard: mod(heightAt(curve, x)) }))
+    .filter((w) => w.height !== w.shard);
+}
+
+/** The curve drawn from x = 0 to `to`, wrapped mod 257 as the shards are: runs of
+ *  [x, y] points, a new run wherever it goes off the top or bottom and comes back round. */
+export function curveRuns(curve: Curve, to: number, step = 0.02): [number, number][][] {
+  const runs: [number, number][][] = [[]];
+  let lastTurn = Math.floor(heightAt(curve, 0) / P);
+  for (let i = 0; i * step <= to + 1e-9; i++) {
+    const x = Math.min(i * step, to);
+    const h = heightAt(curve, x);
+    const turn = Math.floor(h / P);
+    if (turn !== lastTurn) {
+      runs.push([]);
+      lastTurn = turn;
+    }
+    runs.at(-1)!.push([x, h - turn * P]);
+  }
+  return runs.filter((r) => r.length > 1);
+}

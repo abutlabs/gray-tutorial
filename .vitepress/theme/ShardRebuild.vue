@@ -1,10 +1,12 @@
-<!-- Lesson 3.3: erasure coding in miniature. Three letters become the curve through their
-     numbers (mod 257), each of 6 validators holds one point on it, and any 3 points rebuild
-     the letters (Lagrange); 2 can't. Full's 1,023 and 342 as a count only. -->
+<!-- Lesson 3.3: erasure coding in miniature. Three letters are three dots at x = 0, 1, 2; the
+     one curve through them, read on at 3, 4 and 5, gives the other shards. Each of 6
+     validators holds one dot; any 3 dots pin the curve down again, and the plot redraws it
+     from them; with 2, a second curve through the same dots reads another message. Full's
+     1,023 and 342 as a count only. -->
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import type { Shard } from "./shards.ts";
-import { anotherFit, encodeShards, letter, lettersOf, originalShards, P, rebuild, SIZES, weights } from "./shards.ts";
+import { anotherFit, curveOf, curveRuns, curveText, encodeShards, letter, lettersOf, originalShards, P, rebuild, SIZES, wraps } from "./shards.ts";
 
 const GOALS = [
   { id: "own", say: "lose the 3 shards that are the message itself, and still rebuild" },
@@ -18,7 +20,7 @@ const n = computed(() => SIZES[size.value]);
 const k = computed(() => originalShards(n.value)); // 3 on tiny, 342 on full
 
 // tiny: real shards of a real message
-const text = ref("JAM");
+const text = ref("135");
 const message = computed(() => {
   const m = lettersOf(text.value);
   return m && m.length === 3 ? m : null;
@@ -49,12 +51,18 @@ function press() {
   if (!back && held.value.length === k.value - 1) mark("short");
 }
 
-/** One rebuilt letter's sum: each used shard times its weight, mod P. */
-const sumFor = (used: Shard[], x: number) => {
-  const w = weights(used.map((s) => s.x), x);
-  return used.map((s, i) => `${s.y}×${w[i]}`).join(" + ");
-};
 const word = (ys: number[]) => ys.map(letter).join("");
+const list = (xs: (number | string)[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`);
+
+// the curve, and the plot: x = 0 to 5 across, 0 to 256 up
+const curve = computed(() => (message.value ? curveOf(message.value) : null));
+const other = computed(() => (outcome.value && !outcome.value.ok ? curveOf(outcome.value.other) : null));
+const wrapped = computed(() => (curve.value ? wraps(curve.value, SIZES.tiny) : []));
+const W = 320, H = 190;
+const px = (x: number) => 34 + x * 54;
+const py = (y: number) => 160 - (y / 256) * 140;
+const pathOf = (c: { a: number; b: number; c: number }) =>
+  curveRuns(c, SIZES.tiny - 1).map((run) => run.map(([x, y], i) => `${i ? "L" : "M"}${px(x).toFixed(1)},${py(y).toFixed(1)}`).join("")).join("");
 
 // full: a count only
 const offline = ref(0);
@@ -80,12 +88,6 @@ const shown = computed(() => {
       <div class="tile" :class="{ ok: verdict === '✓', no: verdict === '✗' }"><span class="tile-label">rebuild</span><span class="tile-value">{{ verdict }}</span></div>
       <div class="tile"><span class="tile-label">message</span><span class="tile-value wide">{{ shown }}</span></div>
     </div>
-    <p class="range">
-      The same idea in miniature, not JAM's exact code: 3 letters are 3 numbers, and there is exactly one curve
-      (a polynomial of degree 2, counting mod {{ P }}) through them. Each of 6 validators holds one point on it, a shard. Any
-      3 points pin the curve down again, so any 3 shards give the letters back. JAM does this with a systematic Reed–Solomon
-      code in GF(2^16), on 2-byte words, many at once (Gray Paper, Appendix H).
-    </p>
     <div class="controls" role="group" aria-label="network size">
       <button class="small" :class="{ chosen: size === 'tiny' }" :aria-pressed="size === 'tiny'" @click="size = 'tiny'">tiny: 6 validators</button>
       <button class="small" :class="{ chosen: size === 'full' }" :aria-pressed="size === 'full'" @click="size = 'full'">full: 1,023 validators</button>
@@ -97,7 +99,27 @@ const shown = computed(() => {
         <input id="shard-message" v-model="text" maxlength="3" spellcheck="false" autocomplete="off" />
       </div>
       <p v-if="!message" class="error">Three letters, each one byte (a code below 256).</p>
-      <template v-else>
+      <template v-else-if="curve">
+        <ol class="steps">
+          <li>“{{ text }}” is the bytes {{ list(message) }}: three dots, at x = 0, 1 and 2.</li>
+          <li>Exactly one curve y = a + bx + cx² passes through three dots. Through these: <b class="eq">{{ curveText(curve) }}</b>.</li>
+          <li>
+            Read the same curve on, at x = 3, 4 and 5: {{ list(shards.slice(3)) }}. Six dots, one per validator: those are the shards.
+            <template v-if="wrapped.length"> Counting goes round a clock of {{ P }}, so where the curve passes 256 or drops below 0 it comes back in at the other edge: at x = {{ wrapped[0].x }} it reaches {{ wrapped[0].height }}, which is {{ wrapped[0].shard }}.</template>
+          </li>
+        </ol>
+        <svg class="plot" :viewBox="`0 0 ${W} ${H}`" role="img" :aria-label="`the curve ${curveText(curve)} and the six shards on it`">
+          <line v-for="y in [0, 128, 256]" :key="y" class="grid" :x1="px(0) - 10" :x2="px(5) + 10" :y1="py(y)" :y2="py(y)" />
+          <text v-for="y in [0, 128, 256]" :key="`t${y}`" class="axis" :x="px(0) - 14" :y="py(y) + 4" text-anchor="end">{{ y }}</text>
+          <path class="curve" :d="pathOf(curve)" />
+          <path v-if="other" class="curve other" :d="pathOf(other)" />
+          <g v-for="(y, x) in shards" :key="x" :class="['dot', { own: x < 3, lost: lost.has(x) }]" @click="toggle(x)">
+            <circle :cx="px(x)" :cy="py(y)" r="7" />
+            <text class="value" :x="px(x)" :y="py(y) - 11" text-anchor="middle">{{ lost.has(x) ? "?" : y }}</text>
+          </g>
+          <circle v-for="(y, x) in (outcome && !outcome.ok ? encodeShards(outcome.other, SIZES.tiny) : [])" v-show="lost.has(x)" :key="`o${x}`" class="dot-other" :cx="px(x)" :cy="py(y)" r="5" />
+          <text v-for="x in 6" :key="`x${x}`" class="axis" :x="px(x - 1)" :y="H - 8" text-anchor="middle">{{ x - 1 }}</text>
+        </svg>
         <div class="label">Tap a validator to take it offline. Shards 0 to 2 are the letters themselves; 3 to 5 carry the curve on.</div>
         <div class="validators">
           <button
@@ -112,21 +134,19 @@ const shown = computed(() => {
         <button class="rebuild" @click="press">rebuild from the {{ held.length }} shard{{ held.length === 1 ? "" : "s" }} held</button>
         <div v-if="outcome && outcome.ok" class="outcome">
           <p>
-            From validators {{ outcome.used.map((s) => s.x).join(", ") }}<template v-if="held.length > k"> (any 3 will do: these
-            are the first 3 held)</template>: each letter is their shards times weights that depend only on which validators they
-            are, mod {{ P }}.
-          </p>
-          <p v-for="(y, x) in outcome.back" :key="x" class="sum">
-            letter {{ x + 1 }} = {{ sumFor(outcome.used, x) }} = {{ y }}, “{{ letter(y) }}”
+            The dots at validators {{ list(outcome.used.map((s) => s.x)) }}<template v-if="held.length > k"> (any 3 will do: these
+            are the first 3 held)</template> fit one curve only, <b class="eq">{{ curveText(curve) }}</b>: finding it is three
+            equations, one per dot, for a, b and c. Read it at x = 0, 1 and 2: {{ list(outcome.back) }}, “{{ word(outcome.back) }}”.
           </p>
         </div>
         <div v-else-if="outcome" class="outcome">
           <p>
-            {{ held.length }} shard{{ held.length === 1 ? "" : "s" }} {{ held.length === 1 ? "is" : "are" }} {{ held.length }}
-            equation{{ held.length === 1 ? "" : "s" }} for 3 unknowns, the 3 letters: not enough to decide them. The message
-            {{ outcome.other.join(", ") }} (“{{ word(outcome.other) }}”) gives exactly the same
-            shard{{ held.length === 1 ? "" : "s" }}<template v-if="held.length"> at validator{{ held.length === 1 ? "" : "s" }}
-            {{ held.map((s) => s.x).join(" and ") }}</template> as {{ message.join(", ") }} does.
+            {{ held.length }} dot{{ held.length === 1 ? "" : "s" }} fit{{ held.length === 1 ? "s" : "" }} many curves: {{ held.length }}
+            equation{{ held.length === 1 ? "" : "s" }} for 3 unknowns. The dashed one, <b class="eq">{{ other && curveText(other) }}</b>,
+            <template v-if="held.length">passes through the same dot{{ held.length === 1 ? "" : "s" }} at validator{{ held.length === 1 ? "" : "s" }}
+            {{ list(held.map((s) => s.x)) }} but </template>reads {{ list(outcome.other) }} at x = 0, 1 and 2, “{{ word(outcome.other) }}”.
+            Nobody can tell which message it was.<template v-if="other && wraps(other, SIZES.tiny).length"> (Where it runs off the
+            chart it comes back in at the other edge: counting goes round a clock of {{ P }}.)</template>
           </p>
         </div>
       </template>
@@ -143,6 +163,11 @@ const shown = computed(() => {
       </div>
       <p class="sum">{{ fmt(fullHeld) }} held {{ fullHeld >= k ? "≥" : "<" }} {{ k }} needed: {{ fullHeld >= k ? "it rebuilds" : "it can't" }}</p>
     </template>
+
+    <p v-if="size === 'tiny'" class="note">
+      The same idea as JAM's, smaller: JAM's code (Gray Paper, Appendix H) runs on 2-byte numbers instead of letters, counts in a
+      field of 2^16 instead of mod {{ P }}, and works on many curves at once.
+    </p>
 
     <ul class="goals">
       <li v-for="g in GOALS" :key="g.id" :class="{ done: reached.has(g.id) }">{{ reached.has(g.id) ? "✓" : "○" }} <UnitText :text="g.say" /></li>
@@ -179,6 +204,21 @@ const shown = computed(() => {
 }
 .outcome { margin-top: 8px; font-size: 14px; line-height: 1.5; }
 .outcome p { margin: 4px 0; }
+.steps { margin: 0 0 4px; padding-left: 1.4em; font-size: 14px; line-height: 1.55; }
+.steps li { margin: 2px 0; }
+.eq { font-family: var(--vp-font-family-mono); font-weight: 600; white-space: nowrap; }
+.plot { display: block; width: 100%; max-width: 480px; height: auto; margin: 4px 0 8px; }
+.plot .grid { stroke: var(--vp-c-divider); stroke-width: 1; }
+.plot .axis { font-size: 11px; fill: var(--vp-c-text-3); font-family: var(--vp-font-family-mono); }
+.plot .curve { fill: none; stroke: var(--vp-c-brand-1); stroke-width: 2.5; }
+.plot .curve.other { stroke: var(--bit-mark-line); stroke-dasharray: 6 4; }
+.plot .dot { cursor: pointer; }
+.plot .dot circle { fill: var(--bit-low); stroke: var(--bit-low-line); stroke-width: 2; }
+.plot .dot.own circle { fill: var(--bit-top); stroke: var(--bit-top-line); }
+.plot .dot.lost circle { fill: var(--vp-c-bg); stroke: var(--vp-c-text-3); stroke-dasharray: 3 2; }
+.plot .dot .value { font-size: 12px; font-weight: 600; fill: var(--vp-c-text-1); font-family: var(--vp-font-family-mono); }
+.plot .dot-other { fill: var(--bit-mark); stroke: var(--bit-mark-line); stroke-width: 2; }
+.note { font-size: 13px; color: var(--vp-c-text-2); margin: 10px 0 0; line-height: 1.5; }
 .sum { font-family: var(--vp-font-family-mono); font-size: 14px; overflow-wrap: anywhere; }
 .error { color: var(--vp-c-danger-1); font-size: 14px; }
 .goals { list-style: none; padding: 0; margin: 12px 0 0; font-size: 14px; color: var(--vp-c-text-2); }

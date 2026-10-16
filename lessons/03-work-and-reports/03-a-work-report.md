@@ -44,11 +44,19 @@ thing: any 342 of the 1,023 on full, any 3 of the 6 on tiny.
 Hence `erasure_shards`: one per validator. Which means, for the first time, tiny and full
 vectors differ: 6 shards on tiny, 1,023 on full.
 
-How can a few pieces hold the whole? Here is the same idea in miniature, not JAM's exact
-code. Three letters become the one curve through their numbers, and each of 6 validators
-holds one point on it. Any 3 points fix that curve, so any 3 shards rebuild the letters.
-Take validators offline and press *rebuild*: with 3 left it works. With 2 it can't, and
-you see another message that fits the same 2 shards.
+How can a few pieces hold the whole? The same idea in miniature, not JAM's exact code.
+Take the message "135": its bytes are 49, 51 and 53. Draw them as dots at x = 0, 1 and 2.
+Through any three dots passes exactly one curve, `y = a + bx + cx²`, and through these it's
+the straight line y = 49 + 2x (c is 0, because the bytes climb evenly). Read that line on
+at x = 3, 4 and 5: 55, 57 and 59. Six numbers, one per validator: those are the shards.
+
+Now lose any three, even 49, 51 and 53, the message itself. The three left, 55, 57 and
+59, lie on only one curve, y = 49 + 2x, and at x = 0, 1 and 2 it gives 49, 51 and 53
+back. Lose four and two dots are left, and two dots lie on many curves, each reading a
+different message. There's no telling which.
+
+Take validators offline and press *rebuild*. Type JAM and the line bends into
+y = 74 − 19.5x + 10.5x².
 
 <ShardRebuild />
 
