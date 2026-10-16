@@ -1,13 +1,15 @@
 # Tiny and full
 
 There are two JAMs. The **full** one is the size of the real network: 1,023 validators
-and 341 cores. (Gray Paper 0.8.0 lets the validator count change, to any multiple of 3
-from 6 up to 1,023; the full vectors use the most.) Testing anything on that is slow, so there's also a **tiny** one: 6 validators
-and 2 cores, same rules, a lot less waiting. The official vectors come in both sizes,
-in folders named after them, and until now every structure had the same shape in both.
+and 341 cores. Testing on that is slow, so there's also a **tiny** one: 6 validators and
+2 cores, same rules. The official vectors come in both sizes, and until now every
+structure had the same shape in both. (Gray Paper 0.8.0 lets the validator count be any
+multiple of 3 from 6 to 1,023; the full vectors use the most.)
 
-Today that changes. Meet the first structure whose *shape* depends on the size of the
-network: the assurance.
+The assurance is the first structure whose *shape* depends on the size. Switch sizes and
+watch which part grows:
+
+<AssuranceParcel />
 
 ## New words
 
