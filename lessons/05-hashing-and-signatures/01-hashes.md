@@ -1,10 +1,10 @@
 # Hashes
 
-A blockchain is called a *chain* because each block holds on to the one before it, and
-what it holds is a *hash*: a 32-byte fingerprint of the previous block's header.
-Change one bit of an old block and its fingerprint changes, which breaks the next block's
-grip, and the next, all the way up. This lesson gives your client JAM's hash function,
-and then checks a real chain of a hundred blocks, link by link.
+A blockchain is a *chain* because each block holds on to the one before it, and what it
+holds is a *hash*: a 32-byte fingerprint of the previous block's header. Change one bit
+of an old block and its fingerprint changes, which breaks the next block's grip, and the
+next, all the way up. This lesson gives your client JAM's hash function, then checks a
+real chain of a hundred blocks, link by link.
 
 ## New words
 
@@ -299,6 +299,12 @@ reported 54 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=
 ```
 
 99 links, checked: every one of these blocks really does follow the one before it.
+
+The first four of them, held by their hashes. Pick a block and flip one bit of its seal,
+its slot or its entropy source: its hash becomes a stranger, and the block after it no
+longer matches. Flip a bit of its `parent` and the link before it breaks too.
+
+<HashChain />
 
 ## Watch the chain
 
