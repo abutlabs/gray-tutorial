@@ -30,6 +30,10 @@ NONE is 2^64 − 1 too, the same number that means "the service itself" going in
 it is depends only on the direction: in φ₇ on the way in, it asks about yourself; in φ₇ on
 the way out, it says there's no such service.
 
+The same account both ways, the state's record and what `info` hands out:
+
+<InfoView />
+
 Accumulation's F hands `info` two things: X's service id, and the accounts as the context X
 holds them. So accumulation needs a little bundle of its own: which service is running,
 the accounts, the code, the entropy and the inputs.
