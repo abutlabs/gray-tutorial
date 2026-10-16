@@ -1,9 +1,8 @@
 # Part 4 · Blocks
 
 A JAM block is a header plus an *extrinsic*: everything the block brings in from the
-outside world. Tickets for the authorship lottery, data services asked for, reports from
-the cores, availability promises, disputes. This part encodes all of it, piece by piece,
-until your client can read a whole block, checked against the official vectors.
+outside world. This part encodes all of it, piece by piece, until your client can read a
+whole block, checked against the official vectors.
 
 By the end of this part your client reads any JAM block, at either size, and can show you
 every byte of it. Checking one is [Part 5](../05-hashing-and-signatures/index.md)'s job.
@@ -13,9 +12,14 @@ foundations every part uses, [Parts 0 to 2](../index.md#lessons).
 
 ## At a glance
 
-The whole part on one map. Boxes are what your client holds, and rounded cards are the
-steps between them; a dashed card happens outside your client. Tap any card, or walk
-through them in order with *next*.
+Here is a whole block, the tiny test vector's: a header, the cover page, and the
+extrinsic, five bags of things from outside the chain. Tap any part, down to its bytes.
+
+<BlockParcel />
+
+And the order this part builds those pieces in, lesson by lesson: the bags, then the
+header, then the block, then reading any block at either size. Boxes are what your
+client holds, rounded cards the steps between them.
 
 <PartFlow :part="4" />
 

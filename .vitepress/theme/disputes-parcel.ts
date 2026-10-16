@@ -15,6 +15,20 @@ export const CULPRIT: Type = { record: [["target", "hash"], ["key", { bytes: 32 
 export const FAULT: Type = { record: [["target", "hash"], ["vote", "bool"], ["key", { bytes: 32 }], ["signature", { bytes: 64 }]] };
 export const DISPUTES_EXTRINSIC: Type = { record: [["verdicts", { seq: VERDICT }], ["culprits", { seq: CULPRIT }], ["faults", { seq: FAULT }]] };
 
+/** What each part of the disputes is for, by its name. */
+export const SAYS: Record<string, string> = {
+  verdicts: "The verdicts: a count, then each one.",
+  culprits: "The culprits: a count, then each one.",
+  faults: "The faults: a count, then each one.",
+  target: "The work-report this is about, by its hash.",
+  age: "The epoch whose validators voted: this one or the one before. A u32.",
+  votes: "The votes: a count, then each judgement. 5 on tiny, 683 on full.",
+  vote: "Yes or no: one byte, 1 for valid, 0 for not.",
+  index: "Which validator voted: a u16.",
+  key: "The validator's Ed25519 key: 32 bytes.",
+  signature: "An Ed25519 signature: 64 bytes, the evidence.",
+};
+
 export const DISPUTES: Parcel = makeParcel({
   name: "disputes_extrinsic",
   whole: "The tiny vector's disputes: verdicts, then the guarantors and voters they catch out. Tap any part.",
@@ -25,18 +39,7 @@ export const DISPUTES: Parcel = makeParcel({
     { id: "culprits", name: "Culprits", says: "guarantors who vouched for a report that turned out bad", fields: ["culprits"], tone: "amber" },
     { id: "faults", name: "Faults", says: "validators who voted against the verdict", fields: ["faults"], tone: "purple" },
   ],
-  says: {
-    verdicts: "The verdicts: a count, then each one.",
-    culprits: "The culprits: a count, then each one.",
-    faults: "The faults: a count, then each one.",
-    target: "The work-report this is about, by its hash.",
-    age: "The epoch whose validators voted: this one or the one before. A u32.",
-    votes: "The votes: a count, then each judgement. 5 on tiny, 683 on full.",
-    vote: "Yes or no: one byte, 1 for valid, 0 for not.",
-    index: "Which validator voted: a u16.",
-    key: "The validator's Ed25519 key: 32 bytes.",
-    signature: "An Ed25519 signature: 64 bytes, the evidence.",
-  },
+  says: SAYS,
   items: { verdicts: "verdict", votes: "vote", culprits: "culprit", faults: "fault" },
   saysItem: (n: Node, partAt) => {
     if (/^verdicts\[\d+\]$/.test(n.path)) {

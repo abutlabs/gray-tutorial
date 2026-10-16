@@ -113,14 +113,19 @@ export interface Model {
   items: Record<string, string>; // "verdicts" → "verdict"
   saysItem?: (n: Node, partAt: (path: string) => Node) => string;
   goals: Goal[];
+  open?: string[]; // parts whose own parts always show, tapped or not
+  strip?: string[]; // the strip's cuts, paths that tile the bytes; else the top-level fields
 }
 
 /** The chips under a top-level field: the field, then the parts of each part along the way
  *  to the one selected, so any depth opens a row at a time. */
-export function drillRows(partAt: (path: string) => Node, fields: string[], selected: string): string[][] {
+export function drillRows(partAt: (path: string) => Node, fields: string[], selected: string, open: string[] = []): string[][] {
   const rows = [fields];
   for (const top of fields) {
-    if (selected !== top && !selected.startsWith(`${top}.`) && !selected.startsWith(`${top}[`)) continue;
+    if (selected !== top && !selected.startsWith(`${top}.`) && !selected.startsWith(`${top}[`)) {
+      if (open.includes(top)) rows.push(partAt(top).children.map((c) => c.path));
+      continue;
+    }
     let path = top;
     for (;;) {
       const n = partAt(path);
@@ -153,7 +158,9 @@ export function makeParcel(m: Model): Parcel {
   const top = map.root.children;
   const only = top.length === 1 && top[0].prefix && top[0].children.length ? top[0] : null;
   const tone = (path: string) => compartmentOf(path).tone;
-  const wire: Wire[] = only
+  const wire: Wire[] = m.strip
+    ? m.strip.map((path) => ({ path, bytes: partAt(path).end - partAt(path).start, tone: tone(path) }))
+    : only
     ? [{ path: only.path, bytes: only.prefix, tone: tone(only.path) }, ...only.children.map((c) => ({ path: c.path, bytes: c.end - c.start, tone: tone(c.path) }))]
     : wireOf(map.root, compartmentOf);
   return {
@@ -163,7 +170,7 @@ export function makeParcel(m: Model): Parcel {
     compartments: m.compartments,
     partAt,
     compartmentOf,
-    chipRows: (c, selected) => drillRows(partAt, m.compartments.find((x) => x.id === c)!.fields, selected),
+    chipRows: (c, selected) => drillRows(partAt, m.compartments.find((x) => x.id === c)!.fields, selected, m.open),
     labelOf,
     saysOf,
     valueOf: valueIn(map.bytes),

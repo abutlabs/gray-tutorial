@@ -78,6 +78,7 @@ import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import WorkDigest from "./WorkDigest.vue";
 import WorkReport from "./WorkReport.vue";
+import BlockParcel from "./BlockParcel.vue";
 import TicketsPreimages from "./TicketsPreimages.vue";
 import AssuranceParcel from "./AssuranceParcel.vue";
 import GuaranteeParcel from "./GuaranteeParcel.vue";
@@ -145,6 +146,7 @@ export default {
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("WorkDigest", WorkDigest); // 3.2
     app.component("WorkReport", WorkReport); // 3.3
+    app.component("BlockParcel", BlockParcel); // Part 4
     app.component("TicketsPreimages", TicketsPreimages); // 4.1
     app.component("AssuranceParcel", AssuranceParcel); // 4.2
     app.component("GuaranteeParcel", GuaranteeParcel); // 4.3
