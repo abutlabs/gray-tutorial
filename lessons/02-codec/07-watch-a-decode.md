@@ -1,9 +1,9 @@
 # Watch a decode
 
-In [lesson 2.6](./06-the-first-test-vectors.md) you moved one field and three values went haywire. The test told you
-*that* they were wrong. It couldn't tell you *where the bytes went*. Time to give the
-decoder a voice: for every field, which bytes it read and where they sit. The trace goes
-to your terminal and to Grafana, like everything else your client does.
+In [lesson 2.6](./06-the-first-test-vectors.md) you moved one field and three values went haywire. The test said
+*that* they were wrong, not *where the bytes went*. Time to give the decoder a voice: for
+every field, which bytes it read and where they sit. The trace goes to your terminal and
+to Grafana, like everything else your client does.
 
 ## New words
 
@@ -357,8 +357,15 @@ first two bytes of the refine gas limit, and both gas limits then started two by
 late. `payload` starts at 54 either way, which is why everything after
 it still decoded correctly. Put `export_count` back afterwards.
 
-This is how you'll debug every failing vector from here on: don't just stare at what
-your client got wrong, watch what it *read*.
+Or move it here, to any place in the record, and watch the trace recompute on the real
+bytes: the lines that read the wrong bytes turn red, and the first field whose bytes
+line up again is named. Move it below `payload` and a length read from the wrong place
+runs the trace off the end of the file.
+
+<TraceShift />
+
+This is how you debug every failing vector from here on: don't stare at what your client
+got wrong, watch what it *read*.
 
 <details>
 <summary>lasair: <code>Trace_runner</code></summary>
