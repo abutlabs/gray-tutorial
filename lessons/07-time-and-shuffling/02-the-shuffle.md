@@ -1,11 +1,9 @@
 # The shuffle
 
-JAM regularly deals its validators out to cores: these three guarantee core 0 for a while,
-those three core 1, and so on. The deal has to be **random**, so nobody can arrange to
-sit on the core where their friends' work is. And it has to be **the same on every
-node**, or they'd all disagree about who's allowed to do what. Random, and yet
-everybody gets the same answer: that's a shuffle driven by a hash everyone shares. This
-lesson builds it.
+JAM deals its validators out to cores: these three guarantee core 0 for a while, those
+three core 1. The deal must be **random**, so nobody can arrange to sit where their
+friends' work is, and **the same on every node**, or they'd disagree about who may do
+what. Random, yet the same answer everywhere: a shuffle driven by a hash everyone shares.
 
 ## New words
 
@@ -38,6 +36,10 @@ numbers 1, 1, 0, 0:
 Result: b, d, a, c.
 
 ![The four-letter shuffle from the table, one row per step: the items left, with the pick highlighted and an arrow from the last item into the gap the pick leaves, and on the right the picks so far, ending b, d, a, c.](./images/02-shuffle-steps.svg)
+
+Step through it yourself, then through the eight numbers of the run below.
+
+<ShuffleSteps />
 
 **Q_l(h)** makes the numbers: l of them, from a 32-byte hash h. Hash h together with
 ℰ₄(0), and the 32 bytes that come out are eight 4-byte numbers, read with ℰ₄⁻¹. Hash h
@@ -184,10 +186,9 @@ export function shuffleWithHash<T>(items: T[], h: Bytes, trace?: Trace): T[] {
 }
 ```
 
-The Gray Paper writes F as a recursion: pick one, then F of the rest. `shuffle` does
-the same thing as a loop, one pick per number, which is easier to follow and never runs
-out of stack. `numbersFromHash` hashes for every number, recomputing each block eight
-times; that's wasteful, but it reads exactly like Q.
+The Gray Paper writes F as a recursion: pick one, then F of the rest. `shuffle` is the
+same as a loop, one pick per number, and never runs out of stack. `numbersFromHash`
+hashes for every number, recomputing each block eight times: wasteful, but it reads like Q.
 
 **Run**
 
