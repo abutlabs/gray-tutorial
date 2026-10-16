@@ -1,9 +1,13 @@
 # A work-report
 
-The package went in (3.1). Each item came back as a digest (3.2). Now the paperwork that
-wraps it all up: the *work-report*, the receipt a core produces for one whole
-work-package. Validators sign it, pass it around, check it, and finally fold its results
-into the chain. Everything from [Part 3](./index.md) meets here.
+The package went in (3.1); each item came back as a digest (3.2). The *work-report* wraps
+them up: a core's receipt for one whole work-package, which validators sign, check and
+finally fold into the chain. Everything from [Part 3](./index.md) meets here.
+
+Here is the vectors' report. Tap any part for what it's for, its value and where its bytes
+are. Switch from tiny to full and only one part changes.
+
+<WorkReport />
 
 ## New words
 

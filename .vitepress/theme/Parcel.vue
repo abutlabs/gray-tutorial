@@ -69,7 +69,7 @@ function choose(path: string) {
 
 <style scoped>
 /* the shared .widget .readout is a row of tiles; this one is a card of lines that never resizes */
-.parcel-widget .readout { display: block; min-height: 150px; }
+.parcel-widget .readout { display: block; min-height: 160px; }
 .title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; font-size: 16px; overflow-wrap: anywhere; }
 .where { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--vp-c-text-2); }
 .says { margin: 6px 0; line-height: 1.5; }
@@ -81,6 +81,7 @@ function choose(path: string) {
 .tone-grey { background: var(--vp-c-default-soft); }
 .tone-brand { background: var(--vp-c-brand-soft); }
 .tone-amber { background: var(--vp-c-warning-soft); }
+.tone-purple { background: var(--vp-c-important-soft); }
 /* a stapled compartment, like the package's slip: a dashed edge */
 .compartment.stapled { border: 1px dashed var(--vp-c-text-3); }
 .label { margin: 0 0 6px; font-size: 13px; line-height: 1.4; color: var(--vp-c-text-2); }
@@ -100,6 +101,6 @@ function choose(path: string) {
 .goals li.done { color: var(--vp-c-green-1); }
 @media (max-width: 640px) {
   .widget.parcel-widget { padding: 12px; }
-  .parcel-widget .readout { min-height: 190px; }
+  .parcel-widget .readout { min-height: 230px; }
 }
 </style>

@@ -13,7 +13,7 @@ export interface Compartment {
   name: string;
   says: string;
   fields: string[];
-  tone: "green" | "grey" | "brand" | "amber";
+  tone: "green" | "grey" | "brand" | "amber" | "purple";
   stapled?: boolean; // drawn with a dashed edge, like the package's slip
 }
 /** Something to find by tapping. */

@@ -5,7 +5,7 @@
 // it. tools/widget-work-digest.test.ts checks the types against 3.2's codecs, the bytes
 // against 3.2's decode trace and the vectors.
 
-import { encodeMapped } from "./codec-map.ts";
+import { encodeMapped, ERRORS } from "./codec-map.ts";
 import type { Json, Node, Type } from "./codec-map.ts";
 import { bytesOf, compartmentIn, hexIn, nameOf, partsOf, valueIn, wireOf } from "./parcel.ts";
 import type { Compartment, Goal, Parcel } from "./parcel.ts";
@@ -77,6 +77,12 @@ export const SAYS: Record<string, string> = {
   exports: "How many segments it exported.",
 };
 
+/** How refine went, for a result whose JSON key is `outcome`: "ok", or an error's name. */
+export const resultSays = (outcome: string): string =>
+  outcome === "ok"
+    ? "How refine went: tag 0, success, then the output as a blob, its length first."
+    : `How refine went: the tag ${ERRORS.indexOf(outcome) + 1}, a ${outcome}, and nothing more.`;
+
 /** The goals, and the parts that reach each. */
 export const GOALS: Goal[] = [
   { id: "tag", say: "find the byte that says how it went", reached: (p) => p === "result" },
@@ -99,7 +105,7 @@ export function digestParcel(which: number): Parcel {
     compartmentOf,
     chipRows: (c) => (c === "load" ? [["refine_load"], partAt("refine_load").children.map((n) => n.path)] : [COMPARTMENTS.find((x) => x.id === c)!.fields]),
     labelOf: nameOf,
-    saysOf: (n: Node) => (n.path === "result" ? (outcome === "ok" ? "How refine went: tag 0, success, then the output as a blob, its length first." : `How refine went: the tag ${["out_of_gas", "panic", "bad_exports", "output_oversize", "bad_code", "code_oversize"].indexOf(outcome) + 1}, a ${outcome}, and nothing more.`) : SAYS[nameOf(n.path)] ?? ""),
+    saysOf: (n: Node) => (n.path === "result" ? resultSays(outcome) : SAYS[nameOf(n.path)] ?? ""),
     valueOf: valueIn(map.bytes),
     bytesOf,
     hexOf: hexIn(map.bytes),
