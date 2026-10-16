@@ -70,6 +70,10 @@ import DecodeInstruction from "./DecodeInstruction.vue";
 import MemoryTouch from "./MemoryTouch.vue";
 import StoreLoad from "./StoreLoad.vue";
 import AluCorners from "./AluCorners.vue";
+import CallTable from "./CallTable.vue";
+import SignedBranches from "./SignedBranches.vue";
+import BitCounts from "./BitCounts.vue";
+import YLayout from "./YLayout.vue";
 import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import WorkDigest from "./WorkDigest.vue";
@@ -130,6 +134,10 @@ export default {
     app.component("MemoryTouch", MemoryTouch); // 15.4
     app.component("StoreLoad", StoreLoad); // 15.4
     app.component("AluCorners", AluCorners); // 15.5
+    app.component("SignedBranches", SignedBranches); // 15.6
+    app.component("CallTable", CallTable); // 15.6
+    app.component("BitCounts", BitCounts); // 15.7
+    app.component("YLayout", YLayout); // 15.8
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("WorkDigest", WorkDigest); // 3.2
     app.component("WorkReport", WorkReport); // 3.3
