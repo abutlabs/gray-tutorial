@@ -8,6 +8,17 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Decode a Work Package",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/client",
+      "runtimeVersion": "26",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "decode-work-package"],
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
       "name": "Tests: all (npm test)",
       "type": "node",
       "request": "launch",

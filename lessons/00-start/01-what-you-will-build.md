@@ -5,9 +5,6 @@ program that takes a JAM block, checks it against every rule in the Gray Paper, 
 out what the chain looks like afterwards. Byte for byte the same answer every other JAM
 client gets.
 
-You write every line yourself (typing or pasting, no judgement here). And on the way you
-read most of the Gray Paper, one rule at a time, with code running beside it. Sneaky.
-
 ## New words
 
 - **JAM.** A blockchain protocol that blends ideas from Polkadot and Ethereum: anyone can
@@ -103,35 +100,21 @@ lines*, which a tap opens. The eye in its corner shows just the step's lines, an
 
 ### Meet Albert {#albert}
 
-The professor in the logo is Albert. He perches on the corner of a few code blocks, the way
-Ferris the crab does in the Rust Book, and he can't keep a straight face.
+Meet Albert. You'll probably see him around class, and he can't keep a straight face.
 
 ![Albert sticking his tongue out](./images/01-albert-tongue.svg)
 
-**Tongue out:** the block runs the scoreboard. Every time it climbs, this is what he does.
+**Tongue out:** You're on the scoreboard, an official milestone achieved!
 
 ![Albert, eyebrows up, mouth in a little O](./images/01-albert-oh.svg) ![Albert frowning under a question mark](./images/01-albert-puzzled.svg) ![Albert winking](./images/01-albert-wink.svg) ![Albert with one eyebrow raised](./images/01-albert-eyebrow.svg) ![Albert looking up, thinking](./images/01-albert-hmm.svg)
 
-**Any other face:** something is about to go red on purpose (a **Run, expect it to fail**
-block, or a *Break it on purpose* section), or there's a question for you. Which face he
-pulls is up to him.
-
-He's only there for fun: whatever he marks, the words around it say too. On the website, tap
-him to come back here.
-
-Every lesson is checked before you see it: a script follows it from an empty folder,
-applies every snippet and runs every **Run** block. If anything breaks, the lesson
-doesn't ship.
+**Any other face:** Albert is cheering you on.
 
 ## You will see everything
 
-From [lesson 0.3](./03-watch-your-client.md) on, your client tells an observability stack (Grafana and friends,
-running on your own machine) everything it does: each test run, each program, and later
-each step of importing a block. When something goes wrong, you won't be squinting at one
-wrong number at the end. You will watch the step where it went wrong.
-
-lasair, the JAM client this tutorial leans on, learned that the hard way, after it
-needed it. You get it on day one.
+From [lesson 0.3](./03-watch-your-client.md) on, your client tells an observability stack (Grafana stack)
+everything it does: each test run, each program, and later
+each step of importing a block. Building documentation and observability from the initial steps.
 
 ## The referee
 
@@ -143,39 +126,6 @@ vectors' own changelog says otherwise. Even referees publish corrections.)
 From [lesson 2.6](../02-codec/06-the-first-test-vectors.md) on, your client keeps score: a program of yours runs every official
 vector and counts how many it passes, all of each vector, not just a piece of it. The
 [scoreboard](../scoreboard.md) page lists the lessons where a family of vectors crosses the line.
-
-## lasair, the neighbour
-
-[lasair](https://abutlabs.github.io/jam-learning/lasair/index.html) is a JAM client written in OCaml that passes
-all these vectors. Under many snippets a folded box shows how lasair does the same thing:
-
-<details>
-<summary>lasair: the same idea in OCaml</summary>
-
-```ocaml
-(* OCaml reads a lot like TypeScript once you know that `let f x = ...` defines a
-   function f with an argument x, and that the last expression is the result. *)
-let slot_seconds = 6
-```
-
-</details>
-
-You never need OCaml here. The fold is a second opinion, and practice reading real
-client code.
-
-## Your screen
-
-One laptop screen is enough:
-
-1. Open `the-gray-tutor/` in VS Code. Lessons open rendered.
-2. On a lesson, press <kbd>⌘K</kbd> <kbd>V</kbd> (<kbd>Ctrl+K</kbd> <kbd>V</kbd> on
-   Windows and Linux) to keep it on one side and your code on the other. (To see a
-   lesson's source: right-click its tab, *Reopen Editor With... > Text Editor*.)
-3. *Terminal > New Terminal*, then `cd client`.
-
-Grafana lives in a browser tab. Prefer reading lessons in the browser too? `npm run site`
-at the repo root serves them with search and copy buttons. There, the left and right arrow
-keys turn the lessons, and `?` lists the keys.
 
 ## Stuck?
 
@@ -192,18 +142,6 @@ end, and how your imports are grouped. A file with the same code in another orde
 line saying so. What's left is what your client does differently.
 
 `catch-up` backs your files up to `.backup/` first, so nothing is ever lost.
-
-## Three house rules
-
-They make snippets easy to place:
-
-1. **One import per line, at the top of the file.** When a snippet starts with imports,
-   add the ones your file is missing; a new name from a module your file already imports
-   joins that module's line.
-2. **Top-level declarations start at the left edge**, with their comment right above.
-   That is what **Replace in** swaps.
-3. **Field names copy the test vectors** (`anchor_slot`, not `anchorSlot`), so a vector's
-   JSON and your values look exactly alike.
 
 ## Check your understanding
 
