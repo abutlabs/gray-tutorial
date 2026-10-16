@@ -1,10 +1,9 @@
 # The service account
 
-Every service has an *account*: a record of who it is and what it owns. Its code (by
-hash), its balance, the least gas it'll accept to do work, and a running tally of how
-much state it takes up, because storage on JAM isn't free. A service must keep enough
-balance to cover what it stores, like a deposit. This lesson reads the account out of
-the state, and checks the tally adds up. Then [Part 14](./index.md) is done.
+Every service has an *account*: its code (by hash), its balance, the least gas it will
+accept, and a tally of the state it takes up, because storage on JAM isn't free: a
+service must keep enough balance to cover what it stores, like a deposit. This lesson
+reads the account out of the state and checks the tally adds up.
 
 ## New words
 
@@ -36,6 +35,8 @@ the account's record, 89 bytes:
 | i, items | 4 | things it keeps |
 | r, a, p | 4 + 4 + 4 | created at, last accumulated at, created by (its parent) |
 
+<ServiceRecord />
+
 *The footprint*: items is 2 for each request plus 1 for each storage entry; octets is
 81 plus the data's length for each request, plus 34 plus the key's and value's lengths
 for each storage entry. (The 81 and the 34 are flat amounts for the bookkeeping around
@@ -43,6 +44,8 @@ each one, on top of the data itself.)
 
 *The minimum balance*, a_t, is max(0, 100 + 10·i + 1·o − f): a base deposit of 100,
 10 per item and 1 per octet, less the free allowance.
+
+<Footprint />
 
 ## The tests
 
@@ -100,12 +103,11 @@ test("footprints and minimum balances: 510 accounts in the accumulate vectors", 
 });
 ```
 
-Two sources again. In the real state, service 0's code is right there beside its
-account: some value whose hash is the code hash, [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md)'s 159,322-byte giant. Its
-footprint is two preimages, each with its request, and nothing in storage: 4 items, and
-81 + 159,322 + 81 + 50 = 159,534 octets. The accumulate vectors ([Part 17](../17-accumulation/index.md)'s) list
-accounts with storage too, 510 snapshots of them, and every footprint and every balance
-checks out.
+Two sources. In the real state, service 0's code sits beside its account: the value whose
+hash is the code hash, [lesson 6.1](../06-state-and-merklization/01-the-state-trie.md)'s 159,322-byte giant. Its footprint is two preimages
+with their requests and nothing in storage: 4 items, 81 + 159,322 + 81 + 50 = 159,534
+octets. The accumulate vectors ([Part 17](../17-accumulation/index.md)'s) list 510 account snapshots with storage
+too, and every footprint and balance checks out.
 
 ## The code
 
