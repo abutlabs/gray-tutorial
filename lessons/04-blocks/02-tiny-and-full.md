@@ -177,6 +177,8 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 // the vectors keep each size in its own folder, tiny/ or full/
 const codec = CODECS(file?.includes("/full/") ? FULL : TINY)[name];
 if (!codec || !file) {
+  // the names are the same in both configurations, only some codecs change shape:
+  // either one lists them
   throw new Error(`usage: npm run decode <${Object.keys(CODECS(TINY)).join("|")}> <file.bin>`);
 }
 ```
