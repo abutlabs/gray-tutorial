@@ -10,7 +10,8 @@ Here they are, from the tiny vectors: each bag is a count, then its items. Tap a
 ## New words
 
 - **Extrinsic.** The part of a block that comes from outside the chain's state, in five
-  lists. *Example:* tickets, preimages, guarantees, assurances, disputes.
+  lists, each as long as that block needs, often empty. *Example:* a tiny block carries 0
+  to 3 tickets and 0 to 2 guarantees ([Part 4](./index.md#how-much-a-block-carries) has every range).
 - **Ticket.** An anonymous entry in the lottery for who makes blocks in the next epoch.
   *Example:* `attempt` 1, and a 784-byte proof.
 - **Ring VRF proof.** Cryptography that proves *some* validator in a set made something,

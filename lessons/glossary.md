@@ -310,7 +310,8 @@ vectors come in both. ([4.2](./04-blocks/02-tiny-and-full.md))
 seal. *Example:* `header.slot` says when the block was made. ([4.6](./04-blocks/06-the-header.md))
 
 **Extrinsic.** E. The block's contents from the outside world, in five parts: tickets,
-preimages, guarantees, assurances and disputes. *Example:* a block's guarantees. A
+preimages, guarantees, assurances and disputes, each as long as that block needs, often
+empty. *Example:* a tiny block carries 0 to 3 tickets and 0 to 2 guarantees. A
 work-item's *extrinsics* ([lesson 3.1](./03-work-and-reports/01-a-work-package.md)) are
 something else: data blobs sent along with the item, for refine to read, such as
 `items.1.extrinsic.0`. ([4.1](./04-blocks/01-tickets-and-preimages.md))
