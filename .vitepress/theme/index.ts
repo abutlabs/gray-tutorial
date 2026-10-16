@@ -67,6 +67,9 @@ import ServiceRecord from "./ServiceRecord.vue";
 import Footprint from "./Footprint.vue";
 import BlobLayers from "./BlobLayers.vue";
 import DecodeInstruction from "./DecodeInstruction.vue";
+import MemoryTouch from "./MemoryTouch.vue";
+import StoreLoad from "./StoreLoad.vue";
+import AluCorners from "./AluCorners.vue";
 import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import CheckYourself from "./CheckYourself.vue";
@@ -122,6 +125,9 @@ export default {
     app.component("Footprint", Footprint); // 14.2
     app.component("BlobLayers", BlobLayers); // 15.1
     app.component("DecodeInstruction", DecodeInstruction); // 15.2
+    app.component("MemoryTouch", MemoryTouch); // 15.4
+    app.component("StoreLoad", StoreLoad); // 15.4
+    app.component("AluCorners", AluCorners); // 15.5
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1

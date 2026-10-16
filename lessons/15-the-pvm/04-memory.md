@@ -1,9 +1,8 @@
 # Memory
 
-So far the machine only has registers: thirteen numbers. Real programs need room: a
-stack for function calls, data to read, places to write results. This lesson gives the
-PVM its *memory*, 4 gigabytes of address space of which a program can touch only the
-pages it's been given, and the thirty instructions that load and store.
+Registers alone are thirteen numbers. This lesson gives the PVM its *memory*: 4 gigabytes
+of address space, of which a program can touch only the pages it's been given, and the
+thirty instructions that load and store.
 
 ## New words
 
@@ -49,6 +48,10 @@ Addresses wrap round at 2^32 (the GP's ↺), and every value is little-endian.
 | `store_imm_ind_u8` … `store_imm_ind_u64` | φ_A + ν_X | memory ← ν_Y |
 
 A store keeps only the low bytes: `store_u8` writes φ_A mod 2^8.
+
+Try a touch on a map with one writable page, one read-only page and nothing else:
+
+<MemoryTouch />
 
 ## The tests
 
@@ -105,9 +108,8 @@ test("writing a read-only page faults, and writes nothing", () => {
 ```
 
 The first test is the `ind` forms you saw most in the real code ([lesson 15.2](./02-instructions.md)): r1
-holds an address, like a stack pointer. `0x80` as an unsigned byte is 128; as a signed
-byte it's −128, which in 64 bits is `0xffffffffffffff80`: the byte `80` with its sign bit,
-1, copied into all seven bytes above it, `ff` each.
+holds an address, like a stack pointer. `0x80` is 128 unsigned and −128 signed, which in
+64 bits is `0xffffffffffffff80`: its sign bit copied into the seven bytes above, `ff` each.
 
 ## The code
 
@@ -178,10 +180,9 @@ export function writeMemory(memory: Memory, address: bigint, bytes: Bytes): Memo
 ```
 
 Memory is a `Map` from page number to page, so the 2^32 bytes cost nothing until a page
-is added. `check` follows ε^μ exactly: find every address that can't be used, take the
-lowest, and panic or fault on it. Only if every byte is fine does anything get read or
-written. The `!` after `memory.get(…)` tells TypeScript the page is there; `check`
-already made sure.
+is added. `check` is ε^μ: every address that can't be used, the lowest of them, panic or
+fault. Only if every byte is fine does anything get read or written. The `!` after
+`memory.get(…)` tells TypeScript the page is there; `check` already made sure.
 
 Now the machine. It gets a new way to stop, a memory, and the new family.
 
@@ -350,6 +351,10 @@ missing page, not 0x30005. The *Memory* panel, on **6 · The PVM**, has the run.
 
 ![Memory panel](./images/04-memory.png)
 
+Store it yourself, then load it back at every width:
+
+<StoreLoad />
+
 <details>
 <summary>lasair: loads, in <code>lib/pvm.ml</code></summary>
 
@@ -359,13 +364,12 @@ missing page, not 0x30005. The *Memory* panel, on **6 · The PVM**, has the run.
          | Load_i8 { ra; addr } -> if load c 1 true ra addr then pc := next else exit := Some (PageFault addr)
 ```
 
-One line per instruction, thirty of them: lasair spells each out where yours reads the
-name. And its comment points at a real choice. lasair's fault carries the address it
-tried, where yours carries the start of the page, as the Gray Paper's ε^μ does. Most of
-the time nobody looks: when a service's code runs, any fault simply counts as a panic
-(Ψ_M, [Part 16](../16-host-calls/index.md)). But one place does look. A machine run *inside* another machine, by the
-`invoke` host call, hands its fault back to the program that ran it, and there the
-address is part of the answer.
+One line per instruction, thirty of them, where yours reads the name. And the comment
+points at a real choice: lasair's fault carries the address it tried, yours the start of
+the page, as ε^μ does. Mostly nobody looks: when a service's code runs, any fault counts
+as a panic (Ψ_M, [Part 16](../16-host-calls/index.md)). But a machine run *inside* another, by the `invoke` host
+call, hands its fault back to the program that ran it, and there the address is part of
+the answer.
 
 </details>
 
@@ -417,8 +421,7 @@ address is part of the answer.
 
 ## What you have
 
-Memory with pages and permissions, and every load and store: the PVM can now hold real
-data, and fails exactly the way the Gray Paper says when a program reaches too far.
-What it still can't do is compute much: [lesson 15.5](./05-arithmetic.md) adds the arithmetic.
+Memory with pages and permissions, and every load and store, failing exactly as the Gray
+Paper says when a program reaches too far. [Lesson 15.5](./05-arithmetic.md) adds the arithmetic.
 
 Next: [15.5 Arithmetic](./05-arithmetic.md)
