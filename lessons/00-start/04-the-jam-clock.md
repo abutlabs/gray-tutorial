@@ -1,10 +1,10 @@
 # The JAM clock
 
-Your first piece of real JAM. It's tiny, and it is everywhere: every block in JAM says
-*when* it belongs, and that "when" comes from this clock. By the end of this lesson your
-client can tell what slot it is, with tests to prove it, and keeps a clock that reports
-every slot to Grafana as it begins. On the way you'll write your first test before its
-code, and hunt down your first bug.
+Your first piece of real JAM, tiny and everywhere: every block says *when* it belongs,
+and that "when" comes from this clock. By the end of this lesson your client can tell
+what slot it is, with tests to prove it, and keeps a clock that reports every slot to
+Grafana as it begins. On the way you write your first test before its code, and hunt
+down your first bug.
 
 ## New words
 
@@ -41,11 +41,17 @@ Every block header names its slot, and a block may not come from the future: its
 times P can't be later than the current time (§5). Why midday? So that all the major
 time zones share the same date at every whole day of the era.
 
+Try the clock. Pick a moment, or nudge it a millisecond at a time, and watch which slot
+it falls in. Stop at 5.999 seconds in: rounding down says slot 0, and rounding to the
+nearest whole number says 1. That difference is the bug you will hunt in a minute.
+
+<SlotClock />
+
 ## The test comes first
 
-You are about to write a test for a function that doesn't exist yet. That's the plan,
-not a typo: this is test-driven development. The test says what `slotAt` must do, and
-then you write `slotAt` to make it true.
+You are about to write a test for a function that doesn't exist yet. That's the plan:
+test-driven development. The test says what `slotAt` must do, then you write `slotAt`
+to make it true.
 
 **New file** `test/time.test.ts`
 
@@ -76,9 +82,9 @@ compare exactly, so `assert.equal(1, "1")` fails, as it should.
 
 Every test in this tutorial is written in steps: each value the code works out gets a
 name and a type (`const lastMoment: number = ...`), and the assertion below it checks the
-name. That's longer than `assert.equal(at("..."), 0)` on one line, and it's on purpose:
-you can read what each test compares, and when you stop a test in the debugger (you'll
-learn how in this lesson's bug hunt), every step's value is right there with its name.
+name. Longer than `assert.equal(at("..."), 0)` on one line, and on purpose: you can read
+what each test compares, and when you stop a test in the debugger (this lesson's bug
+hunt shows how), every step's value is there with its name.
 
 The test imports `slotAt` from a file that doesn't exist yet. Give it the smallest file
 that runs: the era's two numbers, and a `slotAt` that always says 0. Wrong on purpose. A
@@ -131,10 +137,10 @@ test at test/time.test.ts:16:1
 reported 2 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791725866613
 ```
 
-Red, for the right reason: both tests ran, and both caught the stub. Here is how to read a
-failure. `0 !== 600` is *actual !== expected*: the test wanted 600 and got 0, as the
-`actual` and `expected` lines below it say in words. `time.test.ts:18` is the assertion
-that failed. Now you know the tests really check the clock.
+Red, for the right reason: both tests ran, and both caught the stub. Reading a failure:
+`0 !== 600` is *actual !== expected*, the test wanted 600 and got 0, as the `actual` and
+`expected` lines below say in words; `time.test.ts:18` is the assertion that failed. Now
+you know the tests really check the clock.
 
 Over in Grafana, this failed run is already there: *Tests failed* is no longer 0, and
 *Test results* says which test failed and why.
@@ -183,8 +189,8 @@ test at test/time.test.ts:7:1
 
 ## Bug hunt
 
-Red again, and this time the code is real. Something in it is wrong. (On purpose: every
-so often a lesson hands you a bug, so that finding one becomes a habit before it matters.)
+Red again, and this time the code is real. Something in it is wrong, on purpose: every
+so often a lesson hands you a bug, so that finding one becomes a habit before it matters.
 Four places tell you what happened:
 
 1. **The test output.** One test failed, `slot 0 is the first six seconds of the JAM
@@ -295,9 +301,8 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 A number in the millions: every six-second slot since the start of 2025. On the
-dashboard, *JAM timeslot (last reported)* shows the same number, and there it stays.
-`bin/now.ts` read the clock once, reported, and quit: the panel shows the last slot
-anyone reported, and nobody is reporting any more.
+dashboard, *JAM timeslot (last reported)* shows the same number, and there it stays:
+`bin/now.ts` read the clock once, reported, and quit.
 
 ## Start the clock
 
