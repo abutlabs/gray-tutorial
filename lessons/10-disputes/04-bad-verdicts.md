@@ -2,9 +2,9 @@
 
 Your court from lessons [10.1](./01-votes-and-verdicts.md) to [10.3](./03-clearing-the-cores.md) believes every verdict it's handed. A real block can
 carry a broken one: the wrong number of votes, votes out of order, a judge who never
-signed, a report that was judged long ago. Any of them sinks the whole block. This lesson
-writes down the rules a verdict must keep, and checks them against every disputes test
-vector. [Lesson 10.5](./05-bad-culprits-and-faults.md) does the same for culprits and faults.
+signed, a report judged long ago. Any of them sinks the whole block. This lesson writes
+down the rules and checks them against every disputes vector; [lesson 10.5](./05-bad-culprits-and-faults.md) does the
+same for culprits and faults.
 
 The rules lean on three words from [lesson 10.1](./01-votes-and-verdicts.md): *judges*, *verdict age* and *vote
 split*. All three are in the [glossary](../glossary.md) too.
@@ -199,6 +199,8 @@ answer one question about one verdict: who its judges are, whether its votes are
 order, how many votes it needs, whether it's signed, whether its split means anything.
 The order matters when a block breaks two rules at once, because a vector names only one
 of them. This order names the same one as the vector, for every disputes vector.
+
+<VerdictRules />
 
 > [!NOTE]
 > **The simple road.** The test vectors' list of error names has one more for rule 6:

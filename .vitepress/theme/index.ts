@@ -59,6 +59,8 @@ import Offenders from "./Offenders.vue";
 import RecentBlocks from "./RecentBlocks.vue";
 import VerdictRules from "./VerdictRules.vue";
 import FaultRule from "./FaultRule.vue";
+import AssuranceRules from "./AssuranceRules.vue";
+import GuaranteeWindow from "./GuaranteeWindow.vue";
 import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import CheckYourself from "./CheckYourself.vue";
@@ -106,6 +108,8 @@ export default {
     app.component("Offenders", Offenders); // 10.2
     app.component("VerdictRules", VerdictRules); // 10.4
     app.component("FaultRule", FaultRule); // 10.5
+    app.component("AssuranceRules", AssuranceRules); // 11.3
+    app.component("GuaranteeWindow", GuaranteeWindow); // 12.4
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1
