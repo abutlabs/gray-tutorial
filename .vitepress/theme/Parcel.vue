@@ -92,8 +92,8 @@ function choose(path: string) {
 .chips button.small.chosen { font-weight: 700; }
 .chips button.small.open { border-color: var(--vp-c-brand-1); }
 .wire-says { margin: 0 0 4px; font-size: 13px; color: var(--vp-c-text-2); }
-.wire { display: flex; gap: 2px; }
-.seg { min-width: 2.6em; min-height: 36px; padding: 0 2px; border: 1px solid var(--vp-c-divider); border-radius: 3px; font-family: var(--vp-font-family-mono); font-size: 12px; color: var(--vp-c-text-1); cursor: pointer; opacity: 0.7; }
+.wire { display: flex; flex-wrap: wrap; gap: 2px; } /* one row when the parts fit; a long record wraps instead of scrolling */
+.seg { flex-basis: 0; min-width: 2.6em; min-height: 36px; padding: 0 2px; border: 1px solid var(--vp-c-divider); border-radius: 3px; font-family: var(--vp-font-family-mono); font-size: 12px; color: var(--vp-c-text-1); cursor: pointer; opacity: 0.7; }
 .seg.on { opacity: 1; border: 2px solid var(--vp-c-brand-1); font-weight: 700; }
 .wire-order { margin: 4px 0 0; font-family: var(--vp-font-family-mono); font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
 .wire-order span { padding: 0 3px; border-radius: 3px; }
