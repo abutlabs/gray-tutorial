@@ -1,10 +1,10 @@
 # Recent blocks
 
-The state has a short memory, on purpose: the last eight blocks. For each, it keeps the
-block's header hash, the state root after it, the belt's super-peak ([lesson 9.1](./01-the-mountain-belt.md)), its
-slot, and the work-packages it reported. Guarantors point at these blocks to prove their
-work is anchored in something real and recent, and the chain uses them to turn away
-reports it has already seen. This lesson keeps that memory up to date, block by block.
+The state has a short memory on purpose: the last eight blocks. For each, it keeps the
+header hash, the state root after it, the belt's super-peak ([lesson 9.1](./01-the-mountain-belt.md)), the slot,
+and the work-packages it reported. Guarantors anchor their work on these blocks, and the
+chain uses them to turn away reports it has already seen. This lesson keeps that memory
+up to date, block by block.
 
 ## New words
 
@@ -169,11 +169,11 @@ test("β in real states: the newest block remembered is the block before", () =>
 ```
 
 Two kinds of check. The vectors check `recordBlock`: all three steps, at both sizes,
-including a block that pushes the ninth entry out. Then real states check the *codec*,
-and the rules too: in the state before each of 99 trace blocks, the newest remembered
-block is the one before, by header hash ([lesson 5.1](../05-hashing-and-signatures/01-hashes.md)), with its state root still zeros,
-and the entry before it has had its blank filled in. The real chain did the recording, so
-this one can pass before your `recordBlock` does anything.
+including a block that pushes the ninth entry out. Real states check the *codec* and the
+rules: before each of 99 trace blocks, the newest remembered block is the one before, by
+header hash ([lesson 5.1](../05-hashing-and-signatures/01-hashes.md)), with its state root still zeros, and the entry before it
+filled in. The real chain did that recording, so this test passes before `recordBlock`
+does anything.
 
 **Run, expect it to fail**
 
@@ -345,6 +345,10 @@ Eight blocks, slots 42 to 49, and only the newest still waiting for its state ro
 read the belt backwards, as [lesson 9.1](./01-the-mountain-belt.md) taught you: 110001 in binary is 49, one
 accumulation root for each block so far. The *Recent history* panel, on the **3 ·
 Consensus** dashboard, shows it all.
+
+Now let block 50 arrive, then 51 and 52: the three steps, on the trace's own β.
+
+<RecentBlocks />
 
 ![Recent history panel](./images/02-recent-history.png)
 
