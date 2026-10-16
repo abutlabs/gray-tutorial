@@ -1,11 +1,15 @@
 # Work digests
 
-A core has crunched a work item. What does it send back? Not the whole computation:
-a *work digest*, a small summary card that says which service it was for, how it went,
-and how hard the core had to work. Every validator will read these cards, so they are
-kept small.
+A core has crunched a work item. What does it send back? Not the whole computation: a
+*work digest*, a small summary card: whose job it was, how it went, and how hard the core
+worked. Every validator reads these cards, so they are kept small.
 
-There's one genuinely new idea here: a value that is *either* one thing *or* another.
+Here are both tiny vectors, one job that succeeded and one that panicked. Tap any part for
+what it's for, its value and where its bytes are; the strip underneath is the card as the
+bytes hold it. The one genuinely new idea is in *How it went*: a value that is *either*
+one thing *or* another.
+
+<WorkDigest />
 
 ## New words
 
@@ -42,10 +46,9 @@ are compact naturals. (The Gray Paper's own comment on why: "space is at a premi
 One naming wrinkle: the test vectors call digests `work_result`, the name the Gray Paper
 used before it renamed them.
 
-Try it below. Pick a case and watch the tag in front: an error is one byte and nothing
-more, and a success is the tag 0, the output's length, then the output. Grow the output
-past 127 bytes and its length takes two. Decode a few byte strings to see which case
-each one starts with. Then push the five load numbers up until their bytes grow.
+Pick a case and watch the tag in front: an error is one byte and nothing more; a success
+is the tag 0, the output's length, then the output. Grow the output past 127 bytes and
+its length takes two. Then push the five load numbers up until their bytes grow.
 
 <ResultTag />
 
@@ -402,9 +405,8 @@ one where yours count along the `ERRORS` list.
 
 ## What you have
 
-The summary card a core sends back for every work item, including the first value in
-your client that can be one thing *or* another. The chain doesn't take a core's results
-on its word: [lesson 3.3](./03-a-work-report.md) wraps them in the work-report that
-guarantors sign.
+The card a core sends back for every work item, with your client's first value that can
+be one thing *or* another. [Lesson 3.3](./03-a-work-report.md) wraps the cards in the
+work-report that guarantors sign.
 
 Next: [3.3 A work-report](./03-a-work-report.md)

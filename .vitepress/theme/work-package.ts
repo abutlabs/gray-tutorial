@@ -2,12 +2,17 @@
 // permission slip on the front, a postmark saying how the chain looked, and the jobs
 // inside, and the same parts as the bytes hold them, in Appendix C's order. The bytes are
 // made here by codec-map.ts's encoder from the vector's values, so where each part went
-// can't be faked. tools/widget-work-package.test.ts checks the types against lessons 2.6
-// and 3.1's codecs, and every byte range against 3.1's decode trace.
+// can't be faked; parcel.ts has the pieces shared with the digest and the report.
+// tools/widget-work-package.test.ts checks the types against lessons 2.6 and 3.1's codecs,
+// and every byte range against 3.1's decode trace.
 
-import { encodeMapped, flatten, short, spaced } from "./codec-map.ts";
+import { encodeMapped } from "./codec-map.ts";
 import type { Json, Node, Type } from "./codec-map.ts";
+import { bytesOf, compartmentIn, hexIn, nameOf, partsOf, valueIn, wireOf } from "./parcel.ts";
+import type { Compartment, Parcel } from "./parcel.ts";
 import { WORK_ITEM } from "./vector-map.ts";
+
+export { bytesOf, nameOf };
 
 /** RefineContext and WorkPackage, field by field, as lessons 2.6 and 3.1's codecs write them. */
 export const REFINE_CONTEXT: Type = {
@@ -119,39 +124,36 @@ export const PACKAGE_JSON: Json = {
 
 /** The package encoded, and where each of its parts went. */
 export const PACKAGE = encodeMapped(WORK_PACKAGE, PACKAGE_JSON);
-const NODES = new Map(flatten(PACKAGE.root).map((n) => [n.path, n]));
 /** A part of the package by its path: "context.anchor", "items[1].payload". */
-export const partAt = (path: string): Node => {
-  const n = NODES.get(path);
-  if (!n) throw new Error(`no part ${path}`);
-  return n;
-};
+export const partAt = partsOf(PACKAGE.root);
 
 /** The parcel's three compartments, and the package's top-level fields in each. */
-export type Compartment = "slip" | "postmark" | "jobs";
-export const COMPARTMENTS: { id: Compartment; name: string; says: string; fields: string[] }[] = [
+export const COMPARTMENTS: Compartment[] = [
   {
     id: "slip",
     name: "The permission slip",
     says: "stapled to the front: which program decides whether the package may use a core, and what to show it",
     fields: ["auth_code_host", "auth_code_hash", "authorization", "authorizer_config"],
+    tone: "green",
+    stapled: true,
   },
   {
     id: "postmark",
     name: "The postmark",
     says: "the chain as the builder saw it, when the package was made",
     fields: ["context"],
+    tone: "grey",
   },
   {
     id: "jobs",
     name: "The jobs",
     says: "the work itself: 1 to 16 items, each one service's code run on one input",
     fields: ["items"],
+    tone: "brand",
   },
 ];
 /** The compartment a part is in, by its top-level field. */
-export const compartmentOf = (path: string): (typeof COMPARTMENTS)[number] =>
-  COMPARTMENTS.find((c) => c.fields.includes(path.split(/[.[]/)[0]))!;
+export const compartmentOf = compartmentIn(COMPARTMENTS);
 
 /** What each part is for, in plain words, by its name (the last step of its path). */
 export const SAYS: Record<string, string> = {
@@ -178,8 +180,6 @@ export const SAYS: Record<string, string> = {
   import_segments: "Segments earlier packages exported, that this job reads.",
   extrinsic: "Extra data that travels with the package, each piece by its hash and length.",
 };
-/** A part's name: the last step of its path, "[1]" for an item in a list. */
-export const nameOf = (path: string): string => /(\[\d+\]|[^.[\]]+)$/.exec(path)![1];
 /** What a part is for. An item in a list says which it is. */
 export function saysOf(n: Node): string {
   const item = /^items\[(\d+)\]$/.exec(n.path);
@@ -190,32 +190,12 @@ export function saysOf(n: Node): string {
   return SAYS[nameOf(n.path)] ?? "";
 }
 
-/** A part's value, short: a number as a number, bytes as their first and last few. */
-export function valueOf(n: Node): string {
-  const bytes = PACKAGE.bytes.slice(n.start + n.tag + n.prefix, n.end);
-  if (typeof n.json === "number") return String(n.json);
-  if (Array.isArray(n.json)) return n.json.length === 0 ? "none" : `${n.json.length} of them`;
-  if (typeof n.json === "string") return n.prefix ? `${bytes.length} bytes: ${short(bytes)}` : short(bytes);
-  return `${n.end - n.start} bytes in ${n.children.length} parts`;
-}
-
-/** Where a part's bytes are: "bytes 0 to 3, 4 of them", and what comes first, if anything. */
-export function bytesOf(n: Node): string {
-  const size = n.end - n.start;
-  const where = size === 1 ? `byte ${n.start}, 1 of them` : `bytes ${n.start} to ${n.end - 1}, ${size} of them`;
-  if (!n.prefix) return where;
-  const what = Array.isArray(n.json) ? "the count" : "its length";
-  return `${where}, ${what} first${n.prefix > 1 ? ` (${n.prefix} bytes)` : ""}`;
-}
-
-/** A part's bytes as a hex dump writes them, for the readout's line (at most 12). */
-export const hexOf = (n: Node): string => {
-  const b = PACKAGE.bytes.slice(n.start, n.end);
-  return b.length <= 12 ? spaced(b) : `${spaced(b.slice(0, 8))} … (${b.length} bytes)`;
-};
+/** A part's value, short, and its bytes as a hex dump writes them. */
+export const valueOf = valueIn(PACKAGE.bytes);
+export const hexOf = hexIn(PACKAGE.bytes);
 
 /** The top-level fields as the bytes hold them, in Appendix C's order, with their sizes. */
-export const WIRE = PACKAGE.root.children.map((n) => ({ path: n.path, bytes: n.end - n.start, compartment: compartmentOf(n.path).id }));
+export const WIRE = wireOf(PACKAGE.root, compartmentOf);
 
 /** The goals, and the parts that reach each. */
 export const GOALS = [
@@ -227,7 +207,7 @@ export const GOALS = [
 
 /** The chips a compartment shows, row by row: the slip's four parts; the postmark and its
  *  eight; the jobs, and the parts of the one chosen. */
-export function chipRows(c: Compartment, selected: string): string[][] {
+export function chipRows(c: string, selected: string): string[][] {
   if (c === "slip") return [COMPARTMENTS[0].fields];
   if (c === "postmark") return [["context"], partAt("context").children.map((n) => n.path)];
   const items = partAt("items").children.map((n) => n.path);
@@ -240,3 +220,14 @@ export function labelOf(path: string): string {
   const item = /^items\[(\d+)\]$/.exec(path);
   return item ? `job ${item[1]} · service ${partAt(`${path}.service`).json}` : nameOf(path);
 }
+
+/** The whole, for Parcel.vue. */
+export const PARCEL: Parcel = {
+  name: "work_package",
+  whole: "A parcel for one of JAM's cores, from the tiny test vector. Tap any part of it.",
+  bytes: PACKAGE.bytes,
+  compartments: COMPARTMENTS,
+  partAt, compartmentOf, chipRows, labelOf, saysOf, valueOf, bytesOf, hexOf,
+  wire: WIRE,
+  goals: GOALS,
+};

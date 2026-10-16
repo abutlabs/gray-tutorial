@@ -72,6 +72,7 @@ import StoreLoad from "./StoreLoad.vue";
 import AluCorners from "./AluCorners.vue";
 import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
+import WorkDigest from "./WorkDigest.vue";
 import CheckYourself from "./CheckYourself.vue";
 import UnitText from "./UnitText.vue";
 import PartFlow from "./PartFlow.vue";
@@ -129,6 +130,7 @@ export default {
     app.component("StoreLoad", StoreLoad); // 15.4
     app.component("AluCorners", AluCorners); // 15.5
     app.component("WorkPackage", WorkPackage); // 3.1
+    app.component("WorkDigest", WorkDigest); // 3.2
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1
     app.component("ExtrinsicCommit", ExtrinsicCommit); // 5.2

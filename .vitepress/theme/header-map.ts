@@ -130,6 +130,8 @@ export const isMissing = (n: Node): boolean => n.tag > 0 && n.json === null;
 export function ruleOf(n: Node): string {
   const t = n.type;
   if (isNumber(t)) return numberRule(t);
+  if (t === "natural") return "compact";
+  if (t === "result") return n.prefix ? "O: 00 + length + bytes" : "O: the error's tag";
   if (t === "hash" || t === "blob" || "bytes" in t) return t === "blob" ? "length + bytes" : "as is";
   if ("option" in t) {
     if (n.json === null) return "¿x: nothing → 00";

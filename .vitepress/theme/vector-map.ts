@@ -65,6 +65,8 @@ export function ruleOf(type: Type): string {
   if (isNumber(type)) return numberRule(type);
   if (type === "hash") return "as is";
   if (type === "blob") return "length + bytes";
+  if (type === "natural") return "compact";
+  if (type === "result") return "O: a tag, then the output if any";
   if ("seq" in type) return "count + items";
   return "fields in order";
 }
@@ -86,6 +88,7 @@ export function explain(node: Node, bytes: number[]): string {
     const n = node.end - node.start - node.prefix;
     return `${node.path}: ${n} bytes, so first its length ${n} as a compact natural → ${spaced(own.slice(0, node.prefix))}, then the bytes as they are → ${short(own.slice(node.prefix))}`;
   }
+  if (t === "natural" || t === "result") return `${node.path}: ${t} → ${spaced(own)}`; // a work item has neither
   if ("seq" in t) {
     const n = node.children.length;
     const each = node.children[0] ? node.children[0].end - node.children[0].start : 0;

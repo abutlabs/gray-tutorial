@@ -12,22 +12,15 @@ import { WORK_ITEM } from "../.vitepress/theme/vector-map.ts";
 import {
   bytesOf, chipRows, COMPARTMENTS, GOALS, labelOf, PACKAGE, PACKAGE_JSON, partAt, REFINE_CONTEXT, saysOf, WIRE, WORK_PACKAGE,
 } from "../.vitepress/theme/work-package.ts";
-import { lessonCode, lessonText, ROOT } from "./lessons.ts";
+import { codecFields, typeFields } from "./codec-fields.ts";
+import { lessonText, ROOT } from "./lessons.ts";
 
 const LESSON = "03-work-and-reports/01-a-work-package.md";
 const text = lessonText(LESSON);
 const VECTOR = join(ROOT, "vectors/codec/tiny/work_package");
 
-/** A record's fields as a lesson's code writes them: "anchor_slot: u32". */
-function codecFields(lesson: string, name: string): string[] {
-  const m = new RegExp(`export const ${name} = record\\(\\{([\\s\\S]*?)\\n\\}\\);`).exec(lessonCode(lesson));
-  assert.ok(m, `lesson ${lesson} defines ${name}`);
-  return [...m[1].matchAll(/^\s+(\w+): (.+?),(?:\s*\/\/.*)?$/gm)].map(([, f, c]) => `${f}: ${c}`);
-}
 const NAMES = new Map<Type, string>([[REFINE_CONTEXT, "RefineContext"], [WORK_ITEM, "WorkItem"]]);
-const codecOf = (t: Type): string =>
-  typeof t === "string" ? t : NAMES.get(t) ?? ("seq" in t ? `seq(${codecOf(t.seq)})` : JSON.stringify(t));
-const fieldsOf = (t: Type) => (t as { record: [string, Type][] }).record.map(([f, c]) => `${f}: ${codecOf(c)}`);
+const fieldsOf = (t: Type) => typeFields(t, NAMES);
 
 test("the widget's types are lessons 2.6 and 3.1's codecs, field for field", () => {
   assert.deepEqual(fieldsOf(REFINE_CONTEXT), codecFields("2.6", "RefineContext"));
@@ -60,7 +53,7 @@ test("the parcel holds each top-level part once, and the bytes split the slip ar
   assert.deepEqual(COMPARTMENTS.flatMap((c) => c.fields).sort(), [...top].sort());
   assert.deepEqual(WIRE.map((w) => w.path), top, "the strip is Appendix C's order");
   assert.equal(WIRE.reduce((n, w) => n + w.bytes, 0), PACKAGE.bytes.length);
-  const slip = WIRE.flatMap((w, k) => (w.compartment === "slip" ? [k] : []));
+  const slip = WIRE.flatMap((w, k) => (w.tone === "green" ? [k] : []));
   assert.ok(slip.at(-1)! - slip[0] + 1 > slip.length, "the slip's parts aren't side by side in the bytes");
 });
 

@@ -5,11 +5,12 @@
 import { encodeFixed } from "./bytes.ts";
 import { compact } from "./compact.ts";
 
-/** A part's type, as the lessons' codecs spell it: a fixed-width number; a 32-byte hash or
- *  n bytes as they are; a blob; a list (with its count in front, or exactly n with none);
- *  a maybe (¿x); or a record's fields in order. */
+/** A part's type, as the lessons' codecs spell it: a fixed-width number; a compact natural;
+ *  a 32-byte hash or n bytes as they are; a blob; a work result (O: tag 0 + blob, or an
+ *  error's tag); a list (with its count in front, or exactly n with none); a maybe (¿x);
+ *  or a record's fields in order. */
 export type Type =
-  | "u8" | "u16" | "u32" | "u64" | "hash" | "blob"
+  | "u8" | "u16" | "u32" | "u64" | "natural" | "hash" | "blob" | "result"
   | { bytes: number }
   | { seq: Type }
   | { seqN: Type; n: number }
@@ -26,10 +27,13 @@ export interface Node {
   json: Json;
   start: number;
   end: number;
-  tag: number; // a maybe's discriminator in front (¿x): 1 byte; else 0
+  tag: number; // a maybe's discriminator in front (¿x), or a result's tag (O): 1 byte; else 0
   prefix: number; // bytes of length or count after the tag: a blob's or a sequence's, else 0
   children: Node[];
 }
+
+/** The six ways refine can fail, in tag order 1 to 6 (lesson 3.2's ERRORS). */
+export const ERRORS = ["out_of_gas", "panic", "bad_exports", "output_oversize", "bad_code", "code_oversize"];
 
 /** The fixed-width numbers' byte counts: ℰ₁, ℰ₂, ℰ₄, ℰ₈. */
 export const WIDTH = { u8: 1, u16: 2, u32: 4, u64: 8 } as const;
@@ -55,9 +59,25 @@ function encodeInto(type: Type, json: Json, path: string, out: number[]): Node {
     out.push(...encodeFixed(BigInt(json as number), WIDTH[type])); // ℰ_l: least significant first
     return node(0);
   }
+  if (type === "natural") {
+    out.push(...compact(BigInt(json as number)).bytes); // a compact natural: as many bytes as it needs
+    return node(0);
+  }
   if (type === "hash") {
     out.push(...fromHex(json as string)); // 32 bytes, as they are
     return node(0);
+  }
+  if (type === "result") {
+    const [name, value] = Object.entries(json as { [field: string]: Json })[0]; // {"ok": "0x…"} or {"panic": null}
+    if (name === "ok") {
+      out.push(0); // O: the tag 0, then the output as a blob
+      const bytes = fromHex(value as string);
+      const length = compact(BigInt(bytes.length)).bytes;
+      out.push(...length, ...bytes);
+      return { ...node(length.length), tag: 1 };
+    }
+    out.push(ERRORS.indexOf(name) + 1); // O: an error is its tag, 1 to 6, and nothing more
+    return { ...node(0), tag: 1 };
   }
   if (type === "blob") {
     const bytes = fromHex(json as string);

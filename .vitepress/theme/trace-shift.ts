@@ -53,6 +53,7 @@ export function trace(order: string[]): { lines: Line[]; ranOut: string | null }
       take(path, length + Number(value));
       return;
     }
+    if (type === "natural" || type === "result") throw new Error(`${type}: not in a work item`);
     if ("seq" in type) {
       if (at >= BYTES.length) { ranOut = `${path}.length`; return; }
       const { value, length } = decodeNatural(BYTES, at);
