@@ -1,10 +1,9 @@
 # Bits and bytes
 
-Most instructions do sums. These ten *look* at a number instead: how many 1s does it have?
-How many 0s sit above its highest 1? What do its bytes look like back to front? They're
-small, a little odd, and handy: a program that juggles bitmaps, or reads big-endian data,
-would sorely miss them. After this lesson, your machine runs every instruction in the
-Gray Paper but one.
+Most instructions do sums. These ten *look* at a number instead: how many 1s does it
+have? How many 0s sit above its highest 1? What are its bytes back to front? A program
+that juggles bitmaps or reads big-endian data needs them. After this lesson your machine
+runs every instruction in the Gray Paper but one.
 
 ## What the Gray Paper says
 
@@ -25,7 +24,11 @@ Appendix A.5, the instructions with two registers (101 to 110). Each one makes �
 
 The Gray Paper counts with B, which lists a number's bits lowest first, and B with an
 arrow over it, the same bits highest first. That second one is how people write numbers,
-and as you'll see, it's how your code will too.
+and it's how your code will too.
+
+Flip bits, or type a number, and tap an instruction to see which bits it looked at:
+
+<BitCounts />
 
 ## The tests
 
@@ -241,11 +244,11 @@ reverse_bytes          0xf001000000000000 = -1152640029630136320
 reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=bits-1791736879612
 ```
 
-0x1f0 is five 1s with four 0s below them, and you can count each answer off the string
-of bits at the top. Look at the lowest byte, 0xf0: unsigned it's 240, signed it's −16, and
-`sign_extend_8` picks signed. `reverse_bytes` moves that 0xf0 from the bottom of the
-register to the top. Try `npm run bits 0xdeadbeef` and `npm run bits -1`. The
-*Bits* panel, on **6 · The PVM**, keeps every run.
+0x1f0 is five 1s with four 0s below them: count each answer off the bits at the top. Its
+lowest byte, 0xf0, is 240 unsigned and −16 signed, and `sign_extend_8` reads it signed.
+`reverse_bytes` moves that 0xf0 from the bottom of the register to the top. Try
+`npm run bits 0xdeadbeef` and `npm run bits -1`. The *Bits* panel, on **6 · The PVM**,
+keeps every run.
 
 ![Bits panel](./images/07-bits.png)
 
