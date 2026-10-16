@@ -24,6 +24,8 @@ Appendix D, the last three rows of T(σ): service s keeps
 - its request for h, l bytes long, at C(s, ℰ₄(l) ⌢ h), as the request's history encoded:
   the slots, four bytes each, with how many in front.
 
+<EntryKey />
+
 So a host call that knows the key k, the hash h or the length l can work out exactly
 where the entry is, and look it up. It can never go the other way, from an entry back to
 its k. That's all your client needs: every host call starts from a key the service names.
