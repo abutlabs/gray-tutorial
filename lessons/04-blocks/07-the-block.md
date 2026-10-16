@@ -1,7 +1,7 @@
 # The block
 
 Drumroll. You have a header (4.6) and all five parts of an extrinsic (4.1 to 4.4). A
-block is just the two together. This lesson is short on purpose: after everything you've
+block is the two together. This lesson is short on purpose: after everything you've
 built, the whole block is two little records, and then your client reads real JAM blocks.
 
 ## New words
@@ -128,6 +128,12 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 `../vectors/codec/full/block.bin`: 161,177 bytes, most of them a 1,023-validator epoch
 mark and two juries of 683. It scrolls by in a blink, and the whole trace lands in
 Grafana's *Decode trace* panel, where you can search it.
+
+Here is the same block as a strip, each part as wide as its bytes. Tap a part for where
+it sits and what the trace names there, then switch to full and watch the header and
+the disputes swallow the rest.
+
+<BlockStrip />
 
 ![Decode trace panel](./images/07-decode-trace.png)
 
