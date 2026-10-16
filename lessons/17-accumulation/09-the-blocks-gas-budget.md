@@ -38,6 +38,10 @@ Why give every core a whole G_A? So a block can always fit one maximal report pe
 the budget is sized for the busiest block guarantees allow. Reports unlocked from the queue
 can push past it, and then the rounds share the work out.
 
+Try it with the check questions' reports, or the vector's:
+
+<BudgetRounds />
+
 Here's the vector that needs it. Its two reports ask for 19,800,000 + 200,000 and 2,000,000
 gas. (That first one is twice G_A, more than a guaranteed report may ask for: the vector
 breaks the limit on purpose, to force a second round.) The first takes the whole 20M, so the second waits for round 2. And the order matters:
