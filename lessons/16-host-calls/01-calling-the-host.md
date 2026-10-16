@@ -34,6 +34,10 @@ App. B sets the rules every host call follows:
 The first and simplest is **`gas`** (App. B.5, Ω_G): φ₇ becomes the gas left, after paying
 48 to ask.
 
+Step a host call through, start to finish:
+
+<HostCall />
+
 ## The tests
 
 **New file** `test/host.test.ts`
