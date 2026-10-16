@@ -199,7 +199,8 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 **Run**
 
 ```sh
-npm run decode header ../vectors/codec/tiny/header_1.bin
+npm pkg set scripts.decode-header="node bin/decode.ts header ../vectors/codec/tiny/header_1.bin"
+npm run decode-header
 ```
 
 ```text

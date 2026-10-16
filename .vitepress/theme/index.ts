@@ -37,6 +37,7 @@ import HashAvalanche from "./HashAvalanche.vue";
 import ExtrinsicCommit from "./ExtrinsicCommit.vue";
 import SignCheck from "./SignCheck.vue";
 import HeaderMap from "./HeaderMap.vue";
+import WorkPackage from "./WorkPackage.vue";
 import CheckYourself from "./CheckYourself.vue";
 import UnitText from "./UnitText.vue";
 import PartFlow from "./PartFlow.vue";
@@ -59,6 +60,7 @@ export default {
     app.component("ResultTag", ResultTag); // 3.2
     app.component("ShardRebuild", ShardRebuild); // 3.3
     app.component("CoreBitfield", CoreBitfield); // 4.2
+    app.component("WorkPackage", WorkPackage); // 3.1
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1
     app.component("ExtrinsicCommit", ExtrinsicCommit); // 5.2

@@ -68,20 +68,43 @@ all together, in one go: when one fails it can't say which, so neither can your 
     "hello": "node bin/hello.ts",
     "now": "node bin/now.ts",
     "hexdump": "node bin/hexdump.ts",
+    "hexdump-work-item": "node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 52",
     "scoreboard": "node bin/scoreboard.ts",
     "decode": "node bin/decode.ts",
+    "decode-work-item": "node bin/decode.ts work_item ../vectors/codec/tiny/work_item.bin",
+    "decode-work-package": "node bin/decode.ts work_package ../vectors/codec/tiny/work_package.bin",
+    "decode-work-result": "node bin/decode.ts work_result ../vectors/codec/tiny/work_result_1.bin",
+    "decode-work-report": "node bin/decode.ts work_report ../vectors/codec/full/work_report.bin",
+    "decode-preimages": "node bin/decode.ts preimages_extrinsic ../vectors/codec/tiny/preimages_extrinsic.bin",
+    "decode-assurances": "node bin/decode.ts assurances_extrinsic ../vectors/codec/tiny/assurances_extrinsic.bin",
+    "decode-assurances-full": "node bin/decode.ts assurances_extrinsic ../vectors/codec/full/assurances_extrinsic.bin",
+    "decode-guarantees": "node bin/decode.ts guarantees_extrinsic ../vectors/codec/tiny/guarantees_extrinsic.bin",
+    "decode-disputes": "node bin/decode.ts disputes_extrinsic ../vectors/codec/full/disputes_extrinsic.bin",
+    "decode-header": "node bin/decode.ts header ../vectors/codec/tiny/header_1.bin",
+    "decode-block": "node bin/decode.ts block ../vectors/codec/tiny/block.bin",
     "chain": "node bin/chain.ts",
     "assurances": "node bin/assurances.ts",
+    "assurances-bad-signature": "node bin/assurances.ts ../vectors/stf/assurances/tiny/assurances_with_bad_signature-1.json",
     "state": "node bin/state.ts",
+    "state-fallback": "node bin/state.ts ../vectors/traces/fallback/00000001.json",
     "read-state": "node bin/read-state.ts",
+    "read-state-safrole": "node bin/read-state.ts ../vectors/traces/safrole/00000012.json",
     "epochs": "node bin/epochs.ts",
     "shuffle": "node bin/shuffle.ts",
+    "shuffle-eight": "node bin/shuffle.ts 8 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
     "entropy": "node bin/entropy.ts",
+    "entropy-new-epoch": "node bin/entropy.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json",
     "rotation": "node bin/rotation.ts",
+    "rotation-new-epoch": "node bin/rotation.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json",
     "sealers": "node bin/sealers.ts",
+    "sealers-no-tickets": "node bin/sealers.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json",
     "lottery": "node bin/lottery.ts",
+    "lottery-closes": "node bin/lottery.ts ../vectors/stf/safrole/tiny/publish-tickets-with-mark-4.json",
     "safrole": "node bin/safrole.ts",
-    "vrf": "node bin/vrf.ts"
+    "safrole-new-epoch": "node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json",
+    "vrf": "node bin/vrf.ts",
+    "safrole-tickets-2": "node bin/safrole.ts ../vectors/stf/safrole/tiny/publish-tickets-no-mark-2.json",
+    "safrole-tickets-4": "node bin/safrole.ts ../vectors/stf/safrole/tiny/publish-tickets-no-mark-4.json"
   },
   "dependencies": {
     "@noble/curves": "2.4.0",
@@ -460,8 +483,10 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-npm run safrole ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
-npm run safrole ../vectors/stf/safrole/tiny/publish-tickets-no-mark-5.json
+npm pkg set scripts.safrole-no-tickets="node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json"
+npm run safrole-no-tickets
+npm pkg set scripts.safrole-tickets-5="node bin/safrole.ts ../vectors/stf/safrole/tiny/publish-tickets-no-mark-5.json"
+npm run safrole-tickets-5
 ```
 
 ```text

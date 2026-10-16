@@ -651,8 +651,10 @@ reported 588 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 **Run**
 
 ```sh
-npm run host ../vectors/stf/accumulate/tiny/bless_from_non_manager-1.json 1
-npm run host ../vectors/stf/accumulate/tiny/designate_with_invalid_count-1.json 0
+npm pkg set scripts.host-bless="node bin/host.ts ../vectors/stf/accumulate/tiny/bless_from_non_manager-1.json 1"
+npm run host-bless
+npm pkg set scripts.host-designate="node bin/host.ts ../vectors/stf/accumulate/tiny/designate_with_invalid_count-1.json 0"
+npm run host-designate
 ```
 
 ```text

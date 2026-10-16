@@ -155,7 +155,8 @@ const CODECS: Record<string, Codec<unknown>> = {
 **Run**
 
 ```sh
-npm run decode preimages_extrinsic ../vectors/codec/tiny/preimages_extrinsic.bin
+npm pkg set scripts.decode-preimages="node bin/decode.ts preimages_extrinsic ../vectors/codec/tiny/preimages_extrinsic.bin"
+npm run decode-preimages
 ```
 
 ```text

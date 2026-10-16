@@ -4,6 +4,13 @@ In [Part 2](../02-codec/index.md) you encoded a single work item. Nobody sends a
 Items travel in a *work-package*: a parcel of up to sixteen jobs, for one of JAM's cores
 (the package doesn't say which; its report will), with a permission slip stapled to the front.
 
+Here is a real one, the tiny test vector's: the slip on the front, a postmark saying how
+the chain looked when it was made, and two jobs inside. Tap any part to see what it's for,
+its value and where its bytes are. The strip under the parcel is the same package as the
+bytes hold it, and the order isn't the parcel's.
+
+<WorkPackage />
+
 ## New words
 
 - **Work-item and work-package.** A work-item is one job for one service: its input (the
@@ -120,7 +127,8 @@ const CODECS: Record<string, Codec<unknown>> = {
 **Run**
 
 ```sh
-npm run decode work_package ../vectors/codec/tiny/work_package.bin
+npm pkg set scripts.decode-work-package="node bin/decode.ts work_package ../vectors/codec/tiny/work_package.bin"
+npm run decode-work-package
 ```
 
 ```text

@@ -224,7 +224,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.available="node bin/available.ts"
-npm run available ../vectors/stf/assurances/tiny/some_assurances-1.json
+npm pkg set scripts.available-some="node bin/available.ts ../vectors/stf/assurances/tiny/some_assurances-1.json"
+npm run available-some
 ```
 
 ```text

@@ -239,7 +239,8 @@ reported 573 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client
 **Run**
 
 ```sh
-npm run host ../vectors/stf/accumulate/tiny/upgrade_service-1.json 0
+npm pkg set scripts.host-upgrade="node bin/host.ts ../vectors/stf/accumulate/tiny/upgrade_service-1.json 0"
+npm run host-upgrade
 ```
 
 ```text

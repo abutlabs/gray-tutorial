@@ -732,7 +732,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-npm run accumulate ../vectors/stf/accumulate/tiny/work_for_ejected_service-3.json
+npm pkg set scripts.accumulate-ejected="node bin/accumulate.ts ../vectors/stf/accumulate/tiny/work_for_ejected_service-3.json"
+npm run accumulate-ejected
 ```
 
 ```text

@@ -240,7 +240,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.read-state="node bin/read-state.ts"
-npm run read-state ../vectors/traces/safrole/00000012.json
+npm pkg set scripts.read-state-safrole="node bin/read-state.ts ../vectors/traces/safrole/00000012.json"
+npm run read-state-safrole
 ```
 
 ```text

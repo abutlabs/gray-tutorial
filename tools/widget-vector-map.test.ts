@@ -18,7 +18,7 @@ const bytesOf = (path: string): string => spaced(ITEM.bytes.slice(node(path).sta
 
 /** The lesson's hexdump command's byte count, and the rows its output block prints. */
 function lessonDump(): { count: number; rows: string[] } {
-  const m = /npm run hexdump \.\.\/vectors\/codec\/tiny\/work_item\.bin (\d+)\n```\s*```text\n([\s\S]*?)```/.exec(text);
+  const m = /scripts\.hexdump-work-item="node bin\/hexdump\.ts \.\.\/vectors\/codec\/tiny\/work_item\.bin (\d+)"[\s\S]*?\nnpm run hexdump-work-item\n```\s*```text\n([\s\S]*?)```/.exec(text);
   assert.ok(m, "the lesson runs hexdump on work_item.bin and shows its output");
   const rows = m[2].split("\n").filter((l) => /^[0-9a-f]{2}( [0-9a-f]{2})*$/.test(l));
   return { count: Number(m[1]), rows };

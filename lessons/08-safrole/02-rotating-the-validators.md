@@ -255,7 +255,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.rotation="node bin/rotation.ts"
-npm run rotation ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
+npm pkg set scripts.rotation-new-epoch="node bin/rotation.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json"
+npm run rotation-new-epoch
 ```
 
 ```text

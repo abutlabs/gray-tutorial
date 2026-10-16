@@ -437,7 +437,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-npm run host ../vectors/stf/accumulate/tiny/transfer_for_live_service-1.json 0
+npm pkg set scripts.host-transfer="node bin/host.ts ../vectors/stf/accumulate/tiny/transfer_for_live_service-1.json 0"
+npm run host-transfer
 ```
 
 ```text

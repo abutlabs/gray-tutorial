@@ -29,6 +29,7 @@ const printPages: PrintPage[] = [
     })),
   ]),
   { address: "scoreboard", title: "The scoreboard", part: true },
+  { address: "demo", title: "Demo", part: true },
   { address: "glossary", title: "Glossary", part: true },
   { address: "symbols", title: "Gray Paper symbols", part: true },
 ];
@@ -77,6 +78,7 @@ export default defineConfig({
     // every word you type must match, so "ready queue" finds the ready queue first
     search: { provider: "local", options: { miniSearch: { searchOptions: { combineWith: "AND" } } } },
     nav: [
+      { text: "Demo", link: "/demo" },
       { text: "Scoreboard", link: "/scoreboard" },
       { text: "Glossary", link: "/glossary" },
       { text: "Symbols", link: "/symbols" },
@@ -103,6 +105,7 @@ export default defineConfig({
         })),
       })),
       { text: "The scoreboard", link: "/scoreboard" },
+      { text: "Demo", link: "/demo" },
       { text: "Glossary", link: "/glossary" },
       { text: "Gray Paper symbols", link: "/symbols" },
     ],

@@ -267,7 +267,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.shuffle="node bin/shuffle.ts"
-npm run shuffle 8 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+npm pkg set scripts.shuffle-eight="node bin/shuffle.ts 8 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+npm run shuffle-eight
 ```
 
 ```text

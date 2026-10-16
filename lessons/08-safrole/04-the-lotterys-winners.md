@@ -302,7 +302,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.lottery="node bin/lottery.ts"
-npm run lottery ../vectors/stf/safrole/tiny/publish-tickets-with-mark-4.json
+npm pkg set scripts.lottery-closes="node bin/lottery.ts ../vectors/stf/safrole/tiny/publish-tickets-with-mark-4.json"
+npm run lottery-closes
 ```
 
 ```text

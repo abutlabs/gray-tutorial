@@ -436,7 +436,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-npm run accumulate ../vectors/stf/accumulate/tiny/recreate_service_ejected_in_earlier_round-1.json
+npm pkg set scripts.accumulate-recreate="node bin/accumulate.ts ../vectors/stf/accumulate/tiny/recreate_service_ejected_in_earlier_round-1.json"
+npm run accumulate-recreate
 ```
 
 ```text

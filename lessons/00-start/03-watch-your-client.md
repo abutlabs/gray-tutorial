@@ -158,6 +158,7 @@ npm first echoes the script's name and the command it stands for, then runs it. 
 program from here on gets its script the same way, the first time you run it, and the
 lessons leave npm's echo out of their output. Words after the name go on to the program:
 `npm run now 3`, in [the next lesson](./04-the-jam-clock.md), runs `node bin/now.ts 3`.
+`npm run` with no name lists every script your client has.
 
 Open the link. In *Everything your client reported* there it is:
 `{"step":"hello","message":"my JAM client is alive"}`. Your client's first words. Frame

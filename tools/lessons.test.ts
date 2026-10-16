@@ -377,8 +377,17 @@ test("every program up to 1.2 has a debug configuration, named for its lesson", 
 
 // Every program runs through npm (0.3): a lesson that writes bin/NAME.ts gives it the script
 // NAME, `npm pkg set scripts.NAME="node bin/NAME.ts"`, in the first Run block that runs it,
-// and a Run block runs `npm run NAME`, never `node bin/` itself. A package.json the reader
-// rewrites keeps every script given so far.
+// and a Run block runs `npm run NAME`, never `node bin/` itself. A run on a file (a word
+// with a /) or a long value has a script of its own, named for what it shows, the
+// program's name first (2.6): `npm pkg set scripts.decode-work-item="node bin/decode.ts
+// work_item …"`, then `npm run decode-work-item`. A package.json the reader rewrites keeps
+// every script given so far, in order.
+const PROGRAM_SCRIPT = /^npm pkg set scripts\.([a-z-]+)="node bin\/([a-z-]+)\.ts"$/;
+const EXAMPLE_SCRIPT = /^npm pkg set scripts\.([a-z0-9-]+)="((?:[A-Z_]+=\S+ )*)node bin\/([a-z-]+)\.ts( \S[^"]*)?"$/;
+/** Scripts a Run block may run that no lesson gives: npm's own, and the repo root's. */
+const NOT_GIVEN = new Set(["test", "typecheck", "catch-up", "compare", "vectors"]);
+const LONG_WORDS = (words: string) => words.split(/\s+/).some((w) => w.includes("/") || w.length >= 20);
+
 test("every program has its npm script, given before it first runs, and runs through it", () => {
   const programs = new Set<string>();
   const given: string[] = [];
@@ -389,21 +398,28 @@ test("every program has its npm script, given before it first runs, and runs thr
         const made = /^bin\/([a-z-]+)\.ts$/.exec(s.path);
         if (made && s.op === "new") programs.add(made[1]);
         if (s.path === "package.json") {
-          const scripts = Object.keys(JSON.parse(s.code).scripts ?? {}).filter((n) => programs.has(n));
+          const scripts = Object.keys(JSON.parse(s.code).scripts ?? {}).filter((n) => n !== "test" && n !== "typecheck");
           if (scripts.join() !== given.join()) problems.push(`${lesson.id}: package.json's scripts should be ${given.join(", ")}`);
         }
         continue;
       }
       if (/\bnode bin\//.test(s.command.replace(/^npm pkg set .*$/gm, ""))) problems.push(`${lesson.id}: runs node bin/ (npm run it)`);
       for (const line of s.command.split("\n")) {
-        const set = /^npm pkg set scripts\.([a-z-]+)="node bin\/([a-z-]+)\.ts"$/.exec(line);
-        if (set) {
-          if (set[1] !== set[2]) problems.push(`${lesson.id}: script ${set[1]} runs bin/${set[2]}.ts`);
-          if (given.includes(set[1])) problems.push(`${lesson.id}: ${set[1]} has its script already`);
-          given.push(set[1]);
+        const set = PROGRAM_SCRIPT.exec(line);
+        const example = set ? null : EXAMPLE_SCRIPT.exec(line);
+        if (set && set[1] !== set[2]) problems.push(`${lesson.id}: script ${set[1]} runs bin/${set[2]}.ts`);
+        if (example && (!example[1].startsWith(`${example[3]}-`) || programs.has(example[1]))) {
+          problems.push(`${lesson.id}: script ${example[1]} runs bin/${example[3]}.ts, so it's named ${example[3]}-…`);
         }
-        for (const [, name] of line.matchAll(/\bnpm run ([a-z][a-z-]*)/g)) {
-          if (programs.has(name) && !given.includes(name)) problems.push(`${lesson.id}: npm run ${name} before its script`);
+        if (example && !example[2] && !example[4]) problems.push(`${lesson.id}: ${example[1]} is ${example[3]}'s script again`);
+        const name = (set ?? example)?.[1];
+        if (name) {
+          if (given.includes(name)) problems.push(`${lesson.id}: ${name} has its script already`);
+          given.push(name);
+        } else if (/^npm pkg set scripts\./.test(line)) problems.push(`${lesson.id}: a script that isn't a program's: ${line}`);
+        for (const [, name, words] of line.matchAll(/\bnpm run ([a-z][a-z0-9-]*)( [^>&|;]*)?/g)) {
+          if (!given.includes(name) && !NOT_GIVEN.has(name)) problems.push(`${lesson.id}: npm run ${name} before its script`);
+          if (words && LONG_WORDS(words)) problems.push(`${lesson.id}: npm run ${name}${words}: give it a script of its own`);
         }
       }
     }

@@ -53,12 +53,19 @@ You give it a file and how many bytes to show from the start: `48` shows the fir
 and leaving the number off shows 64. The work item's file is 236 bytes. Show its first 52,
 which is exactly its first four fields: 4 + 32 + 8 + 8 bytes.
 
+A script can carry its words too. `hexdump` takes any file; `hexdump-work-item` is this
+one run, the file and the 52 built in, so `npm run hexdump-work-item` shows it again
+whenever you like. Every run in the lessons that names a file gets a script like this,
+named for what it shows. By the end, `npm run` on its own lists them all: a menu of
+everything your client can show, with nothing to retype.
+
 **Run**
 
 ```sh
 npm pkg set scripts.hexdump="node bin/hexdump.ts"
+npm pkg set scripts.hexdump-work-item="node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 52"
 cat ../vectors/codec/tiny/work_item.json
-npm run hexdump ../vectors/codec/tiny/work_item.bin 52
+npm run hexdump-work-item
 ```
 
 ```text
@@ -524,7 +531,7 @@ Gray Paper 0.8.0, and lasair's type marks them so.
   > No: every value matches. `04 03 02 01` is the service, 16909060, and the next 32
   > bytes are the same `code_hash`.
 
-**In `npm run hexdump ../vectors/codec/tiny/work_item.bin 52`, what is the 52?**
+**In `hexdump-work-item`'s command, `node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 52`, what is the 52?**
 
 - [ ] The size of every work item
   > No: this one is 236 bytes, and an item with a longer payload is longer still.

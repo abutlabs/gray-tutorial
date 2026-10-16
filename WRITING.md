@@ -40,7 +40,11 @@ Every program in `bin/` runs through a script of the same name: `bin/decode.ts` 
 that writes a program gives it its script in the first Run block that runs it, with
 `npm pkg set scripts.decode="node bin/decode.ts"` (0.3 explains it, with `hello`); a
 `package.json` Rewrite keeps every script given so far. A Run block never runs
-`node bin/` itself. An Output block may leave out npm's echo of the script (`> decode`,
+`node bin/` itself. A run of a program on a file (any word with a `/`) or a long value
+gets a script of its own, named for what it shows, the program's name first
+(`npm pkg set scripts.decode-work-item="node bin/decode.ts work_item ../vectors/…"`, then
+`npm run decode-work-item`), so a reader can show it again, or demo it, without retyping;
+the same run later is just `npm run decode-work-item`. An Output block may leave out npm's echo of the script (`> decode`,
 `> node bin/decode.ts ...`); verify skips it. `tools/lessons.test.ts` checks all of this.
 
 ## The scoreboard

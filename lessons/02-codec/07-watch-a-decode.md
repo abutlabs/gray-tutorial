@@ -303,7 +303,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.decode="node bin/decode.ts"
-npm run decode work_item ../vectors/codec/tiny/work_item.bin
+npm pkg set scripts.decode-work-item="node bin/decode.ts work_item ../vectors/codec/tiny/work_item.bin"
+npm run decode-work-item
 ```
 
 ```text
@@ -337,16 +338,10 @@ the bits `0b10000000`. On the **1 · Basics** dashboard,
 
 ![Decode trace panel](./images/07-decode-trace.png)
 
-> [!NOTE]
-> A script can carry its words too. A run you repeat after every change, like this one,
-> can have a name of its own: `npm pkg set scripts.decode-work-item="node bin/decode.ts
-> work_item ../vectors/codec/tiny/work_item.bin"`, and then `npm run decode-work-item`
-> runs it. The lessons keep one script per program, and give it the words each time.
-
 ## Break it again
 
 Now move `export_count` above the gas limits in `WorkItem` again, as in [lesson 2.6](./06-the-first-test-vectors.md), and
-rerun `bin/decode.ts`:
+run `npm run decode-work-item` again:
 
 ```text
     0..4     service                        0x04030201

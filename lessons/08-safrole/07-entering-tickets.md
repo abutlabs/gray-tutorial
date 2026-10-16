@@ -369,8 +369,10 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-npm run safrole ../vectors/stf/safrole/tiny/publish-tickets-no-mark-2.json
-npm run safrole ../vectors/stf/safrole/tiny/publish-tickets-no-mark-4.json
+npm pkg set scripts.safrole-tickets-2="node bin/safrole.ts ../vectors/stf/safrole/tiny/publish-tickets-no-mark-2.json"
+npm run safrole-tickets-2
+npm pkg set scripts.safrole-tickets-4="node bin/safrole.ts ../vectors/stf/safrole/tiny/publish-tickets-no-mark-4.json"
+npm run safrole-tickets-4
 ```
 
 ```text

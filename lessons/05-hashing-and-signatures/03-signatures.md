@@ -73,8 +73,20 @@ Ed25519 is another job for a specialist. `@noble/curves` comes from the same aut
     "hello": "node bin/hello.ts",
     "now": "node bin/now.ts",
     "hexdump": "node bin/hexdump.ts",
+    "hexdump-work-item": "node bin/hexdump.ts ../vectors/codec/tiny/work_item.bin 52",
     "scoreboard": "node bin/scoreboard.ts",
     "decode": "node bin/decode.ts",
+    "decode-work-item": "node bin/decode.ts work_item ../vectors/codec/tiny/work_item.bin",
+    "decode-work-package": "node bin/decode.ts work_package ../vectors/codec/tiny/work_package.bin",
+    "decode-work-result": "node bin/decode.ts work_result ../vectors/codec/tiny/work_result_1.bin",
+    "decode-work-report": "node bin/decode.ts work_report ../vectors/codec/full/work_report.bin",
+    "decode-preimages": "node bin/decode.ts preimages_extrinsic ../vectors/codec/tiny/preimages_extrinsic.bin",
+    "decode-assurances": "node bin/decode.ts assurances_extrinsic ../vectors/codec/tiny/assurances_extrinsic.bin",
+    "decode-assurances-full": "node bin/decode.ts assurances_extrinsic ../vectors/codec/full/assurances_extrinsic.bin",
+    "decode-guarantees": "node bin/decode.ts guarantees_extrinsic ../vectors/codec/tiny/guarantees_extrinsic.bin",
+    "decode-disputes": "node bin/decode.ts disputes_extrinsic ../vectors/codec/full/disputes_extrinsic.bin",
+    "decode-header": "node bin/decode.ts header ../vectors/codec/tiny/header_1.bin",
+    "decode-block": "node bin/decode.ts block ../vectors/codec/tiny/block.bin",
     "chain": "node bin/chain.ts"
   },
   "dependencies": {
@@ -318,7 +330,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.assurances="node bin/assurances.ts"
-npm run assurances ../vectors/stf/assurances/tiny/assurances_with_bad_signature-1.json
+npm pkg set scripts.assurances-bad-signature="node bin/assurances.ts ../vectors/stf/assurances/tiny/assurances_with_bad_signature-1.json"
+npm run assurances-bad-signature
 ```
 
 ```text

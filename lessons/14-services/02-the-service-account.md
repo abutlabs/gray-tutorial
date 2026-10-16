@@ -260,7 +260,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.service="node bin/service.ts"
-npm run service ../vectors/traces/fallback/00000001.json
+npm pkg set scripts.service-fallback="node bin/service.ts ../vectors/traces/fallback/00000001.json"
+npm run service-fallback
 ```
 
 ```text

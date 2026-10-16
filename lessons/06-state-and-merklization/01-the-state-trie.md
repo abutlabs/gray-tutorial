@@ -329,7 +329,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.state="node bin/state.ts"
-npm run state ../vectors/traces/fallback/00000001.json
+npm pkg set scripts.state-fallback="node bin/state.ts ../vectors/traces/fallback/00000001.json"
+npm run state-fallback
 ```
 
 ```text

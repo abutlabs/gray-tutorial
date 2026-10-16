@@ -275,7 +275,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.reporters="node bin/reporters.ts"
-npm run reporters ../vectors/stf/reports/tiny/different_core_same_guarantors-1.json
+npm pkg set scripts.reporters-same-guarantors="node bin/reporters.ts ../vectors/stf/reports/tiny/different_core_same_guarantors-1.json"
+npm run reporters-same-guarantors
 ```
 
 ```text

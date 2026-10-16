@@ -294,7 +294,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.safrole="node bin/safrole.ts"
-npm run safrole ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json
+npm pkg set scripts.safrole-new-epoch="node bin/safrole.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-padding-1.json"
+npm run safrole-new-epoch
 ```
 
 ```text

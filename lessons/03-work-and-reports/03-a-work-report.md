@@ -157,7 +157,8 @@ const CODECS: Record<string, Codec<unknown>> = {
 **Run**
 
 ```sh
-npm run decode work_report ../vectors/codec/full/work_report.bin
+npm pkg set scripts.decode-work-report="node bin/decode.ts work_report ../vectors/codec/full/work_report.bin"
+npm run decode-work-report
 ```
 
 ```text

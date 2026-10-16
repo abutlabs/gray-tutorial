@@ -223,7 +223,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.sealers="node bin/sealers.ts"
-npm run sealers ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+npm pkg set scripts.sealers-no-tickets="node bin/sealers.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json"
+npm run sealers-no-tickets
 ```
 
 ```text

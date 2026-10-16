@@ -468,7 +468,8 @@ one block, with no blank line in it.)
 **Run**
 
 ```sh
-npm run accumulate ../vectors/stf/accumulate/tiny/assign_from_non_assigner-3.json
+npm pkg set scripts.accumulate-assign="node bin/accumulate.ts ../vectors/stf/accumulate/tiny/assign_from_non_assigner-3.json"
+npm run accumulate-assign
 ```
 
 ```text

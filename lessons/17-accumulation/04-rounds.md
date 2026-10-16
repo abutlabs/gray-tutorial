@@ -419,7 +419,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 **Run**
 
 ```sh
-npm run accumulate ../vectors/stf/accumulate/tiny/transfer_for_live_service-1.json
+npm pkg set scripts.accumulate-transfer="node bin/accumulate.ts ../vectors/stf/accumulate/tiny/transfer_for_live_service-1.json"
+npm run accumulate-transfer
 ```
 
 ```text

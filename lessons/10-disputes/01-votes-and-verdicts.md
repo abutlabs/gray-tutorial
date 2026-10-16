@@ -327,7 +327,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.verdicts="node bin/verdicts.ts"
-npm run verdicts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json
+npm pkg set scripts.verdicts-progress="node bin/verdicts.ts ../vectors/stf/disputes/tiny/progress_with_verdicts-4.json"
+npm run verdicts-progress
 ```
 
 ```text

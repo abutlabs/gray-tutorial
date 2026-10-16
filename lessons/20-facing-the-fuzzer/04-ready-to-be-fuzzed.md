@@ -131,8 +131,10 @@ refusing to start: JAM_FUZZ_SPEC, JAM_FUZZ_DATA_PATH, JAM_FUZZ_SOCK_PATH not set
 
 ```sh
 mkdir -p /tmp/jam
-JAM_FUZZ=1 JAM_FUZZ_SPEC=tiny JAM_FUZZ_DATA_PATH=/tmp/jam JAM_FUZZ_SOCK_PATH=/tmp/jam/fuzz.sock npm run target > /dev/null 2>&1 &
-npm run fuzz safrole /tmp/jam/fuzz.sock
+npm pkg set scripts.target-tiny="JAM_FUZZ=1 JAM_FUZZ_SPEC=tiny JAM_FUZZ_DATA_PATH=/tmp/jam JAM_FUZZ_SOCK_PATH=/tmp/jam/fuzz.sock node bin/target.ts"
+npm pkg set scripts.fuzz-target="node bin/fuzz.ts safrole /tmp/jam/fuzz.sock"
+npm run target-tiny > /dev/null 2>&1 &
+npm run fuzz-target
 kill $!
 ```
 
@@ -143,9 +145,9 @@ initialize: the genesis root
 reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=fuzz-1791774913630
 ```
 
-The target, started the fuzzer's way, and a session with it: `&` runs the target in the
-background, your fuzzer talks to it on the socket the environment named, and `kill $!`
-stops it.
+The target, started the fuzzer's way, and a session with it: `target-tiny` is the
+target with the four variables set, `&` runs it in the background, your fuzzer talks to it
+on the socket the variables named, and `kill $!` stops it.
 
 ## The image
 

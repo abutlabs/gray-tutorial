@@ -418,7 +418,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.disassemble="node bin/disassemble.ts"
-npm run disassemble ../vectors/traces/fallback/00000001.json 0 4
+npm pkg set scripts.disassemble-fallback="node bin/disassemble.ts ../vectors/traces/fallback/00000001.json 0 4"
+npm run disassemble-fallback
 ```
 
 ```text

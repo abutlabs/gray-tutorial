@@ -4,6 +4,7 @@ vectors/
 reference/
 .expected/
 .backup/
+demo/
 .vitepress/cache/
 .vitepress/dist/
 .DS_Store

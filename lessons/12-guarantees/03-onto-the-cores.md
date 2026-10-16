@@ -193,7 +193,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.placed="node bin/placed.ts"
-npm run placed ../vectors/stf/reports/tiny/high_work_report_gas-1.json
+npm pkg set scripts.placed-high-gas="node bin/placed.ts ../vectors/stf/reports/tiny/high_work_report_gas-1.json"
+npm run placed-high-gas
 ```
 
 ```text

@@ -239,7 +239,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.entropy="node bin/entropy.ts"
-npm run entropy ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json
+npm pkg set scripts.entropy-new-epoch="node bin/entropy.ts ../vectors/stf/safrole/tiny/enact-epoch-change-with-no-tickets-4.json"
+npm run entropy-new-epoch
 ```
 
 ```text

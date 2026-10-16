@@ -324,7 +324,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.history="node bin/history.ts"
-npm run history ../vectors/traces/preimages/00000050.json
+npm pkg set scripts.history-preimages="node bin/history.ts ../vectors/traces/preimages/00000050.json"
+npm run history-preimages
 ```
 
 ```text

@@ -111,7 +111,8 @@ const CODECS = (config: Config): Record<string, Codec<unknown>> => ({
 **Run**
 
 ```sh
-npm run decode block ../vectors/codec/tiny/block.bin
+npm pkg set scripts.decode-block="node bin/decode.ts block ../vectors/codec/tiny/block.bin"
+npm run decode-block
 ```
 
 ```text

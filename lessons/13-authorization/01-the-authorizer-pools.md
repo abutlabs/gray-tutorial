@@ -343,7 +343,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.pools="node bin/pools.ts"
-npm run pools ../vectors/stf/authorizations/tiny/progress_authorizations-2.json
+npm pkg set scripts.pools-progress="node bin/pools.ts ../vectors/stf/authorizations/tiny/progress_authorizations-2.json"
+npm run pools-progress
 ```
 
 ```text

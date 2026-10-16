@@ -277,7 +277,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.program="node bin/program.ts"
-npm run program ../vectors/traces/fallback/00000001.json
+npm pkg set scripts.program-fallback="node bin/program.ts ../vectors/traces/fallback/00000001.json"
+npm run program-fallback
 ```
 
 ```text

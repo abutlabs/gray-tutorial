@@ -350,7 +350,7 @@ account.
 **Run**
 
 ```sh
-npm run state ../vectors/traces/fallback/00000001.json
+npm run state-fallback
 ```
 
 ```text

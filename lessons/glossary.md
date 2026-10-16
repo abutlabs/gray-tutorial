@@ -41,8 +41,9 @@ anything. *Example:* `const slot: number = 42`. ([0.2](./00-start/02-set-up-the-
 *Example:* `npm test` runs every test. ([0.2](./00-start/02-set-up-the-project.md))
 
 **Script.** A command with a name, kept in `package.json`'s `scripts`, that `npm run`
-runs; words after the name go on to the command. *Example:* `npm run decode work_item
-x.bin` runs `node bin/decode.ts work_item x.bin`. ([0.3](./00-start/03-watch-your-client.md))
+runs; words after the name go on to the command, or the script carries its own. *Example:*
+`npm run decode work_item x.bin` runs `node bin/decode.ts work_item x.bin`, and `npm run
+decode-work-item` runs it on the vectors' work item. ([0.3](./00-start/03-watch-your-client.md))
 
 **Test.** A small program that checks one thing your code should do, and fails loudly if
 it doesn't. This tutorial uses test-driven development: the test first, then the code.

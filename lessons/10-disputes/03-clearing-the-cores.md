@@ -261,7 +261,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.cores="node bin/cores.ts"
-npm run cores ../vectors/stf/disputes/tiny/progress_invalidates_avail_assignments-1.json
+npm pkg set scripts.cores-invalidated="node bin/cores.ts ../vectors/stf/disputes/tiny/progress_invalidates_avail_assignments-1.json"
+npm run cores-invalidated
 ```
 
 ```text

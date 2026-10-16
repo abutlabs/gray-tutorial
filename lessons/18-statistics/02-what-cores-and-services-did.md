@@ -391,7 +391,8 @@ card shows its own report's work. Service 42's card shows both reports' work add
 **Run**
 
 ```sh
-npm run activity ../vectors/stf/assurances/tiny/some_assurances-1.json
+npm pkg set scripts.activity-some="node bin/activity.ts ../vectors/stf/assurances/tiny/some_assurances-1.json"
+npm run activity-some
 ```
 
 ```text

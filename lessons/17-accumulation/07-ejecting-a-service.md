@@ -352,7 +352,8 @@ No new program: `bin/host.ts` already names every call.
 **Run**
 
 ```sh
-npm run host ../vectors/stf/accumulate/tiny/work_for_ejected_service-2.json 0
+npm pkg set scripts.host-eject="node bin/host.ts ../vectors/stf/accumulate/tiny/work_for_ejected_service-2.json 0"
+npm run host-eject
 ```
 
 ```text

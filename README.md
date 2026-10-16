@@ -173,6 +173,7 @@ and never touches your history.
 | `npm run site` | the lessons as a website |
 | `npm run compare -- 2.3` | how your `client/` differs from the client after lesson 2.3, leaving out spaces, blank lines and how imports are grouped |
 | `npm run catch-up -- 2.3` | make `client/` the client after lesson 2.3 (yours is copied to `.backup/` first) |
+| `npm run demo` | the finished client in `demo/`, beside yours, with its packages: ready for [the demo](https://abutlabs.github.io/the-gray-tutor/demo) |
 | `npm run verify` | follow every lesson from an empty client in `.tangled/` and run every **Run** block (the stack must be up) |
 | `npm run screenshots` | retake the lessons' screenshots from fresh runs of each lesson (needs the stack and Google Chrome) |
 | `npm run compare -- 2.3 --dir ../other-client` | the same comparison for another client folder |

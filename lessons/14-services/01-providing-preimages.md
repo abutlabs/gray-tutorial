@@ -354,7 +354,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.preimages="node bin/preimages.ts"
-npm run preimages ../vectors/traces/preimages/00000008.json
+npm pkg set scripts.preimages-trace="node bin/preimages.ts ../vectors/traces/preimages/00000008.json"
+npm run preimages-trace
 ```
 
 ```text

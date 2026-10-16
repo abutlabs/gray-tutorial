@@ -326,7 +326,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.guarantors="node bin/guarantors.ts"
-npm run guarantors ../vectors/stf/reports/tiny/report_prev_rotation-1.json
+npm pkg set scripts.guarantors-prev-rotation="node bin/guarantors.ts ../vectors/stf/reports/tiny/report_prev_rotation-1.json"
+npm run guarantors-prev-rotation
 ```
 
 ```text

@@ -179,8 +179,10 @@ if (!codec || !file) {
 **Run**
 
 ```sh
-npm run decode assurances_extrinsic ../vectors/codec/tiny/assurances_extrinsic.bin
-npm run decode assurances_extrinsic ../vectors/codec/full/assurances_extrinsic.bin
+npm pkg set scripts.decode-assurances="node bin/decode.ts assurances_extrinsic ../vectors/codec/tiny/assurances_extrinsic.bin"
+npm run decode-assurances
+npm pkg set scripts.decode-assurances-full="node bin/decode.ts assurances_extrinsic ../vectors/codec/full/assurances_extrinsic.bin"
+npm run decode-assurances-full
 ```
 
 ```text

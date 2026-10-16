@@ -5,6 +5,8 @@
 //                              first copied to .backup/, so nothing is lost
 //   npm run compare -- 2.3 --dir reference
 //                              the same comparison for another client folder
+//   npm run demo               the finished client, in demo/ beside yours, to show off
+//                              (catch-up -- --last --dir demo, then npm install there)
 //
 // node_modules and package-lock.json are left out of both, and so is what changes nothing
 // (tools/tidy-code.ts): spaces at line ends, blank lines, the last newline, how imports are
@@ -14,7 +16,7 @@ import { spawnSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
-import { lessonsThrough, ROOT } from "./lessons.ts";
+import { lessonsThrough, readLessons, ROOT } from "./lessons.ts";
 import { applyScripts, applyStep } from "./tangle.ts";
 import { sameInAnyOrder, tidyCode } from "./tidy-code.ts";
 
@@ -24,7 +26,8 @@ const EXPECTED = join(ROOT, ".expected");
 const SKIP = new Set(["node_modules", "package-lock.json", ".DS_Store", ".gitkeep", ".git"]);
 
 const write = process.argv.includes("--write");
-const id = process.argv.slice(2).find((a, i, all) => !a.startsWith("--") && all[i - 1] !== "--dir");
+const id = process.argv.includes("--last") ? readLessons().at(-1)?.id
+  : process.argv.slice(2).find((a, i, all) => !a.startsWith("--") && all[i - 1] !== "--dir");
 if (!id) {
   console.log(`usage: npm run ${write ? "catch-up" : "compare"} -- <lesson>, for example 2.3`);
   process.exit(2);
@@ -55,9 +58,10 @@ if (write) {
     }
   }
   cpSync(EXPECTED, CLIENT, { recursive: true });
-  console.log(`client/ is now the client after lesson ${id}: ${lessons.at(-1)!.title}.`);
+  const folder = relative(ROOT, CLIENT);
+  console.log(`${folder}/ is now the client after lesson ${id}: ${lessons.at(-1)!.title}.`);
   if (existsSync(backup)) console.log(`Your previous files are in ${relative(ROOT, backup)}/.`);
-  console.log("Run npm install in client/ if the lesson added packages.");
+  console.log(`Run npm install in ${folder}/ if the lesson added packages.`);
   process.exit(0);
 }
 

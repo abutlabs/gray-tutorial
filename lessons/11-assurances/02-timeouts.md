@@ -292,7 +292,8 @@ if (link) console.log(`reported to Grafana: ${link}`);
 
 ```sh
 npm pkg set scripts.release="node bin/release.ts"
-npm run release ../vectors/stf/assurances/tiny/no_assurances_with_stale_report-1.json
+npm pkg set scripts.release-stale="node bin/release.ts ../vectors/stf/assurances/tiny/no_assurances_with_stale_report-1.json"
+npm run release-stale
 ```
 
 ```text
