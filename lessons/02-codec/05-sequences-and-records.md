@@ -42,6 +42,11 @@ the fields' order. The Gray Paper writes the joining as [⌢](../symbols.md#conc
 No names, no length: both sides already know the fields and their order, so the bytes
 don't repeat it.
 
+Which means the order is everything. Swap the two fields and decode the same twelve
+bytes: gas takes the first eight, slot the last four, and nothing complains.
+
+<RecordSwap />
+
 ## What the Gray Paper says
 
 From Appendix C:
@@ -108,10 +113,10 @@ export function record<F extends Fields>(fields: F): Codec<{ [K in keyof F]: Val
 }
 ```
 
-Three loops over the same field names, one per direction. That's the whole point: the
-order is written once, in `fields`, and encode, decode and JSON all follow it. (JavaScript
-keeps an object's keys in the order they were added, so `Object.keys` hands them back
-exactly as you wrote them.)
+Three loops over the same field names, one per direction. That's the point: the order is
+written once, in `fields`, and encode, decode and JSON all follow it. (JavaScript keeps an
+object's keys in the order they were added, so `Object.keys` hands them back as you wrote
+them.)
 
 The type is the clever bit. `record({ slot: u32, gas: u64 })` is a
 `Codec<{ slot: number; gas: bigint }>`: `{ [K in keyof F]: Value<F[K]> }` walks through
@@ -164,8 +169,8 @@ Both, byte by byte:
 Nothing up the sleeve.
 
 `const Pair` and `type Pair` share a name, and TypeScript is fine with it: one is a
-value, the other a type, and each use makes clear which is meant. This is the pattern for
-every JAM structure from here on: a codec, and the type that falls out of it.
+value, the other a type, and each use makes clear which is meant. Every JAM structure
+from here on follows this pattern: a codec, and the type that falls out of it.
 
 **Run**
 
