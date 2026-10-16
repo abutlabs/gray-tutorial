@@ -43,6 +43,10 @@ In symbols, with o the holder at the start, a the manager's choice and b the hol
 
 and χ′_A[c] = R(χ_A[c], e*_A[c], (Δ₁(χ_A[c]))_A[c]), where e* is the manager's run.
 
+R on two cores, starting from the test's runs:
+
+<MergeRule />
+
 ## The tests
 
 The merge on its own first, with the example from the top of the lesson:
