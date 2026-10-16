@@ -22,8 +22,8 @@ All three are in the [glossary](../glossary.md).
 Appendix A.
 
 **The state**: ı, the instruction counter, and φ, thirteen *registers* of 64 bits each. (A
-curly phi: the straight ϕ of [lesson 6.2](../06-state-and-merklization/02-state-keys.md) is the authorizer queue. Memory and a gas counter
-are coming soon.)
+curly phi: the straight ϕ of [lesson 6.2](../06-state-and-merklization/02-state-keys.md) is the authorizer queue. Memory comes in [lesson 15.4](./04-memory.md),
+the gas counter in [lesson 15.11](./11-the-gas-meter.md).)
 
 **One step, Ψ₁**: run the instruction at ı. Unless it says otherwise, an instruction
 moves ı on to the next one, ı + 1 + skip(ı), and the step ends with ε = ▸, carry on. A

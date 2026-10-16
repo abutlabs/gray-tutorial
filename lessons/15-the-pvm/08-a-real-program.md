@@ -12,8 +12,10 @@ its first question.
 ν_X says which one. The machine hands back ı pointing *at* the `ecalli`, with registers and
 memory as they were. The host answers, by changing registers or memory, and the machine
 carries on from the next instruction (Ψ_H, App. A.6). The host calls are numbered in App.
-B: `gas` is 0, `grow_heap` 1, `fetch` 2, and so on up to `provide`, 27. [Part 16](../16-host-calls/index.md) builds
-the ones a service needs first; the rest are still to be written.
+B: `gas` is 0, `grow_heap` 1, `fetch` 2, and so on up to `provide`, 27. [Part 16](../16-host-calls/index.md) and
+[Part 17](../17-accumulation/index.md) build the 20 that accumulation uses. The other 8 (`historical_lookup`, `export`, `machine`,
+`peek`, `poke`, `pages`, `invoke`, `expunge`) only run in refine, on the cores, which a
+block importer never does.
 
 **Y** (App. A.7) turns a standard program ([lesson 15.1](./01-the-program-blob.md) unpacked its parts: o, w, z, s and
 the code) and some argument bytes a into a starting memory and registers. Memory is laid

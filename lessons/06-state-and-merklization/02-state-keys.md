@@ -72,7 +72,7 @@ out the bonus: a client never needs the original storage key back, only its hash
 lesson builds preimages and requests. Storage keys wait: your client keeps each service's
 storage as a map from key to value (read from the vectors in [lesson 14.2](../14-services/02-the-service-account.md), written
 by the `write` host call in [lesson 16.5](../16-host-calls/05-storage.md)), and needs these keys only to put that map
-into the state trie, which block import, still to be written, will do.
+into the state trie, which block import does ([lesson 19.2](../19-block-import/02-the-whole-state.md)).
 
 ## The tests
 

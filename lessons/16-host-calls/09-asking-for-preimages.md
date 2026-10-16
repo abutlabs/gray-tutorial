@@ -511,7 +511,7 @@ with `unsigned_compare`; your `bigint` values just compare.
 
 Services that ask for data, check on it, and let it go, paying deposit for each request
 while it lasts. Thirteen services in twelve official vectors matching, and [Part 16](./index.md)'s first
-stretch is done (the other host calls are still to be written). So
+stretch is done ([Part 17](../17-accumulation/index.md) adds the ones that act on other services). So
 far every report in a block is accumulated at once, in one go. [Part 17](../17-accumulation/index.md) is about
 which reports go when, and what a service's actions do to the others.
 
