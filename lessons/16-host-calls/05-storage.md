@@ -31,6 +31,10 @@ item and 34 + |key| + |value| bytes for each, and the minimum balance a_t grows 
 If after the write a_t would be more than the service's balance, nothing is written and
 φ₇ is **FULL** (2^64 − 5).
 
+Write to the tests' account, step by step:
+
+<WriteStore />
+
 ## The tests
 
 An account now has storage too, empty in the tests:
