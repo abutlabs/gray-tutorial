@@ -1,9 +1,9 @@
 # Disputes
 
 Every system that trusts people needs a way to say "that was wrong". In JAM, if a
-guaranteed work-report turns out to be bad, the validators hold a trial, right in the
-blocks: they vote, a verdict is recorded, and whoever vouched for the bad report is named
-a *culprit*. Validators who voted the wrong way are recorded as *faults*. It's the
+guaranteed work-report turns out to be bad, the validators hold a trial in the blocks:
+they vote, a verdict is recorded, whoever vouched for the bad report is named a
+*culprit*, and validators who voted the wrong way are recorded as *faults*. It's the
 most dramatic part of the extrinsic, and the last one.
 
 ## New words
@@ -33,7 +33,10 @@ Appendix C encodes all three as lists with their lengths in front, the verdicts 
 (target, ℰ₄ of the age, the votes with their length in front).
 
 How many votes? ⌊2V/3⌋ + 1: **5 on tiny, 683 on full**. The vectors have exactly that
-many.
+many. Slide V between the two sizes and watch the count, and the bytes it takes in
+front of the votes: one until 128 votes, two after.
+
+<VoteCount />
 
 ## A yes or no
 

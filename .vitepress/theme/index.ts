@@ -42,6 +42,8 @@ import ReaderWalk from "./ReaderWalk.vue";
 import CodecPicker from "./CodecPicker.vue";
 import RecordSwap from "./RecordSwap.vue";
 import TraceShift from "./TraceShift.vue";
+import VoteCount from "./VoteCount.vue";
+import MaybeExactly from "./MaybeExactly.vue";
 import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import CheckYourself from "./CheckYourself.vue";
@@ -72,6 +74,8 @@ export default {
     app.component("CodecPicker", CodecPicker); // 2.4
     app.component("RecordSwap", RecordSwap); // 2.5
     app.component("TraceShift", TraceShift); // 2.7
+    app.component("VoteCount", VoteCount); // 4.4
+    app.component("MaybeExactly", MaybeExactly); // 4.5
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1
