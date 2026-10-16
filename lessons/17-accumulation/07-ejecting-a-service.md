@@ -31,6 +31,8 @@ preimage hash h:
    than D slots ago. Otherwise `HUH`.
 4. **Go.** d is removed, and d's balance is added to s's. φ₇ = `OK`. It costs 458 gas.
 
+<EjectService />
+
 Why such a fuss? An account holds a deposit for everything it keeps. Making d let go of
 everything first, and wait out the expunge period, means nothing is lost that someone
 might still need.
