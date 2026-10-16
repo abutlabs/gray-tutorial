@@ -65,6 +65,8 @@ the sum of step 1. The bundle lengths are L(c), and the data load is
 with W_G = 4104. Why 65/64? For n segments, n · 65/64 = n + n/64: the segments
 themselves, and a proof page for every 64. Three segments: ⌈3.046875⌉ = 4.
 
+<CoreLoad />
+
 ## The tests
 
 **Add to** `test/statistics.test.ts`
