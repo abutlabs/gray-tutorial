@@ -1,10 +1,10 @@
 # Seals
 
 Every block is signed twice by its author, with Bandersnatch VRF signatures. The *seal*
-proves the author was allowed to make a block in this slot; the *entropy source* is the
-fresh randomness [lesson 8.6](./06-the-vrf-output.md) reads. Until now your client has believed both. This lesson
-checks them, the last of Safrole's rules: by the end of it a forged seal, a stranger's
-block, or a block sealed without the slot's ticket is refused, and 198 real blocks pass.
+proves the author may make a block in this slot; the *entropy source* is the randomness
+[lesson 8.6](./06-the-vrf-output.md) reads. Until now your client has believed both. This lesson checks them,
+Safrole's last rules: a forged seal, a stranger's block, or a block sealed without the
+slot's ticket is refused, and 198 real blocks pass.
 
 ## New words
 
@@ -36,6 +36,8 @@ It is the very value the tickets were entered with. They were entered last epoch
 
 Notice the order: H_V comes before H_S in the header, so the seal signs the entropy source
 too. Change one bit of H_V and the seal fails first.
+
+<SealCheck />
 
 To find γ′_S in a real state, your client reads Safrole's own state component, C(4), whole
 (Appendix D): γ_P, γ_Z, then γ_S (a 0 and E tickets, or a 1 and E keys), then γ_A.
