@@ -19,6 +19,10 @@ the root of the segments it exports. [Lesson 9.2](../09-recent-history/02-recent
 hash, not in the order the guarantees came. ([Lesson 9.2](../09-recent-history/02-recent-blocks.md) left sorting to the [hardening
 pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md). Here the vectors insist on it.)
 
+Step a real block's two guarantees onto the cores:
+
+<OntoCores />
+
 ## The tests
 
 **Replace in** `test/guarantors.test.ts`
