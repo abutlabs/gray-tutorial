@@ -34,6 +34,10 @@ All three are in the [glossary](../glossary.md).
 It costs 575 gas, plus the transfer's own gas when it's sent: the sender pays up front
 for the work the receiver will do with it.
 
+Send from the tests' service 0:
+
+<TransferSend />
+
 One more rule, from [lesson 16.6](../16-host-calls/06-checkpoints.md): a checkpoint keeps *everything* the run has done so far,
 and the list of transfers is part of it. Send, then panic, and the transfer never
 happened, the money included.
