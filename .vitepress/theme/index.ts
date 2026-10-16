@@ -50,6 +50,11 @@ import ValidatorKeyMap from "./ValidatorKeyMap.vue";
 import EpochTurn from "./EpochTurn.vue";
 import ShuffleSteps from "./ShuffleSteps.vue";
 import EntropyStairs from "./EntropyStairs.vue";
+import Rotation from "./Rotation.vue";
+import LotteryClose from "./LotteryClose.vue";
+import OutsideIn from "./OutsideIn.vue";
+import TicketRules from "./TicketRules.vue";
+import SealCheck from "./SealCheck.vue";
 import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import CheckYourself from "./CheckYourself.vue";
@@ -88,6 +93,11 @@ export default {
     app.component("EpochTurn", EpochTurn); // 7.1
     app.component("ShuffleSteps", ShuffleSteps); // 7.2
     app.component("EntropyStairs", EntropyStairs); // 8.1
+    app.component("Rotation", Rotation); // 8.2
+    app.component("LotteryClose", LotteryClose); // 8.4
+    app.component("OutsideIn", OutsideIn); // 8.4
+    app.component("TicketRules", TicketRules); // 8.7
+    app.component("SealCheck", SealCheck); // 8.9
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1

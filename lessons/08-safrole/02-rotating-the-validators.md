@@ -1,10 +1,9 @@
 # Rotating the validators
 
-JAM's validators don't serve forever. They work in shifts, an epoch at a time, and
-there's always a queue: who's on now, who's up next, who's next after that, and who
-just finished. At each new epoch everyone shuffles one step along, like a relay team
-handing over batons. And if a validator was caught cheating ([lesson 4.4](../04-blocks/04-disputes.md)'s disputes),
-it doesn't get to step up: its keys are swapped for zeros.
+JAM's validators work in shifts, an epoch at a time, with a queue: who's on now, who's
+up next, who's after that, and who just finished. At each new epoch everyone steps one
+along. A validator caught cheating ([lesson 4.4](../04-blocks/04-disputes.md)'s disputes) doesn't step up: its keys
+are swapped for zeros.
 
 ## New words
 
@@ -34,6 +33,8 @@ stays, since only that privileged service changes it. In any other block, nothin
 key is among the *offenders* (ψ′_O, the keys convicted in disputes) gets replaced by a
 key of all zeros: 336 zero bytes. The slot is kept, so everyone else keeps their place
 in the list, but the key is useless. Nobody can sign with a zero key.
+
+<Rotation />
 
 (The new pending set also gets a fresh Bandersnatch *ring root*, γ′_Z, which lets
 validators prove they're in the set without saying who they are. That needs Bandersnatch's
@@ -268,11 +269,10 @@ previous  4418 cab2 8b8c f30a ab00 ad93  →  ab00 f30a 8b8c 4418 ad93 cab2
 reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=rotation-1791730470419
 ```
 
-Read it like a slide puzzle. The six validators are an old cast (`4418` is validator 0,
-whose key [lesson 6.3](../06-state-and-merklization/03-reading-the-state.md) printed as κ0), but each set holds them in a different order. After the block, each row's
-*right* side is the row above's *left*: staging slid into pending, pending into active,
-active into previous. Except for one tile: `ab00` is an offender, and arrived in pending
-as `0000`. The *Validator rotation* panel shows the same four rows.
+A slide puzzle. The six validators are an old cast (`4418` is κ0 from [lesson 6.3](../06-state-and-merklization/03-reading-the-state.md)),
+each set in a different order. After the block, each row's *right* side is the row
+above's *left*. Except one tile: `ab00` is an offender, and arrived in pending as
+`0000`. The *Validator rotation* panel shows the same four rows.
 
 ![Validator rotation panel](./images/02-validator-rotation.png)
 
