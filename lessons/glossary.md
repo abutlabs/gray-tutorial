@@ -520,6 +520,11 @@ runs in two stages: refine, on a core, and accumulate, on the chain.
 (the *payload*) and gas limits; a work-package bundles up to 16 of them for one core.
 ([3.1](./03-work-and-reports/01-a-work-package.md))
 
+**In-core and on-chain.** The two places JAM does its work. In-core work runs on one of
+the cores, by its guarantors, before any block: authorizing a package and refining its
+items. On-chain work is what every client does as it imports a block. *Example:* refine
+runs in-core; accumulate runs on-chain. ([3.1](./03-work-and-reports/01-a-work-package.md))
+
 **Refine.** The heavy, off-chain stage: a core runs each work-item's service code on its
 payload and gets a result. ([3.2](./03-work-and-reports/02-work-digests.md))
 

@@ -1,20 +1,22 @@
 # Part 3 · Work and reports
 
-JAM's whole reason to exist is *work*: services send jobs to the chain's cores, the cores
-compute, and the results come back as reports that every validator can check. This part
-encodes the paperwork of that journey, from the parcel that goes in to the report that
-comes out, each piece checked against the official vectors.
+What sets JAM apart from other blockchains is its **in-core** processing, which this part
+lays the foundation for. Services send jobs to the chain's cores, the cores compute, and
+the results come back as reports that every validator can check. This part encodes the
+paperwork of that journey, from the parcel that goes in to the report that comes out,
+each piece checked against the official vectors.
 
 By the end of this part your client encodes and decodes a work-package, its digests and
-the work-report that binds them, byte for byte with the official vectors at both sizes.
+the work-report that binds them.
 
 **Builds on** the foundations alone, [Parts 0 to 2](../index.md#lessons).
 
 ## At a glance
 
 The whole part on one map. Boxes are what your client holds, and rounded cards are the
-steps between them; a dashed card happens outside your client. Tap any card, or walk
-through them in order with *next*.
+steps between them; a dashed card happens outside your client. The bands say where each
+step runs: off the chain, in-core, or on-chain, where your client comes in. Tap any card,
+or walk through them in order with *next*.
 
 <PartFlow :part="3" />
 

@@ -15,8 +15,12 @@ Items travel in a *work-package*: a parcel of up to sixteen jobs, for one of JAM
 - **Refinement context.** The chain as a package saw it when it was built: a recent block
   to anchor on, and anything that must be accumulated first. *Example:* [lesson 2.6](../02-codec/06-the-first-test-vectors.md)'s
   `refine_context` vector.
+- **In-core and on-chain.** The two places JAM does its work. In-core work runs on one of
+  the cores, by its guarantors, before any block: authorizing a package and refining its
+  items. On-chain work is what every client does as it imports a block, yours included.
+  *Example:* refining runs in-core; checking a report's signatures runs on-chain.
 
-All three are in the [glossary](../glossary.md).
+All four are in the [glossary](../glossary.md).
 
 ## What the Gray Paper says
 
@@ -32,8 +36,8 @@ All three are in the [glossary](../glossary.md).
 Running an authorizer is a guarantor's job. Guarantors are validators, two or three of them
 on each core at a time, that take a package in, run its authorizer and its items, and sign
 for the result ([Part 12](../12-guarantees/index.md) checks their signatures). All of that
-happens on the network, before a package reaches any block. Block import never runs an
-authorizer, so neither will the client you build here. Today the package
+happens *in-core*, on the network, before a package reaches any block. Your client's work is
+*on-chain*: it imports blocks, and block import never runs an authorizer. Today the package
 is a shape to encode, and almost every piece of it is already in your client.
 
 Appendix C encodes it in this order: ℰ₄ of the code host, the code hash, the context,

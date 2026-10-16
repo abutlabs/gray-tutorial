@@ -7,7 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { AVAILABILITY_TIMEOUT, AVAILABLE, EPOCH_LENGTH, FLOWS, FUZZ_MESSAGES, JAM_COMMON_ERA, LESSON_PATHS, POOL_SIZE, PVM, QUEUE_SIZE, RECENT_BLOCKS, ROTATION_PERIOD, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, shuffle } from "../.vitepress/theme/part-flow.ts";
+import { AVAILABILITY_TIMEOUT, AVAILABLE, EPOCH_LENGTH, FLOWS, FUZZ_MESSAGES, JAM_COMMON_ERA, LESSON_PATHS, POOL_SIZE, PVM, QUEUE_SIZE, RECENT_BLOCKS, ROTATION_PERIOD, SLOT_SECONDS, componentKeyHex, flowOf, outsideIn, partPath, shuffle } from "../.vitepress/theme/part-flow.ts";
 import { bytesFor, isAvailable, needed } from "../.vitepress/theme/bitfield.ts";
 import { encodeFixed, spacedHex, toHex } from "../.vitepress/theme/bytes.ts";
 import { compact } from "../.vitepress/theme/compact.ts";
@@ -46,17 +46,43 @@ test("every card is drawn once and walked once, and every row and step names a c
   }
 });
 
-test("a card names lessons in its own Part that build it, or says who takes the step instead", () => {
+test("a card names lessons in its own Part that build it, says who does it instead, or which later Part takes it", () => {
   for (const f of FLOWS) {
     for (const [id, c] of Object.entries(f.cards)) {
       const where = `Part ${f.part}, ${id}`;
-      assert.ok(c.lessons.length > 0 !== Boolean(c.elsewhere), `${where}: lessons, or elsewhere, never both`);
+      assert.equal([c.lessons.length > 0, Boolean(c.elsewhere), Boolean(c.ahead)].filter(Boolean).length, 1, `${where}: lessons, elsewhere or ahead, just one`);
+      if (c.elsewhere) assert.match(c.elsewhere, /^[A-Z].*\.$/, `${where}: elsewhere is a sentence`);
+      for (const p of c.ahead ?? []) {
+        assert.ok(p > f.part, `${where}: Part ${p} comes later`);
+        assert.ok(parts.some((q) => q.dir === partPath(p)), `${where}: Part ${p} has a folder`);
+      }
       for (const l of c.lessons) {
         assert.equal(l.split(".")[0], String(f.part), `${where}: lesson ${l} is in Part ${f.part}`);
         assert.ok(LESSON_PATHS[l], `${where}: lesson ${l} has a path`);
       }
       assert.equal(Boolean(c.fields), Boolean(c.record), `${where}: fields come with the record they're from`);
     }
+  }
+});
+
+test("a banded flow's bands cover its rows, and every step off the chain or in-core is someone else's", () => {
+  for (const f of FLOWS.filter((f) => f.bands)) {
+    const bands = f.bands!;
+    assert.equal(bands.reduce((n, b) => n + b.rows, 0), f.rows.length, `Part ${f.part}: the bands cover the rows`);
+    assert.ok(bands.every((b) => b.rows > 0), `Part ${f.part}: no empty band`);
+    assert.ok(bands.every((b, k) => k === 0 || b.place !== bands[k - 1].place), `Part ${f.part}: neighbouring bands differ`);
+    let from = 0;
+    for (const b of bands) {
+      for (const id of f.rows.slice(from, (from += b.rows)).flat()) {
+        const c = f.cards[id];
+        const where = `Part ${f.part}, ${id} (${b.place})`;
+        if (b.place !== "on-chain" && c.kind === "step") assert.ok(c.elsewhere, `${where}: your client never takes it`);
+        if (c.elsewhere) assert.equal(c.elsewhere.includes("in-core"), b.place === "in-core", `${where}: says in-core just when it is`);
+      }
+    }
+  }
+  for (const f of FLOWS.filter((f) => !f.bands)) {
+    for (const [id, c] of Object.entries(f.cards)) assert.ok(!c.elsewhere?.includes("in-core"), `Part ${f.part}, ${id}: in-core, but no bands`);
   }
 });
 

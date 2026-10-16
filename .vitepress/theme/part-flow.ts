@@ -1,8 +1,10 @@
 // A Part's opening page draws the Part as a flow (PartFlow.vue): the things your client
 // holds, and the steps that turn one into the next, each with a plain-words line, a real
-// value and the lesson that builds it. A step your client never takes (a guarantor's, on the
-// network) says who takes it. tools/widget-part-flow.test.ts checks every value, field and
-// lesson here against the lessons' own code.
+// value and the lesson that builds it. A step your client never takes (a guarantor's,
+// in-core) says who takes it, and one it takes in a later Part says which. A flow that
+// crosses from off the chain to in-core to on-chain bands its rows by place.
+// tools/widget-part-flow.test.ts checks every value, field and lesson here against the
+// lessons' own code.
 
 import { bytesFor, needed } from "./bitfield.ts";
 import { encodeFixed, spacedHex, toHex } from "./bytes.ts";
@@ -16,12 +18,25 @@ export type Card = {
   example?: string; // a real value from the lessons
   fields?: string[]; // what it's made of, in the order it's encoded
   record?: string; // where those fields are defined: "3.1 WorkPackage", a record in that lesson's code
-  lessons: string[]; // the lessons that build it, "1.1"; none for a step the client never takes
-  elsewhere?: string; // a step the client never takes: who takes it instead
+  lessons: string[]; // the lessons that build it, "1.1"; none for a card the client never makes
+  elsewhere?: string; // a card the client never makes: a sentence saying who does instead
+  ahead?: number[]; // a step the client takes in later Parts, not this one
 };
 
-/** A Part as a flow: its cards in rows (each row's cards side by side), and the order to walk them. */
-export type Flow = { part: number; rows: string[][]; walk: string[]; cards: Record<string, Card> };
+/**
+ * Where work happens: off the chain (a builder), in-core (on one of JAM's cores, by its
+ * guarantors, before any block) or on-chain (in a block, which every client checks).
+ */
+export type Place = "off-chain" | "in-core" | "on-chain";
+
+/** A run of a flow's rows that all happen in one place. */
+export type Band = { place: Place; rows: number };
+
+/**
+ * A Part as a flow: its cards in rows (each row's cards side by side), and the order to walk
+ * them. A flow that crosses places has bands: its rows, top to bottom, run by run.
+ */
+export type Flow = { part: number; rows: string[][]; walk: string[]; cards: Record<string, Card>; bands?: Band[] };
 
 /** Where each lesson the flows name is, under the site's base (checked against the lesson files). */
 export const LESSON_PATHS: Record<string, string> = {
@@ -129,6 +144,10 @@ export const LESSON_PATHS: Record<string, string> = {
   "20.4": "20-facing-the-fuzzer/04-ready-to-be-fuzzed",
 };
 
+/** A Part's folder, from its lessons' paths: 12 → "12-guarantees". */
+export const partPath = (part: number): string | undefined =>
+  Object.entries(LESSON_PATHS).find(([id]) => id.split(".")[0] === String(part))?.[1].split("/")[0];
+
 const SLOT = 5n; // a timeslot, as the lessons first meet one
 /** The JAM Common Era, 2025-01-01 12:00 UTC, in seconds since 1970 (0.4), and a slot's length. */
 export const JAM_COMMON_ERA = Date.UTC(2025, 0, 1, 12) / 1000;
@@ -220,7 +239,7 @@ export const FLOWS: Flow[] = [
         name: "Keep it, and show it",
         says: "Loki keeps the events, the Pushgateway and Prometheus keep the numbers, and Grafana draws both, run after run.",
         lessons: [],
-        elsewhere: "the observability stack, which lesson 0.2 starts in Docker",
+        elsewhere: "Docker runs this, not your client: lesson 0.2 starts the stack.",
       },
     },
   },
@@ -274,9 +293,9 @@ export const FLOWS: Flow[] = [
       codec: {
         kind: "step",
         name: "On to the codec",
-        says: "Numbers in, bytes out, the same in every client. Part 2 builds it.",
+        says: "Numbers in, bytes out, the same in every client.",
         lessons: [],
-        elsewhere: "Part 2 · The codec",
+        ahead: [2],
       },
     },
   },
@@ -338,15 +357,16 @@ export const FLOWS: Flow[] = [
   },
   {
     part: 3,
-    rows: [["job"], ["package"], ["authorize"], ["refine"], ["digests"], ["report"], ["guarantee"]],
-    walk: ["job", "package", "authorize", "refine", "digests", "report", "guarantee"],
+    rows: [["job"], ["package"], ["authorize"], ["refine"], ["digests"], ["report"], ["guarantee"], ["chain"]],
+    walk: ["job", "package", "authorize", "refine", "digests", "report", "guarantee", "chain"],
+    bands: [{ place: "off-chain", rows: 2 }, { place: "in-core", rows: 5 }, { place: "on-chain", rows: 1 }],
     cards: {
       job: {
         kind: "thing",
         name: "A job to do",
-        says: "A service wants its code run on some input, its payload, using one of JAM's cores.",
+        says: "Someone wants a service's code run on some input, its payload, using one of JAM's cores.",
         lessons: [],
-        elsewhere: "a builder, outside the chain",
+        elsewhere: "A builder does this: anyone with work for a service, off the chain. Your client never sees the job, only the package it becomes.",
       },
       package: {
         kind: "thing",
@@ -361,14 +381,14 @@ export const FLOWS: Flow[] = [
         name: "Authorize",
         says: "A guarantor runs the package's authorizer: may this package use the core at all?",
         lessons: [],
-        elsewhere: "a guarantor, on the network. Block import never runs an authorizer",
+        elsewhere: "One of the core's guarantors does this, in-core. Block import never runs an authorizer, so your client never will.",
       },
       refine: {
         kind: "step",
         name: "Refine",
         says: "The guarantor runs each item's service code on its payload: one result for each item.",
         lessons: [],
-        elsewhere: "a guarantor, on the network",
+        elsewhere: "The core's guarantors do this, in-core. Your client never refines; it reads the results, in the digests.",
       },
       digests: {
         kind: "thing",
@@ -389,9 +409,16 @@ export const FLOWS: Flow[] = [
       guarantee: {
         kind: "step",
         name: "Guarantee",
-        says: "Two or three guarantors sign the report, and the signed report goes into a block. Part 4 encodes it there, and Part 12 checks the signatures.",
+        says: "Two or three of the core's guarantors sign the report: they vouch that it's right.",
         lessons: [],
-        elsewhere: "the core's guarantors, on the network",
+        elsewhere: "The core's guarantors do this, in-core. Your client checks their signatures, in Part 12.",
+      },
+      chain: {
+        kind: "step",
+        name: "Onto the chain",
+        says: "A block carries the signed report to the chain, where every client checks it, yours included.",
+        lessons: [],
+        ahead: [4, 12],
       },
     },
   },
@@ -513,7 +540,7 @@ export const FLOWS: Flow[] = [
         name: "Sign",
         says: `A validator signs with its secret key. What it signs starts with a few letters naming the job, ${AVAILABLE}, so a signature for one job can't pass for another.`,
         lessons: [],
-        elsewhere: "each validator, with a secret key only it has",
+        elsewhere: "Each validator does this, with a secret key only it has. Your client checks signatures; it never makes them.",
       },
       assurance: {
         kind: "thing",
@@ -678,7 +705,7 @@ export const FLOWS: Flow[] = [
         name: "Enter the lottery",
         says: "A validator makes an anonymous ticket: proof that it is one of the validators, without saying which.",
         lessons: [],
-        elsewhere: "each validator, with its own Bandersnatch key",
+        elsewhere: "Each validator does this, with its own Bandersnatch key. Your client checks each ticket's ring proof; it never makes one.",
       },
       tickets: {
         kind: "thing",
@@ -773,7 +800,7 @@ export const FLOWS: Flow[] = [
         name: "Judge it",
         says: "Validators check the work again, and each signs a vote: valid, or invalid.",
         lessons: [],
-        elsewhere: "the validators, who redo the work to judge it",
+        elsewhere: "The validators do this: they redo the work to judge it. Your client counts the votes.",
       },
       verdict: {
         kind: "thing",
@@ -833,7 +860,7 @@ export const FLOWS: Flow[] = [
         name: "Assure",
         says: "Each validator checks which cores' pieces it holds, and signs one bit for each core: 1 if it holds its piece.",
         lessons: [],
-        elsewhere: "each validator, every block",
+        elsewhere: "Each validator does this, every block. Your client counts the bits.",
       },
       assurances: {
         kind: "thing",
@@ -875,6 +902,7 @@ export const FLOWS: Flow[] = [
   {
     part: 12,
     rows: [["validators"], ["deal"], ["assignment"], ["sign"], ["guarantee"], ["check"], ["reporters", "seat"], ["refuse"]],
+    bands: [{ place: "on-chain", rows: 3 }, { place: "in-core", rows: 1 }, { place: "on-chain", rows: 4 }],
     walk: ["validators", "deal", "assignment", "sign", "guarantee", "check", "reporters", "seat", "refuse"],
     cards: {
       validators: {
@@ -899,9 +927,9 @@ export const FLOWS: Flow[] = [
       sign: {
         kind: "step",
         name: "Guarantee a report",
-        says: "Two or three of a core's guarantors run a package and sign its report: Part 3's journey, on the network.",
+        says: "Two or three of a core's guarantors run a package and sign its report: Part 3's journey.",
         lessons: [],
-        elsewhere: "the core's guarantors, on the network",
+        elsewhere: "The core's guarantors do this, in-core. Your client checks what they signed.",
       },
       guarantee: {
         kind: "thing",
@@ -987,7 +1015,7 @@ export const FLOWS: Flow[] = [
         name: "Bring the data",
         says: "Someone who has the data puts it in a block's preimages, from lesson 4.1.",
         lessons: [],
-        elsewhere: "whoever has the data, in a block",
+        elsewhere: "Whoever has the data does this, by putting it in a block. Your client checks it was asked for.",
       },
       preimage: {
         kind: "thing",
@@ -1282,7 +1310,7 @@ export const FLOWS: Flow[] = [
         name: "Pay who earned it",
         says: "JAM itself pays nobody. The tallies are there so that whoever does pay can see who earned it.",
         lessons: [],
-        elsewhere: "whoever pays the validators, reading the tallies",
+        elsewhere: "Whoever pays the validators does this, reading the tallies. Your client only keeps them.",
       },
     },
   },
@@ -1353,7 +1381,7 @@ export const FLOWS: Flow[] = [
         name: "The fuzzer sends blocks",
         says: "The conformance fuzzer makes blocks, breaks some on purpose, sends them to your client, and compares every state root it gets back.",
         lessons: [],
-        elsewhere: "the official conformance fuzzer",
+        elsewhere: "The official conformance fuzzer does this: a separate program that talks to your client.",
       },
       frames: {
         kind: "thing",

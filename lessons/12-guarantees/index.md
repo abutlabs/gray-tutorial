@@ -19,8 +19,9 @@ Disputes](../10-disputes/index.md), and on the foundations every part uses, [Par
 ## At a glance
 
 The whole part on one map. Boxes are what your client holds, and rounded cards are the
-steps between them; a dashed card happens outside your client. Tap any card, or walk
-through them in order with *next*.
+steps between them; a dashed card happens outside your client. The bands say where each
+step runs: the chain deals the guarantors, the guarantors work in-core, and the chain
+checks what they signed. Tap any card, or walk through them in order with *next*.
 
 <PartFlow :part="12" />
 
