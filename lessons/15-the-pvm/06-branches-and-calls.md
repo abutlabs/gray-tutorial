@@ -1,9 +1,9 @@
 # Branches and calls
 
-Programs make choices (*if the balance is too low, stop*), and they call functions and
-come back. [Lesson 15.3](./03-the-machine.md) gave your machine the two simplest choices, equal and not equal.
-This lesson completes the set of sixteen branches, and adds the two instructions for a
-call. One question runs right through it: is −1 less than 1? That depends on who's asking.
+Programs make choices (*if the balance is too low, stop*) and call functions and come
+back. [Lesson 15.3](./03-the-machine.md) gave your machine equal and not equal; this lesson adds the other
+fourteen branches and the two instructions for a call. One question runs through it: is
+−1 less than 1? That depends on who's asking.
 
 ## What the Gray Paper says
 
@@ -26,9 +26,12 @@ Appendix A.5:
   machine jumps through the table to φ_B + ν_Y. Think *function pointer*. φ_B is read as
   it was before φ_A changes, which matters when they're the same register.
 - **`unlikely`** (2) changes nothing at all. It marks a path a branch rarely takes, and
-  only the gas meter cares: a branch with `unlikely` (or `trap`) at either end costs less.
-  For now, all you need to know is that it does nothing; gas gets its own lessons,
-  [15.9 to 15.11](./09-what-instructions-cost.md).
+  only the gas meter cares: a branch with `unlikely` (or `trap`) at either end costs less
+  ([15.9 to 15.11](./09-what-instructions-cost.md)).
+
+Set two registers and see every comparison, unsigned beside signed:
+
+<SignedBranches />
 
 ## The tests
 
@@ -124,9 +127,13 @@ ways start basic blocks. Then it asks one thing: did the machine land on 5?
 
 `withCall` is a whole program with a function in it. The call at 0 goes to the function
 at 6, which doubles r2 and returns through r0 to 4. The jump table has two entries:
-address 2 leads to 4, just after the call, and address 4 leads to 6, the function. Notice
-the halt address sits in r1 this time: r0 is busy holding the way back. (A real program
+address 2 leads to 4, just after the call, and address 4 leads to 6, the function. The
+halt address sits in r1 this time, because r0 holds the way back. (A real program
 would save r0 in memory before making a call of its own.)
+
+Step it, and try a wrong way back:
+
+<CallTable />
 
 **Run, expect it to fail**
 
@@ -241,12 +248,11 @@ function decisions(m: Machine, ins: Instruction): Exit | undefined {
 }
 ```
 
-`COMPARISONS` is the whole Gray Paper table in ten lines. A branch's name says which
+`COMPARISONS` is the Gray Paper's table in ten lines. A branch's name says which
 comparison it wants (`branch_lt_s_imm` → `lt_s`) and whether its other side is ν_X or
-φ_B. In `load_imm_jump_ind`, the address is worked out *before* φ_A changes: write the
-two lines the other way round and a call through r0 would jump to its own way back.
-No test here calls through the same register it writes, though, so nothing would catch
-that mistake yet: the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) adds the test.
+φ_B. In `load_imm_jump_ind` the address is worked out *before* φ_A changes: swap the two
+lines and a call through r0 would jump to its own way back. No test here calls through
+the register it writes, so nothing would catch that yet: the [hardening pass](https://github.com/abutlabs/the-gray-tutor/blob/main/HARDENING.md) adds it.
 
 **Run**
 
@@ -337,9 +343,9 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 Read it in pairs. Every unsigned comparison and its signed twin disagree about −1 and 1:
-`lt_u` falls through where `lt_s` jumps, `ge_u` jumps where `ge_s` falls through. Only
-`eq` and `ne` have no twin, and now you can see why: equal bits are equal however you
-read them. The *Branches* panel, on **6 · The PVM**, has all sixteen.
+`lt_u` falls through where `lt_s` jumps, `ge_u` jumps where `ge_s` falls through. `eq`
+and `ne` have no twin: equal bits are equal however you read them. The *Branches* panel,
+on **6 · The PVM**, has all sixteen.
 
 ![Branches panel](./images/06-branches.png)
 
@@ -354,10 +360,9 @@ read them. The *Branches* panel, on **6 · The PVM**, has all sixteen.
            rset r ra imm;
 ```
 
-The same order as yours, and a comment to stop anyone "tidying" it. For the branches,
-lasair has the opposite problem to yours: OCaml's `Int64` compares as signed, so lasair
-writes a `compare_u64` for the `_u` branches, while your `bigint` values are unsigned and need
-`signed` for the `_s` ones.
+The same order as yours, with a comment to stop anyone "tidying" it. For the branches
+lasair has your problem reversed: OCaml's `Int64` compares as signed, so lasair writes a
+`compare_u64` for the `_u` branches, where your unsigned `bigint` needs `signed` for `_s`.
 
 </details>
 
@@ -411,8 +416,8 @@ writes a `compare_u64` for the `_u` branches, while your `bigint` values are uns
 
 ## What you have
 
-Every branch, and calls both ways. Your machine now runs every instruction but eleven:
-ten that count and shuffle bits, and `ecalli`, the door out to the host. [Lesson
-15.7](./07-bits-and-bytes.md) builds the ten.
+Every branch, and calls both ways. Your machine runs every instruction but eleven: ten
+that count and shuffle bits, and `ecalli`, the door out to the host. [Lesson 15.7](./07-bits-and-bytes.md)
+builds the ten.
 
 Next: [15.7 Bits and bytes](./07-bits-and-bytes.md)
