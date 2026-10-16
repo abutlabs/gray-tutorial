@@ -1,10 +1,9 @@
 # Arithmetic
 
-Programs compute, and the PVM gives them 72 instructions to do it with: add, subtract,
-multiply, divide, shift, rotate, compare, pick. Most of them come twice over, in 32 and
-in 64 bits, and with a register or a constant as the second input. Each one is a single
-line in the Gray Paper, and here each one is a single line in your client. The lines are
-easy; the corners are where the fun is.
+The PVM computes with 72 instructions: add, subtract, multiply, divide, shift, rotate,
+compare, pick. Most come twice, in 32 and 64 bits, with a register or a constant as the
+second input. Each is one line in the Gray Paper and one line in your client. The lines
+are easy; the corners are where the fun is.
 
 ## What the Gray Paper says
 
@@ -32,6 +31,10 @@ corners that catch people:
   and use `sub` or `set_lt`.
 - **`cmov`** moves a value only if a condition register is zero (`iz`) or not (`nz`),
   otherwise the destination keeps what it had.
+
+Try the corners, or numbers of your own:
+
+<AluCorners />
 
 ## The tests
 
@@ -247,19 +250,18 @@ export function operationOf(name: string): { operation: string; swapped: boolean
 }
 ```
 
-Every operation takes p and q, the two inputs, plus `old`, the value already in the
-register being written (only `cmov` looks at it). `bigint` values never overflow, so the
-wrap-around is explicit: `mod` brings every result back into 64 bits, and `ext32` into
-32 bits, sign-extended. One trap with bigint: `%` keeps the sign of the number on its
-left, so `-7n % 2n` is `-1n`. That's wrong for wrapping, which is why `mod` adds n and
-takes `%` again:
+Every operation takes p and q plus `old`, the register being written (only `cmov` looks
+at it). `bigint` never overflows, so the wrap-around is explicit: `mod` brings a result
+back into 64 bits, `ext32` into 32, sign-extended. One trap: bigint's `%` keeps the sign
+of its left side, so `-7n % 2n` is `-1n`. Wrong for wrapping, which is why `mod` adds n
+and takes `%` again:
 
 ```ts
 const mod = (x: bigint, n: bigint) => ((x % n) + n) % n;
 ```
 
-But that same sign-keeping `%` is exactly the Gray Paper's smod, so the signed remainders
-use it directly:
+But that sign-keeping `%` is exactly the Gray Paper's smod, so the signed remainders use
+it directly:
 
 ```ts
   rem_s_64: (p, q) => {
@@ -269,9 +271,9 @@ use it directly:
   },
 ```
 
-−7 rem 2 is −1, the test's answer, and `u64` writes it into the register as 2^64 − 1. The
-line before covers the one remainder whose division would overflow, −2^63 rem −1, which
-the Gray Paper makes 0; and a remainder by 0 is the number itself.
+−7 rem 2 is −1, and `u64` writes it into the register as 2^64 − 1. The line before covers
+−2^63 rem −1, whose division would overflow, which the Gray Paper makes 0; a remainder
+by 0 is the number itself.
 
 `operationOf` maps the immediate and alt names onto the three-register ones, so one
 table serves 72 instructions. `cmov…_imm` is the odd one out: its immediate is the
@@ -439,10 +441,9 @@ mul_upper_u_u  (2^64 − 1)², upper 64 bits       0xfffffffffffffffe = -2
 reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=alu-1791736638573
 ```
 
-Every corner from the list above, worked out by your PVM and shown twice, as raw bits
-and as a signed number. Compare the two `−8 >> 1` lines: the same bits in, `-4` out of
-the arithmetic shift, and a huge positive number out of the logical one. The *ALU*
-panel has the table.
+Every corner from the list, worked by your PVM and shown twice, as raw bits and signed.
+Compare the two `−8 >> 1` lines: the same bits in, `-4` out of the arithmetic shift, a
+huge positive number out of the logical one. The *ALU* panel has the table.
 
 ![ALU panel](./images/05-alu.png)
 
@@ -457,11 +458,10 @@ panel has the table.
                       else Int64.div a b);
 ```
 
-The same three cases as your `div_s_64`. The difference is the numbers underneath:
-OCaml's `Int64` is a signed 64-bit integer, so it wraps on its own, and lasair writes
-the unsigned operations with `Int64.unsigned_div` and friends. JavaScript's `bigint`
-never wraps at all, so your code says where it wraps, with `mod`. Each language makes
-one half of the job free.
+The same three cases as your `div_s_64`. OCaml's `Int64` is signed and wraps on its own,
+so lasair spells out the unsigned operations with `Int64.unsigned_div` and friends;
+`bigint` never wraps, so your code says where, with `mod`. Each language makes one half
+of the job free.
 
 </details>
 
@@ -512,8 +512,7 @@ one half of the job free.
 
 ## What you have
 
-All 72 arithmetic and logic instructions, in both widths, every corner of the Gray
-Paper's tables written down and tested. A program that can only compute in a straight
-line isn't much of one: [lesson 15.6](./06-branches-and-calls.md) adds the rest of the choices, and calls.
+All 72 arithmetic and logic instructions, every corner of the Gray Paper's tables tested.
+[Lesson 15.6](./06-branches-and-calls.md) adds the rest of the branches, and calls.
 
 Next: [15.6 Branches and calls](./06-branches-and-calls.md)
