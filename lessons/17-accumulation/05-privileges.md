@@ -41,6 +41,10 @@ uses the same names.
 3. **Hand it over.** The core's queue becomes the 80 hashes, and its assigner becomes φ₉.
    φ₇ = `OK`. It costs 1,818 gas.
 
+Try it with service 0 holding every privilege:
+
+<AssignCore />
+
 And the checkpoint rule holds again: the privileges and the queues are part of what a run
 can change, so a failure undoes the changes made since its last checkpoint, and a
 checkpoint keeps them. In the Gray Paper they sit in the run's partial state (e, in both X

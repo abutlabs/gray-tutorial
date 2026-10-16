@@ -96,6 +96,10 @@ import RequestLife from "./RequestLife.vue";
 import OneRound from "./OneRound.vue";
 import TransferSend from "./TransferSend.vue";
 import GiftRounds from "./GiftRounds.vue";
+import AssignCore from "./AssignCore.vue";
+import MergeRule from "./MergeRule.vue";
+import EjectService from "./EjectService.vue";
+import NewService from "./NewService.vue";
 import TicketsPreimages from "./TicketsPreimages.vue";
 import AssuranceParcel from "./AssuranceParcel.vue";
 import GuaranteeParcel from "./GuaranteeParcel.vue";
@@ -181,6 +185,10 @@ export default {
     app.component("OneRound", OneRound); // 17.1
     app.component("TransferSend", TransferSend); // 17.3
     app.component("GiftRounds", GiftRounds); // 17.4
+    app.component("AssignCore", AssignCore); // 17.5
+    app.component("MergeRule", MergeRule); // 17.6
+    app.component("EjectService", EjectService); // 17.7
+    app.component("NewService", NewService); // 17.8
     app.component("TicketsPreimages", TicketsPreimages); // 4.1
     app.component("AssuranceParcel", AssuranceParcel); // 4.2
     app.component("GuaranteeParcel", GuaranteeParcel); // 4.3
