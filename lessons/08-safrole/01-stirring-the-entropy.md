@@ -1,10 +1,8 @@
 # Stirring the entropy
 
-[Part 8](./index.md) is *Safrole*, JAM's block-production engine. It answers the big question of
-every blockchain: *who gets to make the next block?* JAM's answer is a lottery whose
-winners stay secret until their slot comes, and a lottery is only fair if its randomness
-is. So Safrole starts where every good card game does: with a thorough shuffle of the
-deck. This lesson keeps the chain's randomness, η, fresh, one block at a time.
+[Part 8](./index.md) is *Safrole*, JAM's block-production engine: *who makes the next block?* A
+lottery whose winners stay secret until their slot comes, and a lottery is only as fair
+as its randomness. This lesson keeps that randomness, η, fresh, one block at a time.
 
 ## New words
 
@@ -260,6 +258,8 @@ bottom. Try a vector without a new epoch, such as
 `../vectors/stf/safrole/tiny/publish-tickets-no-mark-2.json`: only η₀ changes. The
 *Entropy* panel, on the **3 · Consensus** dashboard (where all of [Part 8](./index.md)'s panels are),
 shows the same staircase.
+
+<EntropyStairs />
 
 ![Entropy panel](./images/01-entropy.png)
 
