@@ -80,6 +80,8 @@ exactly this case: "traces that run a service out of gas while it grows its heap
 Your `charge` ([lesson 16.1](../16-host-calls/01-calling-the-host.md)) already spends gas that way: it takes the gas off first, and
 only then says whether there was enough. `growHeap` checked first, and took nothing.
 
+<OogHeap />
+
 ## The code
 
 **Replace in** `src/host.ts`
