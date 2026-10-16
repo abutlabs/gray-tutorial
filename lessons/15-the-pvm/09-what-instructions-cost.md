@@ -1,10 +1,9 @@
 # What instructions cost
 
 A program that loops forever would stall every validator running it. JAM's answer is
-*gas*: a service gets a budget, and every piece of code it runs is paid for before it
-runs. In Gray Paper 0.8.0 the price is set by a little thought experiment: imagine a
-modern CPU running the code, and count its cycles. That takes two parts, the price list
-and the CPU. This lesson is the price list: what each instruction costs.
+*gas*: a service gets a budget, and every piece of code is paid for before it runs. Gray
+Paper 0.8.0 sets the price by imagining a modern CPU running the code and counting its
+cycles. That takes a price list and a CPU; this lesson is the price list.
 
 ## What the Gray Paper says
 
@@ -32,6 +31,10 @@ Some rows depend on more than the instruction's name, through three functions:
 For 𝔓, App. A.9 defines š and ř: the registers an instruction reads and writes, straight
 from its row in the instruction tables, whether or not they change when it runs. A `cmov`
 reads the register it writes (it might keep it). `ecalli` reads and writes none.
+
+Pick an instruction and its registers, and watch its row:
+
+<CostRow />
 
 ## The tests
 

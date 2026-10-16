@@ -84,6 +84,10 @@ import VrfOutput from "./VrfOutput.vue";
 import ClearCores from "./ClearCores.vue";
 import SignedCounted from "./SignedCounted.vue";
 import OntoCores from "./OntoCores.vue";
+import CostRow from "./CostRow.vue";
+import HostCall from "./HostCall.vue";
+import FetchCopy from "./FetchCopy.vue";
+import ProtocolConstants from "./ProtocolConstants.vue";
 import TicketsPreimages from "./TicketsPreimages.vue";
 import AssuranceParcel from "./AssuranceParcel.vue";
 import GuaranteeParcel from "./GuaranteeParcel.vue";
@@ -157,6 +161,10 @@ export default {
     app.component("ClearCores", ClearCores); // 10.3
     app.component("SignedCounted", SignedCounted); // 12.2
     app.component("OntoCores", OntoCores); // 12.3
+    app.component("CostRow", CostRow); // 15.9
+    app.component("HostCall", HostCall); // 16.1
+    app.component("FetchCopy", FetchCopy); // 16.2
+    app.component("ProtocolConstants", ProtocolConstants); // 16.2
     app.component("TicketsPreimages", TicketsPreimages); // 4.1
     app.component("AssuranceParcel", AssuranceParcel); // 4.2
     app.component("GuaranteeParcel", GuaranteeParcel); // 4.3
