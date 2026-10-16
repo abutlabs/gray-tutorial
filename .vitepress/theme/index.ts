@@ -55,6 +55,10 @@ import LotteryClose from "./LotteryClose.vue";
 import OutsideIn from "./OutsideIn.vue";
 import TicketRules from "./TicketRules.vue";
 import SealCheck from "./SealCheck.vue";
+import Offenders from "./Offenders.vue";
+import RecentBlocks from "./RecentBlocks.vue";
+import VerdictRules from "./VerdictRules.vue";
+import FaultRule from "./FaultRule.vue";
 import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import CheckYourself from "./CheckYourself.vue";
@@ -98,6 +102,10 @@ export default {
     app.component("OutsideIn", OutsideIn); // 8.4
     app.component("TicketRules", TicketRules); // 8.7
     app.component("SealCheck", SealCheck); // 8.9
+    app.component("RecentBlocks", RecentBlocks); // 9.2
+    app.component("Offenders", Offenders); // 10.2
+    app.component("VerdictRules", VerdictRules); // 10.4
+    app.component("FaultRule", FaultRule); // 10.5
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1

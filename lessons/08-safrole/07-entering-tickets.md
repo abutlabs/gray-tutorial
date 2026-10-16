@@ -1,11 +1,9 @@
 # Entering tickets
 
-The lottery has been running without anyone entering it. [Lesson 8.4](./04-the-lotterys-winners.md) closed it and
-seated its winners, but a block's own tickets were skipped, because a ticket's id is a VRF
-output. [Lesson 8.6](./06-the-vrf-output.md) can read those now. So this lesson lets tickets in: it checks a block's
-tickets the way the Gray Paper says, rejects the block if they break a rule, and merges
-the good ones into the lottery. By the end of it your client runs Safrole for every block
-in the safrole vectors but two, and refuses the bad ones for the vectors' own reasons.
+The lottery has run without anyone entering it: a ticket's id is a VRF output, which
+[lesson 8.6](./06-the-vrf-output.md) can read now. This lesson lets tickets in: it checks a block's tickets as the
+Gray Paper says, refuses the block if they break a rule, and merges the good ones into the
+lottery. By the end your client runs Safrole for every safrole vector but two.
 
 ## New words
 
@@ -37,6 +35,8 @@ The test vectors name what's broken: `bad_slot` (the block's slot isn't after th
 one's, from [lesson 7.1](../07-time-and-shuffling/01-epochs.md)), `unexpected_ticket` (step 1), `bad_ticket_attempt` (step 2),
 `bad_ticket_order` (step 4), `duplicate_ticket` (step 5). The Gray Paper itself names no
 errors: a block that breaks a rule is simply invalid.
+
+<TicketRules />
 
 Two honest notes. The vectors' README still says each validator gets 3 tickets; Gray Paper
 0.8.0 changed that to n (pull request 514), and the vectors follow the paper. And step 3
