@@ -26,6 +26,10 @@ The protocol's *Workflow*, as your fuzzer does it:
 4. **On the first wrong answer**, GetState for that block, as the official fuzzer does, to
    see the target's state there, and stop.
 
+The session around the fuzzy trace's three refused blocks:
+
+<SessionPlay />
+
 ## The code
 
 **New file** `bin/fuzz.ts`
