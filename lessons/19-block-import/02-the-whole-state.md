@@ -34,6 +34,10 @@ service account. Most components already have a codec in your client. Five don't
 4. **ξ, C(15)**: for each slot, the work-packages accumulated in it.
 5. **θ, C(16)**: the last block's accumulation outputs ([lesson 17.11](../17-accumulation/11-what-a-service-yields.md)).
 
+The whole state before a real block, part by part:
+
+<WholeState />
+
 And the accounts: a service s has its record at C(255, s) ([lesson 14.2](../14-services/02-the-service-account.md)) and an entry for
 each thing it keeps, at C(s, …) with ℰ₄(s) woven into bytes 0, 2, 4 and 6 of the key. The
 rest of each key is a hash, of a storage key, a preimage's hash, or a request's hash and
