@@ -142,3 +142,26 @@ export function curveRuns(curve: Curve, to: number, step = 0.02): [number, numbe
   }
   return runs.filter((r) => r.length > 1);
 }
+
+/** The curve as it really runs from x = 0 to `to`, not wrapped: what the plot draws faintly
+ *  past the byte's edges, so a wrapped shard is seen to come from somewhere. */
+export function realRun(curve: Curve, to: number, step = 0.02): [number, number][] {
+  const points: [number, number][] = [];
+  for (let i = 0; i * step <= to + 1e-9; i++) points.push([Math.min(i * step, to), heightAt(curve, Math.min(i * step, to))]);
+  return points;
+}
+
+/** The heights the plot must show: the byte, 0 to 256, and wherever the real curve goes. */
+export function rangeOf(curve: Curve, to: number): { lo: number; hi: number } {
+  const ys = realRun(curve, to).map(([, y]) => y);
+  return { lo: Math.min(0, ...ys), hi: Math.max(256, ...ys) };
+}
+
+/** How a wrapped shard comes from its height: "369 − 257 = 112", "−144 + 257 = 113",
+ *  "1,536 − 257 × 5 = 251". */
+export function wrapSum({ height, shard }: { height: number; shard: number }): string {
+  const turns = (height - shard) / P;
+  const fmt = (n: number) => (n < 0 ? `−${(-n).toLocaleString("en-US")}` : n.toLocaleString("en-US"));
+  const times = Math.abs(turns) === 1 ? "" : ` × ${Math.abs(turns)}`;
+  return `${fmt(height)} ${turns > 0 ? "−" : "+"} ${P}${times} = ${shard}`;
+}

@@ -3,24 +3,28 @@
      Rebuild: pick any three of the six shards and watch the same steps find the curve, and
      the message, again; with two, see why it can't. Computed in curve-solve.ts. -->
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { at, curveText, PRESETS, pointsOf, reading, shardsOf, show, slope, solve } from "./curve-solve.ts";
 import { letter, lettersOf } from "./shards.ts";
 
 const text = ref("JAM");
-const codes = computed(() => {
+const typed = computed(() => {
   const c = lettersOf(text.value);
   return c && c.length === 3 ? c : null;
 });
+// while a message is half typed, the last whole one stays: the working never collapses mid-word
+const codes = ref<number[]>(lettersOf("JAM")!);
+watch(typed, (c) => { if (c) codes.value = c; });
 const mode = ref<"make" | "rebuild">("make");
 const picked = ref<number[]>([3, 4, 5]);
 
-const made = computed(() => (codes.value ? solve(pointsOf(codes.value)) : null));
-const shards = computed(() => (codes.value ? shardsOf(codes.value) : []));
+const made = computed(() => solve(pointsOf(codes.value)));
+const shards = computed(() => shardsOf(codes.value));
 const chosen = computed(() => [...picked.value].sort((a, b) => a - b));
 const rebuilt = computed(() => (chosen.value.length === 3 && shards.value.length ? solve(chosen.value.map((x) => ({ x, y: shards.value[x] }))) : null));
 const back = computed(() => (rebuilt.value ? [0, 1, 2].map((x) => at(rebuilt.value!.curve, x)) : null));
 const backText = computed(() => (back.value ? back.value.map((y) => (y.d === 1 ? letter(y.n) : "?")).join("") : ""));
+const shownWord = computed(() => codes.value.map(letter).join(""));
 const big = computed(() => shards.value.some((y) => y < 0 || y > 256));
 
 function pick(x: number) {
@@ -34,29 +38,30 @@ const fmtCodes = (c: number[]) => c.join(" ");
 <template>
   <div class="widget curve-solve">
     <div class="readout" aria-live="polite">
-      <div class="tile"><span class="tile-label">message</span><span class="tile-value">{{ codes ? `${text} = ${fmtCodes(codes)}` : "3 letters" }}</span></div>
-      <div class="tile wide"><span class="tile-label">the curve</span><span class="tile-value">{{ made ? curveText(made.curve) : "·" }}</span></div>
+      <div class="tile"><span class="tile-label">message</span><span class="tile-value">{{ shownWord }} = {{ fmtCodes(codes) }}</span></div>
+      <div class="tile wide"><span class="tile-label">the curve</span><span class="tile-value">{{ curveText(made.curve) }}</span></div>
       <div class="tile wide"><span class="tile-label">shards, x = 0 to 5</span><span class="tile-value">{{ shards.map((y) => show({ n: y, d: 1 })).join(" ") || "·" }}</span></div>
-      <div class="tile" :class="mode === 'rebuild' ? (backText === text ? 'ok' : 'no') : ''"><span class="tile-label">rebuilt from {{ chosen.length === 3 ? `x = ${chosen.join(", ")}` : "3 shards" }}</span><span class="tile-value">{{ mode === "rebuild" ? (rebuilt ? `"${backText}"` : "can't") : "·" }}</span></div>
+      <div class="tile" :class="mode === 'rebuild' ? (rebuilt ? 'ok' : 'no') : ''"><span class="tile-label">rebuilt from {{ chosen.length === 3 ? `x = ${chosen.join(", ")}` : "3 shards" }}</span><span class="tile-value">{{ mode === "rebuild" ? (rebuilt ? `"${backText}"` : "can't") : "·" }}</span></div>
     </div>
     <div class="controls">
       <label class="num">message <input v-model="text" type="text" maxlength="3" spellcheck="false" aria-label="a three-letter message" /></label>
       <button v-for="p in PRESETS" :key="p" class="small" :class="{ chosen: text === p }" :aria-pressed="text === p" @click="set(p)">{{ p }}</button>
+      <span class="hint">{{ typed ? "" : `Three letters, each one byte: showing “${shownWord}” till then.` }}</span>
     </div>
     <div class="modes" role="group" aria-label="make the shards, or rebuild from three">
       <button class="small" :class="{ chosen: mode === 'make' }" :aria-pressed="mode === 'make'" @click="mode = 'make'">1 · make the shards</button>
       <button class="small" :class="{ chosen: mode === 'rebuild' }" :aria-pressed="mode === 'rebuild'" @click="mode = 'rebuild'">2 · rebuild from 3</button>
     </div>
 
-    <div v-if="mode === 'rebuild' && codes" class="chips" role="group" aria-label="the six shards: pick three">
+    <div v-if="mode === 'rebuild'" class="chips" role="group" aria-label="the six shards: pick three">
       <button v-for="(y, x) in shards" :key="x" class="chip" :class="{ chosen: picked.includes(x) }" :aria-pressed="picked.includes(x)" @click="pick(x)">
         <span class="chip-x">x = {{ x }}</span><span class="chip-y">{{ show({ n: y, d: 1 }) }}</span>
       </button>
     </div>
 
-    <ol v-if="codes && made" class="steps">
+    <ol class="steps">
       <template v-if="mode === 'make'">
-        <li><b>the points:</b> {{ [...text].map((ch, x) => `${ch} = ${codes![x]}`).join(", ") }}, at x = 0, 1, 2</li>
+        <li><b>the points:</b> {{ codes.map((y) => `${letter(y)} = ${y}`).join(", ") }}, at x = 0, 1, 2</li>
         <li v-for="(s, i) in made.steps" :key="i"><b>{{ s.finds }}:</b> {{ s.sum }}</li>
         <li><b>the curve:</b> {{ curveText(made.curve) }}</li>
         <li v-for="x in [3, 4, 5]" :key="x"><b>shard {{ x }}:</b> {{ reading(made.curve, x) }}</li>
@@ -72,7 +77,6 @@ const fmtCodes = (c: number[]) => c.join(" ");
         <li><b>pick {{ 3 - chosen.length }} more.</b> {{ chosen.length === 2 ? "One sum, two unknowns: choose any c and some b fits it, each curve a different message." : "Three unknowns, a, b and c, need three points." }}</li>
       </template>
     </ol>
-    <p v-else class="steps muted">Type three letters.</p>
     <p class="note">{{ big ? "Some shards here don't fit in a byte (0 to 255). JAM does the same sums on a clock (the plot above wraps them), so every shard does; the steps don't change." : "Every step is plain arithmetic: check any of it on paper." }}</p>
   </div>
 </template>
@@ -97,6 +101,6 @@ const fmtCodes = (c: number[]) => c.join(" ");
 @media (max-width: 640px) { .steps { min-height: 34em; } }
 .steps li { margin: 0; overflow-wrap: anywhere; }
 .steps b { font-family: var(--vp-font-family-base); font-weight: 600; }
-.muted { color: var(--vp-c-text-2); }
+.hint { flex: 1 1 200px; min-height: 1.5em; font-size: 13px; color: var(--vp-c-danger-1); }
 .note { margin: 8px 0 0; font-size: 13px; color: var(--vp-c-text-2); line-height: 1.5; min-height: 3em; }
 </style>

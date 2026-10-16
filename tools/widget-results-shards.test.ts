@@ -11,7 +11,7 @@ import {
 } from "../.vitepress/theme/work-result.ts";
 import type { WorkResult } from "../.vitepress/theme/work-result.ts";
 import {
-  anotherFit, curveOf, curveRuns, curveText, encodeShards, heightAt, inverse, lettersOf, mod, originalShards, P, rebuild, SIZES, valueAt, weights, wraps,
+  anotherFit, curveOf, curveRuns, curveText, encodeShards, heightAt, inverse, lettersOf, mod, originalShards, P, rangeOf, realRun, rebuild, SIZES, valueAt, weights, wraps, wrapSum,
 } from "../.vitepress/theme/shards.ts";
 import type { Shard } from "../.vitepress/theme/shards.ts";
 import { lessonText } from "./lessons.ts";
@@ -219,4 +219,29 @@ test("the curve: “JAM” is y = 74 − 19.5x + 10.5x² and shards 110, 164, 23
   const held: Shard[] = [{ x: 4, y: 57 }, { x: 5, y: 59 }];
   const other = anotherFit(held, m, SIZES.tiny);
   for (const h of held) assert.equal(mod(heightAt(curveOf(other), h.x)), h.y);
+});
+
+test("past the byte: the real curve is drawn faintly, and each wrapped shard says its sum, JAZ's 369 − 257 = 112", () => {
+  const jaz = curveOf(lettersOf("JAZ")!);
+  assert.equal(curveText(jaz), "y = 74 − 26x + 17x²");
+  const w = wraps(jaz, SIZES.tiny);
+  assert.deepEqual(w.map((x) => [x.x, x.height, x.shard]), [[5, 369, 112]]);
+  assert.deepEqual(w.map(wrapSum), ["369 − 257 = 112"]);
+  assert.deepEqual(rangeOf(jaz, 5), { lo: 0, hi: 369 });
+  // below 0, and more than once round
+  assert.deepEqual(wraps(curveOf(lettersOf("a~a")!), SIZES.tiny).map(wrapSum), ["−135 + 257 = 122", "−338 + 257 × 2 = 176"]);
+  const tilde = wraps(curveOf(lettersOf("~ ~")!), SIZES.tiny);
+  assert.equal(wrapSum(tilde.at(-1)!), "1,536 − 257 × 5 = 251");
+  // the faint curve is the real one: it meets every shard's real height, wrapped or not
+  for (const text of ["JAM", "JAZ", "a~a", "~ ~"]) {
+    const c = curveOf(lettersOf(text)!);
+    const run = realRun(c, 5);
+    for (let x = 0; x <= 5; x++) {
+      const at = run.find(([rx]) => Math.abs(rx - x) < 1e-9)!;
+      assert.equal(at[1], heightAt(c, x));
+      assert.equal(mod(at[1]), encodeShards(lettersOf(text)!, SIZES.tiny)[x]);
+    }
+    const { lo, hi } = rangeOf(c, 5);
+    assert.ok(run.every(([, y]) => y >= lo && y <= hi) && lo <= 0 && hi >= 256);
+  }
 });
