@@ -101,6 +101,6 @@ function choose(path: string) {
 .goals li.done { color: var(--vp-c-green-1); }
 @media (max-width: 640px) {
   .widget.parcel-widget { padding: 12px; }
-  .parcel-widget .readout { min-height: 230px; }
+  .parcel-widget .readout { min-height: 240px; }
 }
 </style>

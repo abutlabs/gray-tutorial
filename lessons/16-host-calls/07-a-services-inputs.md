@@ -36,6 +36,10 @@ a compact natural, the result as [lesson 3.2](../03-work-and-reports/02-work-dig
 and the trace with its length. The leading 0 says "operand": a service's inputs can also
 be transfers, which start with a 1 ([lesson 17.4](../17-accumulation/04-rounds.md)).
 
+Service 1729's one real operand, part by part:
+
+<OperandParcel />
+
 **Δ₁** (§12) gathers service s's share of a block: an operand for each digest that names
 s, report by report, in order (transfers would come first). Its gas is its free gas (the
 always-accumulate privilege, `always_acc` in the vectors) plus the gas of every one of
