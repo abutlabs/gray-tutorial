@@ -25,6 +25,8 @@ memory at o, and φ₇ becomes the item's *whole* length. So a service can ask f
 first, to learn how big the item is, and then ask again with room for it. If the memory
 there isn't writable, the machine panics.
 
+<FetchCopy />
+
 The price depends on the item (its M_Y, listed in App. I): a base, plus a rate per 1,024
 bytes *asked for*, rounded up (the Gray Paper's 𝒢). Item 0 is a flat 390, item 1 a flat
 103.
@@ -33,6 +35,8 @@ Item 0 lists the constants in a fixed order, each in a fixed number of bytes: th
 deposits (B_I, B_L, B_S) in 8 bytes each, then C (the cores) in 2, D and E in 4, and so on
 to Y. Nine of them differ between tiny and full, so `Config` grows to hold the five it
 didn't have yet.
+
+<ProtocolConstants />
 
 ## The tests
 
