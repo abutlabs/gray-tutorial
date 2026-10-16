@@ -39,6 +39,16 @@ bit first, so the bitfield takes ⌈C/8⌉ bytes: **1 byte on tiny, 43 on full**
 that reads one byte where there are 43 would misread every assurance, starting with the
 first one's validator index.
 
+Which cores does a validator assure? All of them at once. As [lesson 3.3](../03-work-and-reports/03-a-work-report.md#the-big-picture)
+showed, every validator holds one shard of each report waiting on any core, so bit c says
+"I hold my shard of core c's report". It knows which cores have a report waiting because
+every validator keeps the same state. Could it lie? A bit set for a core with nothing
+waiting, or a bad signature, makes the whole block invalid ([lesson 11.3](../11-assurances/03-bad-assurances.md)). A bit for a
+shard it doesn't really hold can't be caught on the chain, and that's why a report needs
+more than two-thirds of the validators (5 of 6, 683 of 1,023): even if a third lied, the
+rest hold enough to rebuild it. Either way, every node counts the same bits by the same
+rule and reaches the same state. A lie can make the state wrong, never inconsistent.
+
 ## The configuration
 
 **New file** `src/config.ts`
