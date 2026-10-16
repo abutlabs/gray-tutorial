@@ -113,6 +113,8 @@ The numbers, by hand: a new service with 20 bytes of code keeps 2 items and 81 +
 bytes, so its minimum balance is 100 + 2 × 10 + 101 = 221. Service 0 has 1000 and must keep
 170, so it can pay. With 900 bytes of code the new one would need 1101: `CASH`.
 
+<NewService />
+
 Then whole blocks:
 
 **Replace in** `test/accumulate.test.ts`
