@@ -1,11 +1,10 @@
 # Bad guarantees
 
 A guarantee is a promise with signatures on it: "we, the validators on this core, vouch
-for this report". Lessons [12.1](./01-who-guarantees-what.md) to [12.3](./03-onto-the-cores.md) believed every one. A real block can carry a
-guarantee signed by the wrong validators, signed too long ago, signed by someone who's
-been banned, or aimed at a core that's busy. This lesson writes down the rules a guarantee
-must keep, the first of two lessons on what makes a reports block invalid. [Lesson 12.5](./05-bad-reports.md)
-checks the reports themselves.
+for this report". Lessons [12.1](./01-who-guarantees-what.md) to [12.3](./03-onto-the-cores.md) believed every one. A real block can carry one
+signed by the wrong validators, too long ago, by someone banned, or aimed at a busy core.
+This lesson writes down the rules a guarantee must keep; [lesson 12.5](./05-bad-reports.md) checks the
+reports themselves.
 
 ## New words
 
@@ -49,6 +48,8 @@ Rule 2 has a twist the Gray Paper spells out: a core that isn't active now is re
 if the guarantee cites a slot from the rotation before, when it *was* active. And rule 7
 in symbols is R(⌊τ′/R⌋ − 1) ≤ slot ≤ τ′. On tiny, in a block at slot 13 (the rotation of
 slots 12 to 15), a guarantee from slot 8 is fine and one from slot 7 is too old.
+
+<GuaranteeWindow />
 
 ## The tests
 
