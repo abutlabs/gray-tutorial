@@ -1,10 +1,9 @@
 # Bad assurances
 
 So far your client has believed every assurance it was handed. A real block can carry a
-broken one: signed with the wrong key, anchored on the wrong block, claiming a core that
-has nothing on it. A client must refuse such a block outright. This lesson writes down
-the five rules an assurance must keep, and checks them against every assurances test
-vector, including the six on each size that are meant to fail.
+broken one: signed with the wrong key, anchored on the wrong block, claiming a core with
+nothing on it. This lesson writes down the five rules an assurance must keep and checks
+them against every assurances vector, including the six on each size meant to fail.
 
 ## New words
 
@@ -41,6 +40,8 @@ unsorted list. Fair enough, since the Gray Paper's own type for an assurance (an
 *below |κ|*) makes such an assurance not even an assurance. The other choice is this
 client's own: the signatures come last, because checking one is far slower than
 comparing two numbers, so it's worth doing only once everything cheap has passed.
+
+<AssuranceRules />
 
 ## The tests
 
@@ -281,9 +282,8 @@ val_set_size_change_clears_pending_reports-1: accepted
 reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=assurance-check-1791733621501
 ```
 
-Eleven vectors, eleven verdicts, and no "the vector says" anywhere: your rules and the
-vectors agree on every one. `npm run check-assurances full` does the same for the full
-vectors. The *Assurance checks* panel keeps the list.
+Eleven vectors, eleven verdicts, no "the vector says" anywhere. `npm run check-assurances
+full` does the same for the full vectors. The *Assurance checks* panel keeps the list.
 
 ![Assurance checks panel](./images/03-assurance-checks.png)
 
