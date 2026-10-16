@@ -38,6 +38,7 @@ import ExtrinsicCommit from "./ExtrinsicCommit.vue";
 import SignCheck from "./SignCheck.vue";
 import HeaderMap from "./HeaderMap.vue";
 import NumberKinds from "./NumberKinds.vue";
+import ReaderWalk from "./ReaderWalk.vue";
 import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import CheckYourself from "./CheckYourself.vue";
@@ -64,6 +65,7 @@ export default {
     app.component("CoreBitfield", CoreBitfield); // 4.2
     app.component("SlotClock", SlotClock); // 0.4
     app.component("NumberKinds", NumberKinds); // 1.2
+    app.component("ReaderWalk", ReaderWalk); // 2.3
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1

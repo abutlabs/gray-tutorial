@@ -1,8 +1,8 @@
 # Writer and Reader
 
 A block header has ten fields. A work-report has eight, some of them lists of other
-structures. Gluing byte arrays by hand and counting offsets for each would bury every
-structure in bookkeeping. Two little helpers make the bookkeeping disappear:
+structures. Gluing byte arrays by hand and counting offsets would bury every structure in
+bookkeeping. Two little helpers make it disappear:
 
 - a **Writer**, which collects the pieces of an encoding as you write them;
 - a **Reader**, which walks through bytes front to back, keeping its own place.
@@ -105,7 +105,7 @@ export class Writer {
 
 A Writer is a list of pieces, and `finish` glues them with [lesson 2.2](./02-compact-naturals.md)'s ⌢. Names
 starting with `#` are private: only the class's own methods can touch them, and
-JavaScript itself enforces it.
+JavaScript enforces it.
 
 So where does `w.fixed(4807n, 2)` go? Nothing comes back from it: the two bytes go onto
 the end of the Writer's own list. The test's three calls, then `finish`:
@@ -165,8 +165,14 @@ The whole trick is `#at`:
 ```
 
 Every read starts at `#at` and moves it along, so nobody calling the Reader ever counts a
-byte again. (`slice` hands back a copy, so what you read can't
-change under your feet if someone reuses the input.)
+byte again. (`slice` hands back a copy, so what you read can't change under your feet if
+someone reuses the input.)
+
+Walk it. Read the eight bytes back in the Writer's order and the three values return.
+Then reset and read a natural first: nothing in a byte says what it is, so the Reader
+takes three bytes as 491,538, and every read after starts in the wrong place.
+
+<ReaderWalk />
 
 **Run**
 
