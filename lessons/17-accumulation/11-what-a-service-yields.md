@@ -49,6 +49,8 @@ and so does your client.
 
 ![M_B over three items: split as two and one; the left pair hashed under "node", then the root hashes "node", that, and the third item](./images/11-well-balanced.svg)
 
+<WellBalanced />
+
 ## The tests
 
 First M_B, by hand:
