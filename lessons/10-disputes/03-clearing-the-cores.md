@@ -21,6 +21,10 @@ A good verdict leaves its report where it is. The † is the Gray Paper's mark f
 partway through the block, here just after the judgments: the assurances ([Part 11](../11-assurances/index.md)) make
 ρ‡ from it, and the guarantees ([Part 12](../12-guarantees/index.md)) make ρ′, later in the same block.
 
+Two cores, two reports on trial: judge them and see ρ†.
+
+<ClearCores />
+
 ## The cores
 
 ρ gets its own file, since [Part 11](../11-assurances/index.md) and [Part 12](../12-guarantees/index.md) will lean on it too:
