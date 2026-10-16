@@ -40,10 +40,11 @@ by now: the encoding's order wins.)
 
 A **ticket** (§6) is an anonymous lottery entry. Every epoch, validators submit tickets
 for the right to author blocks in the next one, and the best tickets win slots. Each
-ticket says which of its owner's tries it is (`attempt`, one byte), and carries a **ring
-VRF proof**: 784 bytes of cryptography that prove *some* validator made it without
-revealing *which*. Checking those proofs is for the rest of [Part 8](../08-safrole/index.md), still to be
-written. Today they're just 784 bytes.
+ticket says which of its owner's tries it is (`attempt`, one byte), and carries a *ring
+VRF proof*: 784 bytes that prove *one of* the validators made it without revealing
+*which*, so nobody knows who won a slot until it comes. You won't write that cryptography:
+your client borrows it from a library ([Cryptography we use](../cryptography.md#bandersnatch-ring-vrf)), and
+[lesson 8.8](../08-safrole/08-the-ring-root.md) checks every proof with it. Today they're just 784 bytes.
 
 A *preimage* is the data behind a hash. Services can ask for data by its hash, and
 anyone can then deliver it in a block: the requesting service's id (ℰ₄) and the data

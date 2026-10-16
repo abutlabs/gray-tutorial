@@ -244,3 +244,12 @@ html.concepts .vp-doc p.snippet-label:not(.output)::before { content: "▸ "; co
 html.concepts .vp-doc p.snippet-label.shown { opacity: 1; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
 html.concepts .vp-doc p.snippet-label.shown::before { content: "▾ "; }
 html.concepts .vp-doc p.snippet-label a { pointer-events: none; }
+
+/* The top bar's eight links need 634 px, which a bar 768 to 999 px wide hasn't got beside the
+   title and search: the page scrolled sideways. Below 1,000 px they fold into the ☰ menu,
+   as VitePress does below 768 px. */
+@media (min-width: 768px) and (max-width: 999px) {
+  .VPNavBarMenu { display: none !important; }
+  .VPNavBarHamburger { display: flex !important; }
+  .VPNavScreen { display: block !important; }
+}

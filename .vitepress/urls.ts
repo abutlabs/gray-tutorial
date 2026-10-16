@@ -134,6 +134,7 @@ export const PUBLISHED: string[] = [
   "19-block-import/",
   "glossary",
   "symbols",
+  "cryptography",
   "",
   "scoreboard",
   "demo",
