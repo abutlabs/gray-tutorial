@@ -21,7 +21,7 @@ albert(md);
 const lessons = readParts().flatMap((p) => p.lessons)
   .map((l) => ({ id: l.id, file: l.file, text: readFileSync(join(LESSONS, l.file), "utf8") }));
 
-type Perch = { kind: "fails" | "scoreboard" | "break" | "question"; face: Face };
+type Perch = { kind: "fails" | "scoreboard" | "break" | "question" | "says"; face: Face };
 
 /** Every Albert on a lesson, in reading order, and what he's sitting on. */
 function perches(file: string, text: string): Perch[] {
@@ -35,6 +35,7 @@ function perches(file: string, text: string): Perch[] {
       assert.ok(face, `${file}: a check with no Albert`);
       found.push({ kind: "question", face });
     }
+    if (t.type === "blockquote_open" && t.meta?.albert) found.push({ kind: "says", face: t.meta.albert.face });
     if (t.type !== "fence" || !t.meta?.albert) continue;
     const label = tokens[i - 2]?.content ?? "";
     const kind = label === "**Run, expect it to fail**" ? "fails"
@@ -52,7 +53,7 @@ const count = (kind: Perch["kind"]) => all.flatMap((l) => l.perches).filter((p) 
 test("Albert's face: the tongue for the scoreboard, a mix elsewhere, the same every build", () => {
   for (let n = 0; n < 20; n++) {
     assert.equal(albertFor("scoreboard", "a.md", n).face, "tongue");
-    for (const moment of ["fails", "break", "question"] as const) {
+    for (const moment of ["fails", "break", "question", "says"] as const) {
       assert.ok(MIXED.includes(albertFor(moment, "a.md", n).face), `${moment} ${n}`);
       assert.deepEqual(albertFor(moment, "a.md", n), albertFor(moment, "a.md", n));
     }
@@ -91,4 +92,13 @@ test("lesson 0.1 meets every face, as his pictures describe it, under the headin
   for (const face of FACES) {
     assert.ok(intro.includes(`![${LOOKS[face]}](./images/01-albert-${face}.svg)`), `0.1 shows ${face}`);
   }
+});
+
+test("a quote of his, > **Albert:** …, has him beside it saying it; lesson 3.3's is Knowledge = Truth, not Trust", () => {
+  const html = md.render("> **Albert:** Check it yourself.\n", { relativePath: "03-work-and-reports/03-x.md" });
+  assert.match(html, /^<blockquote class="albert-says"><a class="albert" href="\.\.\/00-start\/01-what-you-will-build#albert" title="Check it yourself\."><img src="\.\.\/00-start\/images\/01-albert-\w+\.svg" alt="Albert: Check it yourself\."[^>]*><\/a><p><strong>Albert:<\/strong> Check it yourself\.<\/p>\n<\/blockquote>/);
+  assert.equal(md.render("> Just a quote.\n", { relativePath: "a.md" }), "<blockquote>\n<p>Just a quote.</p>\n</blockquote>\n");
+  const report = all.find((l) => l.id === "3.3")!;
+  assert.match(report.text, /^> \*\*Albert:\*\* Knowledge = Truth, not Trust\.$/m);
+  assert.equal(report.perches.filter((p) => p.kind === "says").length, 1);
 });

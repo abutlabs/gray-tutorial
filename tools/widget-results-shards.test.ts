@@ -178,7 +178,7 @@ test("Lagrange's weights pick out each point, and sum to 1", () => {
 test("6 shards and any 3 on tiny, 1,023 and any 342 on full: the lesson's numbers, and the Gray Paper's R(v)", () => {
   const spec = /6 shards on tiny, 1,023 on full/;
   assert.match(REPORT, spec);
-  assert.match(REPORT, /any 342 of the 1,023\s+on full/);
+  assert.match(REPORT, /any third plus one: 3 on tiny, 342 on full/);
   for (const text of [REPORT, GLOSSARY]) {
     const m = /([\d,]+) shards on full, any ([\d,]+) of\s+which\s+will do; on tiny, (\d+), any (\d+)\./.exec(text);
     assert.ok(m, "the erasure coding entry's example");
@@ -191,18 +191,17 @@ test("6 shards and any 3 on tiny, 1,023 and any 342 on full: the lesson's number
   assert.equal((1022 / originalShards(1022)).toFixed(1), "4.5", "and 1,022's rate is about 1:4.5");
 });
 
-test("the curve: “135” is y = 49 + 2x and shards 55, 57, 59; JAM bends; the drawing passes through every shard", () => {
+test("the curve: “JAM” is y = 74 − 19.5x + 10.5x² and shards 110, 164, 239; the drawing passes through every shard", () => {
   const plain = REPORT.replace(/\s+/g, " ");
-  const m = lettersOf("135")!;
-  assert.deepEqual(m, [49, 51, 53]);
-  assert.match(plain, /"135": its bytes are 49, 51 and 53/);
-  assert.equal(curveText(curveOf(m)), "y = 49 + 2x");
-  assert.match(plain, /the straight line y = 49 \+ 2x/);
-  assert.deepEqual(encodeShards(m, SIZES.tiny).slice(3), [55, 57, 59]);
-  assert.match(plain, /at x = 3, 4 and 5: 55, 57 and 59/);
-  const jam = curveOf(lettersOf("JAM")!);
-  assert.equal(curveText(jam), "y = 74 − 19.5x + 10.5x²");
-  assert.match(plain, /Type JAM and the line bends into y = 74 − 19\.5x \+ 10\.5x²/);
+  const m = lettersOf("JAM")!;
+  assert.deepEqual(m, [74, 65, 77]);
+  assert.match(plain, /"JAM": its bytes are 74, 65 and 77/);
+  assert.equal(curveText(curveOf(m)), "y = 74 − 19.5x + 10.5x²");
+  assert.match(plain, /it's y = 74 − 19\.5x \+ 10\.5x²: down from 74 to 65, then up to 77/);
+  assert.deepEqual(encodeShards(m, SIZES.tiny).slice(3), [110, 164, 239]);
+  assert.match(plain, /at x = 3, 4 and 5: 110, 164 and 239/);
+  assert.match(plain, /The three left, 110, 164 and 239, lie on only one curve/);
+  assert.doesNotMatch(plain, /"135"/, "the flat example is gone: a straight line hides the curve");
   for (const text of ["135", "JAM", "a~a", "~ ~", "\u0000ÿ\u0000"]) {
     const message = lettersOf(text)!;
     const curve = curveOf(message);

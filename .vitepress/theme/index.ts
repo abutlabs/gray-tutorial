@@ -33,6 +33,8 @@ import GasMeter from "./GasMeter.vue";
 import ImportWaves from "./ImportWaves.vue";
 import ResultTag from "./ResultTag.vue";
 import ShardRebuild from "./ShardRebuild.vue";
+import ShardJourney from "./ShardJourney.vue";
+import CurveSolve from "./CurveSolve.vue";
 import HashAvalanche from "./HashAvalanche.vue";
 import ExtrinsicCommit from "./ExtrinsicCommit.vue";
 import SignCheck from "./SignCheck.vue";
@@ -141,6 +143,8 @@ export default {
     app.component("VectorMap", VectorMap); // 2.6
     app.component("ResultTag", ResultTag); // 3.2
     app.component("ShardRebuild", ShardRebuild); // 3.3
+    app.component("ShardJourney", ShardJourney); // 3.3
+    app.component("CurveSolve", CurveSolve); // 3.3
     app.component("CoreBitfield", CoreBitfield); // 4.2
     app.component("SlotClock", SlotClock); // 0.4
     app.component("NumberKinds", NumberKinds); // 1.2

@@ -555,6 +555,15 @@ the pieces, plus one, can rebuild it all. *Example:* 1,023 shards on full, any 3
 will do; on tiny, 6, any 3.
 ([3.3](./03-work-and-reports/03-a-work-report.md))
 
+**Erasure root.** One hash that vouches for every validator's shard: the top of a Merkle
+tree over the shards' hashes, so one shard can be checked without the rest. *Example:* the
+full work-report vector's `0x7af11fda…`.
+([3.3](./03-work-and-reports/03-a-work-report.md))
+
+**Shamir's secret sharing.** Erasure coding's twin for secrets: a secret cut into shares
+so that enough of them reveal it and fewer reveal nothing. *Example:* a wallet's seed
+backed up as any 3 of 6 cards. ([3.3](./03-work-and-reports/03-a-work-report.md))
+
 **Work-report.** A core's statement about one package: its digests, and enough detail to
 check and fetch everything. ([3.3](./03-work-and-reports/03-a-work-report.md))
 

@@ -1,14 +1,16 @@
 <!-- The concepts-only switch, at the top of every lesson (concepts.ts). -->
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRoute } from "vitepress";
-import { conceptsOn, setConcepts } from "./concepts.ts";
+import { conceptsOn, setConcepts, showInAddress } from "./concepts.ts";
 
 const route = useRoute();
 // lessons only: their addresses are a part's folder, then a numbered lesson
 const isLesson = computed(() => /\/\d\d-[^/]+\/\d\d-/.test(route.path));
 const on = ref(false);
-onMounted(() => { on.value = conceptsOn(); });
+onMounted(() => { on.value = conceptsOn(); showInAddress(on.value); });
+// moving to another page drops the address's ?concepts: put it back, so any page can be shared folded
+watch(() => route.path, () => showInAddress(conceptsOn()), { flush: "post" });
 
 function toggle() {
   on.value = !on.value;
@@ -22,7 +24,7 @@ function toggle() {
       <span class="track" :class="{ on }"><span class="knob" /></span>
       Concepts only
     </button>
-    <span class="hint">{{ on ? "Code is folded: tap a snippet's label to open it." : "Fold the code, and read the ideas first." }}</span>
+    <span class="hint">{{ on ? "Code is folded: tap a snippet's label to open it. Copy the address to share it this way." : "Fold the code, and read the ideas first." }}</span>
   </div>
 </template>
 

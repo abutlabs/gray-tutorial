@@ -6,6 +6,7 @@
 //   a Run, expect it to fail block                a mix of his other faces
 //   a Break it section's last code block
 //   a check (checks.ts)                           the same mix, inside the check's box
+//   a quote of his, "> **Albert:** …"              the same mix, beside his words
 //
 // The words stand without him: VS Code's preview shows none of this, and neither does the
 // e-book, which leaves out the code he sits on.
@@ -17,6 +18,7 @@ import { albertFor, type Face, type Moment } from "./theme/albert.ts";
 type Albert = { face: Face; quip: string };
 
 const SCOREBOARD = /^npm run scoreboard$/m;
+const SAYS = /^\*\*Albert:\*\* (.+)$/;
 const BREAK_IT = /^Break it\b/;
 
 /** Albert, as a link to where he's introduced, from a page at `relativePath`. The paths are
@@ -45,7 +47,9 @@ export function albert(md: MarkdownIt): void {
     };
     for (let i = 0; i < t.length; i++) {
       const token = t[i];
-      if (token.type === "heading_open") {
+      if (token.type === "blockquote_open" && lasair === 0 && t[i + 2]?.type === "inline" && SAYS.test(t[i + 2].content)) {
+        token.meta = { ...token.meta, albert: { ...next("says"), quip: SAYS.exec(t[i + 2].content)![1] } };
+      } else if (token.type === "heading_open") {
         endSection();
         breaking = BREAK_IT.test(t[i + 1].content);
       } else if (token.type === "html_block") {
@@ -67,6 +71,14 @@ export function albert(md: MarkdownIt): void {
     }
     endSection();
   });
+
+  // beside a quote of his, his words on hover too
+  const quote = md.renderer.rules.blockquote_open ?? ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options));
+  md.renderer.rules.blockquote_open = (tokens, idx, options, env, self) => {
+    const albert: Albert | undefined = tokens[idx].meta?.albert;
+    if (!albert) return quote(tokens, idx, options, env, self);
+    return `<blockquote class="albert-says">${albertTag(env?.relativePath ?? "", albert)}`;
+  };
 
   // inside the block's own box, before its copy button: absolute, so he takes no room
   const fence = md.renderer.rules.fence!;

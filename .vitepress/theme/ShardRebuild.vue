@@ -20,7 +20,7 @@ const n = computed(() => SIZES[size.value]);
 const k = computed(() => originalShards(n.value)); // 3 on tiny, 342 on full
 
 // tiny: real shards of a real message
-const text = ref("135");
+const text = ref("JAM");
 const message = computed(() => {
   const m = lettersOf(text.value);
   return m && m.length === 3 ? m : null;

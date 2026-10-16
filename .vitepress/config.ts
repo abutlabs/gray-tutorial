@@ -12,7 +12,7 @@ import { checkBlocks } from "./checks.ts";
 import { albert } from "./albert.ts";
 import { lineRanges, linesOf, stepView } from "./whole.ts";
 import { writeEpub } from "./epub.ts";
-import { KEY as CONCEPTS_KEY } from "./theme/concepts.ts";
+import { HEAD as CONCEPTS_HEAD } from "./theme/concepts-link.ts";
 import { unitCodes } from "./units.ts";
 import { snippetNumbers, wholeFiles } from "../tools/snapshots.ts";
 import type { Snapshot } from "../tools/snapshots.ts";
@@ -50,9 +50,10 @@ export default defineConfig({
   // Grafana and the stack are on localhost on purpose; every other link must resolve
   ignoreDeadLinks: [/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/],
   lastUpdated: false,
-  // concepts-only mode (theme/concepts.ts), applied before the page draws so code never flashes
+  // concepts-only mode (theme/concepts.ts), from the link or the saved choice, applied
+  // before the page draws so code never flashes
   head: [
-    ["script", {}, `try{if(localStorage.getItem("${CONCEPTS_KEY}")==="on")document.documentElement.classList.add("concepts")}catch(e){}`],
+    ["script", {}, CONCEPTS_HEAD],
     // the professor in the browser tab; head links don't get the base added for them
     ["link", { rel: "icon", type: "image/svg+xml", href: `${base}logo.svg` }],
   ],

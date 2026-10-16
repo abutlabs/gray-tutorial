@@ -38,6 +38,8 @@ lasair
 ocaml
 polkadot
 pushgateway
+shamir
+trezor
 
 # software
 async

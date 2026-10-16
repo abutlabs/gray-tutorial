@@ -142,6 +142,9 @@
 /* in a check, he sits in the box's corner, the tiles kept clear of him */
 .vp-doc .check-yourself { position: relative; }
 .vp-doc .check-yourself > a.albert { position: absolute; top: 8px; right: 12px; }
+.vp-doc blockquote.albert-says { display: flex; align-items: center; gap: 14px; }
+.vp-doc blockquote.albert-says > a.albert { flex: none; }
+.vp-doc blockquote.albert-says > p { margin: 0; font-size: 17px; }
 .vp-doc .check-yourself:has(> a.albert) .readout { padding-right: 72px; }
 @media (prefers-reduced-motion: reduce) { .vp-doc a.albert img { transition: none; } }
 

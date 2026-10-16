@@ -22,8 +22,50 @@ are. Switch from tiny to full and only one part changes.
 - **Bundle.** A work-package with everything needed to refine it again: its extrinsics,
   and the segments it imports, with their proofs. *Example:* its length is in a report's
   `package_spec`.
+- **Erasure root.** One hash that vouches for every validator's shard: the top of a tree
+  of hashes (a Merkle tree) over them, so one shard can be checked without the rest.
+  *Example:* the full report's `0x7af11fda…`.
+- **Shamir's secret sharing.** Erasure coding's twin for secrets: a secret cut into shares
+  so that enough of them reveal it and fewer reveal nothing. *Example:* a wallet's seed
+  backed up as any 3 of 6 cards.
 
-All four are in the [glossary](../glossary.md).
+All six are in the [glossary](../glossary.md).
+
+## The big picture
+
+A report says a core did some work. Before the chain acts on it, the bundle behind it
+must be somewhere anyone can fetch it, so auditors can redo the work and catch a lie. But
+nobody should have to store every core's bundles. So JAM spreads each one across all the
+validators:
+
+1. **Cut.** The validators working the core (its *guarantors*) cut the bundle into one
+   shard per validator: 6 on tiny, 1,023 on full.
+2. **Commit.** They hash each shard and build a Merkle tree of the hashes: each box is the
+   hash of the two below it. The top one, the erasure root, goes in the report.
+3. **Send.** Each validator gets its shard, plus the hashes beside its path up the tree.
+   It hashes its way up; if it reaches the erasure root, the shard is genuine.
+4. **Say so.** Each validator then signs an *assurance*, "I hold my shard". Once more than
+   two-thirds have (5 of 6, 683 of 1,023), the report is *available*; [lesson 11.2](../11-assurances/02-timeouts.md)
+   walks one across a core.
+5. **Rebuild.** An auditor fetches shards, checks each against the root, and rebuilds the
+   bundle from any third plus one: 3 on tiny, 342 on full.
+
+Why trust 683 yeses when some may be lies? Even if a third of all validators lied, 341,
+then 683 − 341 = 342 really hold their shard: exactly enough to rebuild. On tiny,
+5 − 2 = 3.
+
+Tap a validator to see its check; tap it again to take it offline or make it lie.
+
+<ShardJourney />
+
+So is erasure coding a Merkle tree? No: two tools, stacked. Erasure coding makes the
+pieces, so that a third plus one rebuild the whole. The Merkle tree fingerprints them, so
+anyone can check one piece without the rest. [Lesson 5.2](../05-hashing-and-signatures/02-the-extrinsic-hash.md) builds a Merkle commitment.
+
+A validator's piece has two parts: its shard of the bundle, kept until the report is
+audited, and its shard of each segment the package exported, kept 28 days so later
+packages can import them. The erasure root covers both. (The widget is a miniature: a real
+leaf is the bundle shard's hash followed by a root of the segment shards.)
 
 ## What the Gray Paper says
 
@@ -42,34 +84,72 @@ hash, the length of its *bundle* (the package plus everything needed to re-run i
 **erasure root** with the number of **erasure shards**, and the root and count of the
 segments it exported.
 
-What are erasure shards? Before a report counts, its bundle is chopped into pieces, one
-for every validator, cut so cleverly that a third of them, plus one, can rebuild the whole
-thing: any 342 of the 1,023 on full, any 3 of the 6 on tiny.
-Hence `erasure_shards`: one per validator. Which means, for the first time, tiny and full
-vectors differ: 6 shards on tiny, 1,023 on full.
-
-How can a few pieces hold the whole? The same idea in miniature, not JAM's exact code.
-Take the message "135": its bytes are 49, 51 and 53. Draw them as dots at x = 0, 1 and 2.
-Through any three dots passes exactly one curve, `y = a + bx + cx²`, and through these it's
-the straight line y = 49 + 2x (c is 0, because the bytes climb evenly). Read that line on
-at x = 3, 4 and 5: 55, 57 and 59. Six numbers, one per validator: those are the shards.
-
-Now lose any three, even 49, 51 and 53, the message itself. The three left, 55, 57 and
-59, lie on only one curve, y = 49 + 2x, and at x = 0, 1 and 2 it gives 49, 51 and 53
-back. Lose four and two dots are left, and two dots lie on many curves, each reading a
-different message. There's no telling which.
-
-Take validators offline and press *rebuild*. Type JAM and the line bends into
-y = 74 − 19.5x + 10.5x².
-
-<ShardRebuild />
-
-Where does a report go once it's made? Onto a core, where it waits for validators to say
-they hold their pieces, and then either on to the chain or off the core when time runs out.
-[Lesson 11.2](../11-assurances/02-timeouts.md) lets you walk one across a core, block by block.
+`erasure_shards` is one per validator, so for the first time tiny and full vectors
+differ: 6 shards on tiny, 1,023 on full. The exports root is a second Merkle root,
+over the exported segments themselves: a package that imports one later checks it there.
 
 Two fields are compact naturals: `core_index`, and `auth_gas_used`. Remember [lesson 1.2](../01-bytes-and-numbers/02-numbers.md)?
 `auth_gas_used` is the field where lasair's signed-number bug lived.
+
+How can a few pieces hold the whole? The same idea in miniature, not JAM's exact code.
+Take the message "JAM": its bytes are 74, 65 and 77. Draw them as dots at x = 0, 1 and 2.
+Through any three dots passes exactly one curve, `y = a + bx + cx²`, and through these it's
+y = 74 − 19.5x + 10.5x²: down from 74 to 65, then up to 77. Read the curve on at x = 3,
+4 and 5: 110, 164 and 239. Six numbers, one per validator: those are the shards.
+
+Now lose any three, even 74, 65 and 77, the message itself. The three left, 110, 164 and
+239, lie on only one curve, the same one, and at x = 0, 1 and 2 it gives 74, 65 and 77
+back. Lose four and two dots are left, and two dots lie on many curves, each reading a
+different message. There's no telling which.
+
+Take validators offline and press *rebuild*, or type a message of your own.
+
+<ShardRebuild />
+
+### The curve, worked by hand
+
+Don't take the curve on trust: it's school algebra, and every step can be checked.
+
+Between x = p and x = q, the curve `y = a + bx + cx²` climbs (y at q − y at p) ÷ (q − p)
+per step, and that always comes to b + c × (p + q), since `cq² − cp² = c × (q − p) × (q + p)`.
+For "JAM", from x = 0 to 1 it climbs 65 − 74 = −9, which is b + c; from 1 to 2 it climbs
+77 − 65 = 12, which is b + 3c. The two differ by 2c, so c = 21 ÷ 2 = 10.5. Then
+b = −9 − 10.5 = −19.5, and a is the height at 0: 74.
+
+Rebuilding is the same sums on whichever three shards are left. From 110, 164 and 239 at
+x = 3, 4 and 5, it climbs 54, then 75: b + 7c and b + 9c. They differ by 2c, so c = 21 ÷ 2 = 10.5
+again, and the same curve comes back. Make the shards, then rebuild from any three:
+
+<CurveSolve />
+
+That's how JAM works all the way up: a validator doesn't trust its shard, it checks it
+against the erasure root; an auditor doesn't trust a report, it rebuilds the bundle and
+runs it again.
+
+> **Albert:** Knowledge = Truth, not Trust.
+
+### Shamir's secret sharing: the same curve, the other way round
+
+You may know Shamir's secret sharing: it's how some hardware wallets back up a seed
+phrase as any 3 of 6 cards (Trezor calls it *Shamir Backup*). Same trick: a curve through
+points, and any 3 points pin it down. But it wants the opposite thing.
+
+Shamir puts one secret at x = 0 and rolls dice for the rest. Hide 49, roll 7 and 3, and
+the curve is y = 49 + 7x + 3x². The six shares are its heights at x = 1 to 6: 59, 75, 97,
+125, 159 and 199. Any 3 pin the curve down, and at x = 0 it gives 49 back. Any 2 say
+nothing at all: for every possible secret, a curve runs through it and those two points.
+Above, that was the problem. For Shamir, it's the point.
+
+| | Erasure coding | Shamir's secret sharing |
+| --- | --- | --- |
+| Wants | the data back, even with most pieces gone | the secret hidden until enough shares meet |
+| The curve carries | the data itself: the first shards are the message | one secret, and random numbers |
+| Each piece | a slice: a third of "JAM"; on full, 1/342 of the bundle | as big as the whole secret |
+| A few pieces | show part of the data, in plain sight | show nothing |
+
+Neither is encryption: there's no key. Shamir's secrecy comes from the dice alone, and no
+amount of computing power gets round it. Erasure coding has no secrecy at all: shard 0 of
+"JAM" is 74, the "J" itself. The chain wants none: auditors must be able to read a bundle.
 
 ## The test
 
@@ -242,6 +322,18 @@ you get right by reading it.
 - [x] No: it takes 3, and more than one bundle fits the same 2 shards
   > Yes: as with the curve, any 3 points fix it, but 2 points fit many curves. With 3
   > validators left, it rebuilds.
+
+**683 of 1,023 validators say they hold their shard, and 341 of them are lying. Can the bundle be rebuilt?**
+
+- [ ] No: a third of them lied, so the data is lost
+  > No: the liars don't matter as long as enough others tell the truth. 683 − 341 = 342
+  > really hold a shard.
+- [x] Yes: the other 342 hold real shards, and any 342 rebuild it
+  > Yes: that's why it takes more than two-thirds. Even with a third lying, a third plus
+  > one is left.
+- [ ] Only once the liars' shards are checked against the erasure root
+  > No: the auditor doesn't need the liars at all. It checks every shard it fetches
+  > against the root, and the 342 real ones are enough.
 
 **What does erasure coding buy?**
 

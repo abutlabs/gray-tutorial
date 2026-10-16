@@ -22,7 +22,7 @@ export const LOOKS: Record<Face, string> = {
 };
 
 /** Where Albert shows up. */
-export type Moment = "scoreboard" | "fails" | "break" | "question";
+export type Moment = "scoreboard" | "fails" | "break" | "question" | "says";
 
 /** What he says there, on hover and to a screen reader. */
 export const QUIPS: Record<Moment, string[]> = {
@@ -30,6 +30,7 @@ export const QUIPS: Record<Moment, string[]> = {
   fails: ["Red on purpose.", "Oh! That's meant to happen.", "Watch it fail.", "Red already?"],
   break: ["Go on, break it.", "Oops, on purpose.", "What could go wrong?"],
   question: ["Your turn.", "Think it over.", "Hmm, which one?", "Prove it."],
+  says: ["Albert says."], // a quote of his own: albert.ts shows his words instead
 };
 
 /** Albert at the nth moment on a page: the same every build, and never the same face twice
