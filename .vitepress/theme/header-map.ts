@@ -52,8 +52,8 @@ const SHARED = {
     "0x31dc5b1e9423eccff9bccd6549eae8034162158000d5be9339919cc03d14046e6431c14cbb172b3aed702b9e9869904b1f39a6fe1f3e904b0fd536f13e8cac496682e1c81898e88e604904fa7c3e496f9a8771ef1102cc29d567c4aad283f7b0",
 };
 
-/** header_0's epoch mark validators: [bandersnatch, ed25519]. */
-const VALIDATORS = [
+/** header_0's epoch mark validators: [bandersnatch, ed25519]. The vectors' one cast of six, which validator-key.ts reads too. */
+export const VALIDATORS = [
   ["0xff71c6c03ff88adb5ed52c9681de1629a54e702fc14729f6b50d2f0a76f185b3", "0x4418fb8c85bb3985394a8c2756d3643457ce614546202a2f50b093d762499ace"],
   ["0xdee6d555b82024f1ccf8a1e37e60fa60fd40b1958c4bb3006af78647950e1b91", "0xad93247bd01307550ec7acd757ce6fb805fcf73db364063265b30a949e90d933"],
   ["0x9326edb21e5541717fde24ec085000b28709847b8aab1ac51f84e94b37ca1b66", "0xcab2b9ff25c2410fbe9b8a717abb298c716a03983c98ceb4def2087500b8e341"],

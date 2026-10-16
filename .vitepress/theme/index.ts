@@ -46,6 +46,10 @@ import VoteCount from "./VoteCount.vue";
 import MaybeExactly from "./MaybeExactly.vue";
 import BlockStrip from "./BlockStrip.vue";
 import HashChain from "./HashChain.vue";
+import ValidatorKeyMap from "./ValidatorKeyMap.vue";
+import EpochTurn from "./EpochTurn.vue";
+import ShuffleSteps from "./ShuffleSteps.vue";
+import EntropyStairs from "./EntropyStairs.vue";
 import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import CheckYourself from "./CheckYourself.vue";
@@ -80,6 +84,10 @@ export default {
     app.component("MaybeExactly", MaybeExactly); // 4.5
     app.component("BlockStrip", BlockStrip); // 4.7
     app.component("HashChain", HashChain); // 5.1
+    app.component("ValidatorKeyMap", ValidatorKeyMap); // 6.3
+    app.component("EpochTurn", EpochTurn); // 7.1
+    app.component("ShuffleSteps", ShuffleSteps); // 7.2
+    app.component("EntropyStairs", EntropyStairs); // 8.1
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1

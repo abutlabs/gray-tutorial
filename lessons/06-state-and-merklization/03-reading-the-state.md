@@ -1,9 +1,8 @@
 # Reading the state
 
 You know where everything in the state lives ([lesson 6.2](./02-state-keys.md)). Time to open the boxes. Each
-value in the state is an *encoding*, so the codecs you built in [Part 2](../02-codec/index.md) can read it. This
-lesson reads three components, the time, the entropy and the validators, and checks each
-one against something completely independent: the blocks themselves.
+value is an encoding, so [Part 2](../02-codec/index.md)'s codecs read it. This lesson reads three components,
+the time, the entropy and the validators, and checks each against the blocks themselves.
 
 ## New words
 
@@ -30,6 +29,8 @@ A *validator key* (§6) is 336 bytes: three keys for three jobs, Bandersnatch (3
 Ed25519 (32) and BLS (144), then 128 bytes of metadata, which the Gray Paper leaves opaque
 (a validator's network address, say). You met the first two in [lesson 4.6](../04-blocks/06-the-header.md), where an
 epoch mark carries just those. The state keeps all four parts.
+
+<ValidatorKeyMap />
 
 And three facts from elsewhere in the Gray Paper, to check your reading against:
 
@@ -161,8 +162,7 @@ export function readValidators(entries: KeyValue[]): ValidatorKey[] {
 ```
 
 `component` does the work: build the key with C(i), find its entry, decode the value.
-The three readers just say which component and which codec. Reading the state is
-nothing new: it's [Part 2](../02-codec/index.md)'s decoding, pointed at [Part 6](./index.md)'s keys.
+The three readers say which component and which codec.
 
 **Run**
 
@@ -186,10 +186,8 @@ reported 66 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=
 ...
 ```
 
-Look at what the κ test just did: real assurances from real blocks ([Part 4](../04-blocks/index.md)), checked
-with Ed25519 ([Part 5](../05-hashing-and-signatures/index.md)) against keys your client read out of a real state ([Part 6](./index.md)) with its
-own codecs ([Part 2](../02-codec/index.md)). And [lesson 6.1](./01-the-state-trie.md) already proved that state is the one the header
-promised. Four parts of the tutorial, in one `assert`.
+The κ test: real assurances ([Part 4](../04-blocks/index.md)), checked with Ed25519 ([Part 5](../05-hashing-and-signatures/index.md)) against keys read
+from a real state ([Part 6](./index.md)) with your own codecs ([Part 2](../02-codec/index.md)). Four parts, one `assert`.
 
 And the test checks against the right set. The Gray Paper checks an assurance with κ, the
 validators as they were *before* the block (§11: κ, with no prime mark), so the test's choice holds
