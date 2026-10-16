@@ -88,6 +88,10 @@ import CostRow from "./CostRow.vue";
 import HostCall from "./HostCall.vue";
 import FetchCopy from "./FetchCopy.vue";
 import ProtocolConstants from "./ProtocolConstants.vue";
+import GrowHeap from "./GrowHeap.vue";
+import InfoView from "./InfoView.vue";
+import WriteStore from "./WriteStore.vue";
+import OperandParcel from "./OperandParcel.vue";
 import TicketsPreimages from "./TicketsPreimages.vue";
 import AssuranceParcel from "./AssuranceParcel.vue";
 import GuaranteeParcel from "./GuaranteeParcel.vue";
@@ -165,6 +169,10 @@ export default {
     app.component("HostCall", HostCall); // 16.1
     app.component("FetchCopy", FetchCopy); // 16.2
     app.component("ProtocolConstants", ProtocolConstants); // 16.2
+    app.component("GrowHeap", GrowHeap); // 16.3
+    app.component("InfoView", InfoView); // 16.4
+    app.component("WriteStore", WriteStore); // 16.5
+    app.component("OperandParcel", OperandParcel); // 16.7
     app.component("TicketsPreimages", TicketsPreimages); // 4.1
     app.component("AssuranceParcel", AssuranceParcel); // 4.2
     app.component("GuaranteeParcel", GuaranteeParcel); // 4.3

@@ -32,6 +32,10 @@ Then:
 So `grow_heap` is the exception to [lesson 16.1](./01-calling-the-host.md)'s gas taken before anything else: its price
 depends on how many pages it's asked for, so it works out the pages first, then the price.
 
+Grow the test's tiny program's heap:
+
+<GrowHeap />
+
 To find a and b, `grow_heap` needs the program's o and s, so accumulation's F hands it the
 service's code.
 
