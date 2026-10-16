@@ -1,8 +1,8 @@
 # Numbers
 
-JavaScript has a little secret about numbers, and JAM is exactly the kind of program it
-bites. This lesson says what the secret is, proves it with three tiny tests, and sets the
-one rule your client follows from here on.
+JavaScript has a secret about numbers, and JAM is exactly the kind of program it bites.
+This lesson says what the secret is, proves it with three tiny tests, and sets the one
+rule your client follows from here on.
 
 ## New words
 
@@ -38,6 +38,12 @@ The only difference you see is one letter: an `n` after the digits makes a `bigi
 calculation takes one kind or the other, never both, so every value in it needs its `n`:
 2^64 − 70 as a `bigint` is `2n ** 64n - 70n`. Mixing them, as in `1n + 1`, stops with
 `TypeError: Cannot mix BigInt and other types`.
+
+See it round. Start at 2^64 − 70, a real gas amount, and nudge it: as a `number` it
+prints as 2^64 and stays there, while the `bigint` moves by exactly what you asked.
+Below 2^53 − 1 the two agree on every digit.
+
+<NumberKinds />
 
 One more trap while we're here: in JavaScript, `**` raises to a power, and `^` doesn't.
 `^` is *xor*, one of the bitwise operators below: it compares two numbers bit by bit and
@@ -96,8 +102,7 @@ test("bitwise operators work on signed 32-bit integers", () => {
 ```
 
 Every value gets a name and says its kind, `: number` or `: bigint`, so each test reads
-as what it's about: the same two values, once as `number` and once as `bigint`. (The names
-pay off again in the debugger, below.)
+as what it's about: the same two values, once as `number` and once as `bigint`.
 
 The third test is a trap for later. `|`, `&`, `^`, `<<` and `>>` treat numbers as
 *signed* 32-bit integers, so `allOnes`, all 32 bits set, comes out of `| 0` as −1. In a
@@ -127,8 +132,8 @@ npm test
 reported 7 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=test-1791726099568
 ```
 
-All green on the first try, because these tests pin down how JavaScript already
-behaves. Seven tests on the dashboard now.
+All green on the first try: these tests pin down how JavaScript already behaves. Seven
+tests on the dashboard now.
 
 Want to watch the trap spring? In `test/js-numbers.test.ts`, put a breakpoint on each
 test's last `assert`: lines 7, 14 and 22. With that file open, pick *Tests: the open
