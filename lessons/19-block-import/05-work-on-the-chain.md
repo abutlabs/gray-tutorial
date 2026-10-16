@@ -67,6 +67,8 @@ in its header, as `parent_state_root`. β† is β with that root filled in, and
 checks use β†, not β. A report anchored on the parent block is the usual case, and
 against β it fails.
 
+<BetaDagger />
+
 [Lesson 12.5](../12-guarantees/05-bad-reports.md)'s vectors never showed this: they hand over a history whose roots are all known.
 
 ## The code
@@ -139,7 +141,11 @@ C(15), ξ: the same packages, in another order.
 ξ holds *sets* of packages, one per slot. A set has no order of its own, but bytes do, so
 Appendix D writes every set in one order, sorted: the *canonical order*. Your
 `accumulateBlock` collects a slot's packages in the order they accumulated, which is right
-for accumulating and wrong for writing down. Sorting hex strings sorts their bytes, so:
+for accumulating and wrong for writing down.
+
+<SetOrder />
+
+Sorting hex strings sorts their bytes, so:
 
 **Replace in** `src/import.ts`
 
