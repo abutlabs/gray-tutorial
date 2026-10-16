@@ -1,10 +1,9 @@
 # Bad reports
 
-[Lesson 12.4](./04-bad-guarantees.md) checked who vouched for each report, and when. Now the report itself. Is it a
-sensible size? Was it built against a block the chain really had, as that block really
-was? Does it lean on work that exists? Does it name real services, with the right code?
-And is it new, or a package the chain has already seen? This lesson writes down those
-rules, and with 12.4's, your client agrees with every reports test vector.
+[Lesson 12.4](./04-bad-guarantees.md) checked who vouched for each report, and when. Now the report itself: a
+sensible size? Built against a block the chain really had, as it really was? Leaning on
+work that exists, naming real services with the right code? New, or a package the chain
+has seen? With these rules and 12.4's, your client agrees with every reports vector.
 
 ## New words
 
@@ -49,6 +48,8 @@ making fourteen checks, in two groups.
 10. Every result names a service that exists (`bad_service_id`), with that service's
     code hash (`bad_code_hash`), and asks for at least the service's minimum gas
     (`service_item_gas_too_low`).
+
+<ReportAnchor />
 
 Rule 8 and the first half of rule 9 are one rule in the Gray Paper: every prerequisite and
 every looked-up package must be known. The second half, the right segments root, is a

@@ -61,6 +61,10 @@ import VerdictRules from "./VerdictRules.vue";
 import FaultRule from "./FaultRule.vue";
 import AssuranceRules from "./AssuranceRules.vue";
 import GuaranteeWindow from "./GuaranteeWindow.vue";
+import ReportAnchor from "./ReportAnchor.vue";
+import ProvidePreimage from "./ProvidePreimage.vue";
+import ServiceRecord from "./ServiceRecord.vue";
+import Footprint from "./Footprint.vue";
 import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import CheckYourself from "./CheckYourself.vue";
@@ -110,6 +114,10 @@ export default {
     app.component("FaultRule", FaultRule); // 10.5
     app.component("AssuranceRules", AssuranceRules); // 11.3
     app.component("GuaranteeWindow", GuaranteeWindow); // 12.4
+    app.component("ReportAnchor", ReportAnchor); // 12.5
+    app.component("ProvidePreimage", ProvidePreimage); // 14.1
+    app.component("ServiceRecord", ServiceRecord); // 14.2
+    app.component("Footprint", Footprint); // 14.2
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1
