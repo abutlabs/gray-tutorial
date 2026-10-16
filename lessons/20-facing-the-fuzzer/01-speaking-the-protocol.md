@@ -124,6 +124,10 @@ The README's PeerInfo example, byte by byte:
 06 66 75 7a 7a 65 72    app_name: its length, 6, then "fuzzer" in UTF-8
 ```
 
+Tap through it, and change it:
+
+<PeerInfo />
+
 The third test feeds two frames to `readFrames` three bytes at a time, the way a slow
 socket might deliver them: a message must come out whole however its bytes arrive.
 

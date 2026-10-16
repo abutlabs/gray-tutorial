@@ -112,6 +112,10 @@ import ImportSteps from "./ImportSteps.vue";
 import BetaDagger from "./BetaDagger.vue";
 import SetOrder from "./SetOrder.vue";
 import OogHeap from "./OogHeap.vue";
+import PeerInfo from "./PeerInfo.vue";
+import TargetStates from "./TargetStates.vue";
+import AnchorWindow from "./AnchorWindow.vue";
+import SessionPlay from "./SessionPlay.vue";
 import TicketsPreimages from "./TicketsPreimages.vue";
 import AssuranceParcel from "./AssuranceParcel.vue";
 import GuaranteeParcel from "./GuaranteeParcel.vue";
@@ -213,6 +217,10 @@ export default {
     app.component("BetaDagger", BetaDagger); // 19.5
     app.component("SetOrder", SetOrder); // 19.5
     app.component("OogHeap", OogHeap); // 19.6
+    app.component("PeerInfo", PeerInfo); // 20.1
+    app.component("TargetStates", TargetStates); // 20.2
+    app.component("AnchorWindow", AnchorWindow); // 20.2
+    app.component("SessionPlay", SessionPlay); // 20.3
     app.component("TicketsPreimages", TicketsPreimages); // 4.1
     app.component("AssuranceParcel", AssuranceParcel); // 4.2
     app.component("GuaranteeParcel", GuaranteeParcel); // 4.3
