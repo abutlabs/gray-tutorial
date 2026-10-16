@@ -36,6 +36,10 @@ All three are in the [glossary](../glossary.md).
 4. **GetState.** The entries of the state under a header's hash: the fuzzer asks when a
    root came out wrong, to see why.
 
+Send a target messages, in any order:
+
+<TargetStates />
+
 ## What the Gray Paper says
 
 §11, *Contextual Validity of Reports*: each report's lookup anchor must be
@@ -43,6 +47,8 @@ All three are in the [glossary](../glossary.md).
 1. **recent**: its slot at least the block's slot minus L (24 on tiny, 14,400 on full);
 2. **known**: one of the last L blocks of the chain, the ancestry, with that same hash and
    slot.
+
+<AnchorWindow />
 
 The first is on-chain arithmetic. The second needs headers the state doesn't keep (β
 remembers only eight), so a client keeps them itself. When the fuzzer and the target both
