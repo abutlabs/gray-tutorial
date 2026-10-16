@@ -1,9 +1,14 @@
 # Guarantees
 
-A work-report doesn't just wander into a block. Somebody has to vouch for it: two or
-three validators from the core that did the work sign it, putting their names (and,
-eventually, their stake) on "this report is correct". A signed report is a
-*guarantee*, and guarantees are how work from the cores reaches the chain.
+A work-report doesn't just wander into a block. Two or three validators from the core
+that did the work sign it, putting their names (and, eventually, their stake) on "this
+report is correct". A signed report is a *guarantee*: how work from the cores reaches the
+chain.
+
+Here is the tiny vector's: the report, the slot it was signed in, and who signed. Tap
+into the report and it's [lesson 3.3](../03-work-and-reports/03-a-work-report.md)'s receipt.
+
+<GuaranteeParcel />
 
 ## New words
 
