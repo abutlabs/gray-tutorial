@@ -33,6 +33,10 @@ There, the output is a hash of the output point, as RFC 9381, the standard for V
    can't be mistaken for any other hash of the same bytes.
 3. **Keep the first 32 bytes**: that's 𝒴.
 
+The three steps on five real blocks:
+
+<VrfOutput />
+
 Two places use it. A header's entropy source gives η′₀ = H(η₀ ⌢ 𝒴(H_V)) ([lesson 8.1](./01-stirring-the-entropy.md)).
 And a ticket's id is 𝒴 of its 784-byte ring proof (§6), which also starts with its output
 point.
