@@ -36,6 +36,8 @@ merged, comes the Gray Paper's P:
    request is still `[]`) is stored: the bytes join the service's preimages, and the request
    becomes `[τ′]`, provided in this block's slot. Any other is dropped, quietly.
 
+<ProvideRound />
+
 Why wait for the end of the round? Every run in a round starts from the same accounts, and
 a provision changes an account the giver doesn't own. Delivering them afterwards keeps the
 runs independent, as transfers ([lesson 17.4](./04-rounds.md)) do.
