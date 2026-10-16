@@ -104,6 +104,10 @@ import BudgetRounds from "./BudgetRounds.vue";
 import WellBalanced from "./WellBalanced.vue";
 import ProvideRound from "./ProvideRound.vue";
 import BlessOrder from "./BlessOrder.vue";
+import EpochTallies from "./EpochTallies.vue";
+import CoreLoad from "./CoreLoad.vue";
+import WholeState from "./WholeState.vue";
+import EntryKey from "./EntryKey.vue";
 import TicketsPreimages from "./TicketsPreimages.vue";
 import AssuranceParcel from "./AssuranceParcel.vue";
 import GuaranteeParcel from "./GuaranteeParcel.vue";
@@ -197,6 +201,10 @@ export default {
     app.component("WellBalanced", WellBalanced); // 17.11
     app.component("ProvideRound", ProvideRound); // 17.12
     app.component("BlessOrder", BlessOrder); // 17.13
+    app.component("EpochTallies", EpochTallies); // 18.1
+    app.component("CoreLoad", CoreLoad); // 18.2
+    app.component("WholeState", WholeState); // 19.2
+    app.component("EntryKey", EntryKey); // 19.3
     app.component("TicketsPreimages", TicketsPreimages); // 4.1
     app.component("AssuranceParcel", AssuranceParcel); // 4.2
     app.component("GuaranteeParcel", GuaranteeParcel); // 4.3

@@ -32,6 +32,10 @@ and the finished one from the epoch before. Each block moves them on, in this or
 3. **Then the rest.** The author gets one more block, plus as many tickets and preimages
    (and preimage bytes) as the block carries. Every reporter gets one more guarantee.
 
+The three steps on a real epoch's turn:
+
+<EpochTallies />
+
 Why track only these? They're the work the chain can see for itself. Other work, such as
 voting on finality or auditing, happens off the chain, and the Gray Paper leaves it out.
 
