@@ -7,10 +7,10 @@ Every kind of JAM value needs three things:
 3. a way to read it from the test vectors' JSON, so tests can compare.
 
 Write those three separately for every structure and sooner or later they drift apart: a
-field added to the encoder but not the decoder, two fields read in the wrong order.
-So each kind of value gets one object holding all three, a `Codec<T>`. Small codecs
-(a u32, a hash) snap together into codecs for whole structures, like bricks. The field
-order gets written once, and every direction follows it.
+field added to the encoder but not the decoder, two fields read in the wrong order. So
+each kind of value gets one object holding all three, a `Codec<T>`. Small codecs (a u32,
+a hash) snap together into codecs for whole structures, like bricks. The field order is
+written once, and every direction follows it.
 
 ## New words
 
@@ -214,6 +214,12 @@ c0 00 40                  16,384 as a compact natural: 3 bytes
 
 A hash is its 32 bytes and nothing else: its length is always 32, so none goes in front.
 
+The codec decides the bytes, not the value. Put one number under all five codecs: 16,384
+is `00 40 00 00` as a u32 and `c0 00 40` as a natural, and 7 is one byte or eight
+depending on which you ask for.
+
+<CodecPicker />
+
 **Run**
 
 ```sh
@@ -236,9 +242,9 @@ reported 15 tests to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=
 ...
 ```
 
-This time the tests come after the code: the earlier lessons already tested the
-machinery underneath, so these just check the joints. Right width for each integer,
-length in front of a blob, and 16909060 written as `04 03 02 01`, little end first.
+This time the tests come after the code: the earlier lessons tested the machinery
+underneath, so these check the joints. The right width for each integer, a length in
+front of a blob, and 16909060 written as `04 03 02 01`, little end first.
 
 <details>
 <summary>lasair: separate encoders and decoders</summary>
