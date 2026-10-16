@@ -79,6 +79,11 @@ import WorkPackage from "./WorkPackage.vue";
 import WorkDigest from "./WorkDigest.vue";
 import WorkReport from "./WorkReport.vue";
 import BlockParcel from "./BlockParcel.vue";
+import FallbackSealer from "./FallbackSealer.vue";
+import VrfOutput from "./VrfOutput.vue";
+import ClearCores from "./ClearCores.vue";
+import SignedCounted from "./SignedCounted.vue";
+import OntoCores from "./OntoCores.vue";
 import TicketsPreimages from "./TicketsPreimages.vue";
 import AssuranceParcel from "./AssuranceParcel.vue";
 import GuaranteeParcel from "./GuaranteeParcel.vue";
@@ -147,6 +152,11 @@ export default {
     app.component("WorkDigest", WorkDigest); // 3.2
     app.component("WorkReport", WorkReport); // 3.3
     app.component("BlockParcel", BlockParcel); // Part 4
+    app.component("FallbackSealer", FallbackSealer); // 8.3
+    app.component("VrfOutput", VrfOutput); // 8.6
+    app.component("ClearCores", ClearCores); // 10.3
+    app.component("SignedCounted", SignedCounted); // 12.2
+    app.component("OntoCores", OntoCores); // 12.3
     app.component("TicketsPreimages", TicketsPreimages); // 4.1
     app.component("AssuranceParcel", AssuranceParcel); // 4.2
     app.component("GuaranteeParcel", GuaranteeParcel); // 4.3
