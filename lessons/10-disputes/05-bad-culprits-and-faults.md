@@ -1,11 +1,10 @@
 # Bad culprits and faults
 
-[Lesson 10.4](./04-bad-verdicts.md) checked the verdicts. Now the accusations. A culprit says "this validator
-vouched for a report that turned out bad", a fault says "this validator voted the wrong
-way", and either one gets a validator punished. So they had better be true: about a real
-validator, backed by that validator's own signature, and not about someone already
-punished. This lesson writes down those rules, and with [lesson 10.4](./04-bad-verdicts.md)'s, your client's
-disputes now agree with every disputes vector.
+[Lesson 10.4](./04-bad-verdicts.md) checked the verdicts. Now the accusations: a culprit says "this validator
+vouched for a bad report", a fault "this validator voted the wrong way", and either gets
+a validator punished. So they had better be true: about a real validator, backed by its
+own signature, not already punished. With these rules and [lesson 10.4](./04-bad-verdicts.md)'s, your
+client's disputes agree with every disputes vector.
 
 ## New words
 
@@ -51,6 +50,8 @@ The Gray Paper writes rule 6 as a double ⇔: r ∈ ψ′_B ⇔ r ∉ ψ′_G �
 together or false together, so a fault on a wonky report (neither bad nor good) fails it
 too. A culprit is a guarantor, a fault an auditor, which is where the vectors' names
 `bad_guarantor_key` and `bad_auditor_key` come from.
+
+<FaultRule />
 
 ## The tests
 
