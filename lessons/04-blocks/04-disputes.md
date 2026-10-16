@@ -4,7 +4,12 @@ Every system that trusts people needs a way to say "that was wrong". In JAM, if 
 guaranteed work-report turns out to be bad, the validators hold a trial in the blocks:
 they vote, a verdict is recorded, whoever vouched for the bad report is named a
 *culprit*, and validators who voted the wrong way are recorded as *faults*. It's the
-most dramatic part of the extrinsic, and the last one.
+extrinsic's last part.
+
+Here is the tiny vector's trial record. Open a verdict to its votes, and a vote to the
+byte that says yes or no:
+
+<DisputesParcel />
 
 ## New words
 
