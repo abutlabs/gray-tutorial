@@ -1,10 +1,9 @@
 # Epochs
 
-A slot is six seconds. An *epoch* is a run of slots, 600 of them on the full network:
-one hour. On tiny it's 12 slots, a brisk 72 seconds. Most of JAM happens slot by slot,
-but a few things happen only when a new epoch begins: the validator set can change, the
-ticket lottery starts over, and the chain's randomness is set aside for later. This
-lesson teaches your client to tell epochs apart, and to spot the moment one turns over.
+A slot is six seconds. An *epoch* is 600 of them on the full network, one hour; 12 on
+tiny. A few things happen only when a new epoch begins: the validator set can change,
+the ticket lottery starts over, and the chain's randomness is set aside. This lesson
+teaches your client to tell epochs apart, and to spot the moment one turns over.
 
 ## New words
 
@@ -38,6 +37,8 @@ Why keep old randomness? Some decisions must use randomness nobody could have st
 when the decision was set up. Randomness from a finished epoch is fixed, and the ticket
 lottery and the block sealers lean on it. (η₀ itself changes every block, using a
 Bandersnatch VRF output. That's [Part 8](../08-safrole/index.md).)
+
+<EpochTurn />
 
 ## The tests
 
@@ -153,9 +154,8 @@ test at test/epoch.test.ts:39:1
 ...
 ```
 
-All three red, and both trace tests stopped at the same block: 12, the first block of
-epoch 1. For blocks 1 to 11 the frozen clock was right, by luck, since nothing changes
-inside an epoch. The first epoch boundary gives it away.
+All three red, and both trace tests stopped at block 12, the first of epoch 1. For
+blocks 1 to 11 the frozen clock was right by luck; the first boundary gives it away.
 
 ## The code
 
