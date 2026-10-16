@@ -29,6 +29,10 @@ the assignment the guarantee answers to ([lesson 12.1](./01-who-guarantees-what.
 **𝐆, the reporters**, is the set of Ed25519 keys of everyone who signed any guarantee
 in the block. A *set*: each key once, however many guarantees it signed.
 
+Two real guarantees, every signature checked:
+
+<SignedCounted />
+
 ## Sharing a message
 
 Culprits ([lesson 10.2](../10-disputes/02-culprits-and-faults.md)) and guarantees sign the same message, so it gets one home:
