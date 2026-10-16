@@ -1,7 +1,7 @@
 # Culprits and faults
 
-A verdict says what's true. Now for the consequences. Anyone who put their name to a
-falsehood gets named in the block as an **offender**, with their own signature as the
+A verdict says what's true. Now the consequences: anyone who put their name to a
+falsehood is named in the block as an **offender**, with their own signature as the
 evidence. Two kinds of offender, two kinds of evidence:
 
 - a **culprit** guaranteed a report that turned out *bad*. Exhibit A: their guarantee.
@@ -24,11 +24,12 @@ validator set. This lesson checks the evidence and keeps the record.
 - **The offenders mark** ([lesson 4.6](../04-blocks/06-the-header.md)'s `offenders_mark`) lists the same keys: the
   culprits' first, then the faults', in the order the block gives them.
 
-There are more rules about *which* offenders may appear: a culprit's report must really
-be bad, a fault's vote must really contradict the verdict, an offender must be a current
-or previous validator and not already punished. Each one rejects a block. For now, all
-you need is the base rule: check the evidence, keep the record. [Lesson 10.5](./05-bad-culprits-and-faults.md) adds the
-fine print.
+<Offenders />
+
+More rules say *which* offenders may appear: a culprit's report must really be bad, a
+fault's vote must really contradict the verdict, an offender must be a current or previous
+validator and not already punished. [Lesson 10.5](./05-bad-culprits-and-faults.md) adds that fine print; for now,
+check the evidence and keep the record.
 
 ## The tests
 
