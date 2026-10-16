@@ -4,8 +4,8 @@
 // each part is for; the bytes come from codec-map.ts's encoder, so where a part went can't
 // be faked. Parcel.vue draws it.
 
-import { ERRORS, short, spaced } from "./codec-map.ts";
-import type { Node } from "./codec-map.ts";
+import { encodeMapped, ERRORS, short, spaced } from "./codec-map.ts";
+import type { Json, Node, Type } from "./codec-map.ts";
 
 /** A compartment: its top-level fields, what it's for, and its colour on the page. */
 export interface Compartment {
@@ -58,6 +58,12 @@ export function partsOf(root: Node): (path: string) => Node {
 export const compartmentIn = (compartments: Compartment[]) => (path: string): Compartment =>
   compartments.find((c) => c.fields.includes(path.split(/[.[]/)[0]))!;
 
+/** How refine went, for a result whose JSON key is `outcome`: "ok", or an error's name. */
+export const resultSays = (outcome: string): string =>
+  outcome === "ok"
+    ? "How refine went: tag 0, success, then the output as a blob, its length first."
+    : `How refine went: the tag ${ERRORS.indexOf(outcome) + 1}, a ${outcome}, and nothing more.`;
+
 /** A part's value, short: a number as a number, bytes as their first and last few, a
  *  result as its case. */
 export function valueIn(bytes: number[]): (n: Node) => string {
@@ -68,6 +74,7 @@ export function valueIn(bytes: number[]): (n: Node) => string {
       return name === "ok" ? `ok: ${own.length} bytes of output, ${short(own)}` : `${name}: error ${ERRORS.indexOf(name) + 1}, no output`;
     }
     if (typeof n.json === "number") return String(n.json);
+    if (typeof n.json === "boolean") return n.json ? "yes (1)" : "no (0)";
     if (Array.isArray(n.json)) return n.json.length === 0 ? "none" : `${n.json.length} of them`;
     if (typeof n.json === "string") return n.prefix ? `${own.length} bytes: ${short(own)}` : short(own);
     return `${n.end - n.start} bytes in ${n.children.length} parts`;
@@ -93,3 +100,76 @@ export const hexIn = (bytes: number[]) => (n: Node): string => {
 /** The top-level fields as the bytes hold them, in Appendix C's order, with their sizes. */
 export const wireOf = (root: Node, compartmentOf: (path: string) => Compartment): Wire[] =>
   root.children.map((n) => ({ path: n.path, bytes: n.end - n.start, tone: compartmentOf(n.path).tone }));
+
+/** A structure for the parcel, described: its type and value, its compartments, what each
+ *  part is for by its name, and what one item of each list is called. */
+export interface Model {
+  name: string;
+  whole: string;
+  type: Type;
+  json: Json;
+  compartments: Compartment[];
+  says: Record<string, string>;
+  items: Record<string, string>; // "verdicts" → "verdict"
+  saysItem?: (n: Node, partAt: (path: string) => Node) => string;
+  goals: Goal[];
+}
+
+/** The chips under a top-level field: the field, then the parts of each part along the way
+ *  to the one selected, so any depth opens a row at a time. */
+export function drillRows(partAt: (path: string) => Node, fields: string[], selected: string): string[][] {
+  const rows = [fields];
+  for (const top of fields) {
+    if (selected !== top && !selected.startsWith(`${top}.`) && !selected.startsWith(`${top}[`)) continue;
+    let path = top;
+    for (;;) {
+      const n = partAt(path);
+      if (!n.children.length) break;
+      rows.push(n.children.map((c) => c.path));
+      const next = n.children.find((c) => selected === c.path || selected.startsWith(`${c.path}.`) || selected.startsWith(`${c.path}[`));
+      if (!next) break;
+      path = next.path;
+    }
+  }
+  return rows;
+}
+
+/** A model, encoded and mapped, as Parcel.vue draws it. A structure that is one list has
+ *  its strip cut at the list's count and items, not left as one block. */
+export function makeParcel(m: Model): Parcel {
+  const map = encodeMapped(m.type, m.json);
+  const partAt = partsOf(map.root);
+  const compartmentOf = compartmentIn(m.compartments);
+  const item = /^(.*)\[(\d+)\]$/;
+  const labelOf = (path: string) => {
+    const i = item.exec(path);
+    return i ? `${m.items[nameOf(i[1])] ?? "item"} ${i[2]}` : nameOf(path);
+  };
+  const saysOf = (n: Node) => {
+    if (item.test(n.path)) return m.saysItem?.(n, partAt) ?? `${labelOf(n.path)}.`;
+    if (n.type === "result") return resultSays(Object.keys(n.json as object)[0]);
+    return m.says[nameOf(n.path)] ?? "";
+  };
+  const top = map.root.children;
+  const only = top.length === 1 && top[0].prefix && top[0].children.length ? top[0] : null;
+  const tone = (path: string) => compartmentOf(path).tone;
+  const wire: Wire[] = only
+    ? [{ path: only.path, bytes: only.prefix, tone: tone(only.path) }, ...only.children.map((c) => ({ path: c.path, bytes: c.end - c.start, tone: tone(c.path) }))]
+    : wireOf(map.root, compartmentOf);
+  return {
+    name: m.name,
+    whole: m.whole,
+    bytes: map.bytes,
+    compartments: m.compartments,
+    partAt,
+    compartmentOf,
+    chipRows: (c, selected) => drillRows(partAt, m.compartments.find((x) => x.id === c)!.fields, selected),
+    labelOf,
+    saysOf,
+    valueOf: valueIn(map.bytes),
+    bytesOf,
+    hexOf: hexIn(map.bytes),
+    wire,
+    goals: m.goals,
+  };
+}

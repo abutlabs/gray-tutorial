@@ -7,9 +7,9 @@
 
 import { encodeMapped } from "./codec-map.ts";
 import type { Json, Node, Type } from "./codec-map.ts";
-import { bytesOf, compartmentIn, hexIn, nameOf, partsOf, valueIn, wireOf } from "./parcel.ts";
+import { bytesOf, compartmentIn, hexIn, nameOf, partsOf, resultSays, valueIn, wireOf } from "./parcel.ts";
 import type { Compartment, Goal, Parcel } from "./parcel.ts";
-import { DIGEST_JSON, resultSays, SAYS as DIGEST_SAYS, WORK_DIGEST } from "./work-digest.ts";
+import { DIGEST_JSON, SAYS as DIGEST_SAYS, WORK_DIGEST } from "./work-digest.ts";
 import { PACKAGE_JSON, REFINE_CONTEXT, SAYS as PACKAGE_SAYS } from "./work-package.ts";
 
 /** AvailabilitySpec, SegmentRootLookupItem and WorkReport, as lesson 3.3's codecs write them. */

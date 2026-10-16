@@ -78,6 +78,10 @@ import SlotClock from "./SlotClock.vue";
 import WorkPackage from "./WorkPackage.vue";
 import WorkDigest from "./WorkDigest.vue";
 import WorkReport from "./WorkReport.vue";
+import TicketsPreimages from "./TicketsPreimages.vue";
+import AssuranceParcel from "./AssuranceParcel.vue";
+import GuaranteeParcel from "./GuaranteeParcel.vue";
+import DisputesParcel from "./DisputesParcel.vue";
 import CheckYourself from "./CheckYourself.vue";
 import UnitText from "./UnitText.vue";
 import PartFlow from "./PartFlow.vue";
@@ -141,6 +145,10 @@ export default {
     app.component("WorkPackage", WorkPackage); // 3.1
     app.component("WorkDigest", WorkDigest); // 3.2
     app.component("WorkReport", WorkReport); // 3.3
+    app.component("TicketsPreimages", TicketsPreimages); // 4.1
+    app.component("AssuranceParcel", AssuranceParcel); // 4.2
+    app.component("GuaranteeParcel", GuaranteeParcel); // 4.3
+    app.component("DisputesParcel", DisputesParcel); // 4.4
     app.component("HeaderMap", HeaderMap); // 4.6
     app.component("HashAvalanche", HashAvalanche); // 5.1
     app.component("ExtrinsicCommit", ExtrinsicCommit); // 5.2

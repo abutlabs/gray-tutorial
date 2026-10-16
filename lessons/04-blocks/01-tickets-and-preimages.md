@@ -3,6 +3,10 @@
 Time to build a block. Not all at once: a block is a header plus five bags of stuff from
 the outside world, and this lesson fills the two simplest bags.
 
+Here they are, from the tiny vectors: each bag is a count, then its items. Tap any part.
+
+<TicketsPreimages />
+
 ## New words
 
 - **Extrinsic.** The part of a block that comes from outside the chain's state, in five

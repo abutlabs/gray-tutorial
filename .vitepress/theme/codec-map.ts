@@ -5,20 +5,20 @@
 import { encodeFixed } from "./bytes.ts";
 import { compact } from "./compact.ts";
 
-/** A part's type, as the lessons' codecs spell it: a fixed-width number; a compact natural;
+/** A part's type, as the lessons' codecs spell it: a fixed-width number; a yes or no; a compact natural;
  *  a 32-byte hash or n bytes as they are; a blob; a work result (O: tag 0 + blob, or an
  *  error's tag); a list (with its count in front, or exactly n with none); a maybe (¿x);
  *  or a record's fields in order. */
 export type Type =
-  | "u8" | "u16" | "u32" | "u64" | "natural" | "hash" | "blob" | "result"
+  | "u8" | "u16" | "u32" | "u64" | "bool" | "natural" | "hash" | "blob" | "result"
   | { bytes: number }
   | { seq: Type }
   | { seqN: Type; n: number }
   | { option: Type }
   | { record: [string, Type][] };
 
-/** The vectors' JSON for a value: numbers, "0x..." strings, lists, objects, null for nothing. */
-export type Json = number | string | null | Json[] | { [field: string]: Json };
+/** The vectors' JSON for a value: numbers, "0x..." strings, yes or no, lists, objects, null for nothing. */
+export type Json = number | string | boolean | null | Json[] | { [field: string]: Json };
 
 /** A value in the map: where its bytes start and end (end not included), and its parts. */
 export interface Node {
@@ -57,6 +57,10 @@ function encodeInto(type: Type, json: Json, path: string, out: number[]): Node {
   const at = (i: number | string) => (typeof i === "number" ? `${path}[${i}]` : path ? `${path}.${i}` : i);
   if (isNumber(type)) {
     out.push(...encodeFixed(BigInt(json as number), WIDTH[type])); // ℰ_l: least significant first
+    return node(0);
+  }
+  if (type === "bool") {
+    out.push(json ? 1 : 0); // a yes or no: one byte, 1 or 0
     return node(0);
   }
   if (type === "natural") {
