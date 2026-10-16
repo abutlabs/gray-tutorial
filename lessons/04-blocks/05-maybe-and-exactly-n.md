@@ -8,7 +8,7 @@ Next up is the block header, and it has two quirks your codec can't handle yet:
   closes, the header lists one winning ticket per slot of the next epoch: exactly 12 on
   tiny, 600 on full. Writing the length in front would be redundant, so JAM doesn't.
 
-Two small codecs, and your toolbox is complete for the whole block.
+Two small codecs, and your toolbox covers the whole block.
 
 ## New words
 
@@ -65,7 +65,10 @@ The tests' bytes:
 ```
 
 Compare `seqN(u16, 3)` with [lesson 2.5](../02-codec/05-sequences-and-records.md)'s `seq(u16)`: the same three numbers, minus the
-`0x03` in front.
+`0x03` in front. Both shapes, byte by byte: flip the option, type a value, switch the
+list between `seq` and `seqN`, and tap any byte for its job.
+
+<MaybeExactly />
 
 ## The code
 
