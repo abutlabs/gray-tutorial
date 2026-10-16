@@ -108,6 +108,10 @@ import EpochTallies from "./EpochTallies.vue";
 import CoreLoad from "./CoreLoad.vue";
 import WholeState from "./WholeState.vue";
 import EntryKey from "./EntryKey.vue";
+import ImportSteps from "./ImportSteps.vue";
+import BetaDagger from "./BetaDagger.vue";
+import SetOrder from "./SetOrder.vue";
+import OogHeap from "./OogHeap.vue";
 import TicketsPreimages from "./TicketsPreimages.vue";
 import AssuranceParcel from "./AssuranceParcel.vue";
 import GuaranteeParcel from "./GuaranteeParcel.vue";
@@ -205,6 +209,10 @@ export default {
     app.component("CoreLoad", CoreLoad); // 18.2
     app.component("WholeState", WholeState); // 19.2
     app.component("EntryKey", EntryKey); // 19.3
+    app.component("ImportSteps", ImportSteps); // 19.4
+    app.component("BetaDagger", BetaDagger); // 19.5
+    app.component("SetOrder", SetOrder); // 19.5
+    app.component("OogHeap", OogHeap); // 19.6
     app.component("TicketsPreimages", TicketsPreimages); // 4.1
     app.component("AssuranceParcel", AssuranceParcel); // 4.2
     app.component("GuaranteeParcel", GuaranteeParcel); // 4.3

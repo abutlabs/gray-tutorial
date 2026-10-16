@@ -39,6 +39,10 @@ If any step refuses the block, the block is refused whole, and the state stays a
 ([lesson 11.3](../11-assurances/03-bad-assurances.md)'s rejected block). The traces name no errors, so the reasons are the vectors' names
 where a vector has one, and your client's own otherwise.
 
+Break something and see where Υ stops:
+
+<ImportSteps />
+
 ## The tests
 
 Each trace step has the state before a block, the block, and the state after. Importing
