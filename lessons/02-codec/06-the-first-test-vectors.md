@@ -16,8 +16,9 @@ and records.
   *Example:* `04 03 02 01 70 a5 08 29`.
 - **Round trip.** Decode the bytes, encode the result, and check you got the very same
   bytes back. *Example:* `work_item.bin` → a work item → `work_item.bin` again.
-- **Tiny and full.** JAM's two sizes, with the same rules: *full* is the real network,
-  *tiny* a small one for tests (6 validators, 2 cores). *Example:* `codec/tiny/` and
+- **Tiny and full.** JAM's two configurations, with the same rules: *full* is a realistic
+  picture of the future network, with the Gray Paper's own numbers; *tiny* is small enough
+  to run on your own machine (6 validators, 2 cores). *Example:* `codec/tiny/` and
   `codec/full/`.
 - **Segment.** A 4,104-byte piece of data that a work-item exports, for later
   work-packages to import. *Example:* the `work_item` vector's item exports 4.
@@ -98,9 +99,9 @@ Read the first bytes against the JSON:
   the third row, and `00 00 00 00` on the fourth. A row is just 16 bytes, so a field can
   run on into the next one.
 
-The `tiny` and `full` folders hold the same structures under JAM's two parameter sets.
-The small "tiny" one (6 validators, 2 cores) is what tests run fast with, and "full" is
-the real network. For the structures in this lesson the two are identical, and later
+The `tiny` and `full` folders hold the same structures in JAM's two configurations. Tiny
+(6 validators, 2 cores) is what tests run fast with, and full uses the Gray Paper's own
+numbers. For the structures in this lesson the two are identical, and later
 ones differ.
 
 Here is the whole work item, all 236 bytes, beside its JSON. Tap a field to light up its

@@ -279,8 +279,7 @@ value. *Example:* a header's epoch mark is only there at an epoch's start.
 1 January 2025, the *JAM Common Era*. At most one block is made per slot. *Example:* 12:00:06
 that day was slot 1. ([0.4](./00-start/04-the-jam-clock.md))
 
-**Epoch.** A run of E slots: 600 (one hour) on the real network, 12 on the tiny test
-network. Validators and the block-making lottery change at epoch boundaries.
+**Epoch.** A run of E slots: 600 (one hour) on full, 12 on tiny. Validators and the block-making lottery change at epoch boundaries.
 ([7.1](./07-time-and-shuffling/01-epochs.md))
 
 **Phase.** m. Where a slot falls within its epoch, counted from 0: the slot mod E.
@@ -299,9 +298,10 @@ new epoch its value moves along to η₁. *Example:* the first of η's four hash
 epoch length. *Example:* `TINY` has 6 validators and 2 cores.
 ([4.2](./04-blocks/02-tiny-and-full.md))
 
-**Tiny and full.** Two sizes of JAM with the same rules: *full* is the real network (1,023
-validators, 341 cores), *tiny* a small one for tests (6 validators, 2 cores). The test
-vectors come in both. ([4.2](./04-blocks/02-tiny-and-full.md))
+**Tiny and full.** JAM's two configurations, with the same rules: *full* is a realistic
+picture of the future network, with the Gray Paper's own numbers (1,023 validators, 341
+cores); *tiny* is small enough to run on one machine (6 validators, 2 cores). The test vectors
+come in both. ([4.2](./04-blocks/02-tiny-and-full.md))
 
 **Block.** What the chain adds each slot: a header plus an extrinsic.
 ([4.7](./04-blocks/07-the-block.md))

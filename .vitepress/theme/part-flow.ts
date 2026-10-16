@@ -484,7 +484,7 @@ export const FLOWS: Flow[] = [
       sizes: {
         kind: "step",
         name: "Tiny or full",
-        says: "The same codec in two sizes. Tiny is for tests and full is the real network, and a few lists change length to match.",
+        says: "The same codec in both configurations. Tiny is for tests and full uses the Gray Paper's own numbers, and a few lists change length to match.",
         example: `tiny: 6 validators, 2 cores (an assurance is ${bytesFor(2)} byte); full: 1023 validators, 341 cores (${bytesFor(341)} bytes)`,
         lessons: ["4.2"],
       },

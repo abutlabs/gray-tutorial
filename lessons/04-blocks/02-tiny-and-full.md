@@ -1,20 +1,22 @@
 # Tiny and full
 
-There are two JAMs. The **full** one is the size of the real network: 1,023 validators
-and 341 cores. Testing on that is slow, so there's also a **tiny** one: 6 validators and
-2 cores, same rules. The official vectors come in both sizes, and until now every
-structure had the same shape in both. (Gray Paper 0.8.0 lets the validator count be any
-multiple of 3 from 6 to 1,023; the full vectors use the most.)
+JAM runs in two configurations, with the same rules. **Full** is a realistic picture of
+the network JAM will be, with the Gray Paper's own numbers: 1,023 validators and 341
+cores. Running a network that big isn't possible on one machine, so there's **tiny**: 6
+validators and 2 cores, small enough to run and test on your own. The official vectors
+come in both, and until now every structure had the same shape in both. (Gray Paper 0.8.0
+lets the validator count be any multiple of 3 from 6 to 1,023; the full vectors use the
+most.)
 
-The assurance is the first structure whose *shape* depends on the size. Switch sizes and
-watch which part grows:
+The assurance is the first structure whose *shape* depends on the configuration. Switch
+between them and watch which part grows:
 
 <AssuranceParcel />
 
 ## New words
 
-- **Configuration.** The numbers that make one JAM bigger than another: how many
-  validators, how many cores. *Example:* `TINY` has 6 validators and 2 cores.
+- **Configuration.** The numbers that set how big a JAM network is: how many validators,
+  how many cores. *Example:* `TINY` has 6 validators and 2 cores.
 - **Validator.** One of the machines that run JAM: they make blocks, vouch for work, and
   keep data. *Example:* 1,023 on full.
 - **Core.** One of JAM's parallel lanes where work gets done, a few validators at a time.
@@ -42,8 +44,9 @@ first one's validator index.
 **New file** `src/config.ts`
 
 ```ts
-// Two sizes of JAM: the real network ("full"), and a tiny one that tests run fast on.
-// The official test vectors come in both, in folders named after them.
+// JAM's two configurations, with the same rules: full, the future network with the Gray
+// Paper's own numbers, and tiny, small enough to run on one machine. The official test vectors come
+// in both, in folders named after them.
 
 /** The protocol constants that depend on the size of the network. */
 export type Config = {
@@ -200,7 +203,7 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=decode-1791728270298
 ```
 
-Same assurance, two sizes. On tiny the bitfield is one byte, `0x01`: core 0, available.
+Same assurance, both configurations. On tiny the bitfield is one byte, `0x01`: core 0, available.
 On full it's 42 bytes of `0x55` and a last `0x15`. `0x55` is `0b01010101` in binary, so
 every *other* core says "got it": 171 of the 341. (The last byte is smaller because 341
 cores need only 5 of its 8 bits.)
@@ -287,7 +290,7 @@ Your `Assurance(config)` takes the size as an argument every time, so it can't f
 
 ## What you have
 
-A client that knows JAM comes in two sizes, and codecs that change shape to match.
+A client that knows JAM's two configurations, and codecs that change shape to match.
 Three of the five extrinsic parts done. [Lesson 4.3](./03-guarantees.md) adds the fourth:
 guarantees, [Part 3](../03-work-and-reports/index.md)'s reports with signatures behind them.
 

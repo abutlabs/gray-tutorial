@@ -246,6 +246,6 @@ changed nothing for it, and your `u8` is right from the start.
 ## What you have
 
 Two of the five parts of a block's extrinsic. The next part's size depends on the network:
-[lesson 4.2](./02-tiny-and-full.md) meets JAM's two sizes, tiny and full.
+[lesson 4.2](./02-tiny-and-full.md) meets JAM's two configurations, tiny and full.
 
 Next: [4.2 Tiny and full](./02-tiny-and-full.md)
