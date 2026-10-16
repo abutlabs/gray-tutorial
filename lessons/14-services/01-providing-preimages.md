@@ -1,10 +1,9 @@
 # Providing preimages
 
-A JAM service can't download things. If it needs some data, say a new version of its
-own code or a large file, it can only ask for it *by its hash and length*, and wait. Some
-later block brings the data in its preimages extrinsic ([lesson 4.1](../04-blocks/01-tickets-and-preimages.md)), the chain checks
-it really is what was asked for (its hash says so), and hands it over. This lesson is
-that handover, and it starts [Part 14](./index.md).
+A JAM service can't download things. If it needs data, say a new version of its own
+code, it asks for it *by its hash and length* and waits. A later block brings the data in
+its preimages extrinsic ([lesson 4.1](../04-blocks/01-tickets-and-preimages.md)), the chain checks it is what was asked for (its
+hash says so), and hands it over. This lesson is that handover.
 
 ## New words
 
@@ -34,6 +33,8 @@ the data is stored under `preimageKey(s, data)` ([lesson 6.2](../06-state-and-me
 becomes `[τ′]`, the slot of this block.
 
 The data proves itself: its hash is in the key, so nobody can provide the wrong thing.
+
+<ProvidePreimage />
 
 ## The tests
 
