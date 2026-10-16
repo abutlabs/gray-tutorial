@@ -1,10 +1,9 @@
 # Instructions
 
-[Lesson 15.1](./01-the-program-blob.md) found 39,849 instructions in a real service's code, but only as opcode
-numbers. Now your client learns to *read* each one: its name, and its arguments, which
-registers it uses, which numbers it carries, where it jumps. That's a disassembler, and
-by the end of this lesson you'll be reading real JAM service code, the way a computer
-does.
+[Lesson 15.1](./01-the-program-blob.md) found 39,849 instructions in a real service's code, as opcode numbers.
+Now your client *reads* each one: its name and its arguments, which registers it uses,
+which numbers it carries, where it jumps. That's a disassembler, and by the end you're
+reading real JAM service code the way a computer does.
 
 ## What the Gray Paper says
 
@@ -39,6 +38,8 @@ The rules for reading them, in brief:
   An instruction ends where the next begins.
 - **Offsets** are signed (Z) and relative: the target is ı plus the offset, so a jump
   back is a negative number.
+
+<DecodeInstruction />
 
 ## The tests
 
