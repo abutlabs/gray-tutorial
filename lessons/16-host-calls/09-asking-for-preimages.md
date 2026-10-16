@@ -37,6 +37,10 @@ Then:
 D is the expunge period, `expunge_period` in the config: 32 slots on tiny. t is the slot of
 the block, so accumulation's host needs to know it now.
 
+Walk one request through its life:
+
+<RequestLife />
+
 ## The tests
 
 The tests' accounts get requests, and the helpers pass the slot:

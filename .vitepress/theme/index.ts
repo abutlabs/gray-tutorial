@@ -92,6 +92,10 @@ import GrowHeap from "./GrowHeap.vue";
 import InfoView from "./InfoView.vue";
 import WriteStore from "./WriteStore.vue";
 import OperandParcel from "./OperandParcel.vue";
+import RequestLife from "./RequestLife.vue";
+import OneRound from "./OneRound.vue";
+import TransferSend from "./TransferSend.vue";
+import GiftRounds from "./GiftRounds.vue";
 import TicketsPreimages from "./TicketsPreimages.vue";
 import AssuranceParcel from "./AssuranceParcel.vue";
 import GuaranteeParcel from "./GuaranteeParcel.vue";
@@ -173,6 +177,10 @@ export default {
     app.component("InfoView", InfoView); // 16.4
     app.component("WriteStore", WriteStore); // 16.5
     app.component("OperandParcel", OperandParcel); // 16.7
+    app.component("RequestLife", RequestLife); // 16.9
+    app.component("OneRound", OneRound); // 17.1
+    app.component("TransferSend", TransferSend); // 17.3
+    app.component("GiftRounds", GiftRounds); // 17.4
     app.component("TicketsPreimages", TicketsPreimages); // 4.1
     app.component("AssuranceParcel", AssuranceParcel); // 4.2
     app.component("GuaranteeParcel", GuaranteeParcel); // 4.3
