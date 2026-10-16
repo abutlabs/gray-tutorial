@@ -1,10 +1,10 @@
 # The program blob
 
-[Part 15](./index.md) is the big one: the *PVM*, the Polkadot Virtual Machine, the little computer
-inside every JAM node that runs services' code. Before it can run anything, though, it
-has to *unpack* it. A service's code arrives as one long preimage ([lesson 14.1](../14-services/01-providing-preimages.md)), and
-inside it, like nesting dolls, are a label, a memory layout, and finally the program the
-PVM steps through. This lesson opens all the dolls, on a real service's real code.
+[Part 15](./index.md) is the *PVM*, the Polkadot Virtual Machine: the little computer inside every
+JAM node that runs services' code. First it has to *unpack* it. A service's code arrives
+as one long preimage ([lesson 14.1](../14-services/01-providing-preimages.md)); inside, like nesting dolls, are a label, a memory
+layout, and the program the PVM steps through. This lesson opens the dolls on a real
+service's real code.
 
 ## New words
 
@@ -43,6 +43,8 @@ memory.)
   instruction. Instructions take 1 to 16 bytes, so without k you couldn't tell an
   opcode from an argument. Bits are packed least significant first, like [lesson 11.1](../11-assurances/01-available.md)'s
   bitfields.
+
+<BlobLayers />
 
 ## The tests
 
@@ -294,11 +296,10 @@ reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-r
 ```
 
 159,322 bytes: 80 of metadata (it calls itself `jam-bootstrap-service`, version 0.1.29,
-Apache-2.0 licensed), almost 10 kB of read-only data, and a PVM blob of 149,274 bytes
-holding 39,849 instructions. 128,413 bytes of code over 39,849 instructions is about
-3.2 bytes each. And a few opcodes do most of the work: 130, 123 and 51 alone start more
-than a third of all instructions. [Next lesson](./02-instructions.md) finds out what they are. The *Program* panel,
-on the **6 · The PVM** dashboard (where all of [Part 15](./index.md)'s panels are), shows the layers.
+Apache-2.0), almost 10 kB of read-only data, and a PVM blob of 149,274 bytes holding
+39,849 instructions, about 3.2 bytes each. A few opcodes do most of the work: 130, 123
+and 51 start more than a third of them; [next lesson](./02-instructions.md) names them. The *Program* panel, on
+the **6 · The PVM** dashboard, shows the layers.
 
 ![Program panel](./images/01-program.png)
 
