@@ -118,6 +118,8 @@ The bytes by hand: the assigners are 2 and 3, four bytes each, little end first;
 always-accumulate entry is service 6 (`06 00 00 00`), then 1,000 gas in 8 bytes (1,000 is
 `0x03e8`, so `e8 03` and six zeros).
 
+<BlessOrder />
+
 `checkBlock` learns to compare the always-accumulate services, which only a `bless` could
 change:
 
