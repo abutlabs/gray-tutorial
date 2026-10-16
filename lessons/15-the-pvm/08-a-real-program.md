@@ -1,11 +1,10 @@
 # A real program
 
-Every program so far was a handful of bytes you assembled yourself. Time for the real
-thing: the bootstrap service, a 149,274-byte PVM program, straight out of the test
-vectors' state. Two things stand in the way. A real program expects its memory laid out
-just so before it starts. And sooner or later it wants something from the outside world,
-which it asks for with `ecalli`. Build both, and you can watch a real service wake up and
-ask its first question.
+Every program so far was a handful of bytes you assembled yourself. Now the real thing:
+the bootstrap service, a 149,274-byte PVM program from the test vectors' state. It expects
+its memory laid out just so before it starts, and sooner or later it asks the outside
+world for something, with `ecalli`. Build both and watch a real service wake up and ask
+its first question.
 
 ## What the Gray Paper says
 
@@ -29,8 +28,12 @@ runs off the end of one section hits nothing at all instead of the next one:
 | 2^32 − 2^16 − 2^24 | the arguments a, at most Z_I = 2^24 bytes, padded to a page | R |
 
 P rounds up to whole pages, Z to whole zones (not to be confused with Z_Z, a zone's size).
-Everything else isn't there: touch it and the
-machine faults, or panics below 2^16 ([lesson 15.4](./04-memory.md)).
+Everything else isn't there: touch it and the machine faults, or panics below 2^16
+([lesson 15.4](./04-memory.md)).
+
+Lay out the test's tiny program or the real service, or sizes of your own:
+
+<YLayout />
 
 And the registers: r0 = 2^32 − 2^16, the halt address ([lesson 15.3](./03-the-machine.md)), so that when the
 program returns, it ends. r1 = the top of the stack, which grows down. r7 = where the
@@ -370,10 +373,10 @@ the machine stops: {"host":2}, with r10 = 0
 reported to Grafana: http://127.0.0.1:3300/d/the-gray-tutor?var-client=you&var-run_id=start-1791736891343
 ```
 
-Four sections, with empty zones between them, just as the table said. Then 38 steps of
-real compiled code. Step 1 jumps from 5 into the program. Step 2 moves the stack pointer
-r1 down by 1,440 bytes to make room, and steps 3 to 5 save registers there: the stack
-pages from Y, in use already. Step 8 is a `load_imm_jump`, a call, leaving the way back in
+Four sections, with empty zones between them, as the table said. Then 38 steps of real
+compiled code. Step 1 jumps from 5 into the program. Step 2 moves the stack pointer r1
+down by 1,440 bytes, and steps 3 to 5 save registers there: Y's stack pages, in use
+already. Step 8 is a `load_imm_jump`, a call, leaving the way back in
 r0 exactly as in [lesson 15.6](./06-branches-and-calls.md), and step 16 is another. Step 38 is `ecalli 2`: `fetch`. And
 r10 = 0 says what it wants: in `fetch`'s table, item 0 is the chain's protocol constants.
 The service's first question is "what are the rules here?" Fair enough. The *A real
