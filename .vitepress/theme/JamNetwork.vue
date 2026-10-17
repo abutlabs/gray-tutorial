@@ -1,4 +1,4 @@
-<!-- The start page's JAM network: the cores on top, every validator below. Pick a core and
+<!-- JAM's network, on the start page (tiny alone) and in lesson 4.2 (both sizes): the cores on top, every validator below. Pick a core and
      lines run to its three guarantors; slide the slot and every R slots they move on one
      core; step a work-package through its trip and watch it go from three validators to
      all of them. Tiny or full, with report_prev_rotation-1's real entropy. Computed in
@@ -8,9 +8,11 @@ import { computed, ref, watch } from "vue";
 import type { Size } from "./network-map.ts";
 import { coresAt, enough, epochOf, guarantorsOf, NETWORKS, rotationOf, TRIP } from "./network-map.ts";
 
-const size = ref<Size>("full");
+/** `only` keeps the widget to one size: the start page shows tiny alone, lesson 4.2 both. */
+const props = defineProps<{ only?: Size }>();
+const size = ref<Size>(props.only ?? "full");
 const net = computed(() => NETWORKS[size.value]);
-const slot = ref(NETWORKS.full.slot);
+const slot = ref(NETWORKS[size.value].slot);
 const core = ref(0);
 const step = ref(0);
 watch(size, (s) => { slot.value = NETWORKS[s].slot; core.value = 0; });
@@ -65,7 +67,7 @@ const say = computed(() => trip.value.says(net.value, core.value, guarantors.val
     </div>
     <p class="line">{{ say }}</p>
 
-    <div class="controls" role="group" aria-label="network">
+    <div v-if="!only" class="controls" role="group" aria-label="network">
       <button class="small" :class="{ chosen: size === 'full' }" :aria-pressed="size === 'full'" @click="size = 'full'">full: 1,023 validators, 341 cores</button>
       <button class="small" :class="{ chosen: size === 'tiny' }" :aria-pressed="size === 'tiny'" @click="size = 'tiny'">tiny: 6 and 2</button>
     </div>

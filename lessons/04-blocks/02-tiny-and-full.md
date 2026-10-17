@@ -48,8 +48,11 @@ shard it doesn't really hold can't be caught on the chain, and that's why a repo
 more than two-thirds of the validators (5 of 6, 683 of 1,023): even if a third lied, the
 rest hold enough to rebuild it. Either way, every node counts the same bits by the same
 rule and reaches the same state. A lie can make the state wrong, never inconsistent.
-[JAM at a glance](../index.md#jam-at-a-glance) draws it: three guarantors per core, every
-validator holding a shard.
+
+Here it is at both sizes: three guarantors per core, every validator holding a piece of
+every core's work. Switch to full and the same picture holds 1,023 validators.
+
+<JamNetwork />
 
 ## The configuration
 

@@ -59,13 +59,18 @@ test("the vector's entropy, slot and guarantee: its signers are the ones η′�
   }
 });
 
-test("the start page places the network once, under JAM at a glance, and says what the widget shows", () => {
+test("the start page shows tiny alone; lesson 4.2, where full is met, shows both", () => {
   const start = lessonText("index.md");
-  const at = start.indexOf("<JamNetwork />");
+  const at = start.indexOf('<JamNetwork only="tiny" />');
   assert.ok(at > start.indexOf("## JAM at a glance") && at < start.indexOf("## How to read it"));
-  assert.equal(start.split("<JamNetwork />").length, 2);
-  assert.match(start.replace(/\s+/g, " "), /JAM is 1,023 validators running 341 cores/);
-  assert.match(start.replace(/\s+/g, " "), /who move on to the next core every minute \(10 slots\)/);
-  assert.equal(NETWORKS.full.R * 6, 60, "10 slots of 6 seconds");
-  assert.match(lessonText("04-blocks/02-tiny-and-full.md"), /\[JAM at a glance\]\(\.\.\/index\.md#jam-at-a-glance\)/);
+  assert.equal(start.split("<JamNetwork").length, 2);
+  const plain = start.replace(/\s+/g, " ");
+  assert.match(plain, /Here is JAM in miniature: \*tiny\*, the small configuration your client tests on, with 6 validators and 2 cores\./);
+  assert.match(plain, /who switch to the other core every 4 slots \(24 seconds\)/);
+  assert.equal(NETWORKS.tiny.R * 6, 24, "4 slots of 6 seconds");
+  assert.equal(NETWORKS.tiny.cores, 2, "so moving on one core is switching to the other");
+  assert.doesNotMatch(start.slice(start.indexOf("## JAM at a glance"), start.indexOf("## How to read it")), /1,023|341/, "no full-size numbers before 4.2");
+  assert.match(start, /The real network works the same way, only bigger: \[lesson 4\.2\]\(\.\/04-blocks\/02-tiny-and-full\.md\) shows it\./);
+  const tiny = lessonText("04-blocks/02-tiny-and-full.md");
+  assert.equal(tiny.split("<JamNetwork />").length, 2);
 });

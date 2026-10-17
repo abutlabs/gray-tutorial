@@ -9,7 +9,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { coresAt } from "../.vitepress/theme/network-map.ts";
 import { BLOCKS, ETAS } from "../.vitepress/theme/network-trace.ts";
-import { hue, LANES, MOMENTS, NEEDED, TIMEOUT, TOTALS } from "../.vitepress/theme/slot-player.ts";
+import { hue, LANES, MOMENTS, NEEDED, story, TIMEOUT, TOTALS, waitingSince } from "../.vitepress/theme/slot-player.ts";
 import { lessonCode, lessonText, ROOT } from "./lessons.ts";
 
 const TRACE = join(ROOT, "vectors/traces/storage");
@@ -74,7 +74,20 @@ test("cores' colours: a golden angle apart, so neighbouring cores never look ali
 test("the start page plays it first, then the step-by-step network, under JAM at a glance", () => {
   const start = lessonText("index.md");
   const at = start.indexOf("<SlotPlayer />");
-  assert.ok(at > start.indexOf("## JAM at a glance") && at < start.indexOf("<JamNetwork />"));
+  assert.ok(at > start.indexOf("## JAM at a glance") && at < start.indexOf("<JamNetwork"));
   assert.equal(start.split("<SlotPlayer />").length, 2);
-  assert.match(start.replace(/\s+/g, " "), /Press play and watch slots go by: each core its own colour, each validator in the colour of the core it works\./);
+  assert.match(start.replace(/\s+/g, " "), /Press play to watch a real chain in slow motion, one block a slot\./);
+});
+
+test("each slot told in plain words: who made a new report, how many hold a waiting one, what was accepted", () => {
+  const at = (slot: number) => story(MOMENTS.findIndex((m) => m.slot === slot));
+  assert.equal(at(1), "Slot 1. Core 0 is free. Core 1 is free.");
+  assert.match(at(3), /^Slot 3\. Core 0: a new report arrives from validators [\d, and]+\. Core 1: its report waits: 4 of 6 hold its pieces, 5 needed\.$/);
+  assert.match(at(6), /Core 1: report accepted \(6 of 6 hold its pieces\); a new report arrives/);
+  assert.match(at(8), /^Slot 8\. The validators switch benches\. /);
+  // a report made before a switch is signed by validators now at the other bench
+  const earlier = MOMENTS.filter((m) => m.signers.some((s, c) => s.some((v) => m.cores[v] !== c)));
+  assert.equal(earlier.length > 0, true);
+  for (const m of earlier) assert.match(story(MOMENTS.indexOf(m)), /\(made before they switched\)/);
+  MOMENTS.forEach((m, i) => m.pending.forEach((p, c) => assert.equal(waitingSince(i, c), p)));
 });

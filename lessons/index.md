@@ -13,18 +13,21 @@ Stuck on a word? Every JAM word, Gray Paper symbol and programming term is in th
 
 ## JAM at a glance
 
-JAM is 1,023 validators running 341 cores. A core isn't a machine: it's a lane of work,
-run at any moment by three validators, its *guarantors*, who move on to the next core every
-minute (10 slots). The rest is everyone's: every validator keeps a shard of every core's
-work, says it holds it, and applies the result. Press play and watch slots go by: each
-core its own colour, each validator in the colour of the core it works.
+Here is JAM in miniature: *tiny*, the small configuration your client tests on, with 6
+validators and 2 cores. A core isn't a machine: it's a lane of work, run at any moment by
+three validators, its *guarantors*, who switch to the other core every 4 slots (24
+seconds). The rest is everyone's: every validator keeps a piece of every core's work, says
+it holds it, and applies the result. Press play to watch a real chain in slow motion, one
+block a slot.
 
 <SlotPlayer />
 
 Or take it one step at a time: follow a work-package through its trip, and slide the slot
 to watch the guarantors move.
 
-<JamNetwork />
+<JamNetwork only="tiny" />
+
+The real network works the same way, only bigger: [lesson 4.2](./04-blocks/02-tiny-and-full.md) shows it.
 
 ## How to read it
 

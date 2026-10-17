@@ -1,9 +1,9 @@
-// The start page's slot player: cores colour-coded, slots going by. Full plays who works
-// where: every validator takes its core's colour, and every 10 slots all of them move on one
-// core (network-map.ts's real assignment). Tiny plays real work: the storage trace's 100
-// blocks, each core's report arriving with its guarantors, waiting for assurances, and
-// becoming available (5 of 6) or timing out (5 slots), in the Gray Paper's order: a block's
-// assurances first, then its guarantees (§11). tools/widget-slot-player.test.ts checks it.
+// The start page's slot player: a real JAM chain in slow motion, the storage trace's 100
+// tiny blocks. Each validator works the core the real assignment gives it (network-map.ts),
+// switching every 4 slots; each core's report arrives with its guarantors, waits for
+// assurances, and is accepted (5 of 6 in one block) or times out (5 slots), in the
+// Gray Paper's order: a block's assurances first, then its guarantees (§11). Each slot is
+// told in plain words. tools/widget-slot-player.test.ts checks it.
 
 import { coresAt, NETWORKS } from "./network-map.ts";
 import { BLOCKS, ETAS } from "./network-trace.ts";
@@ -11,11 +11,6 @@ import { BLOCKS, ETAS } from "./network-trace.ts";
 /** A core's colour: hues a golden angle apart, so neighbours never look alike. */
 export const hue = (core: number): number => Math.round((core * 137.508) % 360);
 export const colour = (core: number, light = 55): string => `hsl(${hue(core)} 65% ${light}%)`;
-
-/** Full: the slots the player loops over, one epoch from the vector's (600 to 1199). */
-export const FULL_FIRST = 600;
-export const FULL_SLOTS = NETWORKS.full.E;
-export const fullCoresAt = (slot: number): number[] => coresAt("full", slot);
 
 /** What happened on one core in one block. */
 export type Event = "idle" | "in" | "waiting" | "available" | "timed out";
@@ -26,6 +21,7 @@ export interface Moment {
   left: (Event | null)[]; // per core: a report that left this block, available or timed out, else null
   signers: number[][]; // per core: who signed a report that came in this block
   assured: number[][]; // per core: who assured it this block
+  pending: (number | null)[]; // per core, after the block: the slot its waiting report came in
 }
 
 export const TINY = NETWORKS.tiny;
@@ -54,7 +50,7 @@ export const MOMENTS: Moment[] = (() => {
       events[core] = "in";
       signers[core] = who;
     }
-    return { slot, cores: coresAt("tiny", slot, ETAS[eta]), events, left, signers, assured };
+    return { slot, cores: coresAt("tiny", slot, ETAS[eta]), events, left, signers, assured, pending: [...pending] };
   });
 })();
 
@@ -67,3 +63,26 @@ export const TOTALS = {
   available: MOMENTS.reduce((n, m) => n + m.left.filter((e) => e === "available").length, 0),
   timedOut: MOMENTS.reduce((n, m) => n + m.left.filter((e) => e === "timed out").length, 0),
 };
+
+/** The report on core c's bench after block i: the slot it came in, or null if the bench is free. */
+export const waitingSince = (i: number, c: number): number | null => MOMENTS[i].pending[c];
+
+/** Block i in plain words: what happened on each core. */
+export function story(i: number): string {
+  const m = MOMENTS[i];
+  const list = (xs: number[]) => (xs.length < 2 ? `${xs[0]}` : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`);
+  const parts = m.events.map((e, c) => {
+    const held = `${m.assured[c].length} of 6`;
+    const gone = m.left[c] === "available" ? `report accepted (${held} hold its pieces); ` : m.left[c] === "timed out" ? "report timed out; " : "";
+    if (e === "in") {
+      const earlier = m.signers[c].some((v) => m.cores[v] !== c) ? " (made before they switched)" : "";
+      return `Core ${c}: ${gone}a new report arrives from validators ${list(m.signers[c])}${earlier}.`;
+    }
+    if (e === "available") return `Core ${c}: its report is accepted, and its results go into the chain: ${held} validators hold its pieces.`;
+    if (e === "timed out") return `Core ${c}: its report times out: 5 slots went by without ${NEEDED} of 6 holding its pieces.`;
+    if (e === "waiting") return `Core ${c}: its report waits: ${held} hold its pieces, ${NEEDED} needed.`;
+    return `Core ${c} is free.`;
+  });
+  const switched = m.slot % TINY.R === 0 ? "The validators switch benches. " : "";
+  return `Slot ${m.slot}. ${switched}${parts.join(" ")}`;
+}
