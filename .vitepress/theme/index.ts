@@ -37,6 +37,7 @@ import ShardJourney from "./ShardJourney.vue";
 import CurveSolve from "./CurveSolve.vue";
 import CryptoMap from "./CryptoMap.vue";
 import JamNetwork from "./JamNetwork.vue";
+import SlotPlayer from "./SlotPlayer.vue";
 import HashAvalanche from "./HashAvalanche.vue";
 import ExtrinsicCommit from "./ExtrinsicCommit.vue";
 import SignCheck from "./SignCheck.vue";
@@ -149,6 +150,7 @@ export default {
     app.component("CurveSolve", CurveSolve); // 3.3
     app.component("CryptoMap", CryptoMap); // the cryptography appendix
     app.component("JamNetwork", JamNetwork); // the start page
+    app.component("SlotPlayer", SlotPlayer); // the start page
     app.component("CoreBitfield", CoreBitfield); // 4.2
     app.component("SlotClock", SlotClock); // 0.4
     app.component("NumberKinds", NumberKinds); // 1.2

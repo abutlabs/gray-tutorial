@@ -16,8 +16,13 @@ Stuck on a word? Every JAM word, Gray Paper symbol and programming term is in th
 JAM is 1,023 validators running 341 cores. A core isn't a machine: it's a lane of work,
 run at any moment by three validators, its *guarantors*, who move on to the next core every
 minute (10 slots). The rest is everyone's: every validator keeps a shard of every core's
-work, says it holds it, and applies the result. Step a work-package through its trip, and
-slide the slot to watch the guarantors move.
+work, says it holds it, and applies the result. Press play and watch slots go by: each
+core its own colour, each validator in the colour of the core it works.
+
+<SlotPlayer />
+
+Or take it one step at a time: follow a work-package through its trip, and slide the slot
+to watch the guarantors move.
 
 <JamNetwork />
 
