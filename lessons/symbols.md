@@ -57,6 +57,9 @@ Each notation symbol links to its full entry below.
 | [$\in$](#in) | in | belongs to a set | [2.2](./02-codec/02-compact-naturals.md) |
 | [$\exists$](#exists) | there exists | there is at least one value that... | [2.2](./02-codec/02-compact-naturals.md) |
 | [$\updownarrow$](#length-prefix) | with its length | a value of varying size, its length in front | [2.4](./02-codec/04-codecs.md) |
+| [$\equiv$](#defined-as) | is defined as | the left side is, by definition, the right | [0.1](./00-start/01-what-you-will-build.md) |
+| [$'$](#prime) | prime | the same thing, after the block | [0.1](./00-start/01-what-you-will-build.md) |
+| [$B$](#block) | B | a block: a header and an extrinsic | [0.1](./00-start/01-what-you-will-build.md) |
 
 ### Names
 
@@ -64,8 +67,8 @@ The Gray Paper names the state and its big functions with letters, mostly Greek.
 
 | Symbol | Say it | What it is | First in |
 | --- | --- | --- | --- |
-| σ | sigma | the whole state: everything the chain remembers | [0.1](./00-start/01-what-you-will-build.md) |
-| Υ | upsilon | the state transition: the state and a block give the next state | [0.1](./00-start/01-what-you-will-build.md) |
+| [σ](#state) | sigma | the whole state: everything the chain remembers | [0.1](./00-start/01-what-you-will-build.md) |
+| [Υ](#transition) | upsilon | the state transition: the state and a block give the next state | [0.1](./00-start/01-what-you-will-build.md) |
 | α | alpha | the authorizer pools | [6.2](./06-state-and-merklization/02-state-keys.md) |
 | ϕ | phi (straight) | the authorizer queue | [6.2](./06-state-and-merklization/02-state-keys.md) |
 | β | beta | recent blocks | [6.2](./06-state-and-merklization/02-state-keys.md) |
@@ -95,6 +98,55 @@ The Gray Paper names the state and its big functions with letters, mostly Greek.
 
 Two of them are both phi, as in the Gray Paper: the straight ϕ is the authorizer queue, the
 curly φ the PVM's registers.
+
+## The whole chain
+
+### σ: the state {#state}
+
+- **Say it:** "sigma".
+- **Means:** everything the chain remembers, in seventeen parts, from the validators' keys
+  to the services' accounts.
+- **Example:** after the storage trace's first block, the state whose root is
+  `0x48dc323d…` ([Part 0](./00-start/index.md#at-a-glance)).
+- **Gray Paper:** §4, *Overview*: *"σ is the prior state, σ′ is the posterior state, B is
+  some valid block and Υ is our block-level state-transition function."*
+- **Built in:** [Part 6](./06-state-and-merklization/index.md) reads it, [Part 19](./19-block-import/index.md) keeps all of it.
+
+### ′: after {#prime}
+
+- **Say it:** "prime", as in "sigma prime".
+- **Means:** the same thing, after the block: σ′ is the state after it, τ′ the timeslot
+  after it.
+- **Example:** the σ′ of slot 1's block in the storage trace, root `0x48dc323d…`, is the σ
+  that slot 2's block starts from.
+- **Gray Paper:** §4, *Overview*: *"σ′ is the posterior state"*.
+- **Used for:** every rule that says what a part of the state becomes.
+
+### B: a block {#block}
+
+- **Say it:** "B".
+- **Means:** one block: a header and an extrinsic, everything it brings from outside.
+- **Example:** the storage trace's block for slot 2, made by validator 3, carrying 1 report.
+- **Gray Paper:** §4.1, *The Block*: B ≡ (H, E), the header and the extrinsic.
+- **Built in:** [Part 4](./04-blocks/index.md).
+
+### Υ: the state transition {#transition}
+
+- **Say it:** "upsilon".
+- **Means:** the rules that turn a state and a block into the next state. By the end of the
+  tutorial, your client.
+- **Example:** Υ turns the storage trace's first state, root `0xd6e78dc0…`, and its
+  slot 1 block into the state with root `0x48dc323d…`.
+- **Gray Paper:** §4, *Overview*: *"Υ is our block-level state-transition function."*
+- **Built in:** [Part 19](./19-block-import/index.md), block import, from every part before it.
+
+### ≡: is defined as {#defined-as}
+
+- **Say it:** "is defined as", or just "is".
+- **Means:** the left side is, by definition, the right. Not a question of whether they're
+  equal: a statement that they are.
+- **Example:** σ′ ≡ Υ(σ, B): the state after is whatever Υ makes of σ and B.
+- **Gray Paper:** used for every definition, from its first equation in §4.
 
 ## Numbers and bytes
 
