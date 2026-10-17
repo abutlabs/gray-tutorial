@@ -33,6 +33,7 @@ const printPages: PrintPage[] = [
   { address: "glossary", title: "Glossary", part: true },
   { address: "symbols", title: "Gray Paper symbols", part: true },
   { address: "cryptography", title: "Cryptography we use", part: true },
+  { address: "jam-at-a-glance", title: "JAM at a glance", part: true },
 ];
 // the whole file after each Add to / Replace in snippet, worked out once, shown in its place
 // (whole.ts; restart `npm run site` to see a lesson's edits in them)
@@ -111,6 +112,7 @@ export default defineConfig({
       { text: "Glossary", link: "/glossary" },
       { text: "Gray Paper symbols", link: "/symbols" },
       { text: "Cryptography we use", link: "/cryptography" },
+      { text: "JAM at a glance", link: "/jam-at-a-glance" },
     ],
   },
 });

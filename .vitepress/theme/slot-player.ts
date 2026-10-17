@@ -1,4 +1,4 @@
-// The start page's slot player: a real JAM chain in slow motion, the storage trace's 100
+// JAM at a glance's slot player: a real JAM chain in slow motion, the storage trace's 100
 // tiny blocks. Each validator works the core the real assignment gives it (network-map.ts),
 // switching every 4 slots; each core's report arrives with its guarantors, waits for
 // assurances, and is accepted (5 of 6 in one block) or times out (5 slots), in the

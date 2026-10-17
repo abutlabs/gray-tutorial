@@ -1,4 +1,4 @@
-<!-- JAM's network, on the start page (tiny alone) and in lesson 4.2 (both sizes): the cores on top, every validator below. Pick a core and
+<!-- JAM's network, on JAM at a glance (tiny alone) and in lesson 4.2 (both sizes): the cores on top, every validator below. Pick a core and
      lines run to its three guarantors; slide the slot and every R slots they move on one
      core; step a work-package through its trip and watch it go from three validators to
      all of them. Tiny or full, with report_prev_rotation-1's real entropy. Computed in
@@ -8,7 +8,7 @@ import { computed, ref, watch } from "vue";
 import type { Size } from "./network-map.ts";
 import { coresAt, enough, epochOf, guarantorsOf, NETWORKS, rotationOf, TRIP } from "./network-map.ts";
 
-/** `only` keeps the widget to one size: the start page shows tiny alone, lesson 4.2 both. */
+/** `only` keeps the widget to one size: JAM at a glance shows tiny alone, lesson 4.2 both. */
 const props = defineProps<{ only?: Size }>();
 const size = ref<Size>(props.only ?? "full");
 const net = computed(() => NETWORKS[size.value]);

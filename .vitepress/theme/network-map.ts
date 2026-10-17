@@ -1,4 +1,4 @@
-// The start page's network widget: every validator, every core, and who works where. A core
+// JAM at a glance's network widget (and lesson 4.2's): every validator, every core, and who works where. A core
 // isn't a machine: at any slot three validators, its guarantors, run its work, dealt out by
 // lesson 12.1's P (seats 0 0 0 1 1 1 …, shuffled with η by lesson 7.2's F and Q, then moved
 // on one core every R slots), while every validator keeps a shard of every core's report

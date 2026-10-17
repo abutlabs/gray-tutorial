@@ -1,4 +1,4 @@
-// The start page's network widget (.vitepress/theme/network-map.ts): lesson 7.2's Q and F,
+// JAM at a glance's network widget (.vitepress/theme/network-map.ts): lesson 7.2's Q and F,
 // lesson 12.1's P, and the reports vector report_prev_rotation-1, whose own guarantee is
 // signed by the validators this shuffle seats on its core, on tiny and on full.
 
@@ -59,18 +59,16 @@ test("the vector's entropy, slot and guarantee: its signers are the ones η′�
   }
 });
 
-test("the start page shows tiny alone; lesson 4.2, where full is met, shows both", () => {
-  const start = lessonText("index.md");
-  const at = start.indexOf('<JamNetwork only="tiny" />');
-  assert.ok(at > start.indexOf("## JAM at a glance") && at < start.indexOf("## How to read it"));
-  assert.equal(start.split("<JamNetwork").length, 2);
-  const plain = start.replace(/\s+/g, " ");
-  assert.match(plain, /Here is JAM in miniature: \*tiny\*, the small configuration your client tests on, with 6 validators and 2 cores\./);
-  assert.match(plain, /who switch to the other core every 4 slots \(24 seconds\)/);
+test("JAM at a glance shows tiny alone, the start page only links it, and lesson 4.2, where full is met, shows both", () => {
+  const page = lessonText("jam-at-a-glance.md");
+  assert.equal(page.split('<JamNetwork only="tiny" />').length, 2);
+  const plain = page.replace(/\s+/g, " ");
+  assert.match(plain, /Here it is in miniature: \*tiny\*, the small configuration your client tests on, with 6 validators and 2 cores, whose guarantors switch every 4 slots \(24 seconds\)\./);
   assert.equal(NETWORKS.tiny.R * 6, 24, "4 slots of 6 seconds");
-  assert.equal(NETWORKS.tiny.cores, 2, "so moving on one core is switching to the other");
-  assert.doesNotMatch(start.slice(start.indexOf("## JAM at a glance"), start.indexOf("## How to read it")), /1,023|341/, "no full-size numbers before 4.2");
-  assert.match(start, /The real network works the same way, only bigger: \[lesson 4\.2\]\(\.\/04-blocks\/02-tiny-and-full\.md\) shows it\./);
-  const tiny = lessonText("04-blocks/02-tiny-and-full.md");
-  assert.equal(tiny.split("<JamNetwork />").length, 2);
+  assert.doesNotMatch(page, /1,023|341/, "no full-size numbers before 4.2");
+  assert.match(page, /The real network works the same way, only bigger: \[lesson 4\.2\]\(\.\/04-blocks\/02-tiny-and-full\.md\) shows it\./);
+  const start = lessonText("index.md");
+  assert.doesNotMatch(start, /<JamNetwork|<SlotPlayer/, "the start page scares no one: a link, no widgets");
+  assert.match(start.replace(/\s+/g, " "), /\[JAM at a glance\]\(\.\/jam-at-a-glance\.md\) plays a real one in slow motion\. It's optional/);
+  assert.equal(lessonText("04-blocks/02-tiny-and-full.md").split("<JamNetwork />").length, 2);
 });

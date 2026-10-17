@@ -1,4 +1,4 @@
-<!-- The start page's slot player: a real JAM chain in slow motion, the storage trace's 100
+<!-- JAM at a glance's slot player: a real JAM chain in slow motion, the storage trace's 100
      tiny blocks. Two cores are two workbenches; six validators sit three to a bench and walk
      to the other one every 4 slots; a report lands on a bench, collects "I hold my piece"
      from the validators, and is accepted once 5 of 6 have said so. Computed in

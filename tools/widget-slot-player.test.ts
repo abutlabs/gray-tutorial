@@ -1,4 +1,4 @@
-// The start page's slot player (.vitepress/theme/slot-player.ts, network-trace.ts): the
+// JAM at a glance's slot player (.vitepress/theme/slot-player.ts, network-trace.ts): the
 // storage trace's 100 blocks as they are, its guarantors where the real assignment seats
 // them, and each core's reports arriving, becoming available (5 of 6) or timing out (5
 // slots), as the Gray Paper orders a block: assurances, then guarantees.
@@ -71,12 +71,12 @@ test("cores' colours: a golden angle apart, so neighbouring cores never look ali
   }
 });
 
-test("the start page plays it first, then the step-by-step network, under JAM at a glance", () => {
-  const start = lessonText("index.md");
-  const at = start.indexOf("<SlotPlayer />");
-  assert.ok(at > start.indexOf("## JAM at a glance") && at < start.indexOf("<JamNetwork"));
-  assert.equal(start.split("<SlotPlayer />").length, 2);
-  assert.match(start.replace(/\s+/g, " "), /Press play to watch a real chain in slow motion, one block a slot\./);
+test("JAM at a glance plays it first, then the step-by-step network", () => {
+  const page = lessonText("jam-at-a-glance.md");
+  const at = page.indexOf("<SlotPlayer />");
+  assert.ok(at > 0 && at < page.indexOf("<JamNetwork"));
+  assert.equal(page.split("<SlotPlayer />").length, 2);
+  assert.match(page.replace(/\s+/g, " "), /Press play to watch a real chain in slow motion, one block a slot\./);
 });
 
 test("each slot told in plain words: who made a new report, how many hold a waiting one, what was accepted", () => {
