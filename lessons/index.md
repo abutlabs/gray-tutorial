@@ -11,6 +11,16 @@ By the end of this tutorial, your JAM client will be able to pass the official t
 Stuck on a word? Every JAM word, Gray Paper symbol and programming term is in the
 [glossary](./glossary.md).
 
+## JAM at a glance
+
+JAM is 1,023 validators running 341 cores. A core isn't a machine: it's a lane of work,
+run at any moment by three validators, its *guarantors*, who move on to the next core every
+minute (10 slots). The rest is everyone's: every validator keeps a shard of every core's
+work, says it holds it, and applies the result. Step a work-package through its trip, and
+slide the slot to watch the guarantors move.
+
+<JamNetwork />
+
 ## How to read it
 
 Each lesson builds on the ones before, and your client grows with
